@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <TextView
+        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:text="Welcome to Sitecore Media Uploader!" />
+
+    <EditText
+        android:id="@+id/edit_url"
+        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:hint="Sitecore instance URL" />
+
+    <EditText
+        android:id="@+id/edit_login"
+        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:hint="Login" />
+
+    <EditText
+        android:id="@+id/edit_password"
+        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:hint="Password" />
+
+    <Button
+        android:id="@+id/button_ok"
+        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:text="Test connection"/>
+
+</LinearLayout>

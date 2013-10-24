@@ -12,7 +12,7 @@ proguard.cfg
 
 #IntelliJ IDEA
 .idea
-.iml
+*.iml
 
 #Other
 .gradle
