@@ -73,12 +73,7 @@ public class ItemsListFragment extends ListFragment implements LoaderCallbacks<C
 
     public void setQueryParent(String parentId) {
         mParentId = parentId;
-        getActivity().runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                getLoaderManager().restartLoader(0, null, ItemsListFragment.this);
-            }
-        });
+        getLoaderManager().restartLoader(0, null, ItemsListFragment.this);
     }
 
     @Override
@@ -97,12 +92,7 @@ public class ItemsListFragment extends ListFragment implements LoaderCallbacks<C
 
     @Override
     public void onResponse(ItemsResponse itemsResponse) {
-        getActivity().runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                getLoaderManager().restartLoader(0, null, ItemsListFragment.this);
-            }
-        });
+        getLoaderManager().restartLoader(0, null, ItemsListFragment.this);
     }
 
     @Override
