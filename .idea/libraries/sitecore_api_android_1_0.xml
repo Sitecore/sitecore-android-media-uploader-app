@@ -1,0 +1,9 @@
+<component name="libraryTable">
+  <library name="sitecore-api-android-1.0">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/MediaUploader/libs/sitecore-api-android-1.0.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>
