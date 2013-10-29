@@ -27,7 +27,7 @@
 
         <provider
             android:name="net.sitecore.android.sdk.api.provider.ScItemsProvider"
-            android:authorities="net.sitecore.android.sdk.api.provider"
+            android:authorities="net.sitecore.android.uploader.provider"
             android:exported="false" />
 
     </application>
