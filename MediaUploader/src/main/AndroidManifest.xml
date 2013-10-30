@@ -12,6 +12,7 @@
     <application
         android:allowBackup="true"
         android:label="@string/app_name"
+        android:name=".UploaderApp"
         android:icon="@drawable/ic_launcher"
         android:theme="@style/AppTheme">
 
@@ -24,7 +25,8 @@
 
         <activity android:name=".ui.MainActivity" />
         <activity android:name=".ui.SettingsActivity" />
-        <activity android:name=".ui.upload.UploadActivity" />
+        <activity android:name=".ui.upload.UploadActivity"
+            android:label="Upload item "/>
 
         <provider
             android:name="net.sitecore.android.sdk.api.provider.ScItemsProvider"
