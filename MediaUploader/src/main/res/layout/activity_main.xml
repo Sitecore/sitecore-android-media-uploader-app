@@ -15,7 +15,7 @@
         android:id="@+id/fragment_items"
         android:layout_height="match_parent"
         android:layout_width="match_parent"
-        android:name="net.sitecore.android.mediauploader.ui.ItemsListFragment"
+        android:name="net.sitecore.android.mediauploader.ui.browser.MediaBrowserFragment"
         tools:layout="@android:layout/list_content" />
 
 </LinearLayout>

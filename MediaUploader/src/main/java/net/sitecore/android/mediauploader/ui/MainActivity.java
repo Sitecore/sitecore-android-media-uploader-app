@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.os.Bundle;
 
 import net.sitecore.android.mediauploader.R;
+import net.sitecore.android.mediauploader.ui.browser.MediaBrowserFragment;
 import net.sitecore.android.sdk.api.LogUtils;
 import net.sitecore.android.sdk.api.RequestQueueProvider;
 import net.sitecore.android.sdk.api.ScApiSession;
@@ -18,7 +19,7 @@ import com.android.volley.VolleyError;
 
 public class MainActivity extends Activity implements Listener<ScApiSession>, ErrorListener {
 
-    static ScApiSession mSession;
+    public static ScApiSession mSession;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -37,7 +38,7 @@ public class MainActivity extends Activity implements Listener<ScApiSession>, Er
         mSession = scApiSession;
         mSession.setShouldCache(true);
 
-        final ItemsListFragment fragment = (ItemsListFragment) getFragmentManager().findFragmentById(R.id.fragment_items);
+        final MediaBrowserFragment fragment = (MediaBrowserFragment) getFragmentManager().findFragmentById(R.id.fragment_items);
         getContentResolver().delete(Items.CONTENT_URI, null, null);
         ScRequest request = mSession.getItems(new Listener<ItemsResponse>() {
             @Override
