@@ -24,6 +24,7 @@
 
         <activity android:name=".ui.MainActivity" />
         <activity android:name=".ui.SettingsActivity" />
+        <activity android:name=".ui.upload.UploadActivity" />
 
         <provider
             android:name="net.sitecore.android.sdk.api.provider.ScItemsProvider"
