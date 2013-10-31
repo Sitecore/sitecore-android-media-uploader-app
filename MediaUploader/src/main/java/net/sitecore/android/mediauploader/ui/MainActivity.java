@@ -14,20 +14,19 @@ import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
+import com.android.volley.Response.ErrorListener;
+import com.android.volley.Response.Listener;
+import com.android.volley.VolleyError;
+
 import net.sitecore.android.mediauploader.R;
 import net.sitecore.android.mediauploader.ui.browser.MediaBrowserFragment;
 import net.sitecore.android.mediauploader.ui.upload.UploadActivity;
-import net.sitecore.android.sdk.api.LogUtils;
 import net.sitecore.android.sdk.api.RequestQueueProvider;
 import net.sitecore.android.sdk.api.ScApiSession;
 import net.sitecore.android.sdk.api.ScRequest;
 import net.sitecore.android.sdk.api.model.ItemsResponse;
 import net.sitecore.android.sdk.api.model.ScItem;
 import net.sitecore.android.sdk.api.provider.ScItemsContract.Items;
-
-import com.android.volley.Response.ErrorListener;
-import com.android.volley.Response.Listener;
-import com.android.volley.VolleyError;
 
 import butterknife.InjectView;
 import butterknife.Views;
@@ -119,7 +118,7 @@ public class MainActivity extends Activity implements Listener<ScApiSession>, Er
             @Override
             public void onResponse(ItemsResponse itemsResponse) {
                 ScItem item = itemsResponse.getItems().get(0);
-                fragment.setQueryParent(item.getParentItemId());
+                fragment.setQueryParent(item);
             }
         }, this).build();
         RequestQueueProvider.getRequestQueue(this).add(request);
@@ -129,6 +128,5 @@ public class MainActivity extends Activity implements Listener<ScApiSession>, Er
     public void onErrorResponse(VolleyError volleyError) {
 
     }
-
 
 }
