@@ -36,21 +36,17 @@ public class MainActivity extends Activity implements Listener<ScApiSession>, Er
     public static ScApiSession mSession;
 
     @InjectView(R.id.drawer_layout) DrawerLayout mDrawerLayout;
-    @InjectView(R.id.list_left_drawer) ListView mLeftPanel;
 
     private ActionBarDrawerToggle mDrawerToggle;
-
-    private String[] mNavigationItems = {
-            "Upload",
-            "Media browser",
-            "My uploads"
-    };
+    private SlidingNavigationFragment mNavigationFragment;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         Views.inject(this);
+
+        mNavigationFragment = (SlidingNavigationFragment) getFragmentManager().findFragmentById(R.id.fragment_navigation);
 
         getActionBar().setDisplayHomeAsUpEnabled(true);
         getActionBar().setHomeButtonEnabled(true);
@@ -69,16 +65,6 @@ public class MainActivity extends Activity implements Listener<ScApiSession>, Er
         };
 
         mDrawerLayout.setDrawerListener(mDrawerToggle);
-
-        mLeftPanel.setAdapter(new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, mNavigationItems));
-        mLeftPanel.setOnItemClickListener(new OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                if (position == 0) {
-                    startActivity(new Intent(MainActivity.this, UploadActivity.class));
-                }
-            }
-        });
 
         String url = "http://scmobileteam.cloudapp.net";
         String name = "extranet\\creatorex";

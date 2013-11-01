@@ -8,6 +8,7 @@
         android:targetSdkVersion="18" />
 
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 
     <application
         android:allowBackup="true"
@@ -24,14 +25,25 @@
         </activity>
 
         <activity android:name=".ui.MainActivity" />
-        <activity android:name=".ui.SettingsActivity" />
-        <activity android:name=".ui.upload.UploadActivity"
-            android:label="Upload item "/>
+
+        <activity
+            android:name=".ui.upload.UploadActivity"
+            android:label="Upload Image" />
+
+        <activity
+            android:name=".ui.InstancesActivity"
+            android:label="Sitecore Instances" />
+        <activity android:name=".ui.EditInstanceActivity" />
 
         <provider
             android:name="net.sitecore.android.sdk.api.provider.ScItemsProvider"
             android:authorities="net.sitecore.android.uploader.provider"
             android:exported="false" />
+
+        <!--
+        <service android:name="net.sitecore.android.sdk.api.UploadMediaService" />
+        -->
+        <service android:name=".service.MediaUploaderService" />
 
     </application>
 

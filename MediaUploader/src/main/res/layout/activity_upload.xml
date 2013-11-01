@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fillViewport="true">
+
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <EditText
+            android:id="@+id/edit_item_name"
+            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            android:text="Test item"
+            android:hint="item name" />
+
+        <EditText
+            android:id="@+id/edit_item_path"
+            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            android:text="/sitecore/media library/Test Data/Android"
+            android:hint="item path" />
+
+        <RelativeLayout
+            android:layout_height="400dp"
+            android:layout_width="match_parent">
+
+            <ImageView
+                android:id="@+id/image_preview"
+                android:layout_height="match_parent"
+                android:layout_width="match_parent"
+                android:scaleType="centerCrop"
+                android:background="@android:color/holo_blue_dark"
+                android:layout_weight="1" />
+
+            <LinearLayout
+                android:layout_alignParentBottom="true"
+                android:orientation="horizontal"
+                android:layout_height="wrap_content"
+                android:layout_width="match_parent">
+
+                <Button
+                    android:id="@+id/button_upload_camera"
+                    android:layout_height="wrap_content"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:text="From camera" />
+
+                <Button
+                    android:id="@+id/button_upload_gallery"
+                    android:layout_height="wrap_content"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:text="From gallery" />
+            </LinearLayout>
+
+
+        </RelativeLayout>
+
+
+    </LinearLayout>
+</ScrollView>

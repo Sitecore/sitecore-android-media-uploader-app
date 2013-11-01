@@ -16,16 +16,13 @@
             android:layout_width="match_parent"
             android:name="net.sitecore.android.mediauploader.ui.browser.MediaBrowserFragment"
             tools:layout="@android:layout/list_content" />
-
     </LinearLayout>
 
-    <ListView
-        android:id="@+id/list_left_drawer"
+    <fragment
+        android:id="@+id/fragment_navigation"
         android:layout_width="240dp"
         android:layout_height="match_parent"
         android:layout_gravity="start"
-        android:choiceMode="singleChoice"
-        android:divider="@android:color/transparent"
-        android:dividerHeight="0dp"
-        android:background="#CCC" />
+        android:name="net.sitecore.android.mediauploader.ui.SlidingNavigationFragment"/>
+
 </android.support.v4.widget.DrawerLayout>
