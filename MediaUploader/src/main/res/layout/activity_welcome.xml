@@ -22,7 +22,7 @@
         android:id="@+id/edit_login"
         android:layout_height="wrap_content"
         android:layout_width="match_parent"
-        android:hint="Login" />
+        android:hint="Domain\\Username" />
 
     <EditText
         android:id="@+id/edit_password"
@@ -35,6 +35,6 @@
         android:id="@+id/button_ok"
         android:layout_height="wrap_content"
         android:layout_width="match_parent"
-        android:text="Test connection" />
+        android:text="Login" />
 
 </LinearLayout>

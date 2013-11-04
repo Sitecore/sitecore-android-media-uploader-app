@@ -9,22 +9,8 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <EditText
-            android:id="@+id/edit_item_name"
-            android:layout_height="wrap_content"
-            android:layout_width="match_parent"
-            android:text="Test item"
-            android:hint="item name" />
-
-        <EditText
-            android:id="@+id/edit_item_path"
-            android:layout_height="wrap_content"
-            android:layout_width="match_parent"
-            android:text="/sitecore/media library/Test Data/Android"
-            android:hint="item path" />
-
         <RelativeLayout
-            android:layout_height="400dp"
+            android:layout_height="300dp"
             android:layout_width="match_parent">
 
             <ImageView
@@ -55,9 +41,27 @@
                     android:layout_weight="1"
                     android:text="From gallery" />
             </LinearLayout>
-
-
         </RelativeLayout>
+
+        <EditText
+            android:id="@+id/edit_item_name"
+            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            android:text="Test item"
+            android:hint="item name" />
+
+        <EditText
+            android:id="@+id/edit_item_path"
+            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            android:text="/sitecore/media library/Test Data/Android"
+            android:hint="item path" />
+
+        <CheckBox
+            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            android:text="Upload later"
+            android:enabled="false"/>
 
 
     </LinearLayout>
