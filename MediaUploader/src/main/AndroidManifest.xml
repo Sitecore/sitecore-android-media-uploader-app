@@ -15,25 +15,34 @@
         android:label="@string/app_name"
         android:name=".UploaderApp"
         android:icon="@drawable/ic_launcher"
-        android:theme="@style/AppTheme">
+        android:theme="@style/Theme.Sitecore">
 
-        <activity android:name=".ui.LoginActivity">
+        <activity
+            android:name=".ui.LoginActivity"
+            android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
 
-        <activity android:name=".ui.MainActivity" />
+        <activity
+            android:name=".ui.MainActivity"
+            android:screenOrientation="portrait" />
 
         <activity
             android:name=".ui.upload.UploadActivity"
+            android:screenOrientation="portrait"
             android:label="Upload Image" />
 
         <activity
             android:name=".ui.InstancesActivity"
+            android:screenOrientation="portrait"
             android:label="Sitecore Instances" />
-        <activity android:name=".ui.EditInstanceActivity" />
+
+        <activity
+            android:name=".ui.EditInstanceActivity"
+            android:screenOrientation="portrait" />
 
         <provider
             android:name="net.sitecore.android.sdk.api.provider.ScItemsProvider"

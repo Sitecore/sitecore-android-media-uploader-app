@@ -11,6 +11,8 @@ public class MediaUploaderService extends UploadMediaService {
     @Override
     public void onCreate() {
         super.onCreate();
+
+
     }
 
     @Override

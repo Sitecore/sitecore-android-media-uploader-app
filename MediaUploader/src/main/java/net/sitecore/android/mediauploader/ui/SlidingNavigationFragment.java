@@ -33,7 +33,7 @@ public class SlidingNavigationFragment extends ListFragment {
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
-        mAdapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_list_item_single_choice, mNavigationItems);
+        mAdapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_list_item_1, mNavigationItems);
         setListAdapter(mAdapter);
 
     }
