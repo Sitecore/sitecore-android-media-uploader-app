@@ -25,12 +25,34 @@ dependencies {
 
 android {
     compileSdkVersion 18
-    buildToolsVersion "18.1.1"
+    buildToolsVersion "19.0.0"
 
     defaultConfig {
         minSdkVersion 14
         targetSdkVersion 18
     }
+
+    signingConfigs {
+        release {
+            def Properties keyProps = new Properties()
+            keyProps.load(new FileInputStream(file('../keystore/keystore.properties')))
+
+            storeFile file('../keystore/sc.keystore')
+            keyAlias keyProps["alias"]
+            storePassword keyProps["storePass"]
+            keyPassword keyProps["pass"]
+        }
+    }
+
+    buildTypes {
+        release {
+            //runProguard true
+            //proguardFiles getDefaultProguardFile('proguard-android.txt'), file('proguard-project.txt')
+            signingConfig signingConfigs.release
+        }
+    }
+
 }
 
+    
 
