@@ -36,11 +36,6 @@
             android:label="Upload Image" />
 
         <activity
-            android:name=".ui.InstancesActivity"
-            android:screenOrientation="portrait"
-            android:label="Sitecore Instances" />
-
-        <activity
             android:name=".ui.EditInstanceActivity"
             android:screenOrientation="portrait" />
 
@@ -49,9 +44,6 @@
             android:authorities="net.sitecore.android.uploader.provider"
             android:exported="false" />
 
-        <!--
-        <service android:name="net.sitecore.android.sdk.api.UploadMediaService" />
-        -->
         <service android:name=".service.MediaUploaderService" />
 
     </application>
