@@ -32,7 +32,7 @@
             android:paddingLeft="16dp"
             android:layout_height="wrap_content"
             android:id="@+id/button_go_up"
-            android:gravity="left|bottom"
+            android:gravity="bottom"
             android:background="@drawable/selectable_background_sitecore1"
             android:text="..."
             android:drawableLeft="@drawable/ic_navigation_up" />

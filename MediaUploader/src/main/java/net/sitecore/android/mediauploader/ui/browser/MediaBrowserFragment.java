@@ -76,6 +76,7 @@ public class MediaBrowserFragment extends Fragment implements LoaderCallbacks<Cu
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View root = inflater.inflate(R.layout.fragment_browser, null);
         Views.inject(this, root);
+
         mCurrentPath.setMovementMethod(ScrollingMovementMethod.getInstance());
         mListView.setOnItemClickListener(this);
         mListView.setEmptyView(mEmptyView);
@@ -90,8 +91,8 @@ public class MediaBrowserFragment extends Fragment implements LoaderCallbacks<Cu
         } else {
             mItemStack.removeLastParent();
             refresh(mItemStack.getCurrentParentId());
-            updateGoUpButtonText(mItemStack.getCurrentPath());
-            getLoaderManager().restartLoader(0, null, MediaBrowserFragment.this);
+            updateCurrentPath(mItemStack.getCurrentPath());
+            getLoaderManager().restartLoader(0, null, this);
         }
         refresh(mItemStack.getCurrentParentId());
     }
@@ -114,13 +115,14 @@ public class MediaBrowserFragment extends Fragment implements LoaderCallbacks<Cu
         String itemId = c.getString(Query.ITEM_ID);
         if (!mItemStack.contains(itemId)) {
             mItemStack.push(itemId, c.getString(Query.DISPLAY_NAME));
-            updateGoUpButtonText(mItemStack.getCurrentPath());
+            updateCurrentPath(mItemStack.getCurrentPath());
         }
 
+        getLoaderManager().restartLoader(0, null, this);
         refresh(itemId);
     }
 
-    private void updateGoUpButtonText(String text) {
+    private void updateCurrentPath(String text) {
         mCurrentPath.setText(text);
     }
 
@@ -151,7 +153,7 @@ public class MediaBrowserFragment extends Fragment implements LoaderCallbacks<Cu
 
     public void setQueryParent(ScItem item) {
         mItemStack.init(item.getLongId(), item.getPath());
-        updateGoUpButtonText(mItemStack.getCurrentPath());
+        updateCurrentPath(mItemStack.getCurrentPath());
         getLoaderManager().restartLoader(0, null, MediaBrowserFragment.this);
     }
 
@@ -163,6 +165,16 @@ public class MediaBrowserFragment extends Fragment implements LoaderCallbacks<Cu
     @Override
     public void onErrorResponse(VolleyError volleyError) {
         LOGD(Utils.getMessageFromError(volleyError));
+    }
+
+    boolean isImage(String template) {
+        if (template.equals("System/Media/Unversioned/Jpeg")) return true;
+        else return template.equals("System/Media/Unversioned/Image");
+    }
+
+    String getMediaDownloadUrl(String itemId) {
+            String id = itemId.replace("{", "").replace("}", "").replace("-", "");
+            return String.format("%s/~/media/%s.ashx?w=50", MainActivity.mSession.getBaseUrl(), id);
     }
 
     class ItemsCursorAdapter extends CursorAdapter {
@@ -182,6 +194,12 @@ public class MediaBrowserFragment extends Fragment implements LoaderCallbacks<Cu
         public void bindView(View view, Context context, Cursor c) {
             ViewHolder holder = (ViewHolder) view.getTag();
             holder.itemName.setText(c.getString(Query.DISPLAY_NAME));
+            if (isImage(c.getString(Query.TEMPLATE))) {
+                String url = getMediaDownloadUrl(c.getString(Query.ITEM_ID));
+                holder.itemIcon.setImageUrl(url, mImageLoader);
+            } else {
+                holder.itemIcon.setImageDrawable(null);
+            }
         }
 
         class ViewHolder {
