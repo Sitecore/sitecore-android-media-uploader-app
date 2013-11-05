@@ -107,7 +107,7 @@ public class MainActivity extends Activity implements Listener<ScApiSession>, Er
             @Override
             public void onResponse(ItemsResponse itemsResponse) {
                 ScItem item = itemsResponse.getItems().get(0);
-                mMediaBrowserFragment.setQueryParent(item);
+                mMediaBrowserFragment.setRootItem(item);
             }
         }, this).withPayloadType(PayloadType.FULL).byItemId("{3D6658D8-A0BF-4E75-B3E2-D050FABCF4E1}").build();
         RequestQueueProvider.getRequestQueue(this).add(request);

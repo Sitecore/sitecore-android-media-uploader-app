@@ -1,6 +1,5 @@
 package net.sitecore.android.mediauploader.ui.browser;
 
-import android.app.Fragment;
 import android.app.ListFragment;
 import android.app.LoaderManager.LoaderCallbacks;
 import android.content.CursorLoader;
@@ -9,12 +8,10 @@ import android.database.Cursor;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.text.method.ScrollingMovementMethod;
+import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.AdapterView.OnItemClickListener;
-import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -46,18 +43,10 @@ public class MediaBrowserFragment extends ListFragment implements LoaderCallback
         Listener<ItemsResponse>, ErrorListener {
 
     private ItemsCursorAdapter mAdapter;
-    private ItemStack mItemStack = new ItemStack();
+    private ItemStack mItemStack;
 
     @InjectView(R.id.current_path) TextView mCurrentPath;
     @InjectView(android.R.id.list) ListView mListView;
-    @InjectView(android.R.id.empty) TextView mEmptyView;
-
-    @Override
-    public void onActivityCreated(Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
-        getLoaderManager().initLoader(0, null, this);
-
-    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -65,9 +54,6 @@ public class MediaBrowserFragment extends ListFragment implements LoaderCallback
         Views.inject(this, root);
 
         mCurrentPath.setMovementMethod(ScrollingMovementMethod.getInstance());
-        //mListView.setOnItemClickListener(this);
-        //mListView.setEmptyView(mEmptyView);
-
         return root;
     }
 
@@ -82,30 +68,30 @@ public class MediaBrowserFragment extends ListFragment implements LoaderCallback
             return;
         }
 
-        String itemId = c.getString(Query.ITEM_ID);
-        if (!mItemStack.contains(itemId)) {
-            mItemStack.push(itemId, c.getString(Query.DISPLAY_NAME));
-            updateCurrentPath(mItemStack.getCurrentPath());
-        }
+        final String itemId = c.getString(Query.ITEM_ID);
+        final String name = c.getString(Query.DISPLAY_NAME);
+        final String path = c.getString(Query.PATH);
+
+        mItemStack.goInside(itemId, name, path);
+        updateCurrentPath(mItemStack.getCurrentPath());
 
         getLoaderManager().restartLoader(0, null, this);
-        refresh(itemId);
+        updateChildren(itemId);
     }
 
     @OnClick(R.id.button_go_up)
     void goUp() {
-        if (!mItemStack.canGoUp()) {
-            Toast.makeText(getActivity(), "You are in root folder", Toast.LENGTH_LONG).show();
-        } else {
-            mItemStack.removeLastParent();
-            refresh(mItemStack.getCurrentParentId());
+        if (mItemStack.canGoUp()) {
+            mItemStack.goUp();
+            updateChildren(mItemStack.getCurrentItemId());
             updateCurrentPath(mItemStack.getCurrentPath());
             getLoaderManager().restartLoader(0, null, this);
+        } else {
+            Toast.makeText(getActivity(), "You are in root folder", Toast.LENGTH_LONG).show();
         }
-        refresh(mItemStack.getCurrentParentId());
     }
 
-    void refresh(String itemId) {
+    private void updateChildren(String itemId) {
         ScRequest request = MainActivity.mSession.getItems(this, this)
                 .byItemId(itemId)
                 .withScope(RequestScope.CHILDREN)
@@ -122,9 +108,9 @@ public class MediaBrowserFragment extends ListFragment implements LoaderCallback
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
         String selection = null;
-        String parentId = mItemStack.getCurrentParentId();
-        if (!TextUtils.isEmpty(parentId)) {
-            selection = Items.PARENT_ITEM_ID + "='" + parentId + "'";
+        String itemId = mItemStack.getCurrentItemId();
+        if (!TextUtils.isEmpty(itemId)) {
+            selection = Items.PARENT_ITEM_ID + "='" + itemId + "'";
         }
         return new CursorLoader(getActivity(), Items.CONTENT_URI, Query.PROJECTION, selection, null, null);
     }
@@ -144,21 +130,19 @@ public class MediaBrowserFragment extends ListFragment implements LoaderCallback
         mAdapter.swapCursor(null);
     }
 
-    public void setQueryParent(ScItem item) {
-        mItemStack.init(item.getLongId(), item.getPath());
+    public void setRootItem(ScItem item) {
+        mItemStack = new ItemStack(item.getId(), item.getDisplayName(), item.getPath());
         updateCurrentPath(mItemStack.getCurrentPath());
-        getLoaderManager().restartLoader(0, null, MediaBrowserFragment.this);
+        getLoaderManager().initLoader(0, null, MediaBrowserFragment.this);
     }
 
     @Override
     public void onResponse(ItemsResponse itemsResponse) {
-        getLoaderManager().restartLoader(0, null, MediaBrowserFragment.this);
     }
 
     @Override
     public void onErrorResponse(VolleyError volleyError) {
         LOGD(Utils.getMessageFromError(volleyError));
     }
-
 
 }

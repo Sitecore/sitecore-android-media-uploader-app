@@ -1,65 +1,50 @@
 package net.sitecore.android.mediauploader.ui.browser;
 
-import android.text.TextUtils;
-
-import java.util.LinkedHashMap;
+import java.util.Iterator;
 import java.util.LinkedList;
-import java.util.Set;
 
-class ItemStack {
+public class ItemStack {
 
-    private static final String MEDIA_LIBRARY_ID = "{3D6658D8-A0BF-4E75-B3E2-D050FABCF4E1}";
-    private LinkedHashMap<String, String> map;
+    private LinkedList<String> mItemIds;
+    private LinkedList<String> mItemNames;
+    private LinkedList<String> mItemPaths;
 
-    ItemStack() {
-        map = new LinkedHashMap<String, String>();
-    }
-
-    private void parse(String longID, String path) {
-        String[] ids = longID.split("/");
-        String[] names = path.split("/");
-        for (int i = 0; i < ids.length; i++) {
-            if (TextUtils.isEmpty(ids[i])) continue;
-            map.put(ids[i], names[i]);
-        }
-    }
-
-    public void init(String longID, String path) {
-        parse(longID, path);
-    }
-
-    public void push(String parentId, String itemName) {
-        map.put(parentId, itemName);
-    }
-
-    public String removeLastParent() {
-        return map.remove(getLastKey());
-    }
-
-    private String getLastKey() {
-        if (map.isEmpty()) return null;
-        return new LinkedList<String>(map.keySet()).getLast();
-    }
-
-    public String getCurrentParentId() {
-        return getLastKey();
+    public ItemStack(String id, String name, String path) {
+        mItemIds = new LinkedList<String>();
+        mItemNames = new LinkedList<String>();
+        mItemPaths = new LinkedList<String>();
+        goInside(id, name, path);
     }
 
     public String getCurrentPath() {
-        StringBuilder stack = new StringBuilder();
+        StringBuilder builder = new StringBuilder();
 
-        Set<String> reverseIterator = map.keySet();
-        for (String key : reverseIterator) {
-            stack.append(map.get(key)).append("/");
+        Iterator<String> iterator = mItemNames.descendingIterator();
+        while (iterator.hasNext()) {
+            builder.append("/").append(iterator.next());
         }
-        return stack.toString();
+
+        return builder.toString();
     }
 
-    public boolean canGoUp() {
-        return !getLastKey().equals(MEDIA_LIBRARY_ID);
+    boolean canGoUp() {
+        return mItemIds.size() > 1;
     }
 
-    public boolean contains(String id) {
-        return map.containsKey(id);
+    String getCurrentItemId() {
+        return mItemIds.peek();
     }
+
+    void goUp() {
+        mItemIds.pop();
+        mItemNames.pop();
+        mItemPaths.pop();
+    }
+
+    void goInside(String id, String name, String path) {
+        mItemIds.push(id);
+        mItemNames.push(name);
+        mItemPaths.push(path);
+    }
+
 }
