@@ -35,6 +35,10 @@ public class ItemStack {
         return mItemIds.peek();
     }
 
+    String getCurrentFullPath() {
+        return mItemPaths.peek();
+    }
+
     void goUp() {
         mItemIds.pop();
         mItemNames.pop();

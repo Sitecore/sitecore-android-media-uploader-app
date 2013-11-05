@@ -1,45 +1,64 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent">
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_height="match_parent"
+    android:layout_width="match_parent">
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/current_path"
+            android:paddingLeft="16dp"
+            android:paddingBottom="8dp"
+            android:paddingTop="8dp"
+            android:paddingRight="16dp"
+            android:singleLine="true"
+            android:ellipsize="marquee"
+            android:layout_gravity="center"
+            android:marqueeRepeatLimit="marquee_forever"
+            android:focusable="true"
+            android:focusableInTouchMode="true"
+            android:scrollHorizontally="true" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingLeft="16dp"
+            android:paddingRight="16dp"
+            android:orientation="horizontal"
+            android:background="@drawable/selectable_background_sitecore1"
+            android:id="@+id/layout_nav_up_container">
+
+            <ImageView
+                android:layout_height="wrap_content"
+                android:layout_width="wrap_content"
+                android:src="@drawable/ic_navigation_up" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="bottom"
+                android:text="..." />
+        </LinearLayout>
+
+
+        <ListView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@android:id/list" />
+
+
+    </LinearLayout>
 
     <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/current_path"
-        android:paddingLeft="16dp"
-        android:paddingBottom="8dp"
-        android:paddingTop="8dp"
-        android:paddingRight="16dp"
-        android:singleLine="true"
-        android:ellipsize="marquee"
         android:layout_gravity="center"
-        android:marqueeRepeatLimit="marquee_forever"
-        android:focusable="true"
-        android:focusableInTouchMode="true"
-        android:scrollHorizontally="true" />
-
-    <Button
-        android:layout_width="match_parent"
-        android:paddingLeft="16dp"
-        android:layout_height="wrap_content"
-        android:id="@+id/button_go_up"
-        android:gravity="bottom"
-        android:background="@drawable/selectable_background_sitecore1"
-        android:text="..."
-        android:drawableLeft="@drawable/ic_navigation_up" />
-
-    <ListView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@android:id/list" />
-
-    <TextView
-        android:layout_gravity="center"
+        android:gravity="center"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:text="No items"
         android:id="@android:id/empty" />
-
-</LinearLayout>
+</FrameLayout>

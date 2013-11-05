@@ -13,7 +13,6 @@ import com.android.volley.toolbox.NetworkImageView;
 
 import net.sitecore.android.mediauploader.R;
 import net.sitecore.android.mediauploader.UploaderApp;
-import net.sitecore.android.mediauploader.ui.MainActivity;
 import net.sitecore.android.mediauploader.util.ScUtils;
 import net.sitecore.android.sdk.api.provider.ScItemsContract.Items.Query;
 
@@ -21,6 +20,8 @@ import butterknife.InjectView;
 import butterknife.Views;
 
 class ItemsCursorAdapter extends CursorAdapter {
+    private static final int PREVIEW_IMAGE_ICON_WIDTH = 50;
+    private static final int PREVIEW_IMAGE_ICON_HEIGHT = 0;
 
     private ImageLoader mImageLoader;
 
@@ -41,7 +42,7 @@ class ItemsCursorAdapter extends CursorAdapter {
         ViewHolder holder = (ViewHolder) view.getTag();
         holder.itemName.setText(c.getString(Query.DISPLAY_NAME));
         if (ScUtils.isImage(c.getString(Query.TEMPLATE))) {
-            String url = ScUtils.getMediaDownloadUrl(c.getString(Query.ITEM_ID));
+            String url = ScUtils.getMediaDownloadUrl(c.getString(Query.ITEM_ID), PREVIEW_IMAGE_ICON_WIDTH, PREVIEW_IMAGE_ICON_HEIGHT);
             holder.itemIcon.setImageUrl(url, mImageLoader);
         } else {
             holder.itemIcon.setImageDrawable(null);

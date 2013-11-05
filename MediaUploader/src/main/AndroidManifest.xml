@@ -39,6 +39,9 @@
             android:name=".ui.EditInstanceActivity"
             android:screenOrientation="portrait" />
 
+        <activity
+            android:name=".ui.browser.PreviewActivity" />
+
         <provider
             android:name="net.sitecore.android.sdk.api.provider.ScItemsProvider"
             android:authorities="net.sitecore.android.uploader.provider"

@@ -3,13 +3,16 @@ package net.sitecore.android.mediauploader.ui.browser;
 import android.app.ListFragment;
 import android.app.LoaderManager.LoaderCallbacks;
 import android.content.CursorLoader;
+import android.content.Intent;
 import android.content.Loader;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.text.method.ScrollingMovementMethod;
-import android.util.Pair;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
@@ -54,7 +57,24 @@ public class MediaBrowserFragment extends ListFragment implements LoaderCallback
         Views.inject(this, root);
 
         mCurrentPath.setMovementMethod(ScrollingMovementMethod.getInstance());
+
+        setHasOptionsMenu(true);
         return root;
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        inflater.inflate(R.menu.fragment_browser_menu, menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.action_upload_here:
+                Toast.makeText(getActivity(), mItemStack.getCurrentFullPath(), Toast.LENGTH_LONG).show();
+            default:
+                return super.onOptionsItemSelected(item);
+        }
     }
 
     @Override
@@ -64,7 +84,9 @@ public class MediaBrowserFragment extends ListFragment implements LoaderCallback
 
         final String template = c.getString(Query.TEMPLATE);
         if (ScUtils.isImage(template)) {
-            Toast.makeText(getActivity(), "TODO: show image fullscreen", Toast.LENGTH_LONG).show();
+            Intent intent = new Intent(getActivity(), PreviewActivity.class);
+            intent.putExtra(PreviewActivity.IMAGE_URL_KEY, ScUtils.getMediaDownloadUrl(c.getString(Query.ITEM_ID)));
+            startActivity(intent);
             return;
         }
 
@@ -79,7 +101,7 @@ public class MediaBrowserFragment extends ListFragment implements LoaderCallback
         updateChildren(itemId);
     }
 
-    @OnClick(R.id.button_go_up)
+    @OnClick(R.id.layout_nav_up_container)
     void goUp() {
         if (mItemStack.canGoUp()) {
             mItemStack.goUp();
