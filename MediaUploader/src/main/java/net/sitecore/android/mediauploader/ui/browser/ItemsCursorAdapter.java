@@ -6,6 +6,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CursorAdapter;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.android.volley.toolbox.ImageLoader;
@@ -42,19 +43,21 @@ class ItemsCursorAdapter extends CursorAdapter {
         ViewHolder holder = (ViewHolder) view.getTag();
         holder.itemName.setText(c.getString(Query.DISPLAY_NAME));
         if (ScUtils.isImage(c.getString(Query.TEMPLATE))) {
-            String url = ScUtils.getMediaDownloadUrl(c.getString(Query.ITEM_ID), PREVIEW_IMAGE_ICON_WIDTH, PREVIEW_IMAGE_ICON_HEIGHT);
-            holder.itemIcon.setImageUrl(url, mImageLoader);
+            //String url = ScUtils.getMediaDownloadUrl(c.getString(Query.ITEM_ID), PREVIEW_IMAGE_ICON_WIDTH, PREVIEW_IMAGE_ICON_HEIGHT);
+            //holder.itemIcon.setImageUrl(url, mImageLoader);
         } else {
-            holder.itemIcon.setImageDrawable(null);
+            //holder.itemIcon.setImageResource(R.drawable.ic_sc_folder);
+            //TODO: load field with icon
         }
     }
 
     class ViewHolder {
         @InjectView(R.id.item_name) TextView itemName;
-        @InjectView(R.id.item_icon) NetworkImageView itemIcon;
+        @InjectView(R.id.item_icon) ImageView itemIcon;
 
         ViewHolder(View parent) {
             Views.inject(this, parent);
+            //itemIcon.setDefaultImageResId(R.drawable.ic_sc_folder);
         }
     }
 

@@ -101,8 +101,12 @@ public class MediaBrowserFragment extends ListFragment implements LoaderCallback
         updateChildren(itemId);
     }
 
+    public ItemStack getItemStack() {
+        return mItemStack;
+    }
+
     @OnClick(R.id.layout_nav_up_container)
-    void goUp() {
+    public void goUp() {
         if (mItemStack.canGoUp()) {
             mItemStack.goUp();
             updateChildren(mItemStack.getCurrentItemId());
@@ -122,6 +126,8 @@ public class MediaBrowserFragment extends ListFragment implements LoaderCallback
 
         RequestQueueProvider.getRequestQueue(getActivity()).add(request);
     }
+
+
 
     private void updateCurrentPath(String text) {
         mCurrentPath.setText(text);

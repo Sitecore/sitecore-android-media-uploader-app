@@ -44,6 +44,7 @@ public class MainActivity extends Activity implements Listener<ScApiSession>, Er
     private MediaBrowserFragment mMediaBrowserFragment;
     private MyUploadsListFragment mUploadsListFragment;
     private InstancesListFragment mInstancesListFragment;
+    private int mCurrentFragment;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -102,6 +103,7 @@ public class MainActivity extends Activity implements Listener<ScApiSession>, Er
         mSession.setShouldCache(true);
 
         mMediaBrowserFragment = new MediaBrowserFragment();
+        mCurrentFragment = POSITION_MEDIA_BROWSER;
         getFragmentManager().beginTransaction().add(R.id.fragment_container, mMediaBrowserFragment).commit();
         ScRequest request = mSession.getItems(new Listener<ItemsResponse>() {
             @Override
@@ -119,17 +121,29 @@ public class MainActivity extends Activity implements Listener<ScApiSession>, Er
     }
 
     @Override
+    public void onBackPressed() {
+        if (mCurrentFragment == POSITION_MEDIA_BROWSER && mMediaBrowserFragment.getItemStack().canGoUp()) {
+            mMediaBrowserFragment.goUp();
+        } else {
+            super.onBackPressed();
+        }
+    }
+
+    @Override
     public void onNavigationItemSelected(int position) {
         Fragment currentSelection = null;
         if (position == POSITION_MEDIA_BROWSER) {
             if (mMediaBrowserFragment == null) mMediaBrowserFragment = new MediaBrowserFragment();
             currentSelection = mMediaBrowserFragment;
+            mCurrentFragment = POSITION_MEDIA_BROWSER;
         } else if (position == POSITION_MY_UPLOADS) {
             if (mUploadsListFragment == null) mUploadsListFragment = new MyUploadsListFragment();
             currentSelection = mUploadsListFragment;
+            mCurrentFragment = POSITION_MY_UPLOADS;
         } if (position == POSITION_INSTANCES) {
             if (mInstancesListFragment == null) mInstancesListFragment = new InstancesListFragment();
             currentSelection = mInstancesListFragment;
+            mCurrentFragment = POSITION_INSTANCES;
         }
 
         getFragmentManager().beginTransaction().replace(R.id.fragment_container, currentSelection).commit();

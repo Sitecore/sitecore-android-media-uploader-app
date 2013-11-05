@@ -27,25 +27,25 @@ public class ItemStack {
         return builder.toString();
     }
 
-    boolean canGoUp() {
+    public boolean canGoUp() {
         return mItemIds.size() > 1;
     }
 
-    String getCurrentItemId() {
+    public String getCurrentItemId() {
         return mItemIds.peek();
     }
 
-    String getCurrentFullPath() {
+    public String getCurrentFullPath() {
         return mItemPaths.peek();
     }
 
-    void goUp() {
+    public void goUp() {
         mItemIds.pop();
         mItemNames.pop();
         mItemPaths.pop();
     }
 
-    void goInside(String id, String name, String path) {
+    public void goInside(String id, String name, String path) {
         mItemIds.push(id);
         mItemNames.push(name);
         mItemPaths.push(path);
