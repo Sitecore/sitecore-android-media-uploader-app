@@ -1,7 +1,6 @@
 package net.sitecore.android.mediauploader.ui;
 
 import android.app.Activity;
-import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.v4.app.ActionBarDrawerToggle;
@@ -9,10 +8,6 @@ import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.AdapterView;
-import android.widget.AdapterView.OnItemClickListener;
-import android.widget.ArrayAdapter;
-import android.widget.ListView;
 
 import com.android.volley.Response.ErrorListener;
 import com.android.volley.Response.Listener;
@@ -20,16 +15,18 @@ import com.android.volley.VolleyError;
 
 import net.sitecore.android.mediauploader.R;
 import net.sitecore.android.mediauploader.ui.browser.MediaBrowserFragment;
-import net.sitecore.android.mediauploader.ui.upload.UploadActivity;
+import net.sitecore.android.mediauploader.util.Utils;
 import net.sitecore.android.sdk.api.RequestQueueProvider;
 import net.sitecore.android.sdk.api.ScApiSession;
 import net.sitecore.android.sdk.api.ScRequest;
 import net.sitecore.android.sdk.api.model.ItemsResponse;
+import net.sitecore.android.sdk.api.model.PayloadType;
 import net.sitecore.android.sdk.api.model.ScItem;
-import net.sitecore.android.sdk.api.provider.ScItemsContract.Items;
 
 import butterknife.InjectView;
 import butterknife.Views;
+
+import static net.sitecore.android.sdk.api.LogUtils.LOGD;
 
 public class MainActivity extends Activity implements Listener<ScApiSession>, ErrorListener {
 
@@ -66,10 +63,10 @@ public class MainActivity extends Activity implements Listener<ScApiSession>, Er
 
         mDrawerLayout.setDrawerListener(mDrawerToggle);
 
-        String url = "http://scmobileteam.cloudapp.net";
+        String url = "http://mobiledev1ua1.dk.sitecore.net:722";
         String name = "extranet\\creatorex";
         String password = "creatorex";
-        ScApiSession.getSession(this, url, name, password, this);
+        ScApiSession.getSession(this, url, name, password, this, this);
     }
 
     @Override
@@ -98,21 +95,22 @@ public class MainActivity extends Activity implements Listener<ScApiSession>, Er
         mSession = scApiSession;
         mSession.setShouldCache(true);
 
-        final MediaBrowserFragment fragment = (MediaBrowserFragment) getFragmentManager().findFragmentById(R.id.fragment_items);
-        getContentResolver().delete(Items.CONTENT_URI, null, null);
+        final MediaBrowserFragment fragment = new MediaBrowserFragment();
+        getFragmentManager().beginTransaction().add(R.id.fragment_container, fragment).commit();
+//        getContentResolver().delete(Items.CONTENT_URI, null, null);
         ScRequest request = mSession.getItems(new Listener<ItemsResponse>() {
             @Override
             public void onResponse(ItemsResponse itemsResponse) {
                 ScItem item = itemsResponse.getItems().get(0);
                 fragment.setQueryParent(item);
             }
-        }, this).build();
+        }, this).withPayloadType(PayloadType.FULL).byItemId("{3D6658D8-A0BF-4E75-B3E2-D050FABCF4E1}").build();
         RequestQueueProvider.getRequestQueue(this).add(request);
     }
 
     @Override
     public void onErrorResponse(VolleyError volleyError) {
-
+        LOGD(Utils.getMessageFromError(volleyError));
     }
 
 }

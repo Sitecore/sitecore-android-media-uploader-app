@@ -8,9 +8,9 @@ import android.content.Loader;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.text.method.ScrollingMovementMethod;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
@@ -20,31 +20,43 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.LinkedList;
+import java.util.Set;
 
 import com.android.volley.Response.ErrorListener;
 import com.android.volley.Response.Listener;
 import com.android.volley.VolleyError;
+import com.android.volley.toolbox.ImageLoader;
+import com.android.volley.toolbox.NetworkImageView;
 
 import net.sitecore.android.mediauploader.R;
 import net.sitecore.android.mediauploader.ui.MainActivity;
+import net.sitecore.android.mediauploader.util.BitmapLruCache;
+import net.sitecore.android.mediauploader.util.Utils;
 import net.sitecore.android.sdk.api.RequestQueueProvider;
 import net.sitecore.android.sdk.api.ScRequest;
 import net.sitecore.android.sdk.api.model.ItemsResponse;
+import net.sitecore.android.sdk.api.model.PayloadType;
 import net.sitecore.android.sdk.api.model.RequestScope;
 import net.sitecore.android.sdk.api.model.ScItem;
 import net.sitecore.android.sdk.api.provider.ScItemsContract.Items;
 import net.sitecore.android.sdk.api.provider.ScItemsContract.Items.Query;
 
 import butterknife.InjectView;
+import butterknife.OnClick;
 import butterknife.Views;
+
+import static net.sitecore.android.sdk.api.LogUtils.LOGD;
 
 public class MediaBrowserFragment extends Fragment implements LoaderCallbacks<Cursor>,
         Listener<ItemsResponse>, ErrorListener, OnItemClickListener {
     private ItemsCursorAdapter mAdapter;
     private ItemStack mItemStack = new ItemStack();
+    private static ImageLoader mImageLoader;
 
+    @InjectView(R.id.current_path)
+    TextView mCurrentPath;
     @InjectView(R.id.button_go_up)
     Button mGoUpButton;
     @InjectView(R.id.items_list)
@@ -56,23 +68,42 @@ public class MediaBrowserFragment extends Fragment implements LoaderCallbacks<Cu
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         getLoaderManager().initLoader(0, null, this);
+
+        mImageLoader = new ImageLoader(RequestQueueProvider.getRequestQueue(getActivity()), new BitmapLruCache());
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View root = inflater.inflate(R.layout.fragment_browser, null);
         Views.inject(this, root);
-
+        mCurrentPath.setMovementMethod(ScrollingMovementMethod.getInstance());
         mListView.setOnItemClickListener(this);
-        mGoUpButton.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                goUp();
-            }
-        });
         mListView.setEmptyView(mEmptyView);
 
         return root;
+    }
+
+    @OnClick(R.id.button_go_up)
+    void goUp() {
+        if (!mItemStack.canGoUp()) {
+            Toast.makeText(getActivity(), "You are in root folder", Toast.LENGTH_LONG).show();
+        } else {
+            mItemStack.removeLastParent();
+            refresh(mItemStack.getCurrentParentId());
+            updateGoUpButtonText(mItemStack.getCurrentPath());
+            getLoaderManager().restartLoader(0, null, MediaBrowserFragment.this);
+        }
+        refresh(mItemStack.getCurrentParentId());
+    }
+
+    void refresh(String itemId) {
+        ScRequest request = MainActivity.mSession.getItems(this, this)
+                .byItemId(itemId)
+                .withScope(RequestScope.CHILDREN)
+                .withPayloadType(PayloadType.FULL)
+                .build();
+
+        RequestQueueProvider.getRequestQueue(getActivity()).add(request);
     }
 
     @Override
@@ -81,32 +112,16 @@ public class MediaBrowserFragment extends Fragment implements LoaderCallbacks<Cu
         c.moveToPosition(position);
 
         String itemId = c.getString(Query.ITEM_ID);
-
         if (!mItemStack.contains(itemId)) {
             mItemStack.push(itemId, c.getString(Query.DISPLAY_NAME));
             updateGoUpButtonText(mItemStack.getCurrentPath());
         }
 
-        ScRequest request = MainActivity.mSession.getItems(this, this)
-                .byItemId(itemId)
-                .withScope(RequestScope.CHILDREN)
-                .build();
-
-        RequestQueueProvider.getRequestQueue(getActivity()).add(request);
-    }
-
-    public void goUp() {
-        if (mItemStack.size() == 1) {
-            Toast.makeText(getActivity(), "You are in root folder", Toast.LENGTH_LONG).show();
-        } else {
-            mItemStack.removeLastParent();
-            updateGoUpButtonText(mItemStack.getCurrentPath());
-            getLoaderManager().restartLoader(0, null, MediaBrowserFragment.this);
-        }
+        refresh(itemId);
     }
 
     private void updateGoUpButtonText(String text) {
-        mGoUpButton.setText(text);
+        mCurrentPath.setText(text);
     }
 
     @Override
@@ -135,7 +150,7 @@ public class MediaBrowserFragment extends Fragment implements LoaderCallbacks<Cu
     }
 
     public void setQueryParent(ScItem item) {
-        mItemStack.push(item.getParentItemId(), "../");
+        mItemStack.init(item.getLongId(), item.getPath());
         updateGoUpButtonText(mItemStack.getCurrentPath());
         getLoaderManager().restartLoader(0, null, MediaBrowserFragment.this);
     }
@@ -147,10 +162,10 @@ public class MediaBrowserFragment extends Fragment implements LoaderCallbacks<Cu
 
     @Override
     public void onErrorResponse(VolleyError volleyError) {
-
+        LOGD(Utils.getMessageFromError(volleyError));
     }
 
-    static class ItemsCursorAdapter extends CursorAdapter {
+    class ItemsCursorAdapter extends CursorAdapter {
 
         public ItemsCursorAdapter(Context context) {
             super(context, null, false);
@@ -158,7 +173,7 @@ public class MediaBrowserFragment extends Fragment implements LoaderCallbacks<Cu
 
         @Override
         public View newView(Context context, Cursor cursor, ViewGroup parent) {
-            final View v = LayoutInflater.from(context).inflate(android.R.layout.simple_list_item_1, parent, false);
+            final View v = LayoutInflater.from(context).inflate(R.layout.layout_browser_item, parent, false);
             v.setTag(new ViewHolder(v));
             return v;
         }
@@ -166,11 +181,12 @@ public class MediaBrowserFragment extends Fragment implements LoaderCallbacks<Cu
         @Override
         public void bindView(View view, Context context, Cursor c) {
             ViewHolder holder = (ViewHolder) view.getTag();
-            holder.name.setText(c.getString(Query.DISPLAY_NAME));
+            holder.itemName.setText(c.getString(Query.DISPLAY_NAME));
         }
 
-        static class ViewHolder {
-            @InjectView(android.R.id.text1) TextView name;
+        class ViewHolder {
+            @InjectView(R.id.item_name) TextView itemName;
+            @InjectView(R.id.item_icon) NetworkImageView itemIcon;
 
             ViewHolder(View parent) {
                 Views.inject(this, parent);
@@ -179,44 +195,59 @@ public class MediaBrowserFragment extends Fragment implements LoaderCallbacks<Cu
     }
 
     static class ItemStack {
-        private LinkedList<String> mHistory = new LinkedList<String>();
-        private LinkedList<String> mItemsNames = new LinkedList<String>();
+        private static final String MEDIA_LIBRARY_ID = "{3D6658D8-A0BF-4E75-B3E2-D050FABCF4E1}";
+        private LinkedHashMap<String, String> map;
 
         ItemStack() {
-            mHistory = new LinkedList<String>();
-            mItemsNames = new LinkedList<String>();
+            map = new LinkedHashMap<String, String>();
+        }
+
+        private void parse(String longID, String path) {
+            String[] ids = longID.split("/");
+            String[] names = path.split("/");
+            for (int i = 0; i < ids.length; i++) {
+                if (TextUtils.isEmpty(ids[i])) continue;
+                map.put(ids[i], names[i]);
+            }
+        }
+
+        public void init(String longID, String path) {
+            parse(longID, path);
         }
 
         public void push(String parentId, String itemName) {
-            mHistory.push(parentId);
-            mItemsNames.push(itemName);
+            map.put(parentId, itemName);
         }
 
         public String removeLastParent() {
-            mItemsNames.poll();
-            return mHistory.poll();
+            return map.remove(getLastKey());
+        }
+
+        private String getLastKey() {
+            if (map.isEmpty()) return null;
+            return new LinkedList<String>(map.keySet()).getLast();
         }
 
         public String getCurrentParentId() {
-            return mHistory.peek();
+            return getLastKey();
         }
 
         public String getCurrentPath() {
             StringBuilder stack = new StringBuilder();
 
-            Iterator<String> reverseIterator = mItemsNames.descendingIterator();
-            while (reverseIterator.hasNext()) {
-                stack.append(reverseIterator.next()).append("/");
+            Set<String> reverseIterator = map.keySet();
+            for (String key : reverseIterator) {
+                stack.append(map.get(key)).append("/");
             }
             return stack.toString();
         }
 
-        public int size() {
-            return mHistory.size();
+        public boolean canGoUp() {
+            return !getLastKey().equals(MEDIA_LIBRARY_ID);
         }
 
         public boolean contains(String id) {
-            return mHistory.contains(id);
+            return map.containsKey(id);
         }
     }
 }
