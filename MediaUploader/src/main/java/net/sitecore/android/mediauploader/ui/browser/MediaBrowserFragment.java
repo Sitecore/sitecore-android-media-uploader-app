@@ -161,6 +161,7 @@ public class MediaBrowserFragment extends ListFragment implements LoaderCallback
     public void setRootItem(ScItem item) {
         mItemStack = new ItemStack(item.getId(), item.getDisplayName(), item.getPath());
         updateCurrentPath(mItemStack.getCurrentPath());
+        updateChildren(mItemStack.getCurrentItemId());
         getLoaderManager().initLoader(0, null, MediaBrowserFragment.this);
     }
 
