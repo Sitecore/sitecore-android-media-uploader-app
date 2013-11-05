@@ -26,7 +26,7 @@
         <item name="android:dropDownSpinnerStyle">@style/Sitecore.Spinner.DropDown</item>
         <item name="android:spinnerDropDownItemStyle">@style/Sitecore.SpinnerDropDownItem</item>
         <item name="android:progressBarStyleHorizontal">@style/Sitecore.ProgressBar</item>
-        <item name="android:listViewStyle">@style/Sitecore.ListView</item>
+        <item name="android:listViewStyle">@style/Sitecore.ListView.White</item>
         <item name="android:listViewWhiteStyle">@style/Sitecore.ListView.White</item>
         <item name="android:spinnerItemStyle">@style/Sitecore.SpinnerItem</item>
 
