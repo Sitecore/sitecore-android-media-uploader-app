@@ -1,6 +1,7 @@
 package net.sitecore.android.mediauploader.ui;
 
 import android.app.Activity;
+import android.app.Fragment;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.v4.app.ActionBarDrawerToggle;
@@ -26,24 +27,29 @@ import net.sitecore.android.sdk.api.model.ScItem;
 import butterknife.InjectView;
 import butterknife.Views;
 
+import static net.sitecore.android.mediauploader.ui.SlidingNavigationFragment.POSITION_INSTANCES;
+import static net.sitecore.android.mediauploader.ui.SlidingNavigationFragment.POSITION_MEDIA_BROWSER;
+import static net.sitecore.android.mediauploader.ui.SlidingNavigationFragment.POSITION_MY_UPLOADS;
 import static net.sitecore.android.sdk.api.LogUtils.LOGD;
 
-public class MainActivity extends Activity implements Listener<ScApiSession>, ErrorListener {
+public class MainActivity extends Activity implements Listener<ScApiSession>, ErrorListener,
+        SlidingNavigationFragment.Callbacks {
 
     public static ScApiSession mSession;
 
     @InjectView(R.id.drawer_layout) DrawerLayout mDrawerLayout;
 
     private ActionBarDrawerToggle mDrawerToggle;
-    private SlidingNavigationFragment mNavigationFragment;
+
+    private MediaBrowserFragment mMediaBrowserFragment;
+    private MyUploadsListFragment mUploadsListFragment;
+    private InstancesListFragment mInstancesListFragment;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         Views.inject(this);
-
-        mNavigationFragment = (SlidingNavigationFragment) getFragmentManager().findFragmentById(R.id.fragment_navigation);
 
         getActionBar().setDisplayHomeAsUpEnabled(true);
         getActionBar().setHomeButtonEnabled(true);
@@ -95,14 +101,13 @@ public class MainActivity extends Activity implements Listener<ScApiSession>, Er
         mSession = scApiSession;
         mSession.setShouldCache(true);
 
-        final MediaBrowserFragment fragment = new MediaBrowserFragment();
-        getFragmentManager().beginTransaction().add(R.id.fragment_container, fragment).commit();
-//        getContentResolver().delete(Items.CONTENT_URI, null, null);
+        mMediaBrowserFragment = new MediaBrowserFragment();
+        getFragmentManager().beginTransaction().add(R.id.fragment_container, mMediaBrowserFragment).commit();
         ScRequest request = mSession.getItems(new Listener<ItemsResponse>() {
             @Override
             public void onResponse(ItemsResponse itemsResponse) {
                 ScItem item = itemsResponse.getItems().get(0);
-                fragment.setQueryParent(item);
+                mMediaBrowserFragment.setQueryParent(item);
             }
         }, this).withPayloadType(PayloadType.FULL).byItemId("{3D6658D8-A0BF-4E75-B3E2-D050FABCF4E1}").build();
         RequestQueueProvider.getRequestQueue(this).add(request);
@@ -113,4 +118,22 @@ public class MainActivity extends Activity implements Listener<ScApiSession>, Er
         LOGD(Utils.getMessageFromError(volleyError));
     }
 
+    @Override
+    public void onNavigationItemSelected(int position) {
+        Fragment currentSelection = null;
+        if (position == POSITION_MEDIA_BROWSER) {
+            if (mMediaBrowserFragment == null) mMediaBrowserFragment = new MediaBrowserFragment();
+            currentSelection = mMediaBrowserFragment;
+        } else if (position == POSITION_MY_UPLOADS) {
+            if (mUploadsListFragment == null) mUploadsListFragment = new MyUploadsListFragment();
+            currentSelection = mUploadsListFragment;
+        } if (position == POSITION_INSTANCES) {
+            if (mInstancesListFragment == null) mInstancesListFragment = new InstancesListFragment();
+            currentSelection = mInstancesListFragment;
+        }
+
+        getFragmentManager().beginTransaction().replace(R.id.fragment_container, currentSelection).commit();
+
+        mDrawerLayout.closeDrawers();
+    }
 }

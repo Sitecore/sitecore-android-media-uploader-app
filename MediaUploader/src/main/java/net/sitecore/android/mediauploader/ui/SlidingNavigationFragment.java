@@ -21,12 +21,26 @@ import java.util.List;
 import java.util.Map;
 
 import net.sitecore.android.mediauploader.R;
+import net.sitecore.android.mediauploader.ui.browser.MediaBrowserFragment;
 import net.sitecore.android.mediauploader.ui.upload.UploadActivity;
 
 import butterknife.InjectView;
 import butterknife.Views;
 
 public class SlidingNavigationFragment extends ListFragment {
+
+    public static final int POSITION_UPLOAD = 0;
+    public static final int POSITION_MEDIA_BROWSER = 1;
+    public static final int POSITION_MY_UPLOADS = 2;
+    public static final int POSITION_INSTANCES = 3;
+
+    interface Callbacks {
+
+        public void onNavigationItemSelected(int position);
+
+    }
+
+    private Callbacks mCallbacks;
 
     private String[] mNavigationItems = {
             "Upload Media",
@@ -47,6 +61,13 @@ public class SlidingNavigationFragment extends ListFragment {
     }
 
     @Override
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
+        if (activity instanceof Callbacks) mCallbacks = (Callbacks) activity;
+        else throw new IllegalArgumentException("Activity must implement SlidingNavigationFragment.Callbacks.");
+    }
+
+    @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         mAdapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_list_item_1, mNavigationItems);
@@ -60,14 +81,18 @@ public class SlidingNavigationFragment extends ListFragment {
         items.add(data2);
 
         mInstances.setAdapter(new InstancesAdapter(getActivity(), items));
+
+        if (savedInstanceState == null) {
+
+        }
     }
 
     @Override
     public void onListItemClick(ListView l, View v, int position, long id) {
-        if (position == 0) {
+        if (position == POSITION_UPLOAD) {
             startActivity(new Intent(getActivity(), UploadActivity.class));
-        } else if (position == 3) {
-            startActivity(new Intent(getActivity(), EditInstanceActivity.class));
+        } else {
+            mCallbacks.onNavigationItemSelected(position);
         }
     }
 
