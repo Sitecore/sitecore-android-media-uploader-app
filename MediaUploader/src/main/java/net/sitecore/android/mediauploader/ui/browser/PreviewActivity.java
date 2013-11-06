@@ -1,30 +1,81 @@
 package net.sitecore.android.mediauploader.ui.browser;
 
 import android.app.Activity;
+import android.app.LoaderManager.LoaderCallbacks;
+import android.content.CursorLoader;
+import android.content.Loader;
+import android.database.Cursor;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.widget.ImageView;
 import android.widget.Toast;
 
-import com.android.volley.toolbox.NetworkImageView;
-
+import net.sitecore.android.mediauploader.R;
 import net.sitecore.android.mediauploader.UploaderApp;
+import net.sitecore.android.mediauploader.util.ScUtils;
+import net.sitecore.android.sdk.api.provider.ScItemsContract.Items;
+import net.sitecore.android.sdk.api.provider.ScItemsContract.Items.Query;
 
-public class PreviewActivity extends Activity {
-    public static final String IMAGE_URL_KEY = "image_url";
+import butterknife.InjectView;
+import butterknife.Views;
+import uk.co.senab.photoview.PhotoViewAttacher;
+
+public class PreviewActivity extends Activity implements LoaderCallbacks<Cursor> {
+    public static final String IMAGE_ITEM_ID_KEY = "image_item_id";
+
+    private PhotoViewAttacher mAttacher;
+    private String mItemId;
+
+    @InjectView(R.id.picture) ImageView mImageView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        String url = getIntent().getStringExtra(IMAGE_URL_KEY);
-        if (TextUtils.isEmpty(url)) {
+        mItemId = getIntent().getStringExtra(IMAGE_ITEM_ID_KEY);
+        if (TextUtils.isEmpty(mItemId)) {
             Toast.makeText(this, "You have to specify image url for this activity", Toast.LENGTH_LONG).show();
             finish();
         }
 
-        NetworkImageView imageView = new NetworkImageView(this);
-        imageView.setImageUrl(url, UploaderApp.from(this).getImageLoader());
+        setContentView(R.layout.activity_preview);
+        Views.inject(this);
 
-        setContentView(imageView);
+        getLoaderManager().initLoader(0, null, this);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        mAttacher = new PhotoViewAttacher(mImageView);
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        mAttacher.cleanup();
+    }
+
+    @Override
+    public Loader<Cursor> onCreateLoader(int id, Bundle args) {
+        String selection = Items.ITEM_ID + "='" + mItemId + "'";
+        return new CursorLoader(this, Items.CONTENT_URI, Query.PROJECTION, selection, null, null);
+    }
+
+    @Override
+    public void onLoaderReset(Loader<Cursor> loader) {
+    }
+
+    @Override
+    public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
+        if (data.moveToFirst()) {
+            String itemUrl = ScUtils.getMediaDownloadUrl(mItemId);
+            String itemName = data.getString(Query.DISPLAY_NAME);
+
+            setTitle(itemName);
+            UploaderApp.from(this).getImageLoader().load(itemUrl).placeholder(R.drawable.ic_placeholder)
+                    .error(R.drawable.ic_action_cancel)
+                    .into(mImageView);
+        }
     }
 }

@@ -85,7 +85,7 @@ public class MediaBrowserFragment extends ListFragment implements LoaderCallback
         final String template = c.getString(Query.TEMPLATE);
         if (ScUtils.isImage(template)) {
             Intent intent = new Intent(getActivity(), PreviewActivity.class);
-            intent.putExtra(PreviewActivity.IMAGE_URL_KEY, ScUtils.getMediaDownloadUrl(c.getString(Query.ITEM_ID)));
+            intent.putExtra(PreviewActivity.IMAGE_ITEM_ID_KEY, c.getString(Query.ITEM_ID));
             startActivity(intent);
             return;
         }
