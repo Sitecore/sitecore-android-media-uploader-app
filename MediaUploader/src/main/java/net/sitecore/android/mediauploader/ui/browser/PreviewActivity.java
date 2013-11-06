@@ -40,14 +40,8 @@ public class PreviewActivity extends Activity implements LoaderCallbacks<Cursor>
 
         setContentView(R.layout.activity_preview);
         Views.inject(this);
-
-        getLoaderManager().initLoader(0, null, this);
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
         mAttacher = new PhotoViewAttacher(mImageView);
+        getLoaderManager().initLoader(0, null, this);
     }
 
     @Override

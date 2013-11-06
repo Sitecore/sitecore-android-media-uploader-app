@@ -18,7 +18,7 @@
         android:theme="@style/Theme.Sitecore">
 
         <activity
-            android:name=".ui.LoginActivity"
+            android:name=".ui.WelcomeActivity"
             android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

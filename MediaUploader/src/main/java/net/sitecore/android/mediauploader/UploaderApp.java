@@ -6,12 +6,14 @@ import android.content.Context;
 import com.squareup.picasso.Picasso;
 
 import net.sitecore.android.sdk.api.LogUtils;
+import net.sitecore.android.sdk.api.ScApiSession;
 
 import butterknife.Views;
 
 public class UploaderApp extends Application {
 
     private Picasso mImageLoader;
+    private ScApiSession mSession;
 
     public static UploaderApp from(Context context) {
         return (UploaderApp) context.getApplicationContext();
@@ -31,5 +33,13 @@ public class UploaderApp extends Application {
             mImageLoader.setDebugging(true);
         }
         return mImageLoader;
+    }
+
+    public ScApiSession getSession() {
+        return mSession;
+    }
+
+    public void setSession(ScApiSession session) {
+        mSession = session;
     }
 }
