@@ -43,7 +43,8 @@ class ItemsCursorAdapter extends CursorAdapter {
         ViewHolder holder = (ViewHolder) view.getTag();
         holder.itemName.setText(c.getString(Query.DISPLAY_NAME));
         if (ScUtils.isImage(c.getString(Query.TEMPLATE))) {
-            String url = ScUtils.getMediaDownloadUrl(c.getString(Query.ITEM_ID), PREVIEW_IMAGE_ICON_WIDTH, PREVIEW_IMAGE_ICON_HEIGHT);
+            final String url = ScUtils.getMediaDownloadUrl(context, c.getString(Query.ITEM_ID),
+                    PREVIEW_IMAGE_ICON_WIDTH, PREVIEW_IMAGE_ICON_HEIGHT);
             mImageLoader.load(url).placeholder(R.drawable.ic_placeholder)
                     .error(R.drawable.ic_action_cancel)
                     .into(holder.itemIcon);

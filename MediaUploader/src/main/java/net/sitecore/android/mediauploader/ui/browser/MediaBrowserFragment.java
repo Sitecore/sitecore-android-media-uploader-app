@@ -24,12 +24,14 @@ import com.android.volley.Response.Listener;
 import com.android.volley.VolleyError;
 
 import net.sitecore.android.mediauploader.R;
+import net.sitecore.android.mediauploader.UploaderApp;
 import net.sitecore.android.mediauploader.ui.IntentExtras;
 import net.sitecore.android.mediauploader.ui.MainActivity;
 import net.sitecore.android.mediauploader.ui.upload.UploadActivity;
 import net.sitecore.android.mediauploader.util.ScUtils;
 import net.sitecore.android.mediauploader.util.Utils;
 import net.sitecore.android.sdk.api.RequestQueueProvider;
+import net.sitecore.android.sdk.api.ScApiSession;
 import net.sitecore.android.sdk.api.ScRequest;
 import net.sitecore.android.sdk.api.model.ItemsResponse;
 import net.sitecore.android.sdk.api.model.PayloadType;
@@ -123,17 +125,20 @@ public class MediaBrowserFragment extends ListFragment implements LoaderCallback
         }
     }
 
-    private void updateChildren(String itemId) {
-        ScRequest request = MainActivity.mSession.getItems(this, this)
-                .byItemId(itemId)
-                .withScope(RequestScope.CHILDREN)
-                .withPayloadType(PayloadType.FULL)
-                .build();
+    private void updateChildren(final String itemId) {
+        UploaderApp.from(getActivity()).getSession(new Listener<ScApiSession>() {
+            @Override
+            public void onResponse(ScApiSession apiSession) {
+                ScRequest request = apiSession.getItems(MediaBrowserFragment.this, MediaBrowserFragment.this)
+                        .byItemId(itemId)
+                        .withScope(RequestScope.CHILDREN)
+                        .withPayloadType(PayloadType.FULL)
+                        .build();
 
-        RequestQueueProvider.getRequestQueue(getActivity()).add(request);
+                RequestQueueProvider.getRequestQueue(getActivity()).add(request);
+            }
+        }, null);
     }
-
-
 
     private void updateCurrentPath(String text) {
         mCurrentPath.setText(text);

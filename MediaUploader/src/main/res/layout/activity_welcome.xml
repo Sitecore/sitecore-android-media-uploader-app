@@ -18,6 +18,7 @@
         android:layout_width="match_parent"
         android:singleLine="true"
         android:imeOptions="actionNext"
+        android:text="http://mobiledev1ua1.dk.sitecore.net:722"
         android:hint="Sitecore instance URL" />
 
     <EditText
@@ -26,6 +27,7 @@
         android:layout_width="match_parent"
         android:singleLine="true"
         android:imeOptions="actionNext"
+        android:text="extranet\\creatorex"
         android:hint="Domain\\Username" />
 
     <EditText
@@ -34,7 +36,9 @@
         android:layout_width="match_parent"
         android:layout_marginBottom="48dp"
         android:inputType="textPassword"
+        android:imeOptions="actionDone"
         android:singleLine="true"
+        android:text="creatorex"
         android:hint="Password" />
 
     <Button

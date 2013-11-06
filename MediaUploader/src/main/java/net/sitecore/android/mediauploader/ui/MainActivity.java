@@ -16,6 +16,7 @@ import com.android.volley.Response.Listener;
 import com.android.volley.VolleyError;
 
 import net.sitecore.android.mediauploader.R;
+import net.sitecore.android.mediauploader.UploaderApp;
 import net.sitecore.android.mediauploader.ui.browser.MediaBrowserFragment;
 import net.sitecore.android.mediauploader.util.Utils;
 import net.sitecore.android.sdk.api.RequestQueueProvider;
@@ -36,7 +37,7 @@ import static net.sitecore.android.sdk.api.LogUtils.LOGD;
 public class MainActivity extends Activity implements Listener<ScApiSession>, ErrorListener,
         SlidingNavigationFragment.Callbacks {
 
-    public static ScApiSession mSession;
+//    public static ScApiSession mSession;
 
     @InjectView(R.id.drawer_layout) DrawerLayout mDrawerLayout;
 
@@ -74,10 +75,7 @@ public class MainActivity extends Activity implements Listener<ScApiSession>, Er
 
         mDrawerLayout.setDrawerListener(mDrawerToggle);
 
-        String url = "http://mobiledev1ua1.dk.sitecore.net:722";
-        String name = "extranet\\creatorex";
-        String password = "creatorex";
-        ScApiSession.getSession(this, url, name, password, this, this);
+        UploaderApp.from(this).getSession(this, this);
     }
 
     @Override
@@ -103,14 +101,12 @@ public class MainActivity extends Activity implements Listener<ScApiSession>, Er
 
     @Override
     public void onResponse(ScApiSession scApiSession) {
-        mSession = scApiSession;
-        mSession.setShouldCache(true);
 
         mMediaBrowserFragment = new MediaBrowserFragment();
         mCurrentFragment = POSITION_MEDIA_BROWSER;
         getFragmentManager().beginTransaction().add(R.id.fragment_container, mMediaBrowserFragment).commit();
 
-        ScRequest request = mSession.getItems(new Listener<ItemsResponse>() {
+        ScRequest request = scApiSession.getItems(new Listener<ItemsResponse>() {
             @Override
             public void onResponse(ItemsResponse itemsResponse) {
                 ScItem item = itemsResponse.getItems().get(0);

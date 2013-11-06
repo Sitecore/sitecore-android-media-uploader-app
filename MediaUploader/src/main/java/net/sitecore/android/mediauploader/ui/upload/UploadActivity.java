@@ -22,9 +22,11 @@ import com.android.volley.Response.Listener;
 import com.android.volley.VolleyError;
 
 import net.sitecore.android.mediauploader.R;
+import net.sitecore.android.mediauploader.UploaderApp;
 import net.sitecore.android.mediauploader.service.MediaUploaderService;
 import net.sitecore.android.mediauploader.ui.IntentExtras;
 import net.sitecore.android.mediauploader.ui.MainActivity;
+import net.sitecore.android.mediauploader.util.EmptyErrorListener;
 import net.sitecore.android.sdk.api.ScApiSession;
 import net.sitecore.android.sdk.api.UploadMediaRequestOptions;
 import net.sitecore.android.sdk.api.model.ItemsResponse;
@@ -141,12 +143,21 @@ public class UploadActivity extends Activity implements Listener<ItemsResponse>,
     public void startUpload() {
         Toast.makeText(this, "upload!", Toast.LENGTH_LONG).show();
 
-        ScApiSession session = MainActivity.mSession;
-        UploadMediaRequestOptions options = session.uploadMedia(mEditPath.getText().toString(),
+        UploaderApp.from(this).getSession(new Listener<ScApiSession>() {
+            @Override
+            public void onResponse(ScApiSession scApiSession) {
+                uploadMedia(scApiSession);
+            }
+        }, new EmptyErrorListener());
+    }
+
+    private void uploadMedia(ScApiSession session) {
+        UploadMediaRequestOptions options = session.uploadMedia(
+                mEditPath.getText().toString(),
                 mEditName.getText().toString(),
                 mImageUri.toString());
         options.setFileName("image.png");
-        MediaUploaderService.startUpload(this, MediaUploaderService.class, options, this, this);
+        MediaUploaderService.startUpload(UploadActivity.this, MediaUploaderService.class, options, this, this);
     }
 
     @Override

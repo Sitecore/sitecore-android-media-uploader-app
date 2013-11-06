@@ -63,7 +63,7 @@ public class PreviewActivity extends Activity implements LoaderCallbacks<Cursor>
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
         if (data.moveToFirst()) {
-            String itemUrl = ScUtils.getMediaDownloadUrl(mItemId);
+            String itemUrl = ScUtils.getMediaDownloadUrl(this, mItemId);
             String itemName = data.getString(Query.DISPLAY_NAME);
 
             setTitle(itemName);
