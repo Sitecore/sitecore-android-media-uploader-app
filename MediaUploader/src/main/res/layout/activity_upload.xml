@@ -18,8 +18,7 @@
                 android:layout_height="match_parent"
                 android:layout_width="match_parent"
                 android:scaleType="centerCrop"
-                android:background="#888888"
-                android:layout_weight="1" />
+                android:background="#888888" />
 
             <LinearLayout
                 android:layout_alignParentBottom="true"
@@ -48,7 +47,7 @@
             android:layout_height="wrap_content"
             android:layout_width="match_parent"
             android:text="Test item"
-            android:imeOptions="actionNext"
+            android:imeOptions="actionDone"
             android:inputType="text|textAutoComplete"
             android:hint="@string/hint_item_name" />
 
@@ -57,7 +56,8 @@
             android:layout_height="wrap_content"
             android:layout_width="match_parent"
             android:imeOptions="actionDone"
-            android:inputType="textShortMessage"
+            android:inputType="text"
+            android:enabled="false"
             android:text="/sitecore/media library/Test Data/Android"
             android:hint="@string/hint_item_path" />
 

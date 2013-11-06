@@ -24,7 +24,9 @@ import com.android.volley.Response.Listener;
 import com.android.volley.VolleyError;
 
 import net.sitecore.android.mediauploader.R;
+import net.sitecore.android.mediauploader.ui.IntentExtras;
 import net.sitecore.android.mediauploader.ui.MainActivity;
+import net.sitecore.android.mediauploader.ui.upload.UploadActivity;
 import net.sitecore.android.mediauploader.util.ScUtils;
 import net.sitecore.android.mediauploader.util.Utils;
 import net.sitecore.android.sdk.api.RequestQueueProvider;
@@ -71,7 +73,11 @@ public class MediaBrowserFragment extends ListFragment implements LoaderCallback
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.action_upload_here:
-                Toast.makeText(getActivity(), mItemStack.getCurrentFullPath(), Toast.LENGTH_LONG).show();
+                final Intent intent = new Intent(getActivity(), UploadActivity.class);
+                intent.putExtra(IntentExtras.ITEM_PATH, mItemStack.getCurrentFullPath());
+                startActivity(intent);
+                return true;
+
             default:
                 return super.onOptionsItemSelected(item);
         }

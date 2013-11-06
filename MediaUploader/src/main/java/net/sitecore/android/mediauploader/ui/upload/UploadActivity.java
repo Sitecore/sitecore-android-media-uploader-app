@@ -23,6 +23,7 @@ import com.android.volley.VolleyError;
 
 import net.sitecore.android.mediauploader.R;
 import net.sitecore.android.mediauploader.service.MediaUploaderService;
+import net.sitecore.android.mediauploader.ui.IntentExtras;
 import net.sitecore.android.mediauploader.ui.MainActivity;
 import net.sitecore.android.sdk.api.ScApiSession;
 import net.sitecore.android.sdk.api.UploadMediaRequestOptions;
@@ -47,6 +48,16 @@ public class UploadActivity extends Activity implements Listener<ItemsResponse>,
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        initActionBar();
+
+        setContentView(R.layout.activity_upload);
+        Views.inject(this);
+
+        String itemPath = getIntent().getStringExtra(IntentExtras.ITEM_PATH);
+        mEditPath.setText(itemPath);
+    }
+
+    private void initActionBar() {
         final LayoutInflater inflater = (LayoutInflater) getActionBar().getThemedContext()
                 .getSystemService(LAYOUT_INFLATER_SERVICE);
 
@@ -70,9 +81,6 @@ public class UploadActivity extends Activity implements Listener<ItemsResponse>,
                 | ActionBar.DISPLAY_SHOW_TITLE);
         actionBar.setCustomView(customActionBarView,
                 new ActionBar.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
-
-        setContentView(R.layout.activity_upload);
-        Views.inject(this);
     }
 
     @Override
@@ -96,8 +104,8 @@ public class UploadActivity extends Activity implements Listener<ItemsResponse>,
 
     @OnClick(R.id.button_upload_camera)
     public void openCameraImage() {
-        //final File photo = getOutputMediaFile();
-        final File photo = new File(getCacheDir(), "tmp.png");
+        final File photo = getOutputMediaFile();
+        //final File photo = new File(getCacheDir(), "tmp.png");
         mImageUri = Uri.fromFile(photo);
 
         Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
@@ -106,7 +114,7 @@ public class UploadActivity extends Activity implements Listener<ItemsResponse>,
     }
 
     private File getOutputMediaFile() {
-        String imageName = "IMG.png";
+        String imageName = "Camera_image.png";
         File mediaStorageDir = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES),
                 "ScMobile");
         if (!mediaStorageDir.exists()) {
@@ -122,9 +130,6 @@ public class UploadActivity extends Activity implements Listener<ItemsResponse>,
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (resultCode == Activity.RESULT_OK) {
             if (requestCode == SOURCE_TYPE_CAMERA) {
-                //mContext.sendBroadcast(new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, mImageUri));
-                //mContext.getContentResolver().notifyChange(mImageUri, null);
-                //mCallbackContext.sendSuccess(mImageUri.toString());
             } else if (requestCode == SOURCE_TYPE_GALLERY) {
                 mImageUri = Uri.parse(data.getDataString());
             }
@@ -136,23 +141,19 @@ public class UploadActivity extends Activity implements Listener<ItemsResponse>,
     public void startUpload() {
         Toast.makeText(this, "upload!", Toast.LENGTH_LONG).show();
 
-        /*
         ScApiSession session = MainActivity.mSession;
         UploadMediaRequestOptions options = session.uploadMedia(mEditPath.getText().toString(),
                 mEditName.getText().toString(),
                 mImageUri.toString());
-        options.setFileName("name.jpg");
+        options.setFileName("image.png");
         MediaUploaderService.startUpload(this, MediaUploaderService.class, options, this, this);
-        */
     }
 
     @Override
     public void onResponse(ItemsResponse itemsResponse) {
-
     }
 
     @Override
     public void onErrorResponse(VolleyError volleyError) {
-
     }
 }
