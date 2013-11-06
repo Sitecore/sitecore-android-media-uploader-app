@@ -9,8 +9,7 @@ import android.widget.CursorAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.android.volley.toolbox.ImageLoader;
-import com.android.volley.toolbox.NetworkImageView;
+import com.squareup.picasso.Picasso;
 
 import net.sitecore.android.mediauploader.R;
 import net.sitecore.android.mediauploader.UploaderApp;
@@ -24,7 +23,8 @@ class ItemsCursorAdapter extends CursorAdapter {
     private static final int PREVIEW_IMAGE_ICON_WIDTH = 50;
     private static final int PREVIEW_IMAGE_ICON_HEIGHT = 0;
 
-    private ImageLoader mImageLoader;
+    private Picasso mImageLoader;
+
 
     public ItemsCursorAdapter(Context context) {
         super(context, null, false);
@@ -43,11 +43,12 @@ class ItemsCursorAdapter extends CursorAdapter {
         ViewHolder holder = (ViewHolder) view.getTag();
         holder.itemName.setText(c.getString(Query.DISPLAY_NAME));
         if (ScUtils.isImage(c.getString(Query.TEMPLATE))) {
-            //String url = ScUtils.getMediaDownloadUrl(c.getString(Query.ITEM_ID), PREVIEW_IMAGE_ICON_WIDTH, PREVIEW_IMAGE_ICON_HEIGHT);
-            //holder.itemIcon.setImageUrl(url, mImageLoader);
+            String url = ScUtils.getMediaDownloadUrl(c.getString(Query.ITEM_ID), PREVIEW_IMAGE_ICON_WIDTH, PREVIEW_IMAGE_ICON_HEIGHT);
+            mImageLoader.load(url).placeholder(R.drawable.ic_placeholder)
+                    .error(R.drawable.ic_action_cancel)
+                    .into(holder.itemIcon);
         } else {
-            //holder.itemIcon.setImageResource(R.drawable.ic_sc_folder);
-            //TODO: load field with icon
+            holder.itemIcon.setImageResource(R.drawable.ic_sc_folder);
         }
     }
 
@@ -57,7 +58,6 @@ class ItemsCursorAdapter extends CursorAdapter {
 
         ViewHolder(View parent) {
             Views.inject(this, parent);
-            //itemIcon.setDefaultImageResId(R.drawable.ic_sc_folder);
         }
     }
 
