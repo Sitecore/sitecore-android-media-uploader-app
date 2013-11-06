@@ -11,17 +11,22 @@ import android.widget.ImageView;
 import android.widget.Toast;
 
 import net.sitecore.android.mediauploader.R;
+import net.sitecore.android.mediauploader.UploaderApp;
+import net.sitecore.android.mediauploader.util.ScUtils;
 import net.sitecore.android.sdk.api.provider.ScItemsContract.Items;
 import net.sitecore.android.sdk.api.provider.ScItemsContract.Items.Query;
 
+import butterknife.InjectView;
+import butterknife.Views;
 import uk.co.senab.photoview.PhotoViewAttacher;
 
 public class PreviewActivity extends Activity implements LoaderCallbacks<Cursor> {
     public static final String IMAGE_ITEM_ID_KEY = "image_item_id";
 
     private PhotoViewAttacher mAttacher;
-    private ImageView mImageView;
     private String mItemId;
+
+    @InjectView(R.id.picture) ImageView mImageView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,19 +39,20 @@ public class PreviewActivity extends Activity implements LoaderCallbacks<Cursor>
         }
 
         setContentView(R.layout.activity_preview);
-
-        mImageView = (ImageView) findViewById(R.id.picture);
-
-        mAttacher = new PhotoViewAttacher(mImageView);
+        Views.inject(this);
 
         getLoaderManager().initLoader(0, null, this);
     }
 
     @Override
+    protected void onResume() {
+        super.onResume();
+        mAttacher = new PhotoViewAttacher(mImageView);
+    }
+
+    @Override
     public void onDestroy() {
         super.onDestroy();
-
-        // Need to call clean-up
         mAttacher.cleanup();
     }
 
@@ -62,14 +68,14 @@ public class PreviewActivity extends Activity implements LoaderCallbacks<Cursor>
 
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
-//        if (data.getCount() != 0) {
-//            String itemUrl = ScUtils.getMediaDownloadUrl(mItemId);
-//            String itemName = data.getString(Query.DISPLAY_NAME);
-//
-//            setTitle(itemName);
-//            UploaderApp.from(this).getImageLoader().load(itemUrl).placeholder(R.drawable.ic_placeholder)
-//                    .error(R.drawable.ic_action_cancel)
-//                    .into(mImageView);
-//        }
+        if (data.moveToFirst()) {
+            String itemUrl = ScUtils.getMediaDownloadUrl(mItemId);
+            String itemName = data.getString(Query.DISPLAY_NAME);
+
+            setTitle(itemName);
+            UploaderApp.from(this).getImageLoader().load(itemUrl).placeholder(R.drawable.ic_placeholder)
+                    .error(R.drawable.ic_action_cancel)
+                    .into(mImageView);
+        }
     }
 }
