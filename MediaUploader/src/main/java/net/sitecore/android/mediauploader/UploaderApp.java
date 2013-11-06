@@ -47,14 +47,16 @@ public class UploaderApp extends Application {
             String username = prefs.getString(R.string.key_instance_login);
             String password = prefs.getString(R.string.key_instance_password);
 
-            ScApiSession.getSession(this, url, username, password, new Listener<ScApiSession>() {
+            Listener<ScApiSession> onSuccess = new Listener<ScApiSession>() {
                 @Override
                 public void onResponse(ScApiSession scApiSession) {
                     mSession = scApiSession;
                     mSession.setShouldCache(true);
                     sessionListener.onResponse(scApiSession);
                 }
-            }, errorListener);
+            };
+
+            ScApiSession.getSession(this, url, username, password, onSuccess, errorListener);
         } else {
             sessionListener.onResponse(mSession);
         }

@@ -61,6 +61,7 @@ public class WelcomeActivity extends Activity implements ErrorListener, Listener
 
     @Override
     public void onResponse(ScApiSession session) {
+        session.setShouldCache(true);
         UploaderApp.from(this).setSession(session);
         Listener<ItemsResponse> success = new Listener<ItemsResponse>() {
             @Override
