@@ -1,3 +1,15 @@
 <resources>
     <string name="app_name">Media Uploader</string>
+
+    <!-- Screen titles -->
+    <string name="title_upload_media">Upload Media</string>
+    <string name="title_media_browser">Media Browser</string>
+    <string name="title_my_uploads">My Uploads</string>
+    <string name="title_instances_manager">Instances Manager</string>
+
+    <!-- Hints for widgets -->
+    <string name="hint_item_name">Item name</string>
+    <string name="hint_item_path">Item path</string>
+
+    <!-- Other texts -->
 </resources>
