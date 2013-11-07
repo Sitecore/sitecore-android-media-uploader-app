@@ -64,7 +64,7 @@ public class MediaBrowserFragment extends ScFragment implements LoaderCallbacks<
     }
 
     private ItemsCursorAdapter mAdapter;
-    private ItemStack mItemStack;
+    private ItemStack mItemStack = new ItemStack();
 
     @InjectView(R.id.current_path) TextView mCurrentPath;
     @InjectView(android.R.id.list) ListView mListView;
@@ -225,7 +225,9 @@ public class MediaBrowserFragment extends ScFragment implements LoaderCallbacks<
     }
 
     public void setRootItem(ScItem item) {
-        mItemStack = new ItemStack(item.getId(), item.getDisplayName(), item.getPath());
+        mItemStack.clear();
+        mItemStack.goInside(item.getId(), item.getDisplayName(), item.getPath());
+
         updateCurrentPath(mItemStack.getCurrentPath());
         updateChildren(mItemStack.getCurrentItemId());
     }

@@ -9,11 +9,16 @@ public class ItemStack {
     private LinkedList<String> mItemNames;
     private LinkedList<String> mItemPaths;
 
-    public ItemStack(String id, String name, String path) {
+    public ItemStack() {
         mItemIds = new LinkedList<String>();
         mItemNames = new LinkedList<String>();
         mItemPaths = new LinkedList<String>();
-        goInside(id, name, path);
+    }
+
+    public void clear() {
+        mItemIds.clear();
+        mItemNames.clear();
+        mItemPaths.clear();
     }
 
     public String getCurrentPath() {
