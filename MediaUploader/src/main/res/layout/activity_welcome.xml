@@ -17,6 +17,7 @@
         android:layout_height="wrap_content"
         android:layout_width="match_parent"
         android:singleLine="true"
+        android:inputType="textUri"
         android:imeOptions="actionNext"
         android:text="http://mobiledev1ua1.dk.sitecore.net:722"
         android:hint="Sitecore instance URL" />
@@ -26,6 +27,7 @@
         android:layout_height="wrap_content"
         android:layout_width="match_parent"
         android:singleLine="true"
+        android:inputType="textPersonName"
         android:imeOptions="actionNext"
         android:text="extranet\\creatorex"
         android:hint="Domain\\Username" />

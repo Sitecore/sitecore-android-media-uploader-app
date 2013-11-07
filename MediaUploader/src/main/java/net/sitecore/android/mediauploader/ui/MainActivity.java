@@ -28,8 +28,6 @@ import static net.sitecore.android.sdk.api.LogUtils.LOGD;
 
 public class MainActivity extends Activity implements SlidingNavigationFragment.Callbacks {
 
-//    public static ScApiSession mSession;
-
     @InjectView(R.id.drawer_layout) DrawerLayout mDrawerLayout;
 
     private ActionBar mActionBar;
