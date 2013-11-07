@@ -18,7 +18,7 @@
     </style>
 
     <style name="DropDownListView.Sitecore" parent="@android:style/Widget.Holo.ListView.DropDown">
-        <item name="android:listSelector">@drawable/selectable_background_sitecore1</item>
+        <item name="android:listSelector">@drawable/selectable_background_sitecore</item>
     </style>
 
     <style name="ActionBarTabStyle.Sitecore" parent="@android:style/Widget.Holo.ActionBar.TabView">
@@ -28,7 +28,7 @@
     <style name="DropDownNav.Sitecore" parent="@android:style/Widget.Holo.Spinner">
         <item name="android:background">@drawable/spinner_background_ab_sitecore1</item>
         <item name="android:popupBackground">@drawable/menu_dropdown_panel_sitecore1</item>
-        <item name="android:dropDownSelector">@drawable/selectable_background_sitecore1</item>
+        <item name="android:dropDownSelector">@drawable/selectable_background_sitecore</item>
     </style>
 
     <style name="ProgressBar.Sitecore" parent="@android:style/Widget.Holo.ProgressBar.Horizontal">

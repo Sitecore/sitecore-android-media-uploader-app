@@ -10,18 +10,14 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
-import android.widget.EditText;
 import android.widget.ListView;
-import android.widget.SimpleAdapter;
 import android.widget.Spinner;
 import android.widget.TextView;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 import net.sitecore.android.mediauploader.R;
-import net.sitecore.android.mediauploader.ui.browser.MediaBrowserFragment;
 import net.sitecore.android.mediauploader.ui.upload.UploadActivity;
 
 import butterknife.InjectView;
@@ -36,11 +32,17 @@ public class SlidingNavigationFragment extends ListFragment {
 
     interface Callbacks {
 
-        public void onNavigationItemSelected(int position);
+        public void onMediaBrowserSelected();
+        public void onMyUploadsSelected();
+        public void onInstanceManagerSelected();
+
+        public void onSelectionDone();
 
     }
 
     private Callbacks mCallbacks;
+
+    private int mCurrentPosition = POSITION_MEDIA_BROWSER;
 
     private String[] mNavigationItems = {
             "Upload Media",
@@ -64,7 +66,7 @@ public class SlidingNavigationFragment extends ListFragment {
     public void onAttach(Activity activity) {
         super.onAttach(activity);
         if (activity instanceof Callbacks) mCallbacks = (Callbacks) activity;
-        else throw new IllegalArgumentException("Activity must implement SlidingNavigationFragment.Callbacks.");
+        else throw new IllegalArgumentException("Activity must implement SlidingNavigationFragment.Callbacks");
     }
 
     @Override
@@ -73,7 +75,6 @@ public class SlidingNavigationFragment extends ListFragment {
         mAdapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_list_item_1, mNavigationItems);
         setListAdapter(mAdapter);
 
-
         Pair<String, String> data1 = new Pair<String, String>("My Instance", "/home/hardcoded/text");
         Pair<String, String> data2 = new Pair<String, String>("Other Instance", "/home/other/text");
         ArrayList<Pair<String, String>> items = new ArrayList<Pair<String, String>>();
@@ -81,18 +82,33 @@ public class SlidingNavigationFragment extends ListFragment {
         items.add(data2);
 
         mInstances.setAdapter(new InstancesAdapter(getActivity(), items));
+    }
 
-        if (savedInstanceState == null) {
-
-        }
+    public boolean isMediaBrowserSelected() {
+        return mCurrentPosition == POSITION_MEDIA_BROWSER;
     }
 
     @Override
     public void onListItemClick(ListView l, View v, int position, long id) {
+        if (position == mCurrentPosition) {
+            mCallbacks.onSelectionDone();
+            return;
+        }
         if (position == POSITION_UPLOAD) {
             startActivity(new Intent(getActivity(), UploadActivity.class));
-        } else {
-            mCallbacks.onNavigationItemSelected(position);
+            mCallbacks.onSelectionDone();
+        } else if (position == POSITION_MEDIA_BROWSER) {
+            mCallbacks.onMediaBrowserSelected();
+            mCallbacks.onSelectionDone();
+            mCurrentPosition = position;
+        } else if (position == POSITION_MY_UPLOADS) {
+            mCallbacks.onMyUploadsSelected();
+            mCallbacks.onSelectionDone();
+            mCurrentPosition = position;
+        } else if (position == POSITION_INSTANCES) {
+            mCallbacks.onInstanceManagerSelected();
+            mCallbacks.onSelectionDone();
+            mCurrentPosition = position;
         }
     }
 

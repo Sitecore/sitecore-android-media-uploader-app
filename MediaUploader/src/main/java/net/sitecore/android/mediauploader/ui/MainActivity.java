@@ -35,10 +35,10 @@ public class MainActivity extends Activity implements SlidingNavigationFragment.
     private ActionBar mActionBar;
     private ActionBarDrawerToggle mDrawerToggle;
 
+    private SlidingNavigationFragment mNavigationFragment;
     private MediaBrowserFragment mMediaBrowserFragment;
     private MyUploadsListFragment mUploadsListFragment;
     private InstancesListFragment mInstancesListFragment;
-    private int mCurrentFragmentPosition;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -47,6 +47,8 @@ public class MainActivity extends Activity implements SlidingNavigationFragment.
 
         setContentView(R.layout.activity_main);
         Views.inject(this);
+
+        mNavigationFragment = (SlidingNavigationFragment) getFragmentManager().findFragmentById(R.id.fragment_navigation);
 
         mActionBar = getActionBar();
 
@@ -69,7 +71,7 @@ public class MainActivity extends Activity implements SlidingNavigationFragment.
         mDrawerLayout.setDrawerListener(mDrawerToggle);
 
         if (savedInstanceState == null) {
-            onNavigationItemSelected(POSITION_MEDIA_BROWSER);
+            onMediaBrowserSelected();
         }
 
         boolean sideMenuShown = Prefs.from(this).getBool(R.string.key_side_menu_shown, false);
@@ -102,7 +104,7 @@ public class MainActivity extends Activity implements SlidingNavigationFragment.
 
     @Override
     public void onBackPressed() {
-        if (mCurrentFragmentPosition == POSITION_MEDIA_BROWSER && mMediaBrowserFragment.getItemStack().canGoUp()) {
+        if (mNavigationFragment.isMediaBrowserSelected() && mMediaBrowserFragment.getItemStack().canGoUp()) {
             mMediaBrowserFragment.goUp();
         } else {
             super.onBackPressed();
@@ -110,35 +112,38 @@ public class MainActivity extends Activity implements SlidingNavigationFragment.
     }
 
     @Override
-    public void onNavigationItemSelected(int position) {
-        if (mCurrentFragmentPosition == position) return;
+    public void onMediaBrowserSelected() {
+        mActionBar.setTitle(R.string.title_media_browser);
 
-        Fragment currentSelection = null;
-        if (position == POSITION_MEDIA_BROWSER) {
-            if (mMediaBrowserFragment == null) {
-                String root = Prefs.from(this).getString(R.string.key_instance_root_folder, ScUtils.PATH_MEDIA_LIBRARY);
-                mMediaBrowserFragment = MediaBrowserFragment.newInstance(root);
-            }
-            currentSelection = mMediaBrowserFragment;
-            mCurrentFragmentPosition = POSITION_MEDIA_BROWSER;
-            mActionBar.setTitle(R.string.title_media_browser);
-        } else if (position == POSITION_MY_UPLOADS) {
-            if (mUploadsListFragment == null) {
-                mUploadsListFragment = new MyUploadsListFragment();
-            }
-            currentSelection = mUploadsListFragment;
-            mCurrentFragmentPosition = POSITION_MY_UPLOADS;
-            mActionBar.setTitle(R.string.title_my_uploads);
-        } if (position == POSITION_INSTANCES) {
-            if (mInstancesListFragment == null) {
-                mInstancesListFragment = new InstancesListFragment();
-            }
-            currentSelection = mInstancesListFragment;
-            mCurrentFragmentPosition = POSITION_INSTANCES;
-            mActionBar.setTitle(R.string.title_instances_manager);
+        if (mMediaBrowserFragment == null) {
+            String root = Prefs.from(this).getString(R.string.key_instance_root_folder, ScUtils.PATH_MEDIA_LIBRARY);
+            mMediaBrowserFragment = MediaBrowserFragment.newInstance(root);
+        }
+        getFragmentManager().beginTransaction().replace(R.id.fragment_container, mMediaBrowserFragment).commit();
+    }
+
+    @Override
+    public void onMyUploadsSelected() {
+        mActionBar.setTitle(R.string.title_my_uploads);
+        if (mUploadsListFragment == null) {
+            mUploadsListFragment = new MyUploadsListFragment();
         }
 
-        getFragmentManager().beginTransaction().replace(R.id.fragment_container, currentSelection).commit();
+        getFragmentManager().beginTransaction().replace(R.id.fragment_container, mUploadsListFragment).commit();
+    }
+
+    @Override
+    public void onInstanceManagerSelected() {
+        mActionBar.setTitle(R.string.title_instances_manager);
+
+        if (mInstancesListFragment == null) {
+            mInstancesListFragment = new InstancesListFragment();
+        }
+        getFragmentManager().beginTransaction().replace(R.id.fragment_container, mInstancesListFragment).commit();
+    }
+
+    @Override
+    public void onSelectionDone() {
         mDrawerLayout.closeDrawers();
     }
 }

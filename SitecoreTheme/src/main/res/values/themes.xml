@@ -3,7 +3,7 @@
 
     <style name="Theme.Sitecore" parent="@android:style/Theme.Holo.Light.DarkActionBar">
 
-        <item name="android:actionBarItemBackground">@drawable/selectable_background_sitecore1</item>
+        <item name="android:actionBarItemBackground">@drawable/selectable_background_sitecore</item>
         <item name="android:popupMenuStyle">@style/PopupMenu.Sitecore</item>
         <item name="android:dropDownListViewStyle">@style/DropDownListView.Sitecore</item>
         <item name="android:actionBarTabStyle">@style/ActionBarTabStyle.Sitecore</item>
