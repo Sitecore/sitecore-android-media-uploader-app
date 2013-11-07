@@ -1,7 +1,6 @@
 package net.sitecore.android.mediauploader.ui.browser;
 
 import android.app.Activity;
-import android.app.ListFragment;
 import android.app.LoaderManager.LoaderCallbacks;
 import android.content.CursorLoader;
 import android.content.Intent;
@@ -15,7 +14,6 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
@@ -52,13 +50,14 @@ import static net.sitecore.android.sdk.api.LogUtils.LOGD;
 public class MediaBrowserFragment extends ScFragment implements LoaderCallbacks<Cursor>,
         Listener<ItemsResponse>, ErrorListener, OnItemClickListener {
 
-    private static final String ARG_ITEM = "item";
+    private static final String ARG_ITEM_ROOT = "item_root";
 
-    public static MediaBrowserFragment newInstance(ScItem item) {
+    public static MediaBrowserFragment newInstance(String root) {
+        LOGD("MediaBrowserFragment.newInstance:" + root);
         final MediaBrowserFragment fragment = new MediaBrowserFragment();
         final Bundle bundle = new Bundle();
 
-        bundle.putParcelable(ARG_ITEM, item);
+        bundle.putString(ARG_ITEM_ROOT, root);
 
         fragment.setArguments(bundle);
         return fragment;
@@ -74,6 +73,7 @@ public class MediaBrowserFragment extends ScFragment implements LoaderCallbacks<
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
+        setRetainInstance(true);
     }
 
     @Override
@@ -90,12 +90,40 @@ public class MediaBrowserFragment extends ScFragment implements LoaderCallbacks<
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+
+        mAdapter = new ItemsCursorAdapter(getActivity());
+        mListView.setAdapter(mAdapter);
+
         if (getArguments() != null) {
-            ScItem item = getArguments().getParcelable("item");
-            setRootItem(item);
+            final String root = getArguments().getString(ARG_ITEM_ROOT);
+
+            UploaderApp.from(getActivity()).getSession(new Listener<ScApiSession>() {
+                @Override
+                public void onResponse(ScApiSession scApiSession) {
+                    ScRequest request = scApiSession.getItems(mRootItemReceived, mRootItemNotReceived)
+                            .byItemPath(root)
+                            .build();
+                    RequestQueueProvider.getRequestQueue(getActivity()).add(request);
+                }
+            }, this);
         }
-        getLoaderManager().initLoader(0, null, MediaBrowserFragment.this);
     }
+
+    private Listener<ItemsResponse> mRootItemReceived = new Listener<ItemsResponse>() {
+        @Override
+        public void onResponse(ItemsResponse itemsResponse) {
+            setRootItem(itemsResponse.getItems().get(0));
+            setContentShown(true);
+            getLoaderManager().restartLoader(0, null, MediaBrowserFragment.this);
+        }
+    };
+
+    private ErrorListener mRootItemNotReceived = new ErrorListener() {
+        @Override
+        public void onErrorResponse(VolleyError volleyError) {
+            //TODO: show error view
+        }
+    };
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
@@ -167,6 +195,7 @@ public class MediaBrowserFragment extends ScFragment implements LoaderCallbacks<
                         .build();
 
                 RequestQueueProvider.getRequestQueue(getActivity()).add(request);
+                getActivity().setProgressBarIndeterminateVisibility(true);
             }
         }, null);
     }
@@ -187,12 +216,7 @@ public class MediaBrowserFragment extends ScFragment implements LoaderCallbacks<
 
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
-        if (mAdapter == null) {
-            mAdapter = new ItemsCursorAdapter(getActivity());
-            mListView.setAdapter(mAdapter);
-            setContentShown(true);
-        }
-
+        LOGD("onLoadFinished: cursor with " + data.getCount() + " items.");
         mAdapter.swapCursor(data);
     }
 
@@ -209,10 +233,13 @@ public class MediaBrowserFragment extends ScFragment implements LoaderCallbacks<
 
     @Override
     public void onResponse(ItemsResponse itemsResponse) {
+        getActivity().setProgressBarIndeterminateVisibility(false);
+
     }
 
     @Override
     public void onErrorResponse(VolleyError volleyError) {
+        getActivity().setProgressBarIndeterminateVisibility(false);
         LOGD(Utils.getMessageFromError(volleyError));
     }
 

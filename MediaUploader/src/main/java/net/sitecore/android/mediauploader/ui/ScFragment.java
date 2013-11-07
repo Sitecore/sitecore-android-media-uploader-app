@@ -20,8 +20,7 @@ public class ScFragment extends Fragment {
     private ViewGroup mContentContainer;
     private ViewGroup mEmptyContainer;
 
-    private boolean mContentShown;
-    private boolean mIsContentEmpty;
+    private boolean mContentShown = false;
 
     @Override
     public final View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -36,6 +35,13 @@ public class ScFragment extends Fragment {
         mEmptyContainer.addView(onCreateEmptyView(inflater));
 
         return v;
+    }
+
+    @Override
+    public void onDestroyView() {
+        mProgressContainer = mContentContainer = mEmptyContainer = null;
+        mContentShown = false;
+        super.onDestroyView();
     }
 
     @Override

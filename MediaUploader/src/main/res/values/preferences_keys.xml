@@ -4,4 +4,5 @@
     <string name="key_instance_url">instance_url</string>
     <string name="key_instance_login">instance_login</string>
     <string name="key_instance_password">instance_password</string>
+    <string name="key_instance_root_folder">instance_root_folder</string>
 </resources>
