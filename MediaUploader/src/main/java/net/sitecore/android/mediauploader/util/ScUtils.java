@@ -7,6 +7,8 @@ import net.sitecore.android.mediauploader.ui.MainActivity;
 
 public class ScUtils {
 
+    public static final String PATH_MEDIA_LIBRARY = "/sitecore/media library";
+
     public static final String TEMPLATE_JPEG = "System/Media/Unversioned/Jpeg";
     public static final String TEMPLATE_IMAGE = "System/Media/Unversioned/Image";
 

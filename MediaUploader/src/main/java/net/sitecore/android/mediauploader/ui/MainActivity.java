@@ -18,6 +18,7 @@ import com.android.volley.VolleyError;
 import net.sitecore.android.mediauploader.R;
 import net.sitecore.android.mediauploader.UploaderApp;
 import net.sitecore.android.mediauploader.ui.browser.MediaBrowserFragment;
+import net.sitecore.android.mediauploader.util.ScUtils;
 import net.sitecore.android.mediauploader.util.Utils;
 import net.sitecore.android.sdk.api.RequestQueueProvider;
 import net.sitecore.android.sdk.api.ScApiSession;
@@ -101,19 +102,15 @@ public class MainActivity extends Activity implements Listener<ScApiSession>, Er
 
     @Override
     public void onResponse(ScApiSession scApiSession) {
-
-        mMediaBrowserFragment = new MediaBrowserFragment();
-        mCurrentFragment = POSITION_MEDIA_BROWSER;
-        getFragmentManager().beginTransaction().add(R.id.fragment_container, mMediaBrowserFragment).commit();
-
         ScRequest request = scApiSession.getItems(new Listener<ItemsResponse>() {
             @Override
             public void onResponse(ItemsResponse itemsResponse) {
                 ScItem item = itemsResponse.getItems().get(0);
-                mMediaBrowserFragment.setRootItem(item);
+                mMediaBrowserFragment = MediaBrowserFragment.newInstance(item);
+                mCurrentFragment = POSITION_MEDIA_BROWSER;
+                getFragmentManager().beginTransaction().add(R.id.fragment_container, mMediaBrowserFragment).commit();
             }
-        }, this).withPayloadType(PayloadType.FULL)
-                .byItemId("{3D6658D8-A0BF-4E75-B3E2-D050FABCF4E1}")
+        }, this).byItemPath(ScUtils.PATH_MEDIA_LIBRARY)
                 .build();
         RequestQueueProvider.getRequestQueue(this).add(request);
     }

@@ -1,5 +1,6 @@
 package net.sitecore.android.mediauploader.ui.browser;
 
+import android.app.Activity;
 import android.app.ListFragment;
 import android.app.LoaderManager.LoaderCallbacks;
 import android.content.CursorLoader;
@@ -15,6 +16,8 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -26,7 +29,7 @@ import com.android.volley.VolleyError;
 import net.sitecore.android.mediauploader.R;
 import net.sitecore.android.mediauploader.UploaderApp;
 import net.sitecore.android.mediauploader.ui.IntentExtras;
-import net.sitecore.android.mediauploader.ui.MainActivity;
+import net.sitecore.android.mediauploader.ui.ScFragment;
 import net.sitecore.android.mediauploader.ui.upload.UploadActivity;
 import net.sitecore.android.mediauploader.util.ScUtils;
 import net.sitecore.android.mediauploader.util.Utils;
@@ -46,8 +49,20 @@ import butterknife.Views;
 
 import static net.sitecore.android.sdk.api.LogUtils.LOGD;
 
-public class MediaBrowserFragment extends ListFragment implements LoaderCallbacks<Cursor>,
-        Listener<ItemsResponse>, ErrorListener {
+public class MediaBrowserFragment extends ScFragment implements LoaderCallbacks<Cursor>,
+        Listener<ItemsResponse>, ErrorListener, OnItemClickListener {
+
+    private static final String ARG_ITEM = "item";
+
+    public static MediaBrowserFragment newInstance(ScItem item) {
+        final MediaBrowserFragment fragment = new MediaBrowserFragment();
+        final Bundle bundle = new Bundle();
+
+        bundle.putParcelable(ARG_ITEM, item);
+
+        fragment.setArguments(bundle);
+        return fragment;
+    }
 
     private ItemsCursorAdapter mAdapter;
     private ItemStack mItemStack;
@@ -56,14 +71,30 @@ public class MediaBrowserFragment extends ListFragment implements LoaderCallback
     @InjectView(android.R.id.list) ListView mListView;
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setHasOptionsMenu(true);
+    }
+
+    @Override
+    protected View onCreateContentView(LayoutInflater inflater) {
         View root = inflater.inflate(R.layout.fragment_browser, null);
         Views.inject(this, root);
 
         mCurrentPath.setMovementMethod(ScrollingMovementMethod.getInstance());
+        mListView.setOnItemClickListener(this);
 
-        setHasOptionsMenu(true);
         return root;
+    }
+
+    @Override
+    public void onActivityCreated(Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        if (getArguments() != null) {
+            ScItem item = getArguments().getParcelable("item");
+            setRootItem(item);
+        }
+        getLoaderManager().initLoader(0, null, MediaBrowserFragment.this);
     }
 
     @Override
@@ -86,7 +117,7 @@ public class MediaBrowserFragment extends ListFragment implements LoaderCallback
     }
 
     @Override
-    public void onListItemClick(ListView l, View v, int position, long id) {
+    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
         Cursor c = mAdapter.getCursor();
         c.moveToPosition(position);
 
@@ -159,6 +190,7 @@ public class MediaBrowserFragment extends ListFragment implements LoaderCallback
         if (mAdapter == null) {
             mAdapter = new ItemsCursorAdapter(getActivity());
             mListView.setAdapter(mAdapter);
+            setContentShown(true);
         }
 
         mAdapter.swapCursor(data);
@@ -173,7 +205,6 @@ public class MediaBrowserFragment extends ListFragment implements LoaderCallback
         mItemStack = new ItemStack(item.getId(), item.getDisplayName(), item.getPath());
         updateCurrentPath(mItemStack.getCurrentPath());
         updateChildren(mItemStack.getCurrentItemId());
-        getLoaderManager().initLoader(0, null, MediaBrowserFragment.this);
     }
 
     @Override
