@@ -81,7 +81,6 @@ public class MediaBrowserFragment extends ScFragment implements LoaderCallbacks<
         View root = inflater.inflate(R.layout.fragment_browser, null);
         Views.inject(this, root);
 
-        mCurrentPath.setMovementMethod(ScrollingMovementMethod.getInstance());
         mListView.setOnItemClickListener(this);
 
         return root;
