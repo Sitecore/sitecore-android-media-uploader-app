@@ -50,6 +50,11 @@
 
         <service android:name=".service.MediaUploaderService" />
 
+        <provider
+            android:exported="false"
+            android:authorities="net.sitecore.android.provider"
+            android:name=".provider.UploadMediaProvider" />
+
     </application>
 
 </manifest>
