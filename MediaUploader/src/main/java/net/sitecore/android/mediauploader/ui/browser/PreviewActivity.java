@@ -1,5 +1,6 @@
 package net.sitecore.android.mediauploader.ui.browser;
 
+import android.app.ActionBar;
 import android.app.Activity;
 import android.app.LoaderManager.LoaderCallbacks;
 import android.content.CursorLoader;
@@ -7,12 +8,14 @@ import android.content.Loader;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.view.MenuItem;
 import android.widget.ImageView;
 import android.widget.Toast;
 
 import net.sitecore.android.mediauploader.R;
 import net.sitecore.android.mediauploader.UploaderApp;
 import net.sitecore.android.mediauploader.util.ScUtils;
+import net.sitecore.android.mediauploader.util.ScUtils.MediaParamsBuilder;
 import net.sitecore.android.sdk.api.provider.ScItemsContract.Items;
 import net.sitecore.android.sdk.api.provider.ScItemsContract.Items.Query;
 
@@ -22,6 +25,9 @@ import uk.co.senab.photoview.PhotoViewAttacher;
 
 public class PreviewActivity extends Activity implements LoaderCallbacks<Cursor> {
     public static final String IMAGE_ITEM_ID_KEY = "image_item_id";
+    public static final int MAXIMUM_IMAGE_HEIGHT = 2000;
+    public static final int MAXIMUM_IMAGE_WIDTH= 1000;
+
 
     private PhotoViewAttacher mAttacher;
     private String mItemId;
@@ -31,6 +37,9 @@ public class PreviewActivity extends Activity implements LoaderCallbacks<Cursor>
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        ActionBar actionBar = getActionBar();
+        actionBar.setDisplayHomeAsUpEnabled(true);
 
         mItemId = getIntent().getStringExtra(IMAGE_ITEM_ID_KEY);
         if (TextUtils.isEmpty(mItemId)) {
@@ -48,6 +57,16 @@ public class PreviewActivity extends Activity implements LoaderCallbacks<Cursor>
     public void onDestroy() {
         super.onDestroy();
         mAttacher.cleanup();
+        UploaderApp.from(this).getImageLoader().cancelRequest(mImageView);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                finish();
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     @Override
@@ -63,11 +82,18 @@ public class PreviewActivity extends Activity implements LoaderCallbacks<Cursor>
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
         if (data.moveToFirst()) {
-            String itemUrl = ScUtils.getMediaDownloadUrl(this, mItemId);
+
+            MediaParamsBuilder params = new MediaParamsBuilder();
+            params.maxWidth(MAXIMUM_IMAGE_WIDTH);
+            params.maxHeight(MAXIMUM_IMAGE_HEIGHT);
+
+            String itemUrl = ScUtils.getMediaDownloadUrl(this, mItemId, params);
             String itemName = data.getString(Query.DISPLAY_NAME);
 
             setTitle(itemName);
-            UploaderApp.from(this).getImageLoader().load(itemUrl).placeholder(R.drawable.ic_placeholder)
+
+            UploaderApp.from(this).getImageLoader().load(itemUrl)
+                    .placeholder(R.drawable.ic_placeholder)
                     .error(R.drawable.ic_action_cancel)
                     .into(mImageView);
         }
