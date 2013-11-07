@@ -14,6 +14,7 @@ import com.squareup.picasso.Picasso;
 import net.sitecore.android.mediauploader.R;
 import net.sitecore.android.mediauploader.UploaderApp;
 import net.sitecore.android.mediauploader.util.ScUtils;
+import net.sitecore.android.mediauploader.util.ScUtils.MediaParamsBuilder;
 import net.sitecore.android.sdk.api.provider.ScItemsContract.Items.Query;
 
 import butterknife.InjectView;
@@ -43,8 +44,9 @@ class ItemsCursorAdapter extends CursorAdapter {
         ViewHolder holder = (ViewHolder) view.getTag();
         holder.itemName.setText(c.getString(Query.DISPLAY_NAME));
         if (ScUtils.isImage(c.getString(Query.TEMPLATE))) {
-            final String url = ScUtils.getMediaDownloadUrl(context, c.getString(Query.ITEM_ID),
-                    PREVIEW_IMAGE_ICON_WIDTH, PREVIEW_IMAGE_ICON_HEIGHT);
+            MediaParamsBuilder params = new MediaParamsBuilder().height(PREVIEW_IMAGE_ICON_HEIGHT)
+                    .width(PREVIEW_IMAGE_ICON_WIDTH);
+            final String url = ScUtils.getMediaDownloadUrl(context, c.getString(Query.ITEM_ID), params);
             mImageLoader.load(url).placeholder(R.drawable.ic_placeholder)
                     .error(R.drawable.ic_action_cancel)
                     .into(holder.itemIcon);

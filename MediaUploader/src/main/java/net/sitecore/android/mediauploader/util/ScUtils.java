@@ -3,7 +3,6 @@ package net.sitecore.android.mediauploader.util;
 import android.content.Context;
 
 import net.sitecore.android.mediauploader.R;
-import net.sitecore.android.mediauploader.ui.MainActivity;
 
 public class ScUtils {
 
@@ -21,6 +20,10 @@ public class ScUtils {
         return makeDownloadUrl(context, itemId).toString();
     }
 
+    public static String getMediaDownloadUrl(Context context, String itemId, MediaParamsBuilder params) {
+        return makeDownloadUrl(context, itemId).append(params.toString()).toString();
+    }
+
     private static StringBuilder makeDownloadUrl(Context context, String itemId) {
         String id = itemId.replace("{", "").replace("}", "").replace("-", "");
         final String url = Prefs.from(context).getString(R.string.key_instance_url);
@@ -29,10 +32,36 @@ public class ScUtils {
         return builder;
     }
 
-    public static String getMediaDownloadUrl(Context context, String itemId, int width, int height) {
-        StringBuilder builder = makeDownloadUrl(context, itemId);
-        builder.append("?w=").append(width);
-        builder.append("&h=").append(height);
-        return builder.toString();
+    public static class MediaParamsBuilder {
+        private StringBuilder params;
+
+        public MediaParamsBuilder() {
+            params = new StringBuilder("?");
+        }
+
+        public MediaParamsBuilder width(int width) {
+            params.append("w=").append(width).append("&");
+            return this;
+        }
+
+        public MediaParamsBuilder height(int height) {
+            params.append("h=").append(height).append("&");
+            return this;
+        }
+
+        public MediaParamsBuilder maxWidth(int maxWidth) {
+            params.append("mw=").append(maxWidth).append("&");
+            return this;
+        }
+
+        public MediaParamsBuilder maxHeight(int maxHeight) {
+            params.append("mh=").append(maxHeight).append("&");
+            return this;
+        }
+
+        @Override
+        public String toString() {
+            return params.toString();
+        }
     }
 }
