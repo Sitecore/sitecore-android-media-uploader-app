@@ -31,9 +31,6 @@ public class UploadMediaProviderTest extends ProviderTestCase2<UploadMediaProvid
     private void checkCursor(Cursor c, int count) {
         assertNotNull(c);
         assertEquals(count, c.getCount());
-        if (count != 0) {
-            assertEquals(true, c.moveToFirst());
-        }
     }
 
     public void testCreateOne() {
@@ -67,8 +64,9 @@ public class UploadMediaProviderTest extends ProviderTestCase2<UploadMediaProvid
     public void testRead() {
         getMockContentResolver().insert(Instances.CONTENT_URI, getSampleValue());
 
-        Cursor c = getMockContentResolver().query(Instances.CONTENT_URI, null, null, null, null);
+        Cursor c = getMockContentResolver().query(Instances.CONTENT_URI, Query.PROJECTION, null, null, null);
         checkCursor(c, 1);
+        if (!c.moveToFirst()) fail("Trying to read cursor but it is empty");
 
         assertEquals(URL_SAMPLE, c.getString(Query.URL));
         assertEquals(LOGIN_SAMPLE, c.getString(Query.LOGIN));
@@ -90,8 +88,9 @@ public class UploadMediaProviderTest extends ProviderTestCase2<UploadMediaProvid
         assertEquals(1, getMockContentResolver().update(Instances.CONTENT_URI,
                 newValue, selection, null));
 
-        c = getMockContentResolver().query(Instances.CONTENT_URI, null, null, null, null);
+        c = getMockContentResolver().query(Instances.CONTENT_URI, Query.PROJECTION, null, null, null);
         checkCursor(c, 1);
+        if (!c.moveToFirst()) fail("Trying to read cursor but it is empty");
 
         assertEquals("updated_url", c.getString(Query.URL));
         assertEquals("updated_login", c.getString(Query.LOGIN));
