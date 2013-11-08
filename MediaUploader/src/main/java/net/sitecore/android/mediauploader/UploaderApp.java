@@ -5,6 +5,7 @@ import android.content.Context;
 
 import com.android.volley.Response.ErrorListener;
 import com.android.volley.Response.Listener;
+import com.android.volley.VolleyLog;
 
 import com.squareup.picasso.Picasso;
 
@@ -27,16 +28,21 @@ public class UploaderApp extends Application {
     public void onCreate() {
         super.onCreate();
 
-        LogUtils.setLogEnabled(true);
-        Views.setDebug(true);
+        setUpLogging(BuildConfig.DEBUG);
     }
 
     public Picasso getImageLoader() {
         if (mImageLoader == null) {
             mImageLoader = Picasso.with(this);
-            mImageLoader.setDebugging(true);
         }
         return mImageLoader;
+    }
+
+    private void setUpLogging(boolean isEnabled) {
+        mImageLoader.setDebugging(isEnabled);
+        LogUtils.setLogEnabled(isEnabled);
+        VolleyLog.DEBUG = isEnabled;
+        Views.setDebug(isEnabled);
     }
 
     public void getSession(final Listener<ScApiSession> sessionListener, ErrorListener errorListener) {
