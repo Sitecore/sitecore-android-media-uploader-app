@@ -12,6 +12,7 @@ import android.text.TextUtils;
 import android.view.MenuItem;
 import android.view.Window;
 import android.widget.ImageView;
+import android.widget.ImageView.ScaleType;
 import android.widget.Toast;
 
 import com.squareup.picasso.Callback;
@@ -110,6 +111,7 @@ public class PreviewActivity extends Activity implements LoaderCallbacks<Cursor>
     @Override
     public void onSuccess() {
         mAttacher = new PhotoViewAttacher(mImageView);
+        mAttacher.setScaleType(ScaleType.CENTER_INSIDE);
     }
 
     @Override
