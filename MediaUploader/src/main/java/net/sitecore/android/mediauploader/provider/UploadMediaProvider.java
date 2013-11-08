@@ -14,6 +14,7 @@ import android.net.Uri;
 import java.util.ArrayList;
 
 import net.sitecore.android.mediauploader.provider.UploadMediaContract.Instances;
+import net.sitecore.android.mediauploader.provider.UploadMediaContract.Uploads;
 import net.sitecore.android.mediauploader.provider.UploaderMediaDatabase.Tables;
 import net.sitecore.android.sdk.api.provider.SelectionBuilder;
 
@@ -23,6 +24,8 @@ public class UploadMediaProvider extends ContentProvider {
 
     private static final int INSTANCES = 100;
 
+    private static final int UPLOADS = 200;
+
     private UploaderMediaDatabase mDatabaseHelper;
 
     private static final UriMatcher sUriMatcher = buildUriMatcher();
@@ -31,7 +34,9 @@ public class UploadMediaProvider extends ContentProvider {
         final UriMatcher matcher = new UriMatcher(UriMatcher.NO_MATCH);
         final String authority = UploadMediaContract.CONTENT_AUTHORITY;
 
-        matcher.addURI(authority, Tables.INSTANCES, INSTANCES);
+        matcher.addURI(authority, "instances", INSTANCES);
+
+        matcher.addURI(authority, "uploads", UPLOADS);
 
         return matcher;
     }
@@ -49,6 +54,9 @@ public class UploadMediaProvider extends ContentProvider {
         switch (match) {
             case INSTANCES:
                 return Instances.CONTENT_TYPE;
+
+            case UPLOADS:
+                return Uploads.CONTENT_TYPE;
 
             default:
                 throw new UnsupportedOperationException("Unknown uri: " + uri);
@@ -86,7 +94,7 @@ public class UploadMediaProvider extends ContentProvider {
             case INSTANCES: {
                 db.insertOrThrow(Tables.INSTANCES, null, values);
                 resolver.notifyChange(Instances.CONTENT_URI, null);
-                return Instances.buildItemUri(values.getAsString(Instances._ID));
+                return Instances.buildInstanceUri(values.getAsString(Instances._ID));
             }
 
             default:

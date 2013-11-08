@@ -25,7 +25,6 @@ import net.sitecore.android.mediauploader.R;
 import net.sitecore.android.mediauploader.UploaderApp;
 import net.sitecore.android.mediauploader.service.MediaUploaderService;
 import net.sitecore.android.mediauploader.ui.IntentExtras;
-import net.sitecore.android.mediauploader.ui.MainActivity;
 import net.sitecore.android.mediauploader.util.EmptyErrorListener;
 import net.sitecore.android.sdk.api.ScApiSession;
 import net.sitecore.android.sdk.api.UploadMediaRequestOptions;
@@ -34,6 +33,8 @@ import net.sitecore.android.sdk.api.model.ItemsResponse;
 import butterknife.InjectView;
 import butterknife.OnClick;
 import butterknife.Views;
+
+import static net.sitecore.android.sdk.api.LogUtils.LOGD;
 
 public class UploadActivity extends Activity implements Listener<ItemsResponse>, ErrorListener {
 
@@ -152,11 +153,13 @@ public class UploadActivity extends Activity implements Listener<ItemsResponse>,
     }
 
     private void uploadMedia(ScApiSession session) {
+        LOGD("Uploading: " + mImageUri.toString());
         UploadMediaRequestOptions options = session.uploadMedia(
                 mEditPath.getText().toString(),
                 mEditName.getText().toString(),
                 mImageUri.toString());
         options.setFileName("image.png");
+
         MediaUploaderService.startUpload(UploadActivity.this, MediaUploaderService.class, options, this, this);
     }
 

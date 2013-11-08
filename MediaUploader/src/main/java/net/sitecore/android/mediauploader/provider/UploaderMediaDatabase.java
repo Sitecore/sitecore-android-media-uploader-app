@@ -6,6 +6,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 import android.provider.BaseColumns;
 
 import net.sitecore.android.mediauploader.provider.UploadMediaContract.InstancesColumns;
+import net.sitecore.android.mediauploader.provider.UploadMediaContract.Uploads;
 
 public class UploaderMediaDatabase extends SQLiteOpenHelper {
     private static final String DB_NAME = "uploader_media.db";
@@ -14,6 +15,7 @@ public class UploaderMediaDatabase extends SQLiteOpenHelper {
 
     interface Tables {
         String INSTANCES = "instances";
+        String UPLOADS = "uploads";
     }
 
     public UploaderMediaDatabase(Context context) {
@@ -28,11 +30,21 @@ public class UploaderMediaDatabase extends SQLiteOpenHelper {
                 + InstancesColumns.LOGIN + " TEXT NOT NULL,"
                 + InstancesColumns.PASSWORD + " TEXT NOT NULL,"
                 + InstancesColumns.DEFAULT_FOLDER + " TEXT NOT NULL )");
+
+        db.execSQL("CREATE TABLE " + Tables.UPLOADS + " ("
+                + Uploads._ID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
+                + Uploads.URL + " TEXT NOT NULL, "
+                + Uploads.USERNAME + " TEXT NOT NULL, "
+                + Uploads.PASSWORD + " TEXT NOT NULL, "
+                + Uploads.ITEM_NAME + " TEXT NOT NULL, "
+                + Uploads.FILE_URI + " TEXT NOT NULL, "
+                + Uploads.STATUS + " TEXT NOT NULL)");
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         db.execSQL("DROP TABLE IF EXISTS " + Tables.INSTANCES);
+        db.execSQL("DROP TABLE IF EXISTS " + Tables.UPLOADS);
 
         onCreate(db);
     }
