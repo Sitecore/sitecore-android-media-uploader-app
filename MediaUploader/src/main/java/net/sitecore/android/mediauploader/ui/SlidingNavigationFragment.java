@@ -1,6 +1,7 @@
 package net.sitecore.android.mediauploader.ui;
 
 import android.app.Activity;
+import android.app.Fragment;
 import android.app.ListFragment;
 import android.content.Context;
 import android.content.Intent;
@@ -21,9 +22,10 @@ import net.sitecore.android.mediauploader.R;
 import net.sitecore.android.mediauploader.ui.upload.UploadActivity;
 
 import butterknife.InjectView;
+import butterknife.OnClick;
 import butterknife.Views;
 
-public class SlidingNavigationFragment extends ListFragment {
+public class SlidingNavigationFragment extends Fragment {
 
     public static final int POSITION_UPLOAD = 0;
     public static final int POSITION_MEDIA_BROWSER = 1;
@@ -40,19 +42,10 @@ public class SlidingNavigationFragment extends ListFragment {
 
     }
 
-    private Callbacks mCallbacks;
-
-    private int mCurrentPosition = POSITION_MEDIA_BROWSER;
-
-    private String[] mNavigationItems = {
-            "Upload Media",
-            "Media browser",
-            "My Uploads",
-            "Instances Manager"
-    };
-
     @InjectView(R.id.spinner_instances) Spinner mInstances;
 
+    private Callbacks mCallbacks;
+    private int mCurrentPosition = POSITION_MEDIA_BROWSER;
     private ArrayAdapter<String> mAdapter;
 
     @Override
@@ -72,8 +65,6 @@ public class SlidingNavigationFragment extends ListFragment {
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        mAdapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_list_item_1, mNavigationItems);
-        setListAdapter(mAdapter);
 
         Pair<String, String> data1 = new Pair<String, String>("My Instance", "/home/hardcoded/text");
         Pair<String, String> data2 = new Pair<String, String>("Other Instance", "/home/other/text");
@@ -88,28 +79,31 @@ public class SlidingNavigationFragment extends ListFragment {
         return mCurrentPosition == POSITION_MEDIA_BROWSER;
     }
 
-    @Override
-    public void onListItemClick(ListView l, View v, int position, long id) {
-        if (position == mCurrentPosition) {
-            mCallbacks.onSelectionDone();
-            return;
-        }
-        if (position == POSITION_UPLOAD) {
-            startActivity(new Intent(getActivity(), UploadActivity.class));
-            mCallbacks.onSelectionDone();
-        } else if (position == POSITION_MEDIA_BROWSER) {
+    @OnClick(R.id.button_media_browser)
+    public void onMediaBrowserClick() {
+        if (mCurrentPosition != POSITION_MEDIA_BROWSER) {
             mCallbacks.onMediaBrowserSelected();
-            mCallbacks.onSelectionDone();
-            mCurrentPosition = position;
-        } else if (position == POSITION_MY_UPLOADS) {
-            mCallbacks.onMyUploadsSelected();
-            mCallbacks.onSelectionDone();
-            mCurrentPosition = position;
-        } else if (position == POSITION_INSTANCES) {
-            mCallbacks.onInstanceManagerSelected();
-            mCallbacks.onSelectionDone();
-            mCurrentPosition = position;
+            mCurrentPosition = POSITION_MEDIA_BROWSER;
         }
+        mCallbacks.onSelectionDone();
+    }
+
+    @OnClick(R.id.button_my_uploads)
+    public void onMyUploadsClick() {
+        if (mCurrentPosition != POSITION_MY_UPLOADS) {
+            mCallbacks.onMyUploadsSelected();
+            mCurrentPosition = POSITION_MY_UPLOADS;
+        }
+        mCallbacks.onSelectionDone();
+    }
+
+    @OnClick(R.id.button_instances_manager)
+    public void onInstancesManagerClick() {
+        if (mCurrentPosition != POSITION_INSTANCES) {
+            mCallbacks.onInstanceManagerSelected();
+            mCurrentPosition = POSITION_INSTANCES;
+        }
+        mCallbacks.onSelectionDone();
     }
 
     static class InstancesAdapter extends ArrayAdapter<Pair<String, String>> {
