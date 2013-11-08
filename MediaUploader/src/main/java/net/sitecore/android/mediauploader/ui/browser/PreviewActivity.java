@@ -6,9 +6,11 @@ import android.app.LoaderManager.LoaderCallbacks;
 import android.content.CursorLoader;
 import android.content.Loader;
 import android.database.Cursor;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.MenuItem;
+import android.view.Window;
 import android.widget.ImageView;
 import android.widget.Toast;
 
@@ -26,8 +28,7 @@ import uk.co.senab.photoview.PhotoViewAttacher;
 public class PreviewActivity extends Activity implements LoaderCallbacks<Cursor> {
     public static final String IMAGE_ITEM_ID_KEY = "image_item_id";
     public static final int MAXIMUM_IMAGE_HEIGHT = 2000;
-    public static final int MAXIMUM_IMAGE_WIDTH= 1000;
-
+    public static final int MAXIMUM_IMAGE_WIDTH = 1000;
 
     private PhotoViewAttacher mAttacher;
     private String mItemId;
@@ -38,8 +39,13 @@ public class PreviewActivity extends Activity implements LoaderCallbacks<Cursor>
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        requestWindowFeature(Window.FEATURE_ACTION_BAR_OVERLAY);
+
         ActionBar actionBar = getActionBar();
         actionBar.setDisplayHomeAsUpEnabled(true);
+
+        Drawable drawable = getApplicationContext().getResources().getDrawable(R.color.action_bar_background);
+        actionBar.setBackgroundDrawable(drawable);
 
         mItemId = getIntent().getStringExtra(IMAGE_ITEM_ID_KEY);
         if (TextUtils.isEmpty(mItemId)) {
@@ -48,6 +54,7 @@ public class PreviewActivity extends Activity implements LoaderCallbacks<Cursor>
         }
 
         setContentView(R.layout.activity_preview);
+
         Views.inject(this);
         mAttacher = new PhotoViewAttacher(mImageView);
         getLoaderManager().initLoader(0, null, this);
