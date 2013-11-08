@@ -44,7 +44,7 @@ public class PreviewActivity extends Activity implements LoaderCallbacks<Cursor>
         ActionBar actionBar = getActionBar();
         actionBar.setDisplayHomeAsUpEnabled(true);
 
-        Drawable drawable = getApplicationContext().getResources().getDrawable(R.color.action_bar_background);
+        Drawable drawable = getApplicationContext().getResources().getDrawable(R.color.preview_activity_action_bar);
         actionBar.setBackgroundDrawable(drawable);
 
         mItemId = getIntent().getStringExtra(IMAGE_ITEM_ID_KEY);
