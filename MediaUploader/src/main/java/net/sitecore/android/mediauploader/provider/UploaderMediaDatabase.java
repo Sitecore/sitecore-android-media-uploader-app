@@ -26,7 +26,8 @@ public class UploaderMediaDatabase extends SQLiteOpenHelper {
                 + BaseColumns._ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
                 + InstancesColumns.URL + " TEXT NOT NULL,"
                 + InstancesColumns.LOGIN + " TEXT NOT NULL,"
-                + InstancesColumns.PASSWORD + " TEXT NOT NULL )");
+                + InstancesColumns.PASSWORD + " TEXT NOT NULL,"
+                + InstancesColumns.DEFAULT_FOLDER + " TEXT NOT NULL )");
     }
 
     @Override

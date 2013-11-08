@@ -14,6 +14,7 @@ public class UploadMediaProviderTest extends ProviderTestCase2<UploadMediaProvid
     private final String URL_SAMPLE = "http://test.url";
     private final String LOGIN_SAMPLE = "test_login";
     private final String PASSWORD_SAMPLE = "test_password";
+    private final String DEFAULT_FOLDER_SAMPLE = "/sitecore/media library";
 
     public UploadMediaProviderTest() {
         super(UploadMediaProvider.class, UploadMediaContract.CONTENT_AUTHORITY);
@@ -24,6 +25,7 @@ public class UploadMediaProviderTest extends ProviderTestCase2<UploadMediaProvid
         value.put(Instances.URL, URL_SAMPLE);
         value.put(Instances.LOGIN, LOGIN_SAMPLE);
         value.put(Instances.PASSWORD, PASSWORD_SAMPLE);
+        value.put(Instances.DEFAULT_FOLDER, DEFAULT_FOLDER_SAMPLE);
 
         return value;
     }
@@ -71,6 +73,7 @@ public class UploadMediaProviderTest extends ProviderTestCase2<UploadMediaProvid
         assertEquals(URL_SAMPLE, c.getString(Query.URL));
         assertEquals(LOGIN_SAMPLE, c.getString(Query.LOGIN));
         assertEquals(PASSWORD_SAMPLE, c.getString(Query.PASSWORD));
+        assertEquals(DEFAULT_FOLDER_SAMPLE, c.getString(Query.DEFAULT_FOLDER));
     }
 
     public void testUpdate() {
@@ -83,6 +86,7 @@ public class UploadMediaProviderTest extends ProviderTestCase2<UploadMediaProvid
         newValue.put(Instances.URL, "updated_url");
         newValue.put(Instances.LOGIN, "updated_login");
         newValue.put(Instances.PASSWORD, "updated_password");
+        newValue.put(Instances.DEFAULT_FOLDER, "updated_folder");
 
         String selection = Instances.LOGIN + "='" + LOGIN_SAMPLE + "'";
         assertEquals(1, getMockContentResolver().update(Instances.CONTENT_URI,
@@ -95,6 +99,7 @@ public class UploadMediaProviderTest extends ProviderTestCase2<UploadMediaProvid
         assertEquals("updated_url", c.getString(Query.URL));
         assertEquals("updated_login", c.getString(Query.LOGIN));
         assertEquals("updated_password", c.getString(Query.PASSWORD));
+        assertEquals("updated_folder", c.getString(Query.DEFAULT_FOLDER));
     }
 
     public void testUnsupportedOperation() {

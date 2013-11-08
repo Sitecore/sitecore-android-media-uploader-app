@@ -29,13 +29,15 @@ public class UploadMediaContract {
                     Instances._ID,
                     Instances.URL,
                     Instances.LOGIN,
-                    Instances.PASSWORD
+                    Instances.PASSWORD,
+                    Instances.DEFAULT_FOLDER
             };
 
             int _ID = 0;
             int URL = 1;
             int LOGIN = 2;
             int PASSWORD = 3;
+            int DEFAULT_FOLDER = 4;
         }
     }
 
@@ -43,5 +45,6 @@ public class UploadMediaContract {
         String URL = "instance_url";
         String LOGIN = "instance_login";
         String PASSWORD = "instance_password";
+        String DEFAULT_FOLDER = "default_root_folder";
     }
 }
