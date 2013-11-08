@@ -14,6 +14,8 @@ import android.view.Window;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import com.squareup.picasso.Callback;
+
 import net.sitecore.android.mediauploader.R;
 import net.sitecore.android.mediauploader.UploaderApp;
 import net.sitecore.android.mediauploader.util.ScUtils;
@@ -25,7 +27,7 @@ import butterknife.InjectView;
 import butterknife.Views;
 import uk.co.senab.photoview.PhotoViewAttacher;
 
-public class PreviewActivity extends Activity implements LoaderCallbacks<Cursor> {
+public class PreviewActivity extends Activity implements LoaderCallbacks<Cursor>, Callback {
     public static final String IMAGE_ITEM_ID_KEY = "image_item_id";
     public static final int MAXIMUM_IMAGE_HEIGHT = 2000;
     public static final int MAXIMUM_IMAGE_WIDTH = 1000;
@@ -44,7 +46,7 @@ public class PreviewActivity extends Activity implements LoaderCallbacks<Cursor>
         ActionBar actionBar = getActionBar();
         actionBar.setDisplayHomeAsUpEnabled(true);
 
-        Drawable drawable = getApplicationContext().getResources().getDrawable(R.color.preview_activity_action_bar);
+        Drawable drawable = getResources().getDrawable(R.color.preview_activity_action_bar);
         actionBar.setBackgroundDrawable(drawable);
 
         mItemId = getIntent().getStringExtra(IMAGE_ITEM_ID_KEY);
@@ -54,16 +56,15 @@ public class PreviewActivity extends Activity implements LoaderCallbacks<Cursor>
         }
 
         setContentView(R.layout.activity_preview);
-
         Views.inject(this);
-        mAttacher = new PhotoViewAttacher(mImageView);
+
         getLoaderManager().initLoader(0, null, this);
     }
 
     @Override
     public void onDestroy() {
         super.onDestroy();
-        mAttacher.cleanup();
+        if (mAttacher != null) mAttacher.cleanup();
         UploaderApp.from(this).getImageLoader().cancelRequest(mImageView);
     }
 
@@ -102,7 +103,18 @@ public class PreviewActivity extends Activity implements LoaderCallbacks<Cursor>
             UploaderApp.from(this).getImageLoader().load(itemUrl)
                     .placeholder(R.drawable.ic_placeholder)
                     .error(R.drawable.ic_action_cancel)
-                    .into(mImageView);
+                    .into(mImageView, this);
         }
+    }
+
+    @Override
+    public void onSuccess() {
+        mAttacher = new PhotoViewAttacher(mImageView);
+    }
+
+    @Override
+    public void onError() {
+        Toast.makeText(this, "Error happened while downloading image", Toast.LENGTH_LONG)
+                .show();
     }
 }
