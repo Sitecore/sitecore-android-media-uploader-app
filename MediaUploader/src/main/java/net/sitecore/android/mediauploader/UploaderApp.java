@@ -28,13 +28,11 @@ public class UploaderApp extends Application {
     public void onCreate() {
         super.onCreate();
 
+        mImageLoader = Picasso.with(this);
         setUpLogging(BuildConfig.DEBUG);
     }
 
     public Picasso getImageLoader() {
-        if (mImageLoader == null) {
-            mImageLoader = Picasso.with(this);
-        }
         return mImageLoader;
     }
 
