@@ -1,6 +1,8 @@
 package net.sitecore.android.mediauploader.ui;
 
 import android.app.Activity;
+import android.content.AsyncQueryHandler;
+import android.content.ContentValues;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -14,7 +16,9 @@ import com.android.volley.VolleyError;
 
 import net.sitecore.android.mediauploader.R;
 import net.sitecore.android.mediauploader.UploaderApp;
+import net.sitecore.android.mediauploader.provider.UploadMediaContract.Instances;
 import net.sitecore.android.mediauploader.util.Prefs;
+import net.sitecore.android.mediauploader.util.ScUtils;
 import net.sitecore.android.mediauploader.util.Utils;
 import net.sitecore.android.sdk.api.RequestQueueProvider;
 import net.sitecore.android.sdk.api.ScApiSession;
@@ -77,16 +81,31 @@ public class WelcomeActivity extends Activity implements ErrorListener, Listener
                     prefs.put(R.string.key_instance_url, url);
                     prefs.put(R.string.key_instance_login, login);
                     prefs.put(R.string.key_instance_password, password);
+                    prefs.put(R.string.key_instance_root_folder, ScUtils.PATH_MEDIA_LIBRARY);
+
+                    saveInstance(url, login, password, ScUtils.PATH_MEDIA_LIBRARY);
 
                     Toast.makeText(WelcomeActivity.this, "Successfully logged in", Toast.LENGTH_LONG).show();
 
                     startActivity(new Intent(WelcomeActivity.this, MainActivity.class));
                     finish();
+                } else {
+                    Toast.makeText(WelcomeActivity.this, "Failed to log in", Toast.LENGTH_LONG).show();
                 }
             }
         };
 
         RequestQueueProvider.getRequestQueue(this).add(session.getItems(success, this).build());
+    }
+
+    private void saveInstance(String url, String login, String password, String defaultRootFolder) {
+        ContentValues values = new ContentValues();
+        values.put(Instances.URL, url);
+        values.put(Instances.LOGIN, login);
+        values.put(Instances.PASSWORD, password);
+        values.put(Instances.DEFAULT_FOLDER, defaultRootFolder);
+
+        new AsyncQueryHandler(getContentResolver()){}.startInsert(0, null, Instances.CONTENT_URI, values);
     }
 
     boolean validate() {

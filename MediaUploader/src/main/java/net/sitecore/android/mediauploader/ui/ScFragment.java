@@ -23,7 +23,7 @@ public class ScFragment extends Fragment {
     private boolean mContentShown = false;
 
     @Override
-    public final View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         final FrameLayout v = (FrameLayout) inflater.inflate(R.layout.fragment_sitecore, container, false);
 
         mContentContainer = (ViewGroup) v.findViewById(R.id.container_content);
