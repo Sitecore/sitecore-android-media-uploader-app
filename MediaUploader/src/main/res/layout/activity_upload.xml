@@ -5,38 +5,38 @@
     android:fillViewport="true">
 
     <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        android:orientation="vertical"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:orientation="vertical">
 
         <RelativeLayout
-            android:layout_height="300dp"
-            android:layout_width="match_parent">
+            android:layout_width="match_parent"
+            android:layout_height="300dp">
 
             <ImageView
                 android:id="@+id/image_preview"
-                android:layout_height="match_parent"
                 android:layout_width="match_parent"
-                android:scaleType="centerCrop"
-                android:background="#888888" />
+                android:layout_height="match_parent"
+                android:background="#888888"
+                android:scaleType="centerCrop" />
 
             <LinearLayout
-                android:layout_alignParentBottom="true"
-                android:orientation="horizontal"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_width="match_parent">
+                android:layout_alignParentBottom="true"
+                android:orientation="horizontal">
 
                 <Button
                     android:id="@+id/button_upload_camera"
-                    android:layout_height="wrap_content"
                     android:layout_width="0dp"
+                    android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="From camera" />
 
                 <Button
                     android:id="@+id/button_upload_gallery"
-                    android:layout_height="wrap_content"
                     android:layout_width="0dp"
+                    android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="From gallery" />
             </LinearLayout>
@@ -44,28 +44,28 @@
 
         <EditText
             android:id="@+id/edit_item_name"
-            android:layout_height="wrap_content"
             android:layout_width="match_parent"
-            android:text="Test item"
+            android:layout_height="wrap_content"
+            android:hint="@string/hint_item_name"
             android:imeOptions="actionDone"
             android:inputType="text|textAutoComplete"
-            android:hint="@string/hint_item_name" />
+            android:text="Test item" />
 
         <EditText
             android:id="@+id/edit_item_path"
-            android:layout_height="wrap_content"
             android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:enabled="false"
+            android:hint="@string/hint_item_path"
             android:imeOptions="actionDone"
             android:inputType="text"
-            android:enabled="false"
-            android:text="/sitecore/media library/Test Data/Android"
-            android:hint="@string/hint_item_path" />
+            android:text="/sitecore/media library/Test Data/Android" />
 
         <CheckBox
-            android:layout_height="wrap_content"
+            android:id="@+id/checkbox_upload_later"
             android:layout_width="match_parent"
-            android:text="Upload later"
-            android:enabled="false" />
+            android:layout_height="wrap_content"
+            android:text="Upload later" />
 
 
     </LinearLayout>

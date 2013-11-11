@@ -13,6 +13,7 @@ import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
@@ -30,6 +31,7 @@ import net.sitecore.android.mediauploader.provider.UploadMediaContract.Uploads;
 import net.sitecore.android.mediauploader.service.MediaUploaderService;
 import net.sitecore.android.mediauploader.ui.IntentExtras;
 import net.sitecore.android.mediauploader.util.EmptyErrorListener;
+import net.sitecore.android.mediauploader.util.Prefs;
 import net.sitecore.android.sdk.api.ScApiSession;
 import net.sitecore.android.sdk.api.UploadMediaRequestOptions;
 import net.sitecore.android.sdk.api.model.ItemsResponse;
@@ -48,6 +50,7 @@ public class UploadActivity extends Activity implements Listener<ItemsResponse>,
     @InjectView(R.id.edit_item_name) EditText mEditName;
     @InjectView(R.id.edit_item_path) EditText mEditPath;
     @InjectView(R.id.image_preview) ImageView mPreview;
+    @InjectView(R.id.checkbox_upload_later) CheckBox mUploadLater;
 
     private Uri mImageUri;
 
@@ -153,18 +156,30 @@ public class UploadActivity extends Activity implements Listener<ItemsResponse>,
             return;
         }
 
-        Toast.makeText(this, "upload started!", Toast.LENGTH_LONG).show();
+        Prefs prefs = Prefs.from(this);
+        final String url = prefs.getString(R.string.key_instance_url);
+        final String username = prefs.getString(R.string.key_instance_login);
+        final String password = prefs.getString(R.string.key_instance_password);
 
         final ContentValues values = new ContentValues();
-        values.put(Uploads.URL, "url");
-        values.put(Uploads.USERNAME, "name");
-        values.put(Uploads.PASSWORD, "password");
+        values.put(Uploads.URL, url);
+        values.put(Uploads.USERNAME, username);
+        values.put(Uploads.PASSWORD, password);
         values.put(Uploads.ITEM_NAME, mEditName.getText().toString());
         values.put(Uploads.ITEM_PATH, mEditPath.getText().toString());
         values.put(Uploads.FILE_URI, mImageUri.toString());
-        values.put(Uploads.STATUS, UploadStatus.PENDING);
+
+        if (mUploadLater.isChecked()) {
+            values.put(Uploads.STATUS, UploadStatus.PENDING);
+            Toast.makeText(this, "Added to My Uploads.", Toast.LENGTH_LONG).show();
+        } else {
+            values.put(Uploads.STATUS, UploadStatus.IN_PROGRESS);
+            Toast.makeText(this, "Uploading media started.", Toast.LENGTH_LONG).show();
+            //TODO: trigger start upload
+        }
 
         new AsyncQueryHandler(getContentResolver()){}.startInsert(0, null, Uploads.CONTENT_URI, values);
+
         setResult(RESULT_OK);
         finish();
         /*
