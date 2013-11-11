@@ -2,14 +2,14 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="horizontal"
     android:divider="?android:attr/dividerVertical"
-    android:showDividers="middle"
-    android:dividerPadding="12dp">
+    android:dividerPadding="12dp"
+    android:orientation="horizontal"
+    android:showDividers="middle">
 
-    <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        style="?android:actionButtonStyle"
+    <FrameLayout
         android:id="@+id/actionbar_cancel"
+        style="?android:actionButtonStyle"
         android:layout_width="0dp"
         android:layout_height="match_parent"
         android:layout_weight="1">
@@ -19,30 +19,30 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:paddingRight="20dp"
             android:drawableLeft="@drawable/ic_action_cancel"
             android:drawablePadding="8dp"
             android:gravity="center_vertical"
+            android:paddingRight="20dp"
             android:text="Cancel" />
     </FrameLayout>
 
-    <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        style="?android:actionButtonStyle"
+    <FrameLayout
         android:id="@+id/actionbar_done"
+        style="?android:actionButtonStyle"
         android:layout_width="0dp"
         android:layout_height="match_parent"
         android:layout_weight="1">
 
         <TextView
+            android:id="@+id/textview_button_title"
             style="?android:actionBarTabTextStyle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:paddingRight="20dp"
             android:drawableLeft="@drawable/ic_action_done"
             android:drawablePadding="8dp"
             android:gravity="center_vertical"
-            android:text="Done" />
+            android:paddingRight="20dp" />
     </FrameLayout>
 
 </LinearLayout>

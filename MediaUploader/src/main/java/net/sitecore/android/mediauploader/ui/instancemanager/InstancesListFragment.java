@@ -18,6 +18,7 @@ import android.widget.ListView;
 
 import net.sitecore.android.mediauploader.R;
 import net.sitecore.android.mediauploader.provider.UploadMediaContract.Instances;
+import net.sitecore.android.mediauploader.provider.UploadMediaContract.Instances.Query;
 import net.sitecore.android.mediauploader.ui.EditInstanceActivity;
 import net.sitecore.android.mediauploader.ui.ScFragment;
 
@@ -85,6 +86,11 @@ public class InstancesListFragment extends ScFragment implements LoaderCallbacks
 
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-        startActivity(new Intent(getActivity(), EditInstanceActivity.class));
+        Cursor c = mListAdapter.getCursor();
+        c.moveToPosition(position);
+
+        Intent intent = new Intent(getActivity(), EditInstanceActivity.class);
+        intent.setData(Instances.buildInstanceUri(c.getString(Query._ID)));
+        startActivity(intent);
     }
 }
