@@ -7,26 +7,26 @@
     <EditText
         android:layout_height="wrap_content"
         android:layout_width="match_parent"
-        android:hint="Instance URL"/>
+        android:hint="Instance URL" />
 
     <EditText
         android:layout_height="wrap_content"
         android:layout_width="match_parent"
-        android:hint="Domain\\Username"/>
+        android:hint="Domain\\Username" />
 
     <EditText
         android:layout_height="wrap_content"
         android:layout_width="match_parent"
-        android:hint="Password"/>
+        android:hint="Password" />
 
     <EditText
         android:layout_height="wrap_content"
         android:layout_width="match_parent"
-        android:hint="Root media folder"/>
+        android:hint="Root media folder" />
 
     <Button
         android:layout_height="wrap_content"
         android:layout_width="match_parent"
-        android:text="Validate"/>
+        android:text="Validate" />
 
 </LinearLayout>

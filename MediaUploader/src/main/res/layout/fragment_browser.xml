@@ -1,31 +1,30 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:orientation="vertical">
 
     <TextView
+        android:id="@+id/current_path"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/current_path"
-        android:padding="8dp"
-        android:singleLine="true"
         android:layout_gravity="center"
-        android:ellipsize="start" />
+        android:ellipsize="start"
+        android:padding="8dp"
+        android:singleLine="true" />
 
     <LinearLayout
+        android:id="@+id/layout_nav_up_container"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingLeft="16dp"
-        android:paddingRight="16dp"
-        android:orientation="horizontal"
         android:background="@drawable/selectable_background_sitecore"
-        android:id="@+id/layout_nav_up_container">
+        android:orientation="horizontal"
+        android:paddingLeft="16dp"
+        android:paddingRight="16dp">
 
         <ImageView
-            android:layout_height="wrap_content"
             android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:src="@drawable/ic_navigation_up" />
 
         <TextView
@@ -36,8 +35,8 @@
     </LinearLayout>
 
     <ListView
+        android:id="@android:id/list"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@android:id/list" />
+        android:layout_height="wrap_content" />
 
 </LinearLayout>

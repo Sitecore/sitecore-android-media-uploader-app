@@ -65,7 +65,7 @@
             android:layout_height="wrap_content"
             android:layout_width="match_parent"
             android:text="Upload later"
-            android:enabled="false"/>
+            android:enabled="false" />
 
 
     </LinearLayout>
