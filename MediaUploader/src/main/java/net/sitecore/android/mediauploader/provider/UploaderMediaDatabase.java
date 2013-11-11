@@ -3,9 +3,8 @@ package net.sitecore.android.mediauploader.provider;
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
-import android.provider.BaseColumns;
 
-import net.sitecore.android.mediauploader.provider.UploadMediaContract.InstancesColumns;
+import net.sitecore.android.mediauploader.provider.UploadMediaContract.Instances;
 import net.sitecore.android.mediauploader.provider.UploadMediaContract.Uploads;
 
 public class UploaderMediaDatabase extends SQLiteOpenHelper {
@@ -25,11 +24,12 @@ public class UploaderMediaDatabase extends SQLiteOpenHelper {
     @Override
     public void onCreate(SQLiteDatabase db) {
         db.execSQL("CREATE TABLE " + Tables.INSTANCES + " ("
-                + BaseColumns._ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
-                + InstancesColumns.URL + " TEXT NOT NULL,"
-                + InstancesColumns.LOGIN + " TEXT NOT NULL,"
-                + InstancesColumns.PASSWORD + " TEXT NOT NULL,"
-                + InstancesColumns.ROOT_FOLDER + " TEXT NOT NULL )");
+                + Instances._ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
+                + Instances.URL + " TEXT NOT NULL,"
+                + Instances.NAME + " TEXT NOT NULL,"
+                + Instances.LOGIN + " TEXT NOT NULL,"
+                + Instances.PASSWORD + " TEXT NOT NULL,"
+                + Instances.ROOT_FOLDER + " TEXT NOT NULL )");
 
         db.execSQL("CREATE TABLE " + Tables.UPLOADS + " ("
                 + Uploads._ID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
