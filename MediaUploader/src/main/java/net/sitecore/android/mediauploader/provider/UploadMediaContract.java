@@ -31,6 +31,7 @@ public class UploadMediaContract {
             public String[] PROJECTION = {
                     Instances._ID,
                     Instances.URL,
+                    Instances.NAME,
                     Instances.LOGIN,
                     Instances.PASSWORD,
                     Instances.ROOT_FOLDER
@@ -38,9 +39,10 @@ public class UploadMediaContract {
 
             int _ID = 0;
             int URL = 1;
-            int LOGIN = 2;
-            int PASSWORD = 3;
-            int ROOT_FOLDER = 4;
+            int NAME = 2;
+            int LOGIN = 3;
+            int PASSWORD = 4;
+            int ROOT_FOLDER = 5;
         }
     }
 
@@ -83,6 +85,7 @@ public class UploadMediaContract {
 
     interface InstancesColumns {
         String URL = "instance_url";
+        String NAME = "instance_name";
         String LOGIN = "instance_login";
         String PASSWORD = "instance_password";
         String ROOT_FOLDER = "root_folder";
