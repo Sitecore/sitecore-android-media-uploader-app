@@ -21,6 +21,7 @@ public class ScFragment extends Fragment {
     private ViewGroup mEmptyContainer;
 
     private boolean mContentShown = false;
+    private boolean mIsEmpty = false;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -75,13 +76,44 @@ public class ScFragment extends Fragment {
 
             mProgressContainer.setVisibility(View.GONE);
             mContentContainer.setVisibility(View.VISIBLE);
+            mEmptyContainer.setVisibility(View.GONE);
         } else {
             mProgressContainer.startAnimation(mAnimationFadeIn);
             mContentContainer.startAnimation(mAnimationFadeOut);
 
             mProgressContainer.setVisibility(View.VISIBLE);
             mContentContainer.setVisibility(View.GONE);
+            mEmptyContainer.setVisibility(View.GONE);
         }
+    }
+
+    public void setEmpty(boolean isEmpty) {
+        if (mIsEmpty == isEmpty) return;
+
+        mIsEmpty = isEmpty;
+        if (mIsEmpty) {
+            mProgressContainer.startAnimation(mAnimationFadeOut);
+            mEmptyContainer.startAnimation(mAnimationFadeIn);
+
+            mProgressContainer.setVisibility(View.GONE);
+            mEmptyContainer.setVisibility(View.VISIBLE);
+        } else {
+            mProgressContainer.startAnimation(mAnimationFadeOut);
+            mEmptyContainer.startAnimation(mAnimationFadeIn);
+
+            mProgressContainer.setVisibility(View.GONE);
+            mEmptyContainer.setVisibility(View.VISIBLE);
+        }
+
+    }
+
+    public void setContentState() {
+    }
+
+    public void setLoadingState() {
+    }
+
+    public void setEmptyState() {
     }
 
 }

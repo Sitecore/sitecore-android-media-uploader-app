@@ -63,7 +63,8 @@ public class UploadMediaContract {
                     Uploads.PASSWORD,
                     Uploads.ITEM_NAME,
                     Uploads.FILE_URI,
-                    Uploads.STATUS
+                    Uploads.STATUS,
+                    Uploads.ITEM_PATH
             };
 
             int _ID = 0;
@@ -73,6 +74,7 @@ public class UploadMediaContract {
             int ITEM_NAME = 4;
             int FILE_URI = 5;
             int STATUS = 6;
+            int ITEM_PATH = 7;
 
             public String ORDER_BY_STATUS = Uploads.STATUS + " desc";
         }
@@ -91,6 +93,7 @@ public class UploadMediaContract {
         String USERNAME = "instance_login";
         String PASSWORD = "instance_password";
         String ITEM_NAME = "item_name";
+        String ITEM_PATH = "item_path";
         String FILE_URI = "file_uri";
         String STATUS = "status";
     }

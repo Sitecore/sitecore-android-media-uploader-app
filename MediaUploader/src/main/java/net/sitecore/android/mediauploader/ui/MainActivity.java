@@ -2,7 +2,6 @@ package net.sitecore.android.mediauploader.ui;
 
 import android.app.ActionBar;
 import android.app.Activity;
-import android.app.Fragment;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.v4.app.ActionBarDrawerToggle;
@@ -16,15 +15,13 @@ import android.view.Window;
 import net.sitecore.android.mediauploader.R;
 import net.sitecore.android.mediauploader.ui.browser.MediaBrowserFragment;
 import net.sitecore.android.mediauploader.ui.instancemanager.InstancesListFragment;
+import net.sitecore.android.mediauploader.ui.upload.MyUploadsListFragment;
 import net.sitecore.android.mediauploader.util.Prefs;
 import net.sitecore.android.mediauploader.util.ScUtils;
 
 import butterknife.InjectView;
 import butterknife.Views;
 
-import static net.sitecore.android.mediauploader.ui.SlidingNavigationFragment.POSITION_INSTANCES;
-import static net.sitecore.android.mediauploader.ui.SlidingNavigationFragment.POSITION_MEDIA_BROWSER;
-import static net.sitecore.android.mediauploader.ui.SlidingNavigationFragment.POSITION_MY_UPLOADS;
 import static net.sitecore.android.sdk.api.LogUtils.LOGD;
 
 public class MainActivity extends Activity implements SlidingNavigationFragment.Callbacks {

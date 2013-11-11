@@ -2,6 +2,8 @@ package net.sitecore.android.mediauploader.ui.upload;
 
 import android.app.ActionBar;
 import android.app.Activity;
+import android.content.AsyncQueryHandler;
+import android.content.ContentValues;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -23,6 +25,8 @@ import com.android.volley.VolleyError;
 
 import net.sitecore.android.mediauploader.R;
 import net.sitecore.android.mediauploader.UploaderApp;
+import net.sitecore.android.mediauploader.model.UploadStatus;
+import net.sitecore.android.mediauploader.provider.UploadMediaContract.Uploads;
 import net.sitecore.android.mediauploader.service.MediaUploaderService;
 import net.sitecore.android.mediauploader.ui.IntentExtras;
 import net.sitecore.android.mediauploader.util.EmptyErrorListener;
@@ -133,7 +137,9 @@ public class UploadActivity extends Activity implements Listener<ItemsResponse>,
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (resultCode == Activity.RESULT_OK) {
             if (requestCode == SOURCE_TYPE_CAMERA) {
+                LOGD("Selected image from camera: " + mImageUri.toString());
             } else if (requestCode == SOURCE_TYPE_GALLERY) {
+                LOGD("Selected image from gallery: " + data.getDataString());
                 mImageUri = Uri.parse(data.getDataString());
             }
 
@@ -142,14 +148,33 @@ public class UploadActivity extends Activity implements Listener<ItemsResponse>,
     }
 
     public void startUpload() {
-        Toast.makeText(this, "upload!", Toast.LENGTH_LONG).show();
+        if (mImageUri == null) {
+            Toast.makeText(this, "Select image first!", Toast.LENGTH_LONG).show();
+            return;
+        }
 
+        Toast.makeText(this, "upload started!", Toast.LENGTH_LONG).show();
+
+        final ContentValues values = new ContentValues();
+        values.put(Uploads.URL, "url");
+        values.put(Uploads.USERNAME, "name");
+        values.put(Uploads.PASSWORD, "password");
+        values.put(Uploads.ITEM_NAME, mEditName.getText().toString());
+        values.put(Uploads.ITEM_PATH, mEditPath.getText().toString());
+        values.put(Uploads.FILE_URI, mImageUri.toString());
+        values.put(Uploads.STATUS, UploadStatus.PENDING);
+
+        new AsyncQueryHandler(getContentResolver()){}.startInsert(0, null, Uploads.CONTENT_URI, values);
+        setResult(RESULT_OK);
+        finish();
+        /*
         UploaderApp.from(this).getSession(new Listener<ScApiSession>() {
             @Override
             public void onResponse(ScApiSession scApiSession) {
                 uploadMedia(scApiSession);
             }
         }, new EmptyErrorListener());
+        */
     }
 
     private void uploadMedia(ScApiSession session) {
