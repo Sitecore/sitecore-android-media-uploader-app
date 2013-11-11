@@ -29,6 +29,7 @@ import butterknife.OnClick;
 import butterknife.Views;
 
 public class WelcomeActivity extends Activity implements ErrorListener, Listener<ScApiSession> {
+    @InjectView(R.id.edit_name) EditText mName;
     @InjectView(R.id.edit_url) EditText mUrl;
     @InjectView(R.id.edit_login) EditText mLogin;
     @InjectView(R.id.edit_password) EditText mPassword;
@@ -71,6 +72,7 @@ public class WelcomeActivity extends Activity implements ErrorListener, Listener
             @Override
             public void onResponse(ItemsResponse response) {
                 if (response.isSuccess()) {
+                    String name = mName.getText().toString();
                     String url = mUrl.getText().toString();
                     String login = mLogin.getText().toString();
                     String password = mPassword.getText().toString();
@@ -78,12 +80,13 @@ public class WelcomeActivity extends Activity implements ErrorListener, Listener
                     Prefs prefs = Prefs.from(WelcomeActivity.this);
 
                     prefs.put(R.string.key_instance_exist, true);
+                    prefs.put(R.string.key_instance_name, name);
                     prefs.put(R.string.key_instance_url, url);
                     prefs.put(R.string.key_instance_login, login);
                     prefs.put(R.string.key_instance_password, password);
                     prefs.put(R.string.key_instance_root_folder, ScUtils.PATH_MEDIA_LIBRARY);
 
-                    saveInstance(url, login, password, ScUtils.PATH_MEDIA_LIBRARY);
+                    saveInstance(name, url, login, password, ScUtils.PATH_MEDIA_LIBRARY);
 
                     Toast.makeText(WelcomeActivity.this, "Successfully logged in", Toast.LENGTH_LONG).show();
 
@@ -98,8 +101,9 @@ public class WelcomeActivity extends Activity implements ErrorListener, Listener
         RequestQueueProvider.getRequestQueue(this).add(session.getItems(success, this).build());
     }
 
-    private void saveInstance(String url, String login, String password, String defaultRootFolder) {
+    private void saveInstance(String name, String url, String login, String password, String defaultRootFolder) {
         ContentValues values = new ContentValues();
+        values.put(Instances.NAME, name);
         values.put(Instances.URL, url);
         values.put(Instances.LOGIN, login);
         values.put(Instances.PASSWORD, password);
@@ -110,6 +114,12 @@ public class WelcomeActivity extends Activity implements ErrorListener, Listener
 
     boolean validate() {
         boolean valid = true;
+
+        String name = mName.getText().toString();
+        if (TextUtils.isEmpty(name)) {
+            mName.setError("Please enter Instance name");
+            valid = false;
+        }
 
         String url = mUrl.getText().toString();
         if (TextUtils.isEmpty(url) || !URLUtil.isValidUrl(url)) {

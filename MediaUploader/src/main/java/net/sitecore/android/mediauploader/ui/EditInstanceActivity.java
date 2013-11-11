@@ -28,7 +28,6 @@ import net.sitecore.android.mediauploader.R;
 import net.sitecore.android.mediauploader.UploaderApp;
 import net.sitecore.android.mediauploader.provider.UploadMediaContract.Instances;
 import net.sitecore.android.mediauploader.provider.UploadMediaContract.Instances.Query;
-import net.sitecore.android.mediauploader.util.Prefs;
 import net.sitecore.android.mediauploader.util.Utils;
 import net.sitecore.android.sdk.api.RequestQueueProvider;
 import net.sitecore.android.sdk.api.ScApiSession;
@@ -42,6 +41,7 @@ public class EditInstanceActivity extends Activity implements LoaderCallbacks<Cu
     private Uri mInstanceUri;
     private boolean isEditorMode = false;
 
+    @InjectView(R.id.instance_name) EditText mInstanceName;
     @InjectView(R.id.instance_url) EditText mInstanceUrl;
     @InjectView(R.id.instance_login) EditText mInstanceLogin;
     @InjectView(R.id.instance_password) EditText mInstancePassword;
@@ -99,6 +99,12 @@ public class EditInstanceActivity extends Activity implements LoaderCallbacks<Cu
     boolean validate() {
         boolean valid = true;
 
+        String name = mInstanceName.getText().toString();
+        if (TextUtils.isEmpty(name)) {
+            mInstanceName.setError("Please enter Instance name");
+            valid = false;
+        }
+
         String url = mInstanceUrl.getText().toString();
         if (TextUtils.isEmpty(url) || !URLUtil.isValidUrl(url)) {
             mInstanceUrl.setError("Please enter valid CMS Instance url");
@@ -141,6 +147,7 @@ public class EditInstanceActivity extends Activity implements LoaderCallbacks<Cu
 
     private void initViews(Cursor cursor) {
         if (!cursor.moveToFirst()) return;
+        mInstanceName.setText(cursor.getString(Query.NAME));
         mInstanceUrl.setText(cursor.getString(Query.URL));
         mInstanceLogin.setText(cursor.getString(Query.LOGIN));
         mInstancePassword.setText(cursor.getString(Query.PASSWORD));
@@ -176,31 +183,24 @@ public class EditInstanceActivity extends Activity implements LoaderCallbacks<Cu
     }
 
     private void saveOrUpdateInstance() {
-        Prefs prefs = Prefs.from(EditInstanceActivity.this);
-
+        String name = mInstanceName.getText().toString();
         String url = mInstanceUrl.getText().toString();
         String login = mInstanceLogin.getText().toString();
         String password = mInstancePassword.getText().toString();
         String folder = mInstanceRootFolder.getText().toString();
 
-        prefs.put(R.string.key_instance_url, url);
-        prefs.put(R.string.key_instance_login, login);
-        prefs.put(R.string.key_instance_password, password);
-        prefs.put(R.string.key_instance_root_folder, folder);
-
         ContentValues values = new ContentValues();
+        values.put(Instances.NAME, name);
         values.put(Instances.URL, url);
         values.put(Instances.LOGIN, login);
         values.put(Instances.PASSWORD, password);
         values.put(Instances.ROOT_FOLDER, folder);
 
         if (isEditorMode) {
-            new AsyncQueryHandler(getContentResolver()) {
-            }
+            new AsyncQueryHandler(getContentResolver()) {}
                     .startUpdate(0, null, mInstanceUri, values, null, null);
         } else {
-            new AsyncQueryHandler(getContentResolver()) {
-            }
+            new AsyncQueryHandler(getContentResolver()) {}
                     .startInsert(0, null, Instances.CONTENT_URI, values);
         }
     }

@@ -1,52 +1,63 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:orientation="vertical">
 
     <TextView
-        android:layout_height="wrap_content"
         android:layout_width="match_parent"
-        android:text="Welcome to Sitecore Media Uploader!"
+        android:layout_height="wrap_content"
         android:layout_margin="48dp"
+        android:text="Welcome to Sitecore Media Uploader!"
         android:textAppearance="@android:style/TextAppearance.Large" />
 
     <EditText
-        android:id="@+id/edit_url"
-        android:layout_height="wrap_content"
+        android:id="@+id/edit_name"
         android:layout_width="match_parent"
-        android:singleLine="true"
-        android:inputType="textUri"
+        android:layout_height="wrap_content"
+        android:hint="Sitecore instance name"
         android:imeOptions="actionNext"
-        android:text="http://mobiledev1ua1.dk.sitecore.net:722"
-        android:hint="Sitecore instance URL" />
+        android:inputType="text"
+        android:singleLine="true"
+        android:text="sample_instance" />
+
+
+    <EditText
+        android:id="@+id/edit_url"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Sitecore instance URL"
+        android:imeOptions="actionNext"
+        android:inputType="textUri"
+        android:singleLine="true"
+        android:text="http://mobiledev1ua1.dk.sitecore.net:722" />
 
     <EditText
         android:id="@+id/edit_login"
-        android:layout_height="wrap_content"
         android:layout_width="match_parent"
-        android:singleLine="true"
-        android:inputType="textPersonName"
+        android:layout_height="wrap_content"
+        android:hint="Domain\\Username"
         android:imeOptions="actionNext"
-        android:text="extranet\\creatorex"
-        android:hint="Domain\\Username" />
+        android:inputType="textPersonName"
+        android:singleLine="true"
+        android:text="extranet\\creatorex" />
 
     <EditText
         android:id="@+id/edit_password"
-        android:layout_height="wrap_content"
         android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         android:layout_marginBottom="48dp"
-        android:inputType="textPassword"
+        android:hint="Password"
         android:imeOptions="actionDone"
+        android:inputType="textPassword"
         android:singleLine="true"
-        android:text="creatorex"
-        android:hint="Password" />
+        android:text="creatorex" />
 
     <Button
         android:id="@+id/button_ok"
-        android:layout_height="wrap_content"
         android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         android:text="Login" />
 
 </LinearLayout>

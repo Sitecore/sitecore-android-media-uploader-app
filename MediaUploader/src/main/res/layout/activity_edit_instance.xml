@@ -5,13 +5,24 @@
     android:orientation="vertical">
 
     <EditText
+        android:id="@+id/instance_name"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Sitecore instance name"
+        android:imeOptions="actionNext"
+        android:inputType="text"
+        android:singleLine="true"
+        android:text="sample_instance" />
+
+    <EditText
         android:id="@+id/instance_url"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="Instance URL"
         android:imeOptions="actionNext"
         android:inputType="textUri"
-        android:singleLine="true" />
+        android:singleLine="true"
+        android:text="http://mobiledev1ua1.dk.sitecore.net:722" />
 
     <EditText
         android:id="@+id/instance_login"
@@ -20,7 +31,8 @@
         android:hint="Domain\\Username"
         android:imeOptions="actionNext"
         android:inputType="textPersonName"
-        android:singleLine="true" />
+        android:singleLine="true"
+        android:text="extranet\\creatorex" />
 
     <EditText
         android:id="@+id/instance_password"
@@ -29,7 +41,8 @@
         android:hint="Password"
         android:imeOptions="actionNext"
         android:inputType="textPassword"
-        android:singleLine="true" />
+        android:singleLine="true"
+        android:text="creatorex" />
 
     <EditText
         android:id="@+id/instance_root_folder"

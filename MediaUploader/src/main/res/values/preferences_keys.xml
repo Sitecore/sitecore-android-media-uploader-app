@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="key_instance_exist">instance_exist</string>
+    <string name="key_instance_name">instance_name</string>
     <string name="key_instance_url">instance_url</string>
     <string name="key_instance_login">instance_login</string>
     <string name="key_instance_password">instance_password</string>
