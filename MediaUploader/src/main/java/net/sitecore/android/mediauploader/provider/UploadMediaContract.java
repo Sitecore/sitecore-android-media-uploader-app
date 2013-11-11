@@ -25,7 +25,7 @@ public class UploadMediaContract {
         }
 
         public interface Query {
-            String[] PROJECTION = {
+            public String[] PROJECTION = {
                     Instances._ID,
                     Instances.URL,
                     Instances.LOGIN,
@@ -52,11 +52,26 @@ public class UploadMediaContract {
             return uri.getPathSegments().get(1);
         }
 
-        public interface Status {
-            String PENDING = "pending";
-            String DONE = "done";
-            String IN_PROGRESS = "in_progress";
-            String ERROR = "error";
+        public interface Query {
+            public String[] PROJECTION = {
+                    Uploads._ID,
+                    Uploads.URL,
+                    Uploads.USERNAME,
+                    Uploads.PASSWORD,
+                    Uploads.ITEM_NAME,
+                    Uploads.FILE_URI,
+                    Uploads.STATUS
+            };
+
+            int _ID = 0;
+            int URL = 1;
+            int USERNAME = 2;
+            int PASSWORD = 3;
+            int ITEM_NAME = 4;
+            int FILE_URI = 5;
+            int STATUS = 6;
+
+            public String ORDER_BY_STATUS = Uploads.STATUS + " desc";
         }
 
     }

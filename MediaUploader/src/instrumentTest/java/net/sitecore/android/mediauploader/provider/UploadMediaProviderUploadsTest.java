@@ -6,6 +6,7 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.test.ProviderTestCase2;
 
+import net.sitecore.android.mediauploader.model.UploadStatus;
 import net.sitecore.android.mediauploader.provider.UploadMediaContract.Uploads;
 
 public class UploadMediaProviderUploadsTest extends ProviderTestCase2<UploadMediaProvider> {
@@ -23,7 +24,7 @@ public class UploadMediaProviderUploadsTest extends ProviderTestCase2<UploadMedi
         values.put(Uploads.PASSWORD, "password");
         values.put(Uploads.ITEM_NAME, itemName);
         values.put(Uploads.FILE_URI, "http://test.com/image.png");
-        values.put(Uploads.STATUS, "IN PROGRESS");
+        values.put(Uploads.STATUS, UploadStatus.IN_PROGRESS);
 
         return values;
     }
