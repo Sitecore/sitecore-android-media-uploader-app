@@ -23,6 +23,7 @@ import static net.sitecore.android.sdk.api.LogUtils.LOGD;
 public class UploadMediaProvider extends ContentProvider {
 
     private static final int INSTANCES = 100;
+    private static final int INSTANCE_ID = 101;
 
     private static final int UPLOADS = 200;
     private static final int UPLOAD_ID = 201;
@@ -36,6 +37,7 @@ public class UploadMediaProvider extends ContentProvider {
         final String authority = UploadMediaContract.CONTENT_AUTHORITY;
 
         matcher.addURI(authority, "instances", INSTANCES);
+        matcher.addURI(authority, "instances/*", INSTANCE_ID);
 
         matcher.addURI(authority, "uploads", UPLOADS);
 
@@ -55,6 +57,9 @@ public class UploadMediaProvider extends ContentProvider {
         switch (match) {
             case INSTANCES:
                 return Instances.CONTENT_TYPE;
+
+            case INSTANCE_ID:
+                return Instances.CONTENT_ITEM_TYPE;
 
             case UPLOADS:
                 return Uploads.CONTENT_TYPE;
@@ -84,6 +89,12 @@ public class UploadMediaProvider extends ContentProvider {
                 break;
             }
 
+            case INSTANCE_ID: {
+                String instanceId = Instances.getInstanceId(uri);
+                builder.table(Tables.INSTANCES).where(Instances._ID + "=?", instanceId);
+                break;
+            }
+            
             default:
                 throw new UnsupportedOperationException("Not supported query uri: " + uri);
         }
@@ -102,9 +113,9 @@ public class UploadMediaProvider extends ContentProvider {
         ContentResolver resolver = getContext().getContentResolver();
         switch (match) {
             case INSTANCES: {
-                db.insertOrThrow(Tables.INSTANCES, null, values);
+                long id = db.insertOrThrow(Tables.INSTANCES, null, values);
                 resolver.notifyChange(Instances.CONTENT_URI, null);
-                return Instances.buildInstanceUri(values.getAsString(Instances._ID));
+                return Instances.buildInstanceUri(String.valueOf(id));
             }
 
             case UPLOADS: {
@@ -135,11 +146,18 @@ public class UploadMediaProvider extends ContentProvider {
                 builder.table(Tables.UPLOADS);
                 break;
 
+            case INSTANCE_ID:
+                builder.table(Tables.INSTANCES);
+                break;
+
             default:
                 throw new UnsupportedOperationException("Unknown delete uri: " + uri);
         }
 
         int result = builder.where(selection, selectionArgs).delete(db);
+        if (match == INSTANCE_ID) {
+            getContext().getContentResolver().notifyChange(Instances.CONTENT_URI, null);
+        }
         getContext().getContentResolver().notifyChange(uri, null);
         return result;
     }
@@ -160,11 +178,18 @@ public class UploadMediaProvider extends ContentProvider {
                 builder.table(Tables.UPLOADS);
                 break;
 
+            case INSTANCE_ID:
+                builder.table(Tables.INSTANCES);
+                break;
+
             default:
                 throw new UnsupportedOperationException("Unknown update uri: " + uri);
         }
 
         int result = builder.where(selection, selectionArgs).update(db, values);
+        if (match == INSTANCE_ID) {
+            getContext().getContentResolver().notifyChange(Instances.CONTENT_URI, null);
+        }
         getContext().getContentResolver().notifyChange(uri, null);
         return result;
     }
