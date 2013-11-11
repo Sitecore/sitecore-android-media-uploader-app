@@ -15,6 +15,7 @@ import android.view.Window;
 
 import net.sitecore.android.mediauploader.R;
 import net.sitecore.android.mediauploader.ui.browser.MediaBrowserFragment;
+import net.sitecore.android.mediauploader.ui.instancemanager.InstancesListFragment;
 import net.sitecore.android.mediauploader.util.Prefs;
 import net.sitecore.android.mediauploader.util.ScUtils;
 

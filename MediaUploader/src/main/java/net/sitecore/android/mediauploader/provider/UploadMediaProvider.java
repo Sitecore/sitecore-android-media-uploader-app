@@ -25,6 +25,7 @@ public class UploadMediaProvider extends ContentProvider {
     private static final int INSTANCES = 100;
 
     private static final int UPLOADS = 200;
+    private static final int UPLOAD_ID = 201;
 
     private UploaderMediaDatabase mDatabaseHelper;
 
@@ -58,6 +59,9 @@ public class UploadMediaProvider extends ContentProvider {
             case UPLOADS:
                 return Uploads.CONTENT_TYPE;
 
+            case UPLOAD_ID:
+                return Uploads.CONTENT_ITEM_TYPE;
+
             default:
                 throw new UnsupportedOperationException("Unknown uri: " + uri);
         }
@@ -74,6 +78,12 @@ public class UploadMediaProvider extends ContentProvider {
                 builder.table(Tables.INSTANCES);
                 break;
             }
+
+            case UPLOADS: {
+                builder.table(Tables.UPLOADS);
+                break;
+            }
+
             default:
                 throw new UnsupportedOperationException("Not supported query uri: " + uri);
         }
@@ -97,6 +107,12 @@ public class UploadMediaProvider extends ContentProvider {
                 return Instances.buildInstanceUri(values.getAsString(Instances._ID));
             }
 
+            case UPLOADS: {
+                long id = db.insertOrThrow(Tables.UPLOADS, null, values);
+                resolver.notifyChange(Uploads.CONTENT_URI, null);
+                return Instances.buildInstanceUri(Long.toString(id));
+            }
+
             default:
                 throw new UnsupportedOperationException("Unknown insert uri: " + uri);
         }
@@ -113,6 +129,10 @@ public class UploadMediaProvider extends ContentProvider {
         switch (match) {
             case INSTANCES:
                 builder.table(Tables.INSTANCES);
+                break;
+
+            case UPLOADS:
+                builder.table(Tables.UPLOADS);
                 break;
 
             default:
@@ -134,6 +154,10 @@ public class UploadMediaProvider extends ContentProvider {
         switch (match) {
             case INSTANCES:
                 builder.table(Tables.INSTANCES);
+                break;
+
+            case UPLOADS:
+                builder.table(Tables.UPLOADS);
                 break;
 
             default:
