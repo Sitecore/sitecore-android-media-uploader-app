@@ -3,8 +3,6 @@ package net.sitecore.android.mediauploader.provider;
 import android.net.Uri;
 import android.provider.BaseColumns;
 
-import net.sitecore.android.mediauploader.provider.UploaderMediaDatabase.Tables;
-
 import static android.content.ContentResolver.CURSOR_DIR_BASE_TYPE;
 import static android.content.ContentResolver.CURSOR_ITEM_BASE_TYPE;
 
@@ -21,7 +19,12 @@ public class UploadMediaContract {
         public static final String CONTENT_ITEM_TYPE = CURSOR_ITEM_BASE_TYPE + "/vnd.sitecore.instance";
 
         public static Uri buildInstanceUri(String instanceId) {
+            Uri temp = CONTENT_URI.buildUpon().appendPath(instanceId).build();
             return CONTENT_URI.buildUpon().appendPath(instanceId).build();
+        }
+
+        public static String getInstanceId(Uri uri) {
+            return uri.getPathSegments().get(1);
         }
 
         public interface Query {
@@ -30,14 +33,14 @@ public class UploadMediaContract {
                     Instances.URL,
                     Instances.LOGIN,
                     Instances.PASSWORD,
-                    Instances.DEFAULT_FOLDER
+                    Instances.ROOT_FOLDER
             };
 
             int _ID = 0;
             int URL = 1;
             int LOGIN = 2;
             int PASSWORD = 3;
-            int DEFAULT_FOLDER = 4;
+            int ROOT_FOLDER = 4;
         }
     }
 
@@ -80,7 +83,7 @@ public class UploadMediaContract {
         String URL = "instance_url";
         String LOGIN = "instance_login";
         String PASSWORD = "instance_password";
-        String DEFAULT_FOLDER = "default_root_folder";
+        String ROOT_FOLDER = "root_folder";
     }
 
     interface UploadColumns {

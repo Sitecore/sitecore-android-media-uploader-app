@@ -103,7 +103,7 @@ public class WelcomeActivity extends Activity implements ErrorListener, Listener
         values.put(Instances.URL, url);
         values.put(Instances.LOGIN, login);
         values.put(Instances.PASSWORD, password);
-        values.put(Instances.DEFAULT_FOLDER, defaultRootFolder);
+        values.put(Instances.ROOT_FOLDER, defaultRootFolder);
 
         new AsyncQueryHandler(getContentResolver()){}.startInsert(0, null, Instances.CONTENT_URI, values);
     }
