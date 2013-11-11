@@ -23,6 +23,7 @@ public class UploadMediaProviderUploadsTest extends ProviderTestCase2<UploadMedi
         values.put(Uploads.USERNAME, "name");
         values.put(Uploads.PASSWORD, "password");
         values.put(Uploads.ITEM_NAME, itemName);
+        values.put(Uploads.ITEM_PATH, "/sitecore/fake/path");
         values.put(Uploads.FILE_URI, "http://test.com/image.png");
         values.put(Uploads.STATUS, UploadStatus.IN_PROGRESS);
 
