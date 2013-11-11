@@ -14,6 +14,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
+import android.widget.AdapterView.OnItemLongClickListener;
 import android.widget.ListView;
 
 import net.sitecore.android.mediauploader.R;
@@ -21,12 +22,14 @@ import net.sitecore.android.mediauploader.provider.UploadMediaContract.Instances
 import net.sitecore.android.mediauploader.provider.UploadMediaContract.Instances.Query;
 import net.sitecore.android.mediauploader.ui.EditInstanceActivity;
 import net.sitecore.android.mediauploader.ui.ScFragment;
+import net.sitecore.android.mediauploader.util.Prefs;
 
 import butterknife.InjectView;
 import butterknife.Views;
 
-public class InstancesListFragment extends ScFragment implements LoaderCallbacks<Cursor>, OnItemClickListener {
+public class InstancesListFragment extends ScFragment implements LoaderCallbacks<Cursor>, OnItemClickListener, OnItemLongClickListener {
     private InstancesListAdapter mListAdapter;
+    private Prefs mPrefs;
 
     @InjectView(android.R.id.list) ListView mListView;
 
@@ -43,7 +46,10 @@ public class InstancesListFragment extends ScFragment implements LoaderCallbacks
         View view = super.onCreateView(inflater, container, savedInstanceState);
         Views.inject(this, view);
 
+        mPrefs = Prefs.from(getActivity());
+
         mListView.setOnItemClickListener(this);
+        mListView.setOnItemLongClickListener(this);
 
         getLoaderManager().initLoader(0, null, this);
 
@@ -92,5 +98,30 @@ public class InstancesListFragment extends ScFragment implements LoaderCallbacks
         Intent intent = new Intent(getActivity(), EditInstanceActivity.class);
         intent.setData(Instances.buildInstanceUri(c.getString(Query._ID)));
         startActivity(intent);
+    }
+
+    @Override
+    public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+        Cursor cursor = mListAdapter.getCursor();
+        cursor.moveToPosition(position);
+
+        saveInstanceToPrefs(cursor);
+
+        mListAdapter.notifyDataSetChanged();
+        return true;
+    }
+
+    private void saveInstanceToPrefs(Cursor cursor) {
+        String name = cursor.getString(Query.NAME);
+        String url = cursor.getString(Query.URL);
+        String login = cursor.getString(Query.LOGIN);
+        String password = cursor.getString(Query.PASSWORD);
+        String folder = cursor.getString(Query.ROOT_FOLDER);
+
+        mPrefs.put(R.string.key_instance_name, name);
+        mPrefs.put(R.string.key_instance_url, url);
+        mPrefs.put(R.string.key_instance_login, login);
+        mPrefs.put(R.string.key_instance_password, password);
+        mPrefs.put(R.string.key_instance_root_folder, folder);
     }
 }

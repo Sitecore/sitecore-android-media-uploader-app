@@ -12,6 +12,7 @@ import android.widget.TextView;
 
 import net.sitecore.android.mediauploader.R;
 import net.sitecore.android.mediauploader.provider.UploadMediaContract.Instances.Query;
+import net.sitecore.android.mediauploader.util.Prefs;
 
 import butterknife.InjectView;
 import butterknife.Views;
@@ -25,25 +26,34 @@ public class InstancesListAdapter extends CursorAdapter {
     @Override
     public View newView(Context context, Cursor cursor, ViewGroup parent) {
         final View v = LayoutInflater.from(context).inflate(R.layout.list_item_instance, parent, false);
-        v.setTag(new ViewHolder(v));
+        ViewHolder holder = new ViewHolder(v);
+        holder.deleteButton.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {}
+        });
+        v.setTag(holder);
         return v;
     }
 
     @Override
     public void bindView(View view, final Context context, final Cursor c) {
         ViewHolder holder = (ViewHolder) view.getTag();
-        holder.instanceName.setText(c.getString(Query.URL));
-        holder.deleteButton.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View v) {
 
-            }
-        });
+        String defaultInstanceName = Prefs.from(context).getString(R.string.key_instance_name);
+        if (defaultInstanceName.equals(c.getString(Query.NAME))) {
+            holder.defaultInstance.setVisibility(View.VISIBLE);
+        } else {
+            holder.defaultInstance.setVisibility(View.INVISIBLE);
+        }
+        holder.instanceName.setText(c.getString(Query.NAME));
+        holder.instanceUrl.setText(c.getString(Query.URL));
     }
 
     class ViewHolder {
         @InjectView(R.id.instance_name) TextView instanceName;
+        @InjectView(R.id.instance_url) TextView instanceUrl;
         @InjectView(R.id.button_instance_delete) ImageButton deleteButton;
+        @InjectView(R.id.checkbox_default_instance) View defaultInstance;
 
         ViewHolder(View parent) {
             Views.inject(this, parent);
