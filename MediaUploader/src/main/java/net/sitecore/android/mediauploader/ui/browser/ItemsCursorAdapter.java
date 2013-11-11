@@ -34,7 +34,7 @@ class ItemsCursorAdapter extends CursorAdapter {
 
     @Override
     public View newView(Context context, Cursor cursor, ViewGroup parent) {
-        final View v = LayoutInflater.from(context).inflate(R.layout.layout_browser_item, parent, false);
+        final View v = LayoutInflater.from(context).inflate(R.layout.list_item_browser, parent, false);
         v.setTag(new ViewHolder(v));
         return v;
     }
