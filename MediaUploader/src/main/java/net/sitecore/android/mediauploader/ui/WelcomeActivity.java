@@ -76,14 +76,9 @@ public class WelcomeActivity extends Activity implements ErrorListener, Listener
                     String login = mLogin.getText().toString();
                     String password = mPassword.getText().toString();
 
-                    Prefs prefs = Prefs.from(WelcomeActivity.this);
-
-                    prefs.put(R.string.key_instance_exist, true);
-                    prefs.put(R.string.key_instance_name, name);
-                    prefs.put(R.string.key_instance_url, url);
-                    prefs.put(R.string.key_instance_login, login);
-                    prefs.put(R.string.key_instance_password, password);
-                    prefs.put(R.string.key_instance_root_folder, ScUtils.PATH_MEDIA_LIBRARY);
+                    Utils.setDefaultInstance(WelcomeActivity.this, name, url, login, password,
+                            ScUtils.PATH_MEDIA_LIBRARY);
+                    Prefs.from(WelcomeActivity.this).put(R.string.key_instance_exist, true);
 
                     saveInstance(name, url, login, password, ScUtils.PATH_MEDIA_LIBRARY);
 
@@ -108,7 +103,8 @@ public class WelcomeActivity extends Activity implements ErrorListener, Listener
         values.put(Instances.PASSWORD, password);
         values.put(Instances.ROOT_FOLDER, defaultRootFolder);
 
-        new AsyncQueryHandler(getContentResolver()){}.startInsert(0, null, Instances.CONTENT_URI, values);
+        new AsyncQueryHandler(getContentResolver()) {}
+                .startInsert(0, null, Instances.CONTENT_URI, values);
     }
 
     boolean validate() {

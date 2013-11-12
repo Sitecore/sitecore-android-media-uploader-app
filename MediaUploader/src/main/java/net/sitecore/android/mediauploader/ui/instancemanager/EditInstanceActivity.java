@@ -231,12 +231,7 @@ public class EditInstanceActivity extends Activity implements LoaderCallbacks<Cu
         if (TextUtils.isEmpty(folder)) folder = ScUtils.PATH_MEDIA_LIBRARY;
 
         if (isDefaultInstance) {
-            Prefs prefs = Prefs.from(this);
-
-            prefs.put(R.string.key_instance_name, name);
-            prefs.put(R.string.key_instance_url, url);
-            prefs.put(R.string.key_instance_login, login);
-            prefs.put(R.string.key_instance_password, password);
+            Utils.setDefaultInstance(this, name, url, login, password, folder);
         }
 
         ContentValues values = new ContentValues();

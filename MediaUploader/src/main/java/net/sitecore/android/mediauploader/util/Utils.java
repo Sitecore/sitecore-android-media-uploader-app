@@ -37,4 +37,14 @@ public class Utils {
     public static boolean isDefaultInstance(Context context, String instanceName) {
         return instanceName.equals(Prefs.from(context).getString(R.string.key_instance_name));
     }
+
+    public static void setDefaultInstance(Context context, String name, String url, String login, String password, String folder) {
+        Prefs prefs = Prefs.from(context);
+
+        prefs.put(R.string.key_instance_name, name);
+        prefs.put(R.string.key_instance_url, url);
+        prefs.put(R.string.key_instance_login, login);
+        prefs.put(R.string.key_instance_password, password);
+        prefs.put(R.string.key_instance_root_folder, folder);
+    }
 }

@@ -25,7 +25,6 @@ import net.sitecore.android.mediauploader.provider.UploadMediaContract.Instances
 import net.sitecore.android.mediauploader.ui.ScFragment;
 import net.sitecore.android.mediauploader.ui.instancemanager.DeleteDialog.DeleteListener;
 import net.sitecore.android.mediauploader.ui.instancemanager.InstancesListAdapter.OnDeleteButtonClicked;
-import net.sitecore.android.mediauploader.util.Prefs;
 import net.sitecore.android.mediauploader.util.Utils;
 
 import butterknife.InjectView;
@@ -33,7 +32,6 @@ import butterknife.Views;
 
 public class InstancesListFragment extends ScFragment implements LoaderCallbacks<Cursor>, OnItemClickListener, OnItemLongClickListener {
     private InstancesListAdapter mListAdapter;
-    private Prefs mPrefs;
 
     @InjectView(android.R.id.list) ListView mListView;
 
@@ -72,8 +70,6 @@ public class InstancesListFragment extends ScFragment implements LoaderCallbacks
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = super.onCreateView(inflater, container, savedInstanceState);
         Views.inject(this, view);
-
-        mPrefs = Prefs.from(getActivity());
 
         mListView.setOnItemClickListener(this);
         mListView.setOnItemLongClickListener(this);
@@ -145,10 +141,6 @@ public class InstancesListFragment extends ScFragment implements LoaderCallbacks
         String password = cursor.getString(Query.PASSWORD);
         String folder = cursor.getString(Query.ROOT_FOLDER);
 
-        mPrefs.put(R.string.key_instance_name, name);
-        mPrefs.put(R.string.key_instance_url, url);
-        mPrefs.put(R.string.key_instance_login, login);
-        mPrefs.put(R.string.key_instance_password, password);
-        mPrefs.put(R.string.key_instance_root_folder, folder);
+        Utils.setDefaultInstance(getActivity(), name, url, login, password, folder);
     }
 }
