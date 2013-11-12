@@ -29,7 +29,6 @@ import butterknife.OnClick;
 import butterknife.Views;
 
 public class WelcomeActivity extends Activity implements ErrorListener, Listener<ScApiSession> {
-    @InjectView(R.id.edit_name) EditText mName;
     @InjectView(R.id.edit_url) EditText mUrl;
     @InjectView(R.id.edit_login) EditText mLogin;
     @InjectView(R.id.edit_password) EditText mPassword;
@@ -72,7 +71,7 @@ public class WelcomeActivity extends Activity implements ErrorListener, Listener
             @Override
             public void onResponse(ItemsResponse response) {
                 if (response.isSuccess()) {
-                    String name = mName.getText().toString();
+                    String name = mUrl.getText().toString();
                     String url = mUrl.getText().toString();
                     String login = mLogin.getText().toString();
                     String password = mPassword.getText().toString();
@@ -114,12 +113,6 @@ public class WelcomeActivity extends Activity implements ErrorListener, Listener
 
     boolean validate() {
         boolean valid = true;
-
-        String name = mName.getText().toString();
-        if (TextUtils.isEmpty(name)) {
-            mName.setError("Please enter Instance name");
-            valid = false;
-        }
 
         String url = mUrl.getText().toString();
         if (TextUtils.isEmpty(url) || !URLUtil.isValidUrl(url)) {

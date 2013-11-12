@@ -13,17 +13,6 @@
         android:textAppearance="@android:style/TextAppearance.Large" />
 
     <EditText
-        android:id="@+id/edit_name"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="Sitecore instance name"
-        android:imeOptions="actionNext"
-        android:inputType="text"
-        android:singleLine="true"
-        android:text="sample_instance" />
-
-
-    <EditText
         android:id="@+id/edit_url"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

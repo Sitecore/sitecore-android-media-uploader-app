@@ -103,12 +103,6 @@ public class EditInstanceActivity extends Activity implements LoaderCallbacks<Cu
     boolean validateFields() {
         boolean valid = true;
 
-        String name = mInstanceName.getText().toString();
-        if (TextUtils.isEmpty(name)) {
-            mInstanceName.setError("Please enter Instance name");
-            valid = false;
-        }
-
         String url = mInstanceUrl.getText().toString();
         if (TextUtils.isEmpty(url) || !URLUtil.isValidUrl(url)) {
             mInstanceUrl.setError("Please enter valid CMS Instance url");
@@ -140,7 +134,12 @@ public class EditInstanceActivity extends Activity implements LoaderCallbacks<Cu
     }
 
     private void startAsyncFieldValidation() {
-        getLoaderManager().restartLoader(READ_NAMES_ACTION, null, EditInstanceActivity.this);
+        if (TextUtils.isEmpty(mInstanceName.getText().toString())) {
+            mInstanceName.setText(mInstanceUrl.getText());
+            saveInstanceIfValid();
+        } else {
+            getLoaderManager().restartLoader(READ_NAMES_ACTION, null, EditInstanceActivity.this);
+        }
     }
 
     @Override
@@ -172,15 +171,19 @@ public class EditInstanceActivity extends Activity implements LoaderCallbacks<Cu
                         return;
                     }
                 }
-                if (validateFields()) {
-                    saveOrUpdateInstance();
-                    finish();
-                }
+                saveInstanceIfValid();
                 getLoaderManager().destroyLoader(READ_NAMES_ACTION);
                 break;
             }
         }
 
+    }
+
+    private void saveInstanceIfValid() {
+        if (validateFields()) {
+            saveOrUpdateInstance();
+            finish();
+        }
     }
 
     private void initViews(Cursor cursor) {
