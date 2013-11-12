@@ -81,8 +81,12 @@ public class EditInstanceActivity extends Activity implements LoaderCallbacks<Cu
         customActionBarView.findViewById(R.id.actionbar_done).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startAsyncFieldValidation();
-
+                if (TextUtils.isEmpty(mInstanceName.getText().toString())) {
+                    mInstanceName.setText(mInstanceUrl.getText());
+                    saveInstanceIfValid();
+                } else {
+                    startAsyncFieldValidation();
+                }
             }
         });
         customActionBarView.findViewById(R.id.actionbar_cancel).setOnClickListener(new View.OnClickListener() {
@@ -134,12 +138,7 @@ public class EditInstanceActivity extends Activity implements LoaderCallbacks<Cu
     }
 
     private void startAsyncFieldValidation() {
-        if (TextUtils.isEmpty(mInstanceName.getText().toString())) {
-            mInstanceName.setText(mInstanceUrl.getText());
-            saveInstanceIfValid();
-        } else {
             getLoaderManager().restartLoader(READ_NAMES_ACTION, null, EditInstanceActivity.this);
-        }
     }
 
     @Override
