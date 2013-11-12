@@ -40,6 +40,7 @@ public class UploadMediaProvider extends ContentProvider {
         matcher.addURI(authority, "instances/*", INSTANCE_ID);
 
         matcher.addURI(authority, "uploads", UPLOADS);
+        matcher.addURI(authority, "uploads/#", UPLOAD_ID);
 
         return matcher;
     }
@@ -121,7 +122,7 @@ public class UploadMediaProvider extends ContentProvider {
             case UPLOADS: {
                 long id = db.insertOrThrow(Tables.UPLOADS, null, values);
                 resolver.notifyChange(Uploads.CONTENT_URI, null);
-                return Instances.buildInstanceUri(Long.toString(id));
+                return Uploads.buildUploadUri(Long.toString(id));
             }
 
             default:
@@ -176,6 +177,11 @@ public class UploadMediaProvider extends ContentProvider {
 
             case UPLOADS:
                 builder.table(Tables.UPLOADS);
+                break;
+
+            case UPLOAD_ID:
+                String uploadId = Uploads.getUploadId(uri);
+                builder.table(Tables.UPLOADS).where(Uploads._ID + "=?", uploadId);
                 break;
 
             case INSTANCE_ID:

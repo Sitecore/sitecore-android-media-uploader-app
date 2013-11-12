@@ -19,7 +19,6 @@ public class UploadMediaContract {
         public static final String CONTENT_ITEM_TYPE = CURSOR_ITEM_BASE_TYPE + "/vnd.sitecore.instance";
 
         public static Uri buildInstanceUri(String instanceId) {
-            Uri temp = CONTENT_URI.buildUpon().appendPath(instanceId).build();
             return CONTENT_URI.buildUpon().appendPath(instanceId).build();
         }
 
@@ -55,6 +54,10 @@ public class UploadMediaContract {
 
         public static String getUploadId(Uri uri) {
             return uri.getPathSegments().get(1);
+        }
+
+        public static Uri buildUploadUri(String id) {
+            return CONTENT_URI.buildUpon().appendPath(id).build();
         }
 
         public interface Query {

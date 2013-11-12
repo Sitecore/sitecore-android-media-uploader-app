@@ -42,7 +42,7 @@ import butterknife.Views;
 
 import static net.sitecore.android.sdk.api.LogUtils.LOGD;
 
-public class UploadActivity extends Activity implements Listener<ItemsResponse>, ErrorListener {
+public class UploadActivity extends Activity implements ErrorListener {
 
     private static final int SOURCE_TYPE_GALLERY = 0;
     private static final int SOURCE_TYPE_CAMERA = 1;
@@ -175,24 +175,27 @@ public class UploadActivity extends Activity implements Listener<ItemsResponse>,
         } else {
             values.put(Uploads.STATUS, UploadStatus.IN_PROGRESS);
             Toast.makeText(this, "Uploading media started.", Toast.LENGTH_LONG).show();
-            //TODO: trigger start upload
         }
 
-        new AsyncQueryHandler(getContentResolver()){}.startInsert(0, null, Uploads.CONTENT_URI, values);
+        new AsyncQueryHandler(getContentResolver()) {
+            @Override
+            protected void onInsertComplete(int token, Object cookie, final Uri uri) {
+                if (!mUploadLater.isChecked()) {
+                    UploaderApp.from(UploadActivity.this).getSession(new Listener<ScApiSession>() {
+                        @Override
+                        public void onResponse(ScApiSession scApiSession) {
+                            uploadMedia(scApiSession, uri);
+                        }
+                    }, new EmptyErrorListener());
+                }
+            }
+        }.startInsert(0, null, Uploads.CONTENT_URI, values);
 
         setResult(RESULT_OK);
         finish();
-        /*
-        UploaderApp.from(this).getSession(new Listener<ScApiSession>() {
-            @Override
-            public void onResponse(ScApiSession scApiSession) {
-                uploadMedia(scApiSession);
-            }
-        }, new EmptyErrorListener());
-        */
     }
 
-    private void uploadMedia(ScApiSession session) {
+    private void uploadMedia(ScApiSession session, final Uri uploadUri) {
         LOGD("Uploading: " + mImageUri.toString());
         UploadMediaRequestOptions options = session.uploadMedia(
                 mEditPath.getText().toString(),
@@ -200,11 +203,26 @@ public class UploadActivity extends Activity implements Listener<ItemsResponse>,
                 mImageUri.toString());
         options.setFileName("image.png");
 
-        MediaUploaderService.startUpload(UploadActivity.this, MediaUploaderService.class, options, this, this);
+        MediaUploaderService.startUpload(UploadActivity.this, MediaUploaderService.class, options,
+                new MediaUploadedListener(uploadUri),
+                this);
     }
 
-    @Override
-    public void onResponse(ItemsResponse itemsResponse) {
+    class MediaUploadedListener implements Listener<ItemsResponse> {
+
+        private Uri mUploadUri;
+
+        MediaUploadedListener(Uri uploadUri) {
+            mUploadUri = uploadUri;
+        }
+
+        @Override
+        public void onResponse(ItemsResponse itemsResponse) {
+            ContentValues values = new ContentValues();
+            values.put(Uploads.STATUS, UploadStatus.DONE);
+            new AsyncQueryHandler(getContentResolver()) {
+            }.startUpdate(0, null, mUploadUri, values, null, null);
+        }
     }
 
     @Override
