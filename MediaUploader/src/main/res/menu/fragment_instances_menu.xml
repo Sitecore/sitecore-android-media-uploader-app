@@ -3,7 +3,7 @@
 
 <menu xmlns:android="http://schemas.android.com/apk/res/android" >
     <item android:id="@+id/action_add_instance"
-        android:icon="@drawable/ic_add_instance"
+        android:icon="@drawable/ic_create_instance"
         android:title="Create instance"
         android:showAsAction="always" />
 </menu>
