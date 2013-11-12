@@ -1,6 +1,7 @@
 package net.sitecore.android.mediauploader.ui.instancemanager;
 
 import android.app.LoaderManager.LoaderCallbacks;
+import android.content.AsyncQueryHandler;
 import android.content.CursorLoader;
 import android.content.Intent;
 import android.content.Loader;
@@ -21,6 +22,8 @@ import net.sitecore.android.mediauploader.R;
 import net.sitecore.android.mediauploader.provider.UploadMediaContract.Instances;
 import net.sitecore.android.mediauploader.provider.UploadMediaContract.Instances.Query;
 import net.sitecore.android.mediauploader.ui.ScFragment;
+import net.sitecore.android.mediauploader.ui.instancemanager.DeleteDialog.DeleteListener;
+import net.sitecore.android.mediauploader.ui.instancemanager.InstancesListAdapter.OnDeleteButtonClicked;
 import net.sitecore.android.mediauploader.util.Prefs;
 
 import butterknife.InjectView;
@@ -36,8 +39,26 @@ public class InstancesListFragment extends ScFragment implements LoaderCallbacks
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
-        mListAdapter = new InstancesListAdapter(getActivity());
+        mListAdapter = new InstancesListAdapter(getActivity(), new OnDeleteButtonClicked() {
+
+            @Override
+            public void click(String name) {
+                showDeleteDialog(name);
+            }
+        });
         mListView.setAdapter(mListAdapter);
+    }
+
+    private void showDeleteDialog(final String instanceName) {
+        DeleteDialog dialog = DeleteDialog.newInstance(instanceName, new DeleteListener() {
+            @Override
+            public void delete() {
+                String selection = Instances.NAME + " ='" + instanceName + "'";
+                new AsyncQueryHandler(getActivity().getContentResolver()) {}
+                        .startDelete(0, null, Instances.CONTENT_URI, selection, null);
+            }
+        });
+        dialog.show(getFragmentManager(), "dialog");
     }
 
     @Override

@@ -18,18 +18,26 @@ import butterknife.InjectView;
 import butterknife.Views;
 
 public class InstancesListAdapter extends CursorAdapter {
+    private OnDeleteButtonClicked mDeleteButtonClicked;
 
-    public InstancesListAdapter(Context context) {
+    interface OnDeleteButtonClicked {
+        public void click(String name);
+    }
+
+    public InstancesListAdapter(Context context, OnDeleteButtonClicked listener) {
         super(context, null, true);
+        mDeleteButtonClicked = listener;
     }
 
     @Override
     public View newView(Context context, Cursor cursor, ViewGroup parent) {
         final View v = LayoutInflater.from(context).inflate(R.layout.list_item_instance, parent, false);
-        ViewHolder holder = new ViewHolder(v);
+        final ViewHolder holder = new ViewHolder(v);
         holder.deleteButton.setOnClickListener(new OnClickListener() {
             @Override
-            public void onClick(View v) {}
+            public void onClick(View v) {
+                mDeleteButtonClicked.click(holder.instanceName.getText().toString());
+            }
         });
         v.setTag(holder);
         return v;
