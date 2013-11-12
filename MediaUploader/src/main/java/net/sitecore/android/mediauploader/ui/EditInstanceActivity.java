@@ -28,6 +28,7 @@ import net.sitecore.android.mediauploader.R;
 import net.sitecore.android.mediauploader.UploaderApp;
 import net.sitecore.android.mediauploader.provider.UploadMediaContract.Instances;
 import net.sitecore.android.mediauploader.provider.UploadMediaContract.Instances.Query;
+import net.sitecore.android.mediauploader.util.Prefs;
 import net.sitecore.android.mediauploader.util.Utils;
 import net.sitecore.android.sdk.api.RequestQueueProvider;
 import net.sitecore.android.sdk.api.ScApiSession;
@@ -40,6 +41,7 @@ import butterknife.Views;
 public class EditInstanceActivity extends Activity implements LoaderCallbacks<Cursor>, ErrorListener, Listener<ScApiSession> {
     private Uri mInstanceUri;
     private boolean isEditorMode = false;
+    private boolean isDefaultInstance = false;
 
     @InjectView(R.id.instance_name) EditText mInstanceName;
     @InjectView(R.id.instance_url) EditText mInstanceUrl;
@@ -142,11 +144,15 @@ public class EditInstanceActivity extends Activity implements LoaderCallbacks<Cu
 
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
+        if (!data.moveToFirst()) return;
+
+        String defaultInstanceName = Utils.getDefaultInstanceName(this);
+        isDefaultInstance = data.getString(Query.NAME).equals(defaultInstanceName);
+
         initViews(data);
     }
 
     private void initViews(Cursor cursor) {
-        if (!cursor.moveToFirst()) return;
         mInstanceName.setText(cursor.getString(Query.NAME));
         mInstanceUrl.setText(cursor.getString(Query.URL));
         mInstanceLogin.setText(cursor.getString(Query.LOGIN));
@@ -188,6 +194,15 @@ public class EditInstanceActivity extends Activity implements LoaderCallbacks<Cu
         String login = mInstanceLogin.getText().toString();
         String password = mInstancePassword.getText().toString();
         String folder = mInstanceRootFolder.getText().toString();
+
+        if (isDefaultInstance) {
+            Prefs prefs = Prefs.from(this);
+
+            prefs.put(R.string.key_instance_name, name);
+            prefs.put(R.string.key_instance_url, url);
+            prefs.put(R.string.key_instance_login, login);
+            prefs.put(R.string.key_instance_password, password);
+        }
 
         ContentValues values = new ContentValues();
         values.put(Instances.NAME, name);

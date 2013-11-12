@@ -1,9 +1,12 @@
 package net.sitecore.android.mediauploader.util;
 
+import android.content.Context;
+
 import com.android.volley.NoConnectionError;
 import com.android.volley.ServerError;
 import com.android.volley.VolleyError;
 
+import net.sitecore.android.mediauploader.R;
 import net.sitecore.android.sdk.api.model.ScError;
 
 public class Utils {
@@ -25,5 +28,9 @@ public class Utils {
             message = "Unknown error : " + error.toString();
         }
         return message;
+    }
+
+    public static String getDefaultInstanceName(Context context) {
+        return Prefs.from(context).getString(R.string.key_instance_name);
     }
 }
