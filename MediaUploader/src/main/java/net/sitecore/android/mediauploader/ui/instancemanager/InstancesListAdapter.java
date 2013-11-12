@@ -12,7 +12,7 @@ import android.widget.TextView;
 
 import net.sitecore.android.mediauploader.R;
 import net.sitecore.android.mediauploader.provider.UploadMediaContract.Instances.Query;
-import net.sitecore.android.mediauploader.util.Prefs;
+import net.sitecore.android.mediauploader.util.Utils;
 
 import butterknife.InjectView;
 import butterknife.Views;
@@ -47,11 +47,12 @@ public class InstancesListAdapter extends CursorAdapter {
     public void bindView(View view, final Context context, final Cursor c) {
         ViewHolder holder = (ViewHolder) view.getTag();
 
-        String defaultInstanceName = Prefs.from(context).getString(R.string.key_instance_name);
-        if (defaultInstanceName.equals(c.getString(Query.NAME))) {
+        if (Utils.isDefaultInstance(context, c.getString(Query.NAME))) {
             holder.defaultInstance.setVisibility(View.VISIBLE);
+            holder.deleteButton.setVisibility(View.GONE);
         } else {
-            holder.defaultInstance.setVisibility(View.INVISIBLE);
+            holder.defaultInstance.setVisibility(View.GONE);
+            holder.deleteButton.setVisibility(View.VISIBLE);
         }
         holder.instanceName.setText(c.getString(Query.NAME));
         holder.instanceUrl.setText(c.getString(Query.URL));
