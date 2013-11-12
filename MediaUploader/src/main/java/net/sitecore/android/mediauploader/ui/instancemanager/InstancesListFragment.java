@@ -17,6 +17,7 @@ import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.AdapterView.OnItemLongClickListener;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import net.sitecore.android.mediauploader.R;
 import net.sitecore.android.mediauploader.provider.UploadMediaContract.Instances;
@@ -25,6 +26,7 @@ import net.sitecore.android.mediauploader.ui.ScFragment;
 import net.sitecore.android.mediauploader.ui.instancemanager.DeleteDialog.DeleteListener;
 import net.sitecore.android.mediauploader.ui.instancemanager.InstancesListAdapter.OnDeleteButtonClicked;
 import net.sitecore.android.mediauploader.util.Prefs;
+import net.sitecore.android.mediauploader.util.Utils;
 
 import butterknife.InjectView;
 import butterknife.Views;
@@ -43,6 +45,11 @@ public class InstancesListFragment extends ScFragment implements LoaderCallbacks
 
             @Override
             public void click(String name) {
+                if (name.equals(Utils.getDefaultInstanceName(getActivity()))) {
+                    Toast.makeText(getActivity(), "You cannot remove default instance",
+                            Toast.LENGTH_LONG).show();
+                    return;
+                }
                 showDeleteDialog(name);
             }
         });
