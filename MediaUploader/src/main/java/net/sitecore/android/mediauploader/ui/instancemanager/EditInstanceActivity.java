@@ -38,6 +38,9 @@ import butterknife.OnClick;
 import butterknife.Views;
 
 public class EditInstanceActivity extends Activity implements LoaderCallbacks<Cursor>, ErrorListener, Listener<ScApiSession> {
+    public static final int READ_INSTANCES_ACTION = 0;
+    public static final int READ_NAMES_ACTION = 1;
+
     private Uri mInstanceUri;
     private boolean isEditorMode = false;
     private boolean isDefaultInstance = false;
@@ -61,7 +64,7 @@ public class EditInstanceActivity extends Activity implements LoaderCallbacks<Cu
         setContentView(R.layout.activity_edit_instance);
         Views.inject(this);
 
-        if (isEditorMode) getLoaderManager().initLoader(0, null, this);
+        if (isEditorMode) getLoaderManager().initLoader(READ_INSTANCES_ACTION, null, this);
     }
 
     private void initActionBar() {
@@ -77,9 +80,8 @@ public class EditInstanceActivity extends Activity implements LoaderCallbacks<Cu
         customActionBarView.findViewById(R.id.actionbar_done).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (!validate()) return;
-                saveOrUpdateInstance();
-                finish();
+                startAsyncFieldValidation();
+
             }
         });
         customActionBarView.findViewById(R.id.actionbar_cancel).setOnClickListener(new View.OnClickListener() {
@@ -97,7 +99,7 @@ public class EditInstanceActivity extends Activity implements LoaderCallbacks<Cu
                 new ActionBar.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
     }
 
-    boolean validate() {
+    boolean validateFields() {
         boolean valid = true;
 
         String name = mInstanceName.getText().toString();
@@ -128,7 +130,7 @@ public class EditInstanceActivity extends Activity implements LoaderCallbacks<Cu
 
     @OnClick(R.id.button_validate)
     public void validateConnection() {
-        if (validate()) {
+        if (validateFields()) {
             String url = mInstanceUrl.getText().toString();
             String login = mInstanceLogin.getText().toString();
             String password = mInstancePassword.getText().toString();
@@ -136,16 +138,48 @@ public class EditInstanceActivity extends Activity implements LoaderCallbacks<Cu
         }
     }
 
+    private void startAsyncFieldValidation() {
+        getLoaderManager().restartLoader(READ_NAMES_ACTION, null, EditInstanceActivity.this);
+    }
+
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
-        return new CursorLoader(this, mInstanceUri, Query.PROJECTION, null, null, null);
+        switch (id) {
+            case READ_INSTANCES_ACTION:
+                return new CursorLoader(this, mInstanceUri, Query.PROJECTION, null, null, null);
+            case READ_NAMES_ACTION:
+                return new CursorLoader(this, Instances.CONTENT_URI, new String[]{Instances.NAME}, null, null, null);
+            default:
+                return null;
+        }
     }
 
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
-        if (!data.moveToFirst()) return;
-        isDefaultInstance = Utils.isDefaultInstance(this, data.getString(Query.NAME));
-        initViews(data);
+        switch (loader.getId()) {
+            case READ_INSTANCES_ACTION: {
+                if (!data.moveToFirst()) return;
+                isDefaultInstance = Utils.isDefaultInstance(this, data.getString(Query.NAME));
+                initViews(data);
+                break;
+            }
+            case READ_NAMES_ACTION: {
+                while (data.moveToNext()) {
+                    String name = data.getString(0);
+                    if (name.equals(mInstanceName.getText().toString())) {
+                        mInstanceName.setError("Instance name already exists");
+                        return;
+                    }
+                }
+                if (validateFields()) {
+                    saveOrUpdateInstance();
+                    finish();
+                }
+                getLoaderManager().destroyLoader(READ_NAMES_ACTION);
+                break;
+            }
+        }
+
     }
 
     private void initViews(Cursor cursor) {
@@ -158,7 +192,6 @@ public class EditInstanceActivity extends Activity implements LoaderCallbacks<Cu
 
     @Override
     public void onLoaderReset(Loader<Cursor> loader) {
-
     }
 
     @Override
@@ -208,10 +241,10 @@ public class EditInstanceActivity extends Activity implements LoaderCallbacks<Cu
 
         if (isEditorMode) {
             new AsyncQueryHandler(getContentResolver()) {}
-                    .startUpdate(0, null, mInstanceUri, values, null, null);
+                    .startUpdate(READ_INSTANCES_ACTION, null, mInstanceUri, values, null, null);
         } else {
             new AsyncQueryHandler(getContentResolver()) {}
-                    .startInsert(0, null, Instances.CONTENT_URI, values);
+                    .startInsert(READ_INSTANCES_ACTION, null, Instances.CONTENT_URI, values);
         }
     }
 }
