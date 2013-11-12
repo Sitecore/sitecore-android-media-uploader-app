@@ -20,7 +20,6 @@ import android.widget.ListView;
 import net.sitecore.android.mediauploader.R;
 import net.sitecore.android.mediauploader.provider.UploadMediaContract.Instances;
 import net.sitecore.android.mediauploader.provider.UploadMediaContract.Instances.Query;
-import net.sitecore.android.mediauploader.ui.EditInstanceActivity;
 import net.sitecore.android.mediauploader.ui.ScFragment;
 import net.sitecore.android.mediauploader.util.Prefs;
 
