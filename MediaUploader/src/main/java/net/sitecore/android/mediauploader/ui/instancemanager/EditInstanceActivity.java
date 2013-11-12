@@ -28,6 +28,7 @@ import net.sitecore.android.mediauploader.R;
 import net.sitecore.android.mediauploader.provider.UploadMediaContract.Instances;
 import net.sitecore.android.mediauploader.provider.UploadMediaContract.Instances.Query;
 import net.sitecore.android.mediauploader.util.Prefs;
+import net.sitecore.android.mediauploader.util.ScUtils;
 import net.sitecore.android.mediauploader.util.Utils;
 import net.sitecore.android.sdk.api.RequestQueueProvider;
 import net.sitecore.android.sdk.api.ScApiSession;
@@ -201,11 +202,10 @@ public class EditInstanceActivity extends Activity implements LoaderCallbacks<Cu
 
     @Override
     public void onResponse(ScApiSession session) {
-        session.setShouldCache(true);
         Listener<ItemsResponse> success = new Listener<ItemsResponse>() {
             @Override
             public void onResponse(ItemsResponse response) {
-                if (response.isSuccess()) {
+                if (response.getTotalCount() != 0) {
                     Toast.makeText(EditInstanceActivity.this, "Entered instance is valid", Toast.LENGTH_LONG).show();
                 } else {
                     Toast.makeText(EditInstanceActivity.this, "Entered instance is not valid", Toast.LENGTH_LONG).show();
@@ -213,7 +213,10 @@ public class EditInstanceActivity extends Activity implements LoaderCallbacks<Cu
             }
         };
 
-        RequestQueueProvider.getRequestQueue(this).add(session.getItems(success, this).build());
+        String folder = mInstanceRootFolder.getText().toString();
+        if (TextUtils.isEmpty(folder)) folder = ScUtils.PATH_MEDIA_LIBRARY;
+
+        RequestQueueProvider.getRequestQueue(this).add(session.getItems(success, this).byItemPath(folder).build());
     }
 
     private void saveOrUpdateInstance() {
@@ -221,7 +224,9 @@ public class EditInstanceActivity extends Activity implements LoaderCallbacks<Cu
         String url = mInstanceUrl.getText().toString();
         String login = mInstanceLogin.getText().toString();
         String password = mInstancePassword.getText().toString();
+
         String folder = mInstanceRootFolder.getText().toString();
+        if (TextUtils.isEmpty(folder)) folder = ScUtils.PATH_MEDIA_LIBRARY;
 
         if (isDefaultInstance) {
             Prefs prefs = Prefs.from(this);

@@ -50,6 +50,7 @@
         android:layout_height="wrap_content"
         android:hint="Root media folder"
         android:imeOptions="actionDone"
+        android:text="/sitecore/media library"
         android:singleLine="true" />
 
     <Button
