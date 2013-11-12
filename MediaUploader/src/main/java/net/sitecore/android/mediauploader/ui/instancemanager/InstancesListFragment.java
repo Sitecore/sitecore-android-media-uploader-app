@@ -45,7 +45,7 @@ public class InstancesListFragment extends ScFragment implements LoaderCallbacks
 
             @Override
             public void click(String name) {
-                if (name.equals(Utils.getDefaultInstanceName(getActivity()))) {
+                if (Utils.isDefaultInstance(getActivity(), name)) {
                     Toast.makeText(getActivity(), "You cannot remove default instance",
                             Toast.LENGTH_LONG).show();
                     return;

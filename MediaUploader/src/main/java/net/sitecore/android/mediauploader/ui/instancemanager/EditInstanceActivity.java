@@ -144,10 +144,7 @@ public class EditInstanceActivity extends Activity implements LoaderCallbacks<Cu
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
         if (!data.moveToFirst()) return;
-
-        String defaultInstanceName = Utils.getDefaultInstanceName(this);
-        isDefaultInstance = data.getString(Query.NAME).equals(defaultInstanceName);
-
+        isDefaultInstance = Utils.isDefaultInstance(this, data.getString(Query.NAME));
         initViews(data);
     }
 

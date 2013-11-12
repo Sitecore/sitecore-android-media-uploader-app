@@ -33,4 +33,8 @@ public class Utils {
     public static String getDefaultInstanceName(Context context) {
         return Prefs.from(context).getString(R.string.key_instance_name);
     }
+
+    public static boolean isDefaultInstance(Context context, String instanceName) {
+        return instanceName.equals(Prefs.from(context).getString(R.string.key_instance_name));
+    }
 }
