@@ -20,14 +20,13 @@ import android.widget.TextView;
 import net.sitecore.android.mediauploader.R;
 import net.sitecore.android.mediauploader.provider.UploadMediaContract.Instances;
 import net.sitecore.android.mediauploader.provider.UploadMediaContract.Instances.Query;
-import net.sitecore.android.mediauploader.ui.instancemanager.InstancesListFragment.OnDefaultInstanceChangedListener;
 import net.sitecore.android.mediauploader.util.Utils;
 
 import butterknife.InjectView;
 import butterknife.OnClick;
 import butterknife.Views;
 
-public class SlidingNavigationFragment extends Fragment implements LoaderCallbacks<Cursor>, OnDefaultInstanceChangedListener {
+public class SlidingNavigationFragment extends Fragment implements LoaderCallbacks<Cursor> {
 
     public static final int POSITION_UPLOAD = 0;
     public static final int POSITION_MEDIA_BROWSER = 1;
@@ -37,7 +36,9 @@ public class SlidingNavigationFragment extends Fragment implements LoaderCallbac
     interface Callbacks {
 
         public void onMediaBrowserSelected();
+
         public void onMyUploadsSelected();
+
         public void onInstanceManagerSelected();
 
         public void onSelectionDone();
@@ -47,17 +48,20 @@ public class SlidingNavigationFragment extends Fragment implements LoaderCallbac
     @InjectView(R.id.spinner_instances) Spinner mInstances;
 
     private Callbacks mCallbacks;
+
     private int mCurrentPosition = POSITION_MEDIA_BROWSER;
     private InstancesAdapter mInstancesAdapter;
 
-    @Override
-    public void instanceChanged(String name) {
+    public void updateInstanceSelection() {
         Cursor data = mInstancesAdapter.getCursor();
-        while (data.moveToNext()) {
-            if (data.getString(Query.NAME).equals(name)) {
+        String defaultInstanceName = Utils.getDefaultInstanceName(getActivity());
+
+        data.moveToFirst();
+        do {
+            if (data.getString(Query.NAME).equals(defaultInstanceName)) {
                 mInstances.setSelection(data.getPosition());
             }
-        }
+        } while (data.moveToNext());
     }
 
     @Override
@@ -154,32 +158,32 @@ public class SlidingNavigationFragment extends Fragment implements LoaderCallbac
         mInstancesAdapter.swapCursor(null);
     }
 
-    static class InstancesAdapter extends CursorAdapter {
+static class InstancesAdapter extends CursorAdapter {
 
-        public InstancesAdapter(Context context) {
-            super(context, null, true);
-        }
+    public InstancesAdapter(Context context) {
+        super(context, null, true);
+    }
 
-        @Override
-        public View newView(Context context, Cursor cursor, ViewGroup parent) {
-            final View v = LayoutInflater.from(context).inflate(android.R.layout.simple_list_item_1, parent, false);
-            final ViewHolder holder = new ViewHolder(v);
-            v.setTag(holder);
-            return v;
-        }
+    @Override
+    public View newView(Context context, Cursor cursor, ViewGroup parent) {
+        final View v = LayoutInflater.from(context).inflate(android.R.layout.simple_list_item_1, parent, false);
+        final ViewHolder holder = new ViewHolder(v);
+        v.setTag(holder);
+        return v;
+    }
 
-        @Override
-        public void bindView(View view, Context context, Cursor cursor) {
-            ViewHolder holder = (ViewHolder) view.getTag();
-            holder.name.setText(cursor.getString(Query.NAME));
-        }
+    @Override
+    public void bindView(View view, Context context, Cursor cursor) {
+        ViewHolder holder = (ViewHolder) view.getTag();
+        holder.name.setText(cursor.getString(Query.NAME));
+    }
 
-        static class ViewHolder {
-            @InjectView(android.R.id.text1) TextView name;
+    static class ViewHolder {
+        @InjectView(android.R.id.text1) TextView name;
 
-            ViewHolder(View v) {
-                Views.inject(this, v);
-            }
+        ViewHolder(View v) {
+            Views.inject(this, v);
         }
     }
+}
 }

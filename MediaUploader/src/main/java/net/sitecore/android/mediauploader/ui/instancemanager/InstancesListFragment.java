@@ -23,8 +23,7 @@ import net.sitecore.android.mediauploader.R;
 import net.sitecore.android.mediauploader.provider.UploadMediaContract.Instances;
 import net.sitecore.android.mediauploader.provider.UploadMediaContract.Instances.Query;
 import net.sitecore.android.mediauploader.ui.ScFragment;
-import net.sitecore.android.mediauploader.ui.instancemanager.DeleteDialog.DeleteListener;
-import net.sitecore.android.mediauploader.ui.instancemanager.InstancesListAdapter.OnDeleteButtonClicked;
+import net.sitecore.android.mediauploader.ui.instancemanager.InstancesListAdapter.OnDeleteButtonClickListener;
 import net.sitecore.android.mediauploader.util.Utils;
 
 import butterknife.InjectView;
@@ -32,16 +31,16 @@ import butterknife.Views;
 
 public class InstancesListFragment extends ScFragment implements LoaderCallbacks<Cursor>, OnItemClickListener, OnItemLongClickListener {
     private InstancesListAdapter mListAdapter;
-    private OnDefaultInstanceChangedListener mChangedListener;
+    private onDefaultInstanceChangeListener mChangedListener;
 
     @InjectView(android.R.id.list) ListView mListView;
 
-    public void setDefaultInstanceChangedListener(OnDefaultInstanceChangedListener changedListener) {
+    public void setDefaultInstanceChangedListener(onDefaultInstanceChangeListener changedListener) {
         mChangedListener = changedListener;
     }
 
-    public interface OnDefaultInstanceChangedListener {
-        public void instanceChanged(String name);
+    public interface onDefaultInstanceChangeListener {
+        public void onDefaultInstanceChanged();
 
     }
 
@@ -49,10 +48,10 @@ public class InstancesListFragment extends ScFragment implements LoaderCallbacks
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
-        mListAdapter = new InstancesListAdapter(getActivity(), new OnDeleteButtonClicked() {
+        mListAdapter = new InstancesListAdapter(getActivity(), new OnDeleteButtonClickListener() {
 
             @Override
-            public void click(String name) {
+            public void onDeleteButtonClicked(String name) {
                 if (Utils.isDefaultInstance(getActivity(), name)) {
                     Toast.makeText(getActivity(), "You cannot remove default instance",
                             Toast.LENGTH_LONG).show();
@@ -65,14 +64,16 @@ public class InstancesListFragment extends ScFragment implements LoaderCallbacks
     }
 
     private void showDeleteDialog(final String instanceName) {
-        DeleteDialog dialog = DeleteDialog.newInstance(instanceName, new DeleteListener() {
-            @Override
-            public void delete() {
-                String selection = Instances.NAME + " ='" + instanceName + "'";
-                new AsyncQueryHandler(getActivity().getContentResolver()) {}
-                        .startDelete(0, null, Instances.CONTENT_URI, selection, null);
-            }
-        });
+        DeleteInstanceConfirmationDialog dialog = DeleteInstanceConfirmationDialog.newInstance(instanceName,
+                new DeleteInstanceConfirmationDialog.OnPerformDeleteListener() {
+                    @Override
+                    public void onPerformDelete() {
+                        String selection = Instances.NAME + " ='" + instanceName + "'";
+                        new AsyncQueryHandler(getActivity().getContentResolver()) {
+                        }
+                                .startDelete(0, null, Instances.CONTENT_URI, selection, null);
+                    }
+                });
         dialog.show(getFragmentManager(), "dialog");
     }
 
@@ -140,7 +141,7 @@ public class InstancesListFragment extends ScFragment implements LoaderCallbacks
 
         saveInstanceToPrefs(cursor);
 
-        mChangedListener.instanceChanged(cursor.getString(Query.NAME));
+        mChangedListener.onDefaultInstanceChanged();
         mListAdapter.notifyDataSetChanged();
         return true;
     }

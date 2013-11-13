@@ -6,22 +6,22 @@ import android.app.DialogFragment;
 import android.content.DialogInterface;
 import android.os.Bundle;
 
-public class DeleteDialog extends DialogFragment {
+public class DeleteInstanceConfirmationDialog extends DialogFragment {
 
     private static final String INSTANCE_NAME = "instance_name";
 
-    private DeleteListener mDeleteListener;
+    private OnPerformDeleteListener mDeleteListener;
 
-    interface DeleteListener {
-        public void delete();
+    interface OnPerformDeleteListener {
+        public void onPerformDelete();
     }
 
-    public void setDeleteListener(DeleteListener deleteListener) {
+    public void setDeleteListener(OnPerformDeleteListener deleteListener) {
         mDeleteListener = deleteListener;
     }
 
-    static DeleteDialog newInstance(String instanceName, DeleteListener listener) {
-        DeleteDialog f = new DeleteDialog();
+    static DeleteInstanceConfirmationDialog newInstance(String instanceName, OnPerformDeleteListener listener) {
+        DeleteInstanceConfirmationDialog f = new DeleteInstanceConfirmationDialog();
 
         f.setDeleteListener(listener);
 
@@ -41,7 +41,7 @@ public class DeleteDialog extends DialogFragment {
                 .setPositiveButton("Delete",
                         new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int whichButton) {
-                                mDeleteListener.delete();
+                                mDeleteListener.onPerformDelete();
                             }
                         }
                 )

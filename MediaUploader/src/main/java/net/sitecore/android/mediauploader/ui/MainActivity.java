@@ -15,6 +15,7 @@ import android.view.Window;
 import net.sitecore.android.mediauploader.R;
 import net.sitecore.android.mediauploader.ui.browser.MediaBrowserFragment;
 import net.sitecore.android.mediauploader.ui.instancemanager.InstancesListFragment;
+import net.sitecore.android.mediauploader.ui.instancemanager.InstancesListFragment.onDefaultInstanceChangeListener;
 import net.sitecore.android.mediauploader.ui.upload.MyUploadsListFragment;
 import net.sitecore.android.mediauploader.util.Prefs;
 import net.sitecore.android.mediauploader.util.ScUtils;
@@ -22,7 +23,7 @@ import net.sitecore.android.mediauploader.util.ScUtils;
 import butterknife.InjectView;
 import butterknife.Views;
 
-public class MainActivity extends Activity implements SlidingNavigationFragment.Callbacks {
+public class MainActivity extends Activity implements SlidingNavigationFragment.Callbacks, onDefaultInstanceChangeListener {
 
     @InjectView(R.id.drawer_layout) DrawerLayout mDrawerLayout;
 
@@ -132,7 +133,7 @@ public class MainActivity extends Activity implements SlidingNavigationFragment.
 
         if (mInstancesListFragment == null) {
             mInstancesListFragment = new InstancesListFragment();
-            mInstancesListFragment.setDefaultInstanceChangedListener(mNavigationFragment);
+            mInstancesListFragment.setDefaultInstanceChangedListener(this);
         }
         getFragmentManager().beginTransaction().replace(R.id.fragment_container, mInstancesListFragment).commit();
     }
@@ -140,5 +141,10 @@ public class MainActivity extends Activity implements SlidingNavigationFragment.
     @Override
     public void onSelectionDone() {
         mDrawerLayout.closeDrawers();
+    }
+
+    @Override
+    public void onDefaultInstanceChanged() {
+        mNavigationFragment.updateInstanceSelection();
     }
 }

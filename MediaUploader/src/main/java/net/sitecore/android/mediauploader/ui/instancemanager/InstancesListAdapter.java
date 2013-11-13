@@ -18,15 +18,15 @@ import butterknife.InjectView;
 import butterknife.Views;
 
 public class InstancesListAdapter extends CursorAdapter {
-    private OnDeleteButtonClicked mDeleteButtonClicked;
+    private OnDeleteButtonClickListener mDeletePerformListener;
 
-    interface OnDeleteButtonClicked {
-        public void click(String name);
+    interface OnDeleteButtonClickListener {
+        public void onDeleteButtonClicked(String name);
     }
 
-    public InstancesListAdapter(Context context, OnDeleteButtonClicked listener) {
+    public InstancesListAdapter(Context context, OnDeleteButtonClickListener listener) {
         super(context, null, true);
-        mDeleteButtonClicked = listener;
+        mDeletePerformListener = listener;
     }
 
     @Override
@@ -36,7 +36,7 @@ public class InstancesListAdapter extends CursorAdapter {
         holder.deleteButton.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-                mDeleteButtonClicked.click(holder.instanceName.getText().toString());
+                mDeletePerformListener.onDeleteButtonClicked(holder.instanceName.getText().toString());
             }
         });
         v.setTag(holder);
