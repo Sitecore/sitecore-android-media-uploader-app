@@ -113,6 +113,10 @@ public class MediaBrowserFragment extends ScFragment implements LoaderCallbacks<
     private Listener<ItemsResponse> mRootItemReceived = new Listener<ItemsResponse>() {
         @Override
         public void onResponse(ItemsResponse itemsResponse) {
+            if (itemsResponse.getTotalCount() == 0) {
+                setEmpty(true);
+                return;
+            }
             setRootItem(itemsResponse.getItems().get(0));
             setContentShown(true);
             getLoaderManager().restartLoader(0, null, MediaBrowserFragment.this);

@@ -25,6 +25,7 @@ import com.android.volley.Response.Listener;
 import com.android.volley.VolleyError;
 
 import net.sitecore.android.mediauploader.R;
+import net.sitecore.android.mediauploader.UploaderApp;
 import net.sitecore.android.mediauploader.provider.UploadMediaContract.Instances;
 import net.sitecore.android.mediauploader.provider.UploadMediaContract.Instances.Query;
 import net.sitecore.android.mediauploader.util.ScUtils;
@@ -242,6 +243,7 @@ public class EditInstanceActivity extends Activity implements LoaderCallbacks<Cu
 
         if (isDefaultInstance) {
             Utils.setDefaultInstance(this, name, url, login, password, folder);
+            UploaderApp.from(this).cleanInstanceCache();
         }
 
         ContentValues values = new ContentValues();

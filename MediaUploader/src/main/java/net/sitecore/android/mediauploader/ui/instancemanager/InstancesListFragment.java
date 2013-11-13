@@ -2,7 +2,6 @@ package net.sitecore.android.mediauploader.ui.instancemanager;
 
 import android.app.Activity;
 import android.app.LoaderManager.LoaderCallbacks;
-import android.content.AsyncQueryHandler;
 import android.content.CursorLoader;
 import android.content.Intent;
 import android.content.Loader;
@@ -21,6 +20,7 @@ import android.widget.ListView;
 import android.widget.Toast;
 
 import net.sitecore.android.mediauploader.R;
+import net.sitecore.android.mediauploader.UploaderApp;
 import net.sitecore.android.mediauploader.provider.UploadMediaContract.Instances;
 import net.sitecore.android.mediauploader.provider.UploadMediaContract.Instances.Query;
 import net.sitecore.android.mediauploader.ui.ScFragment;
@@ -140,6 +140,9 @@ public class InstancesListFragment extends ScFragment implements LoaderCallbacks
 
         mChangedListener.onDefaultInstanceChanged();
         mListAdapter.notifyDataSetChanged();
+
+        UploaderApp.from(getActivity()).cleanInstanceCache();
+
         return true;
     }
 

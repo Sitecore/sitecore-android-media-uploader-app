@@ -1,6 +1,7 @@
 package net.sitecore.android.mediauploader;
 
 import android.app.Application;
+import android.content.AsyncQueryHandler;
 import android.content.Context;
 
 import com.android.volley.Response.ErrorListener;
@@ -12,6 +13,7 @@ import com.squareup.picasso.Picasso;
 import net.sitecore.android.mediauploader.util.Prefs;
 import net.sitecore.android.sdk.api.LogUtils;
 import net.sitecore.android.sdk.api.ScApiSession;
+import net.sitecore.android.sdk.api.provider.ScItemsContract.Items;
 
 import butterknife.Views;
 
@@ -64,6 +66,12 @@ public class UploaderApp extends Application {
         } else {
             sessionListener.onResponse(mSession);
         }
+    }
+
+    public void cleanInstanceCache() {
+        mSession = null;
+        new AsyncQueryHandler(getContentResolver()) {
+        }.startDelete(0, null, Items.CONTENT_URI, null, null);
     }
 
     public void setSession(ScApiSession session) {

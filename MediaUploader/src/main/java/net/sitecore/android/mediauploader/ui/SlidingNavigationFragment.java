@@ -18,6 +18,7 @@ import android.widget.Spinner;
 import android.widget.TextView;
 
 import net.sitecore.android.mediauploader.R;
+import net.sitecore.android.mediauploader.UploaderApp;
 import net.sitecore.android.mediauploader.provider.UploadMediaContract.Instances;
 import net.sitecore.android.mediauploader.provider.UploadMediaContract.Instances.Query;
 import net.sitecore.android.mediauploader.util.Utils;
@@ -93,15 +94,20 @@ public class SlidingNavigationFragment extends Fragment implements LoaderCallbac
                 cursor.moveToPosition(position);
 
                 String name = cursor.getString(Query.NAME);
-                String url = cursor.getString(Query.URL);
-                String login = cursor.getString(Query.LOGIN);
-                String password = cursor.getString(Query.PASSWORD);
-                String folder = cursor.getString(Query.ROOT_FOLDER);
+                if (!name.equals(Utils.getDefaultInstanceName(getActivity()))) {
+                    String url = cursor.getString(Query.URL);
+                    String login = cursor.getString(Query.LOGIN);
+                    String password = cursor.getString(Query.PASSWORD);
+                    String folder = cursor.getString(Query.ROOT_FOLDER);
 
-                getActivity().getContentResolver().notifyChange(Instances.CONTENT_URI, null);
+                    getActivity().getContentResolver().notifyChange(Instances.CONTENT_URI, null);
 
-                Utils.setDefaultInstance(getActivity(), name, url, login, password, folder);
-                mCallbacks.onDefaultInstanceSelected();
+                    Utils.setDefaultInstance(getActivity(), name, url, login, password, folder);
+
+                    mCallbacks.onDefaultInstanceSelected();
+
+                    UploaderApp.from(getActivity()).cleanInstanceCache();
+                }
             }
 
             @Override
