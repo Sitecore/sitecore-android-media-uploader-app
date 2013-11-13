@@ -2,30 +2,32 @@ package net.sitecore.android.mediauploader.ui;
 
 import android.app.Activity;
 import android.app.Fragment;
-import android.app.ListFragment;
+import android.app.LoaderManager.LoaderCallbacks;
 import android.content.Context;
-import android.content.Intent;
+import android.content.CursorLoader;
+import android.content.Loader;
+import android.database.Cursor;
 import android.os.Bundle;
-import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
-import android.widget.ListView;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemSelectedListener;
+import android.widget.CursorAdapter;
 import android.widget.Spinner;
 import android.widget.TextView;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import net.sitecore.android.mediauploader.R;
-import net.sitecore.android.mediauploader.ui.upload.UploadActivity;
+import net.sitecore.android.mediauploader.provider.UploadMediaContract.Instances;
+import net.sitecore.android.mediauploader.provider.UploadMediaContract.Instances.Query;
+import net.sitecore.android.mediauploader.ui.instancemanager.InstancesListFragment.OnDefaultInstanceChangedListener;
+import net.sitecore.android.mediauploader.util.Utils;
 
 import butterknife.InjectView;
 import butterknife.OnClick;
 import butterknife.Views;
 
-public class SlidingNavigationFragment extends Fragment {
+public class SlidingNavigationFragment extends Fragment implements LoaderCallbacks<Cursor>, OnDefaultInstanceChangedListener {
 
     public static final int POSITION_UPLOAD = 0;
     public static final int POSITION_MEDIA_BROWSER = 1;
@@ -46,7 +48,17 @@ public class SlidingNavigationFragment extends Fragment {
 
     private Callbacks mCallbacks;
     private int mCurrentPosition = POSITION_MEDIA_BROWSER;
-    private ArrayAdapter<String> mAdapter;
+    private InstancesAdapter mInstancesAdapter;
+
+    @Override
+    public void instanceChanged(String name) {
+        Cursor data = mInstancesAdapter.getCursor();
+        while (data.moveToNext()) {
+            if (data.getString(Query.NAME).equals(name)) {
+                mInstances.setSelection(data.getPosition());
+            }
+        }
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -66,13 +78,32 @@ public class SlidingNavigationFragment extends Fragment {
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
-        Pair<String, String> data1 = new Pair<String, String>("My Instance", "/home/hardcoded/text");
-        Pair<String, String> data2 = new Pair<String, String>("Other Instance", "/home/other/text");
-        ArrayList<Pair<String, String>> items = new ArrayList<Pair<String, String>>();
-        items.add(data1);
-        items.add(data2);
+        mInstancesAdapter = new InstancesAdapter(getActivity());
+        mInstances.setAdapter(mInstancesAdapter);
+        mInstances.setOnItemSelectedListener(new OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                Cursor cursor = mInstancesAdapter.getCursor();
+                cursor.moveToPosition(position);
 
-        mInstances.setAdapter(new InstancesAdapter(getActivity(), items));
+                String name = cursor.getString(Query.NAME);
+                String url = cursor.getString(Query.URL);
+                String login = cursor.getString(Query.LOGIN);
+                String password = cursor.getString(Query.PASSWORD);
+                String folder = cursor.getString(Query.ROOT_FOLDER);
+
+                getActivity().getContentResolver().notifyChange(Instances.CONTENT_URI, null);
+
+                Utils.setDefaultInstance(getActivity(), name, url, login, password, folder);
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
+
+        getLoaderManager().initLoader(0, null, this);
     }
 
     public boolean isMediaBrowserSelected() {
@@ -106,38 +137,45 @@ public class SlidingNavigationFragment extends Fragment {
         mCallbacks.onSelectionDone();
     }
 
-    static class InstancesAdapter extends ArrayAdapter<Pair<String, String>> {
+    @Override
+    public Loader<Cursor> onCreateLoader(int id, Bundle args) {
+        return new CursorLoader(getActivity(), Instances.CONTENT_URI, Query.PROJECTION, null, null, null);
+    }
 
-        public InstancesAdapter(Context context, List<Pair<String, String>> objects) {
-            super(context, R.layout.layout_instance_info, objects);
-            setDropDownViewResource(R.layout.layout_instance_info);
+    @Override
+    public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
+        if (data.moveToFirst()) {
+            mInstancesAdapter.swapCursor(data);
+        }
+    }
+
+    @Override
+    public void onLoaderReset(Loader<Cursor> loader) {
+        mInstancesAdapter.swapCursor(null);
+    }
+
+    static class InstancesAdapter extends CursorAdapter {
+
+        public InstancesAdapter(Context context) {
+            super(context, null, true);
         }
 
         @Override
-        public View getView(int position, View convertView, ViewGroup parent) {
-            if (convertView == null) {
-                convertView = LayoutInflater.from(getContext()).inflate(R.layout.layout_instance_info, parent, false);
-                ViewHolder holder = new ViewHolder(convertView);
-                convertView.setTag(holder);
-            }
-
-            ViewHolder holder = (ViewHolder) convertView.getTag();
-
-            Pair<String, String> data = getItem(position);
-            holder.title.setText(data.first);
-            holder.description.setText(data.second);
-
-            return convertView;
+        public View newView(Context context, Cursor cursor, ViewGroup parent) {
+            final View v = LayoutInflater.from(context).inflate(android.R.layout.simple_list_item_1, parent, false);
+            final ViewHolder holder = new ViewHolder(v);
+            v.setTag(holder);
+            return v;
         }
 
         @Override
-        public View getDropDownView(int position, View convertView, ViewGroup parent) {
-            return getView(position, convertView, parent);
+        public void bindView(View view, Context context, Cursor cursor) {
+            ViewHolder holder = (ViewHolder) view.getTag();
+            holder.name.setText(cursor.getString(Query.NAME));
         }
 
         static class ViewHolder {
-            @InjectView(R.id.text_title) TextView title;
-            @InjectView(R.id.text_description) TextView description;
+            @InjectView(android.R.id.text1) TextView name;
 
             ViewHolder(View v) {
                 Views.inject(this, v);

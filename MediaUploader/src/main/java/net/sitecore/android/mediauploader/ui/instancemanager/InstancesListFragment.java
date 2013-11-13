@@ -32,8 +32,18 @@ import butterknife.Views;
 
 public class InstancesListFragment extends ScFragment implements LoaderCallbacks<Cursor>, OnItemClickListener, OnItemLongClickListener {
     private InstancesListAdapter mListAdapter;
+    private OnDefaultInstanceChangedListener mChangedListener;
 
     @InjectView(android.R.id.list) ListView mListView;
+
+    public void setDefaultInstanceChangedListener(OnDefaultInstanceChangedListener changedListener) {
+        mChangedListener = changedListener;
+    }
+
+    public interface OnDefaultInstanceChangedListener {
+        public void instanceChanged(String name);
+
+    }
 
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
@@ -130,6 +140,7 @@ public class InstancesListFragment extends ScFragment implements LoaderCallbacks
 
         saveInstanceToPrefs(cursor);
 
+        mChangedListener.instanceChanged(cursor.getString(Query.NAME));
         mListAdapter.notifyDataSetChanged();
         return true;
     }

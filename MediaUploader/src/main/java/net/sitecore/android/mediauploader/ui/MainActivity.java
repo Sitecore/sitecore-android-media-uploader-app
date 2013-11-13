@@ -22,8 +22,6 @@ import net.sitecore.android.mediauploader.util.ScUtils;
 import butterknife.InjectView;
 import butterknife.Views;
 
-import static net.sitecore.android.sdk.api.LogUtils.LOGD;
-
 public class MainActivity extends Activity implements SlidingNavigationFragment.Callbacks {
 
     @InjectView(R.id.drawer_layout) DrawerLayout mDrawerLayout;
@@ -134,6 +132,7 @@ public class MainActivity extends Activity implements SlidingNavigationFragment.
 
         if (mInstancesListFragment == null) {
             mInstancesListFragment = new InstancesListFragment();
+            mInstancesListFragment.setDefaultInstanceChangedListener(mNavigationFragment);
         }
         getFragmentManager().beginTransaction().replace(R.id.fragment_container, mInstancesListFragment).commit();
     }
