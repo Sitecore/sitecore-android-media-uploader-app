@@ -1,9 +1,10 @@
 package net.sitecore.android.mediauploader.model;
 
-public interface UploadStatus {
+public enum UploadStatus {
 
-    String PENDING = "pending";
-    String DONE = "done";
-    String IN_PROGRESS = "in_progress";
-    String ERROR = "error";
+    PENDING,
+    DONE,
+    IN_PROGRESS,
+    ERROR;
+
 }

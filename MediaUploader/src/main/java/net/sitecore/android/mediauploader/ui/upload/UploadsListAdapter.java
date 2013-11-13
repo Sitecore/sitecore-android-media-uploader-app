@@ -83,9 +83,9 @@ public class UploadsListAdapter extends CursorAdapter implements OnMenuItemClick
     @Override
     public void bindView(View view, Context context, Cursor cursor) {
         final ViewHolder holder = (ViewHolder) view.getTag();
-        final String status = cursor.getString(Query.STATUS);
+        final UploadStatus status = UploadStatus.valueOf(cursor.getString(Query.STATUS));
 
-        holder.progress.setVisibility(UploadStatus.IN_PROGRESS.equals(status)
+        holder.progress.setVisibility(status == UploadStatus.IN_PROGRESS
                 ? View.VISIBLE
                 : View.GONE);
 
@@ -97,23 +97,23 @@ public class UploadsListAdapter extends CursorAdapter implements OnMenuItemClick
 
         holder.name.setText(cursor.getString(Query.ITEM_NAME));
         holder.path.setText(cursor.getString(Query.ITEM_PATH));
-        holder.status.setText(status);
+        holder.status.setText(status.name());
     }
 
-    private PopupMenu newPopupMenuForStatus(Context context, View view, String uploadStatus) {
+    private PopupMenu newPopupMenuForStatus(Context context, View view, UploadStatus uploadStatus) {
         PopupMenu popupMenu = null;
-        if (uploadStatus.equals(UploadStatus.DONE)) {
+        if (uploadStatus == UploadStatus.DONE) {
             popupMenu = new PopupMenu(context, view);
             popupMenu.inflate(R.menu.upload_item_done);
-        } else if (uploadStatus.equals(UploadStatus.ERROR)) {
+        } else if (uploadStatus == UploadStatus.ERROR) {
             popupMenu = new PopupMenu(context, view);
             popupMenu.inflate(R.menu.upload_item_error);
         }
-        if (uploadStatus.equals(UploadStatus.PENDING)) {
+        if (uploadStatus == UploadStatus.PENDING) {
             popupMenu = new PopupMenu(context, view);
             popupMenu.inflate(R.menu.upload_item_pending);
         }
-        if (uploadStatus.equals(UploadStatus.IN_PROGRESS)) {
+        if (uploadStatus == UploadStatus.IN_PROGRESS) {
             popupMenu = new PopupMenu(context, view);
             popupMenu.inflate(R.menu.upload_item_in_progress);
         }

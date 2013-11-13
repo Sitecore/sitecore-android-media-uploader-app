@@ -170,10 +170,10 @@ public class UploadActivity extends Activity implements ErrorListener {
         values.put(Uploads.FILE_URI, mImageUri.toString());
 
         if (mUploadLater.isChecked()) {
-            values.put(Uploads.STATUS, UploadStatus.PENDING);
+            values.put(Uploads.STATUS, UploadStatus.PENDING.name());
             Toast.makeText(this, "Added to My Uploads.", Toast.LENGTH_LONG).show();
         } else {
-            values.put(Uploads.STATUS, UploadStatus.IN_PROGRESS);
+            values.put(Uploads.STATUS, UploadStatus.IN_PROGRESS.name());
             Toast.makeText(this, "Uploading media started.", Toast.LENGTH_LONG).show();
         }
 
@@ -219,7 +219,7 @@ public class UploadActivity extends Activity implements ErrorListener {
         @Override
         public void onResponse(ItemsResponse itemsResponse) {
             ContentValues values = new ContentValues();
-            values.put(Uploads.STATUS, UploadStatus.DONE);
+            values.put(Uploads.STATUS, UploadStatus.DONE.name());
             new AsyncQueryHandler(getContentResolver()) {
             }.startUpdate(0, null, mUploadUri, values, null, null);
         }

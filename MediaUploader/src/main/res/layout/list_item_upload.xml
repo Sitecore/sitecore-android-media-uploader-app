@@ -35,26 +35,27 @@
     <TextView
         android:id="@+id/text_upload_name"
         android:layout_width="match_parent"
-        android:textAppearance="?android:attr/textAppearanceLarge"
-        android:layout_toRightOf="@id/image_preview"
+        android:layout_height="wrap_content"
         android:layout_toLeftOf="@id/button_more"
-        android:layout_height="wrap_content" />
+        android:layout_toRightOf="@id/image_preview"
+        android:textAppearance="?android:attr/textAppearanceMedium" />
 
     <TextView
         android:id="@+id/text_upload_path"
         android:layout_width="match_parent"
-        android:layout_toRightOf="@id/image_preview"
-        android:layout_toLeftOf="@id/button_more"
+        android:layout_height="wrap_content"
         android:layout_below="@id/text_upload_name"
-        android:textAppearance="?android:attr/textAppearanceMedium"
-        android:layout_height="wrap_content" />
+        android:layout_toLeftOf="@id/button_more"
+        android:layout_toRightOf="@id/image_preview"
+        android:textAppearance="?android:attr/textAppearanceSmall" />
 
     <TextView
         android:id="@+id/text_upload_status"
         android:layout_width="wrap_content"
-        android:layout_toRightOf="@id/image_preview"
-        android:layout_toLeftOf="@id/button_more"
+        android:layout_height="wrap_content"
         android:layout_below="@id/text_upload_path"
-        android:layout_height="wrap_content" />
+        android:layout_toLeftOf="@id/button_more"
+        android:layout_toRightOf="@id/image_preview"
+        android:textAppearance="?android:attr/textAppearanceSmall" />
 
 </RelativeLayout>
