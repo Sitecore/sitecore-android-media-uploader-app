@@ -44,6 +44,7 @@ public class EditInstanceActivity extends Activity implements LoaderCallbacks<Cu
     private Uri mInstanceUri;
     private boolean isEditorMode = false;
     private boolean isDefaultInstance = false;
+    private long mInstanceId;
 
     @InjectView(R.id.instance_name) EditText mInstanceName;
     @InjectView(R.id.instance_url) EditText mInstanceUrl;
@@ -140,7 +141,7 @@ public class EditInstanceActivity extends Activity implements LoaderCallbacks<Cu
     }
 
     private void startAsyncFieldValidation() {
-            getLoaderManager().restartLoader(READ_NAMES_ACTION, null, EditInstanceActivity.this);
+        getLoaderManager().restartLoader(READ_NAMES_ACTION, null, EditInstanceActivity.this);
     }
 
     @Override
@@ -149,7 +150,8 @@ public class EditInstanceActivity extends Activity implements LoaderCallbacks<Cu
             case READ_INSTANCES_ACTION:
                 return new CursorLoader(this, mInstanceUri, Query.PROJECTION, null, null, null);
             case READ_NAMES_ACTION:
-                return new CursorLoader(this, Instances.CONTENT_URI, new String[]{Instances.NAME}, null, null, null);
+                return new CursorLoader(this, Instances.CONTENT_URI,
+                        new String[]{Instances._ID, Instances.NAME}, null, null, null);
             default:
                 return null;
         }
@@ -161,23 +163,33 @@ public class EditInstanceActivity extends Activity implements LoaderCallbacks<Cu
             case READ_INSTANCES_ACTION: {
                 if (!data.moveToFirst()) return;
                 isDefaultInstance = Utils.isDefaultInstance(this, data.getString(Query.NAME));
+                mInstanceId = data.getLong(Query._ID);
                 initViews(data);
                 break;
             }
             case READ_NAMES_ACTION: {
-                while (data.moveToNext()) {
-                    String name = data.getString(0);
-                    if (name.equals(mInstanceName.getText().toString())) {
-                        mInstanceName.setError("Instance name already exists");
-                        return;
-                    }
-                }
+                if (!checkName(data)) return;
                 saveInstanceIfValid();
                 getLoaderManager().destroyLoader(READ_NAMES_ACTION);
                 break;
             }
         }
 
+    }
+
+    private boolean checkName(Cursor data) {
+        boolean valid = true;
+        while (data.moveToNext()) {
+            String name = data.getString(1);
+            if (name.equals(mInstanceName.getText().toString())) {
+                long id = data.getLong(0);
+                if (mInstanceId != id) {
+                    mInstanceName.setError("Instance name already exists");
+                    valid = false;
+                }
+            }
+        }
+        return valid;
     }
 
     private void saveInstanceIfValid() {
