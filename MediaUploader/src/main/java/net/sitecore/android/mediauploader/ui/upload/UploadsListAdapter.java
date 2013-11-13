@@ -7,11 +7,11 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.CursorAdapter;
 import android.widget.ImageButton;
 import android.widget.PopupMenu;
 import android.widget.PopupMenu.OnMenuItemClickListener;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import net.sitecore.android.mediauploader.R;
@@ -85,10 +85,12 @@ public class UploadsListAdapter extends CursorAdapter implements OnMenuItemClick
         final ViewHolder holder = (ViewHolder) view.getTag();
         final String status = cursor.getString(Query.STATUS);
 
+        holder.progress.setVisibility(UploadStatus.IN_PROGRESS.equals(status)
+                ? View.VISIBLE
+                : View.GONE);
+
         holder.popup = newPopupMenuForStatus(context, holder.more, status);
-
         if (holder.popup != null) holder.popup.setOnMenuItemClickListener(this);
-
         holder.more.setVisibility(holder.popup == null
                 ? View.INVISIBLE
                 : View.VISIBLE);
@@ -124,6 +126,7 @@ public class UploadsListAdapter extends CursorAdapter implements OnMenuItemClick
         @InjectView(R.id.text_upload_path) TextView path;
         @InjectView(R.id.text_upload_status) TextView status;
         @InjectView(R.id.button_more) ImageButton more;
+        @InjectView(R.id.progress) ProgressBar progress;
 
         PopupMenu popup;
 
