@@ -121,6 +121,11 @@ public class EditInstanceActivity extends Activity implements LoaderCallbacks<Cu
             mInstancePassword.setError("Please enter valid password");
             valid = false;
         }
+
+        String folder = mInstanceRootFolder.getText().toString();
+        if (TextUtils.isEmpty(folder)) {
+            mInstanceRootFolder.setText(ScUtils.PATH_MEDIA_LIBRARY);
+        }
         return valid;
     }
 
@@ -213,8 +218,6 @@ public class EditInstanceActivity extends Activity implements LoaderCallbacks<Cu
         };
 
         String folder = mInstanceRootFolder.getText().toString();
-        if (TextUtils.isEmpty(folder)) folder = ScUtils.PATH_MEDIA_LIBRARY;
-
         RequestQueueProvider.getRequestQueue(this).add(session.getItems(success, this).byItemPath(folder).build());
     }
 
@@ -223,9 +226,7 @@ public class EditInstanceActivity extends Activity implements LoaderCallbacks<Cu
         String url = mInstanceUrl.getText().toString();
         String login = mInstanceLogin.getText().toString();
         String password = mInstancePassword.getText().toString();
-
         String folder = mInstanceRootFolder.getText().toString();
-        if (TextUtils.isEmpty(folder)) folder = ScUtils.PATH_MEDIA_LIBRARY;
 
         if (isDefaultInstance) {
             Utils.setDefaultInstance(this, name, url, login, password, folder);
