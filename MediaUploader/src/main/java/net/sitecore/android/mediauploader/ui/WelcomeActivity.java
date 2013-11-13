@@ -28,7 +28,10 @@ import butterknife.InjectView;
 import butterknife.OnClick;
 import butterknife.Views;
 
+import static net.sitecore.android.mediauploader.util.Utils.showToast;
+
 public class WelcomeActivity extends Activity implements ErrorListener, Listener<ScApiSession> {
+
     @InjectView(R.id.edit_url) EditText mUrl;
     @InjectView(R.id.edit_login) EditText mLogin;
     @InjectView(R.id.edit_password) EditText mPassword;
@@ -76,18 +79,17 @@ public class WelcomeActivity extends Activity implements ErrorListener, Listener
                     String login = mLogin.getText().toString();
                     String password = mPassword.getText().toString();
 
-                    Utils.setDefaultInstance(WelcomeActivity.this, name, url, login, password,
-                            ScUtils.PATH_MEDIA_LIBRARY);
+                    Utils.setDefaultInstance(WelcomeActivity.this, name, url, login, password, ScUtils.PATH_MEDIA_LIBRARY);
                     Prefs.from(WelcomeActivity.this).put(R.string.key_instance_exist, true);
 
                     saveInstance(name, url, login, password, ScUtils.PATH_MEDIA_LIBRARY);
 
-                    Toast.makeText(WelcomeActivity.this, "Successfully logged in", Toast.LENGTH_LONG).show();
+                    showToast(WelcomeActivity.this, R.string.toast_logged_in);
 
                     startActivity(new Intent(WelcomeActivity.this, MainActivity.class));
                     finish();
                 } else {
-                    Toast.makeText(WelcomeActivity.this, "Failed to log in", Toast.LENGTH_LONG).show();
+                    showToast(WelcomeActivity.this, R.string.toast_login_failed);
                 }
             }
         };
@@ -103,8 +105,8 @@ public class WelcomeActivity extends Activity implements ErrorListener, Listener
         values.put(Instances.PASSWORD, password);
         values.put(Instances.ROOT_FOLDER, defaultRootFolder);
 
-        new AsyncQueryHandler(getContentResolver()) {}
-                .startInsert(0, null, Instances.CONTENT_URI, values);
+        new AsyncQueryHandler(getContentResolver()) {
+        }.startInsert(0, null, Instances.CONTENT_URI, values);
     }
 
     boolean validate() {

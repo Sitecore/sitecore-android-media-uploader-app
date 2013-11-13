@@ -11,5 +11,8 @@
     <string name="hint_item_name">Item name</string>
     <string name="hint_item_path">Item path</string>
 
+    <string name="toast_logged_in">Successfully logged in</string>
+    <string name="toast_login_failed">Failed to log in</string>
+
     <!-- Other texts -->
 </resources>

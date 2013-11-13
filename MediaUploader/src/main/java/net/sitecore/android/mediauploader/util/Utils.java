@@ -1,6 +1,7 @@
 package net.sitecore.android.mediauploader.util;
 
 import android.content.Context;
+import android.widget.Toast;
 
 import com.android.volley.NoConnectionError;
 import com.android.volley.ServerError;
@@ -36,6 +37,10 @@ public class Utils {
 
     public static boolean isDefaultInstance(Context context, String instanceName) {
         return instanceName.equals(Prefs.from(context).getString(R.string.key_instance_name));
+    }
+
+    public static void showToast(Context context, int stringResourceId) {
+        Toast.makeText(context, stringResourceId, Toast.LENGTH_LONG).show();
     }
 
     public static void setDefaultInstance(Context context, String name, String url, String login, String password, String folder) {
