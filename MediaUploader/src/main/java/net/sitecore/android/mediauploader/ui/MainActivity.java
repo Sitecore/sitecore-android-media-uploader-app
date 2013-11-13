@@ -15,15 +15,15 @@ import android.view.Window;
 import net.sitecore.android.mediauploader.R;
 import net.sitecore.android.mediauploader.ui.browser.MediaBrowserFragment;
 import net.sitecore.android.mediauploader.ui.instancemanager.InstancesListFragment;
-import net.sitecore.android.mediauploader.ui.instancemanager.InstancesListFragment.onDefaultInstanceChangeListener;
+import net.sitecore.android.mediauploader.ui.instancemanager.InstancesListFragment.OnDefaultInstanceChangeListener;
 import net.sitecore.android.mediauploader.ui.upload.MyUploadsListFragment;
 import net.sitecore.android.mediauploader.util.Prefs;
-import net.sitecore.android.mediauploader.util.ScUtils;
+import net.sitecore.android.mediauploader.util.Utils;
 
 import butterknife.InjectView;
 import butterknife.Views;
 
-public class MainActivity extends Activity implements SlidingNavigationFragment.Callbacks, onDefaultInstanceChangeListener {
+public class MainActivity extends Activity implements SlidingNavigationFragment.Callbacks, OnDefaultInstanceChangeListener {
 
     @InjectView(R.id.drawer_layout) DrawerLayout mDrawerLayout;
 
@@ -110,10 +110,13 @@ public class MainActivity extends Activity implements SlidingNavigationFragment.
     public void onMediaBrowserSelected() {
         mActionBar.setTitle(R.string.title_media_browser);
 
+        String root = Utils.getDefaultInstanceFolder(this);
         if (mMediaBrowserFragment == null) {
-            String root = Prefs.from(this).getString(R.string.key_instance_root_folder, ScUtils.PATH_MEDIA_LIBRARY);
             mMediaBrowserFragment = MediaBrowserFragment.newInstance(root);
+        } else {
+            mMediaBrowserFragment.setRootFolder(root);
         }
+
         getFragmentManager().beginTransaction().replace(R.id.fragment_container, mMediaBrowserFragment).commit();
     }
 
@@ -133,7 +136,6 @@ public class MainActivity extends Activity implements SlidingNavigationFragment.
 
         if (mInstancesListFragment == null) {
             mInstancesListFragment = new InstancesListFragment();
-            mInstancesListFragment.setDefaultInstanceChangedListener(this);
         }
         getFragmentManager().beginTransaction().replace(R.id.fragment_container, mInstancesListFragment).commit();
     }

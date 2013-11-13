@@ -35,12 +35,16 @@ public class Utils {
         return Prefs.from(context).getString(R.string.key_instance_name);
     }
 
-    public static boolean isDefaultInstance(Context context, String instanceName) {
-        return instanceName.equals(Prefs.from(context).getString(R.string.key_instance_name));
+    public static String getDefaultInstanceFolder(Context context) {
+        return Prefs.from(context).getString(R.string.key_instance_root_folder);
     }
 
     public static void showToast(Context context, int stringResourceId) {
         Toast.makeText(context, stringResourceId, Toast.LENGTH_LONG).show();
+    }
+
+    public static boolean isDefaultInstance(Context context, String instanceName) {
+        return instanceName.equals(Prefs.from(context).getString(R.string.key_instance_name));
     }
 
     public static void setDefaultInstance(Context context, String name, String url, String login, String password, String folder) {

@@ -150,6 +150,7 @@ public class SlidingNavigationFragment extends Fragment implements LoaderCallbac
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
         if (data.moveToFirst()) {
             mInstancesAdapter.swapCursor(data);
+            updateInstanceSelection();
         }
     }
 

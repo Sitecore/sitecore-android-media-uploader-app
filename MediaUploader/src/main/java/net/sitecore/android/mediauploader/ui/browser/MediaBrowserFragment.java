@@ -1,6 +1,5 @@
 package net.sitecore.android.mediauploader.ui.browser;
 
-import android.app.Activity;
 import android.app.LoaderManager.LoaderCallbacks;
 import android.content.CursorLoader;
 import android.content.Intent;
@@ -8,7 +7,6 @@ import android.content.Loader;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.text.TextUtils;
-import android.text.method.ScrollingMovementMethod;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -55,11 +53,7 @@ public class MediaBrowserFragment extends ScFragment implements LoaderCallbacks<
     public static MediaBrowserFragment newInstance(String root) {
         LOGD("MediaBrowserFragment.newInstance:" + root);
         final MediaBrowserFragment fragment = new MediaBrowserFragment();
-        final Bundle bundle = new Bundle();
-
-        bundle.putString(ARG_ITEM_ROOT, root);
-
-        fragment.setArguments(bundle);
+        fragment.setRootFolder(root);
         return fragment;
     }
 
@@ -224,7 +218,7 @@ public class MediaBrowserFragment extends ScFragment implements LoaderCallbacks<
         mAdapter.swapCursor(null);
     }
 
-    public void setRootItem(ScItem item) {
+    private void setRootItem(ScItem item) {
         mItemStack.clear();
         mItemStack.goInside(item.getId(), item.getDisplayName(), item.getPath());
 
@@ -244,4 +238,9 @@ public class MediaBrowserFragment extends ScFragment implements LoaderCallbacks<
         LOGD(Utils.getMessageFromError(volleyError));
     }
 
+    public void setRootFolder(String root) {
+        final Bundle bundle = new Bundle();
+        bundle.putString(ARG_ITEM_ROOT, root);
+        setArguments(bundle);
+    }
 }

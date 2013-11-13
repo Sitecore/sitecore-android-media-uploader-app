@@ -1,5 +1,6 @@
 package net.sitecore.android.mediauploader.ui.instancemanager;
 
+import android.app.Activity;
 import android.app.LoaderManager.LoaderCallbacks;
 import android.content.AsyncQueryHandler;
 import android.content.CursorLoader;
@@ -31,15 +32,11 @@ import butterknife.Views;
 
 public class InstancesListFragment extends ScFragment implements LoaderCallbacks<Cursor>, OnItemClickListener, OnItemLongClickListener {
     private InstancesListAdapter mListAdapter;
-    private onDefaultInstanceChangeListener mChangedListener;
+    private OnDefaultInstanceChangeListener mChangedListener;
 
     @InjectView(android.R.id.list) ListView mListView;
 
-    public void setDefaultInstanceChangedListener(onDefaultInstanceChangeListener changedListener) {
-        mChangedListener = changedListener;
-    }
-
-    public interface onDefaultInstanceChangeListener {
+    public interface OnDefaultInstanceChangeListener {
         public void onDefaultInstanceChanged();
 
     }
@@ -61,6 +58,16 @@ public class InstancesListFragment extends ScFragment implements LoaderCallbacks
             }
         });
         mListView.setAdapter(mListAdapter);
+    }
+
+    @Override
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
+        try {
+            mChangedListener = (OnDefaultInstanceChangeListener) activity;
+        } catch (ClassCastException e) {
+            throw new ClassCastException(activity.toString() + " must implement OnDefaultInstanceChangeListener");
+        }
     }
 
     private void showDeleteDialog(final String instanceName) {
