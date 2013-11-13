@@ -1,15 +1,19 @@
 buildscript {
     repositories {
         mavenCentral()
+        maven { url 'http://download.crashlytics.com/maven' }
     }
     dependencies {
         classpath 'com.android.tools.build:gradle:0.6.+'
+        classpath 'com.crashlytics.tools.gradle:crashlytics-gradle:1.+'
     }
 }
 apply plugin: 'android'
+apply plugin: 'crashlytics'
 
 repositories {
     mavenCentral()
+    maven { url 'http://download.crashlytics.com/maven' }
 }
 
 dependencies {
@@ -23,6 +27,7 @@ dependencies {
     compile 'com.android.support:support-v4:18.0.+'
     compile 'com.squareup.picasso:picasso:2.1.1@jar'
     compile 'com.github.chrisbanes.photoview:library:1.2.2'
+    compile 'com.crashlytics.android:crashlytics:1.+'
 }
 
 android {

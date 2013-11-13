@@ -8,6 +8,7 @@ import com.android.volley.Response.ErrorListener;
 import com.android.volley.Response.Listener;
 import com.android.volley.VolleyLog;
 
+import com.crashlytics.android.Crashlytics;
 import com.squareup.picasso.Picasso;
 
 import net.sitecore.android.mediauploader.util.Prefs;
@@ -29,7 +30,7 @@ public class UploaderApp extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
-
+        Crashlytics.start(this);
         mImageLoader = Picasso.with(this);
         setUpLogging(BuildConfig.DEBUG);
     }

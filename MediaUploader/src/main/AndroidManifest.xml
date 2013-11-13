@@ -10,12 +10,16 @@
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 
+    
+
     <application
         android:allowBackup="true"
         android:label="@string/app_name"
         android:name=".UploaderApp"
         android:icon="@drawable/ic_launcher"
         android:theme="@style/Theme.Sitecore">
+
+	<meta-data android:name="com.crashlytics.ApiKey" android:value="4c24cc2513a38654d20f77a8fcd8b67e09e0bbfa" />
 
         <activity
             android:name=".ui.WelcomeActivity"
