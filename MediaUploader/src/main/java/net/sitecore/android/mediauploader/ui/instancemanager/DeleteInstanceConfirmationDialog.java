@@ -32,7 +32,7 @@ public class DeleteInstanceConfirmationDialog extends DialogFragment {
                 .setPositiveButton("Delete", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int whichButton) {
-                        String selection = Instances.NAME + " ='?'";
+                        String selection = Instances.NAME + " =(?)";
                         new AsyncQueryHandler(getActivity().getContentResolver()) {
                         }.startDelete(0, null, Instances.CONTENT_URI, selection, new String[]{name});
                     }
