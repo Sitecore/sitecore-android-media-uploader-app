@@ -53,7 +53,11 @@ public class MediaBrowserFragment extends ScFragment implements LoaderCallbacks<
     public static MediaBrowserFragment newInstance(String root) {
         LOGD("MediaBrowserFragment.newInstance:" + root);
         final MediaBrowserFragment fragment = new MediaBrowserFragment();
-        fragment.setRootFolder(root);
+        final Bundle bundle = new Bundle();
+
+        bundle.putString(ARG_ITEM_ROOT, root);
+
+        fragment.setArguments(bundle);
         return fragment;
     }
 
@@ -87,6 +91,10 @@ public class MediaBrowserFragment extends ScFragment implements LoaderCallbacks<
         mAdapter = new ItemsCursorAdapter(getActivity());
         mListView.setAdapter(mAdapter);
 
+        updateRootItem();
+    }
+
+    private void updateRootItem() {
         if (getArguments() != null) {
             final String root = getArguments().getString(ARG_ITEM_ROOT);
 
@@ -228,19 +236,23 @@ public class MediaBrowserFragment extends ScFragment implements LoaderCallbacks<
 
     @Override
     public void onResponse(ItemsResponse itemsResponse) {
-        getActivity().setProgressBarIndeterminateVisibility(false);
+        if (getActivity() != null) getActivity().setProgressBarIndeterminateVisibility(false);
 
     }
 
     @Override
     public void onErrorResponse(VolleyError volleyError) {
-        getActivity().setProgressBarIndeterminateVisibility(false);
+        if (getActivity() != null) getActivity().setProgressBarIndeterminateVisibility(false);
         LOGD(Utils.getMessageFromError(volleyError));
     }
 
     public void setRootFolder(String root) {
-        final Bundle bundle = new Bundle();
-        bundle.putString(ARG_ITEM_ROOT, root);
-        setArguments(bundle);
+        getArguments().putString(ARG_ITEM_ROOT, root);
+    }
+
+    public void refresh() {
+        if (getActivity() != null) {
+            updateRootItem();
+        }
     }
 }

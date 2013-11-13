@@ -43,6 +43,8 @@ public class SlidingNavigationFragment extends Fragment implements LoaderCallbac
 
         public void onSelectionDone();
 
+        public void onDefaultInstanceSelected();
+
     }
 
     @InjectView(R.id.spinner_instances) Spinner mInstances;
@@ -99,6 +101,7 @@ public class SlidingNavigationFragment extends Fragment implements LoaderCallbac
                 getActivity().getContentResolver().notifyChange(Instances.CONTENT_URI, null);
 
                 Utils.setDefaultInstance(getActivity(), name, url, login, password, folder);
+                mCallbacks.onDefaultInstanceSelected();
             }
 
             @Override

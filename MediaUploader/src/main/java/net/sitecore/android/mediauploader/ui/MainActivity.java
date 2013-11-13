@@ -146,6 +146,15 @@ public class MainActivity extends Activity implements SlidingNavigationFragment.
     }
 
     @Override
+    public void onDefaultInstanceSelected() {
+        String root = Utils.getDefaultInstanceFolder(this);
+        if (mMediaBrowserFragment != null) {
+            mMediaBrowserFragment.setRootFolder(root);
+            mMediaBrowserFragment.refresh();
+        }
+    }
+
+    @Override
     public void onDefaultInstanceChanged() {
         mNavigationFragment.updateInstanceSelection();
     }
