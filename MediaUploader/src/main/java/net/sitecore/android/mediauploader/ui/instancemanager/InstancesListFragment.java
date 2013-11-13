@@ -64,17 +64,7 @@ public class InstancesListFragment extends ScFragment implements LoaderCallbacks
     }
 
     private void showDeleteDialog(final String instanceName) {
-        DeleteInstanceConfirmationDialog dialog = DeleteInstanceConfirmationDialog.newInstance(instanceName,
-                new DeleteInstanceConfirmationDialog.OnPerformDeleteListener() {
-                    @Override
-                    public void onPerformDelete() {
-                        String selection = Instances.NAME + " ='" + instanceName + "'";
-                        new AsyncQueryHandler(getActivity().getContentResolver()) {
-                        }
-                                .startDelete(0, null, Instances.CONTENT_URI, selection, null);
-                    }
-                });
-        dialog.show(getFragmentManager(), "dialog");
+        DeleteInstanceConfirmationDialog.newInstance(instanceName).show(getFragmentManager(), "dialog");
     }
 
     @Override
