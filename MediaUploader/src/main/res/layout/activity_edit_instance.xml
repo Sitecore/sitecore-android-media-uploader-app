@@ -11,8 +11,7 @@
         android:hint="Sitecore instance name"
         android:imeOptions="actionNext"
         android:inputType="text"
-        android:singleLine="true"
-        android:text="sample_instance" />
+        android:singleLine="true" />
 
     <EditText
         android:id="@+id/instance_url"
@@ -50,8 +49,8 @@
         android:layout_height="wrap_content"
         android:hint="Root media folder"
         android:imeOptions="actionDone"
-        android:text="/sitecore/media library"
-        android:singleLine="true" />
+        android:singleLine="true"
+        android:text="/sitecore/media library" />
 
     <Button
         android:id="@+id/button_validate"

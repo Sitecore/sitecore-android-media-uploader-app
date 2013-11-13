@@ -27,7 +27,6 @@ import com.android.volley.VolleyError;
 import net.sitecore.android.mediauploader.R;
 import net.sitecore.android.mediauploader.provider.UploadMediaContract.Instances;
 import net.sitecore.android.mediauploader.provider.UploadMediaContract.Instances.Query;
-import net.sitecore.android.mediauploader.util.Prefs;
 import net.sitecore.android.mediauploader.util.ScUtils;
 import net.sitecore.android.mediauploader.util.Utils;
 import net.sitecore.android.sdk.api.RequestQueueProvider;
@@ -83,10 +82,8 @@ public class EditInstanceActivity extends Activity implements LoaderCallbacks<Cu
             public void onClick(View v) {
                 if (TextUtils.isEmpty(mInstanceName.getText().toString())) {
                     mInstanceName.setText(mInstanceUrl.getText());
-                    saveInstanceIfValid();
-                } else {
-                    startAsyncFieldValidation();
                 }
+                startAsyncFieldValidation();
             }
         });
         customActionBarView.findViewById(R.id.actionbar_cancel).setOnClickListener(new View.OnClickListener() {
