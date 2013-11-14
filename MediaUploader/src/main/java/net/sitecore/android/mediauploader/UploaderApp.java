@@ -30,8 +30,13 @@ public class UploaderApp extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
-        Crashlytics.start(this);
+
         mImageLoader = Picasso.with(this);
+
+        if (!BuildConfig.DEBUG ) {
+            Crashlytics.start(this);
+        }
+
         setUpLogging(BuildConfig.DEBUG);
     }
 

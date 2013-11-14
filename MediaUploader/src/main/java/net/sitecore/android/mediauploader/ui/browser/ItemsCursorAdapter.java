@@ -57,6 +57,7 @@ class ItemsCursorAdapter extends CursorAdapter {
                     .error(R.drawable.ic_action_cancel)
                     .into(holder.itemIcon);
         } else {
+            mImageLoader.cancelRequest(holder.itemIcon);
             holder.itemIcon.setImageResource(R.drawable.ic_sc_folder);
         }
     }

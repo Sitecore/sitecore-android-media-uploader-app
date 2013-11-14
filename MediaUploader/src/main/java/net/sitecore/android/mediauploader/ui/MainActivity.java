@@ -2,6 +2,7 @@ package net.sitecore.android.mediauploader.ui;
 
 import android.app.ActionBar;
 import android.app.Activity;
+import android.content.AsyncQueryHandler;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.v4.app.ActionBarDrawerToggle;
@@ -19,6 +20,7 @@ import net.sitecore.android.mediauploader.ui.instancemanager.InstancesListFragme
 import net.sitecore.android.mediauploader.ui.upload.MyUploadsListFragment;
 import net.sitecore.android.mediauploader.util.Prefs;
 import net.sitecore.android.mediauploader.util.Utils;
+import net.sitecore.android.sdk.api.provider.ScItemsContract.Items;
 
 import butterknife.InjectView;
 import butterknife.Views;
@@ -66,7 +68,12 @@ public class MainActivity extends Activity implements SlidingNavigationFragment.
         mDrawerLayout.setDrawerListener(mDrawerToggle);
 
         if (savedInstanceState == null) {
-            onMediaBrowserSelected();
+            new AsyncQueryHandler(getContentResolver()){
+                @Override
+                protected void onDeleteComplete(int token, Object cookie, int result) {
+                    onMediaBrowserSelected();
+                }
+            }.startDelete(0, null, Items.CONTENT_URI, null, null);
         }
 
         boolean sideMenuShown = Prefs.from(this).getBool(R.string.key_side_menu_shown, false);

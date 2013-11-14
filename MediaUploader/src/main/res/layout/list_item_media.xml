@@ -9,8 +9,8 @@
 
     <ImageView
         android:id="@+id/item_icon"
-        android:layout_width="?android:attr/listPreferredItemHeightSmall"
-        android:layout_height="?android:attr/listPreferredItemHeightSmall"
+        android:layout_width="?android:attr/listPreferredItemHeight"
+        android:layout_height="match_parent"
         android:layout_marginRight="8dp"
         android:src="@drawable/ic_placeholder" />
 
@@ -22,14 +22,15 @@
 
         <TextView
             android:id="@+id/item_name"
-            android:textStyle="bold"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:textAppearance="@android:style/TextAppearance.Medium" />
 
         <TextView
             android:id="@+id/item_template"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:textAppearance="@android:style/TextAppearance.Small" />
     </LinearLayout>
 
 </LinearLayout>
