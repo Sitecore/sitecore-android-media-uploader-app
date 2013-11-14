@@ -9,6 +9,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -140,8 +141,14 @@ public class UploadActivity extends Activity implements ErrorListener {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (resultCode == Activity.RESULT_OK) {
             if (requestCode == SOURCE_TYPE_CAMERA) {
+                if (TextUtils.isEmpty(mEditName.getText().toString())) {
+                    mEditName.setText("Camera image");
+                }
                 LOGD("Selected image from camera: " + mImageUri.toString());
             } else if (requestCode == SOURCE_TYPE_GALLERY) {
+                if (TextUtils.isEmpty(mEditName.getText().toString())) {
+                    mEditName.setText("Gallery image");
+                }
                 LOGD("Selected image from gallery: " + data.getDataString());
                 mImageUri = Uri.parse(data.getDataString());
             }

@@ -59,8 +59,7 @@
             android:layout_height="wrap_content"
             android:hint="@string/hint_item_name"
             android:imeOptions="actionDone"
-            android:inputType="text|textAutoComplete"
-            android:text="Test item" />
+            android:inputType="text|textAutoComplete" />
 
         <EditText
             android:id="@+id/edit_item_path"
