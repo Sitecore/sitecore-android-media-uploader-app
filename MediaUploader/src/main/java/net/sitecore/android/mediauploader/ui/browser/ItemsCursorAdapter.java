@@ -21,11 +21,14 @@ import butterknife.InjectView;
 import butterknife.Views;
 
 class ItemsCursorAdapter extends CursorAdapter {
-    private static final int PREVIEW_IMAGE_ICON_WIDTH = 50;
+    private static final int PREVIEW_IMAGE_ICON_WIDTH = 64;
     private static final int PREVIEW_IMAGE_ICON_HEIGHT = 0;
 
-    private Picasso mImageLoader;
+    public static final MediaParamsBuilder IMAGE_PREVIEW_PARAMS = new MediaParamsBuilder()
+            .height(PREVIEW_IMAGE_ICON_HEIGHT)
+            .width(PREVIEW_IMAGE_ICON_WIDTH);
 
+    private Picasso mImageLoader;
 
     public ItemsCursorAdapter(Context context) {
         super(context, null, false);
@@ -34,19 +37,22 @@ class ItemsCursorAdapter extends CursorAdapter {
 
     @Override
     public View newView(Context context, Cursor cursor, ViewGroup parent) {
-        final View v = LayoutInflater.from(context).inflate(R.layout.list_item_browser, parent, false);
+        final View v = LayoutInflater.from(context).inflate(R.layout.list_item_media, parent, false);
         v.setTag(new ViewHolder(v));
         return v;
     }
 
     @Override
     public void bindView(View view, Context context, Cursor c) {
-        ViewHolder holder = (ViewHolder) view.getTag();
-        holder.itemName.setText(c.getString(Query.DISPLAY_NAME));
-        if (ScUtils.isImage(c.getString(Query.TEMPLATE))) {
-            MediaParamsBuilder params = new MediaParamsBuilder().height(PREVIEW_IMAGE_ICON_HEIGHT)
-                    .width(PREVIEW_IMAGE_ICON_WIDTH);
-            final String url = ScUtils.getMediaDownloadUrl(context, c.getString(Query.ITEM_ID), params);
+        final ViewHolder holder = (ViewHolder) view.getTag();
+        final String name = c.getString(Query.DISPLAY_NAME);
+        final String template = c.getString(Query.TEMPLATE);
+
+        holder.itemName.setText(name);
+        holder.template.setText(template);
+
+        if (ScUtils.isImageTemplate(template)) {
+            final String url = ScUtils.getMediaDownloadUrl(context, c.getString(Query.ITEM_ID), IMAGE_PREVIEW_PARAMS);
             mImageLoader.load(url).placeholder(R.drawable.ic_placeholder)
                     .error(R.drawable.ic_action_cancel)
                     .into(holder.itemIcon);
@@ -57,6 +63,7 @@ class ItemsCursorAdapter extends CursorAdapter {
 
     class ViewHolder {
         @InjectView(R.id.item_name) TextView itemName;
+        @InjectView(R.id.item_template) TextView template;
         @InjectView(R.id.item_icon) ImageView itemIcon;
 
         ViewHolder(View parent) {

@@ -71,12 +71,11 @@ public class MediaBrowserFragment extends ScFragment implements LoaderCallbacks<
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
-        setRetainInstance(true);
     }
 
     @Override
     protected View onCreateContentView(LayoutInflater inflater) {
-        View root = inflater.inflate(R.layout.fragment_browser, null);
+        View root = inflater.inflate(R.layout.fragment_media_browser, null);
         Views.inject(this, root);
 
         mListView.setOnItemClickListener(this);
@@ -155,7 +154,7 @@ public class MediaBrowserFragment extends ScFragment implements LoaderCallbacks<
         c.moveToPosition(position);
 
         final String template = c.getString(Query.TEMPLATE);
-        if (ScUtils.isImage(template)) {
+        if (ScUtils.isImageTemplate(template)) {
             Intent intent = new Intent(getActivity(), PreviewActivity.class);
             intent.putExtra(PreviewActivity.IMAGE_ITEM_ID_KEY, c.getString(Query.ITEM_ID));
             startActivity(intent);

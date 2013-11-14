@@ -11,7 +11,7 @@ public class ScUtils {
     public static final String TEMPLATE_JPEG = "System/Media/Unversioned/Jpeg";
     public static final String TEMPLATE_IMAGE = "System/Media/Unversioned/Image";
 
-    public static boolean isImage(String template) {
+    public static boolean isImageTemplate(String template) {
         if (template.equals(TEMPLATE_JPEG)) return true;
         else return template.equals(TEMPLATE_IMAGE);
     }
