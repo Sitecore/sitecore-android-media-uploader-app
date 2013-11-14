@@ -41,7 +41,7 @@ public class ScFragment extends Fragment {
     @Override
     public void onDestroyView() {
         mProgressContainer = mContentContainer = mEmptyContainer = null;
-        mContentShown = false;
+        mContentShown = mIsEmpty = false;
         super.onDestroyView();
     }
 

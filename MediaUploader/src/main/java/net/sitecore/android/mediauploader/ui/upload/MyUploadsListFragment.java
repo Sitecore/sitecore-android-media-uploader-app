@@ -21,6 +21,7 @@ import net.sitecore.android.mediauploader.provider.UploadMediaContract.Uploads;
 import net.sitecore.android.mediauploader.ui.IntentExtras;
 import net.sitecore.android.mediauploader.ui.ScFragment;
 import net.sitecore.android.mediauploader.ui.upload.UploadsListAdapter.OnUploadActionsListener;
+import net.sitecore.android.mediauploader.util.ScUtils;
 
 import butterknife.InjectView;
 import butterknife.OnClick;
@@ -50,7 +51,7 @@ public class MyUploadsListFragment extends ScFragment implements LoaderCallbacks
     @OnClick(R.id.button_start_upload)
     public void onStartUploadClick() {
         final Intent intent = new Intent(getActivity(), UploadActivity.class);
-        intent.putExtra(IntentExtras.ITEM_PATH, "/temp/hardcoded/path");
+        intent.putExtra(IntentExtras.ITEM_PATH, ScUtils.PATH_MEDIA_LIBRARY);
         startActivity(intent);
     }
 

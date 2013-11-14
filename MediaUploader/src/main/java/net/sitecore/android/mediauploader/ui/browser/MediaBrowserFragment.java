@@ -33,7 +33,6 @@ import net.sitecore.android.sdk.api.RequestQueueProvider;
 import net.sitecore.android.sdk.api.ScApiSession;
 import net.sitecore.android.sdk.api.ScRequest;
 import net.sitecore.android.sdk.api.model.ItemsResponse;
-import net.sitecore.android.sdk.api.model.PayloadType;
 import net.sitecore.android.sdk.api.model.RequestScope;
 import net.sitecore.android.sdk.api.model.ScItem;
 import net.sitecore.android.sdk.api.provider.ScItemsContract.Items;
@@ -66,6 +65,9 @@ public class MediaBrowserFragment extends ScFragment implements LoaderCallbacks<
 
     @InjectView(R.id.current_path) TextView mCurrentPath;
     @InjectView(android.R.id.list) ListView mListView;
+    @InjectView(R.id.list_empty) View mEmptyList;
+
+    @InjectView(R.id.layout_navigate_up) View mNavigateUp;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -78,6 +80,7 @@ public class MediaBrowserFragment extends ScFragment implements LoaderCallbacks<
         View root = inflater.inflate(R.layout.fragment_media_browser, null);
         Views.inject(this, root);
 
+        mListView.setEmptyView(mEmptyList);
         mListView.setOnItemClickListener(this);
 
         return root;
@@ -89,7 +92,7 @@ public class MediaBrowserFragment extends ScFragment implements LoaderCallbacks<
 
         mAdapter = new ItemsCursorAdapter(getActivity());
         mListView.setAdapter(mAdapter);
-
+        setContentShown(true);
         updateRootItem();
     }
 
@@ -117,7 +120,7 @@ public class MediaBrowserFragment extends ScFragment implements LoaderCallbacks<
                 return;
             }
             setRootItem(itemsResponse.getItems().get(0));
-            setContentShown(true);
+
             getLoaderManager().restartLoader(0, null, MediaBrowserFragment.this);
         }
     };
@@ -125,6 +128,7 @@ public class MediaBrowserFragment extends ScFragment implements LoaderCallbacks<
     private ErrorListener mRootItemNotReceived = new ErrorListener() {
         @Override
         public void onErrorResponse(VolleyError volleyError) {
+            //setEmpty(true);
             //TODO: show error view
         }
     };
@@ -150,6 +154,7 @@ public class MediaBrowserFragment extends ScFragment implements LoaderCallbacks<
 
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+        if (mNavigateUp.getVisibility() == View.GONE) mNavigateUp.setVisibility(View.VISIBLE);
         Cursor c = mAdapter.getCursor();
         c.moveToPosition(position);
 
@@ -176,13 +181,15 @@ public class MediaBrowserFragment extends ScFragment implements LoaderCallbacks<
         return mItemStack;
     }
 
-    @OnClick(R.id.layout_nav_up_container)
+    @OnClick(R.id.layout_navigate_up)
     public void goUp() {
         if (mItemStack.canGoUp()) {
             mItemStack.goUp();
             updateChildren(mItemStack.getCurrentItemId());
             updateCurrentPath(mItemStack.getCurrentPath());
             getLoaderManager().restartLoader(0, null, this);
+
+            if (!mItemStack.canGoUp()) mNavigateUp.setVisibility(View.GONE);
         } else {
             Toast.makeText(getActivity(), "You are in root folder", Toast.LENGTH_LONG).show();
         }
@@ -195,7 +202,6 @@ public class MediaBrowserFragment extends ScFragment implements LoaderCallbacks<
                 ScRequest request = apiSession.getItems(MediaBrowserFragment.this, MediaBrowserFragment.this)
                         .byItemId(itemId)
                         .withScope(RequestScope.CHILDREN)
-                        .withPayloadType(PayloadType.FULL)
                         .build();
 
                 RequestQueueProvider.getRequestQueue(getActivity()).add(request);
@@ -247,6 +253,7 @@ public class MediaBrowserFragment extends ScFragment implements LoaderCallbacks<
     public void onErrorResponse(VolleyError volleyError) {
         if (getActivity() != null) getActivity().setProgressBarIndeterminateVisibility(false);
         LOGD(Utils.getMessageFromError(volleyError));
+        //setEmpty(true);
     }
 
     public void setRootFolder(String root) {
