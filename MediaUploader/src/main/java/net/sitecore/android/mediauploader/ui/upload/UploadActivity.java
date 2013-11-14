@@ -154,6 +154,10 @@ public class UploadActivity extends Activity implements ErrorListener {
             }
 
             mPreview.setImageURI(mImageUri);
+        } else {
+            if (requestCode == SOURCE_TYPE_CAMERA) {
+                mImageUri = null;
+            }
         }
     }
 
