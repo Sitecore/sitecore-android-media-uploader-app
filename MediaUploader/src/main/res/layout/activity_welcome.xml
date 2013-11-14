@@ -1,52 +1,100 @@
 <?xml version="1.0" encoding="utf-8"?>
-
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical">
+    android:fillViewport="true">
 
-    <TextView
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:background="#bbb"
+            android:gravity="center">
+
+            <ImageView
+                android:layout_width="100dp"
+                android:layout_height="100dp"
+                android:layout_marginLeft="24dp"
+                android:src="@drawable/sc_logo" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="24dp"
+                android:gravity="center_horizontal"
+                android:text="Sitecore\nMedia Uploader"
+                android:textAppearance="@android:style/TextAppearance.Large" />
+        </LinearLayout>
+
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="48dp"
-        android:text="Welcome to Sitecore Media Uploader!"
-        android:textAppearance="@android:style/TextAppearance.Large" />
+        android:orientation="vertical"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp" >
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
 
-    <EditText
-        android:id="@+id/edit_url"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="Sitecore instance URL"
-        android:imeOptions="actionNext"
-        android:inputType="textUri"
-        android:singleLine="true"
-        android:text="http://mobiledev1ua1.dk.sitecore.net:722" />
+            android:layout_marginTop="16dp"
+            android:text="Web server address"
+            android:textAppearance="@android:style/TextAppearance.Medium" />
 
-    <EditText
-        android:id="@+id/edit_login"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="Domain\\Username"
-        android:imeOptions="actionNext"
-        android:inputType="textPersonName"
-        android:singleLine="true"
-        android:text="extranet\\creatorex" />
+        <EditText
+            android:id="@+id/edit_url"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:imeOptions="actionNext"
+            android:inputType="textUri"
+            android:singleLine="true"
+            android:text="http://mobiledev1ua1.dk.sitecore.net:722" />
 
-    <EditText
-        android:id="@+id/edit_password"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="48dp"
-        android:hint="Password"
-        android:imeOptions="actionDone"
-        android:inputType="textPassword"
-        android:singleLine="true"
-        android:text="creatorex" />
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:text="User Name"
+            android:textAppearance="@android:style/TextAppearance.Medium" />
 
-    <Button
-        android:id="@+id/button_ok"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Login" />
+        <EditText
+            android:id="@+id/edit_login"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Domain\\Username"
+            android:imeOptions="actionNext"
+            android:inputType="textPersonName"
+            android:singleLine="true"
+            android:text="extranet\\creatorex" />
 
-</LinearLayout>
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:text="Password"
+            android:textAppearance="@android:style/TextAppearance.Medium" />
+
+        <EditText
+            android:id="@+id/edit_password"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="24dp"
+            android:imeOptions="actionDone"
+            android:inputType="textPassword"
+            android:singleLine="true"
+            android:text="creatorex" />
+
+        <Button
+            android:id="@+id/button_ok"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
+            android:text="Login" />
+        </LinearLayout>
+
+    </LinearLayout>
+</ScrollView>

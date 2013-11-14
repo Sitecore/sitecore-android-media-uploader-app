@@ -25,6 +25,7 @@
                 android:layout_height="wrap_content"
                 android:layout_alignParentBottom="true"
                 android:divider="?android:attr/dividerVertical"
+                android:background="#33ffffff"
                 android:dividerPadding="12dp"
                 android:showDividers="middle"
                 android:orientation="horizontal">
