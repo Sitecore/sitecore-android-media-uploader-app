@@ -38,9 +38,9 @@ import net.sitecore.android.sdk.api.model.ScItem;
 import net.sitecore.android.sdk.api.provider.ScItemsContract.Items;
 import net.sitecore.android.sdk.api.provider.ScItemsContract.Items.Query;
 
+import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
-import butterknife.Views;
 
 import static net.sitecore.android.sdk.api.LogUtils.LOGD;
 
@@ -78,7 +78,7 @@ public class MediaBrowserFragment extends ScFragment implements LoaderCallbacks<
     @Override
     protected View onCreateContentView(LayoutInflater inflater) {
         View root = inflater.inflate(R.layout.fragment_media_browser, null);
-        Views.inject(this, root);
+        ButterKnife.inject(this, root);
 
         mListView.setEmptyView(mEmptyList);
         mListView.setOnItemClickListener(this);

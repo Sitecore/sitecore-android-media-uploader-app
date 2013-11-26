@@ -32,11 +32,12 @@ import net.sitecore.android.mediauploader.util.ScUtils;
 import net.sitecore.android.mediauploader.util.Utils;
 import net.sitecore.android.sdk.api.RequestQueueProvider;
 import net.sitecore.android.sdk.api.ScApiSession;
+import net.sitecore.android.sdk.api.ScApiSessionFactory;
 import net.sitecore.android.sdk.api.model.ItemsResponse;
 
+import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
-import butterknife.Views;
 
 public class EditInstanceActivity extends Activity implements LoaderCallbacks<Cursor>, ErrorListener, Listener<ScApiSession> {
     public static final int READ_INSTANCES_ACTION = 0;
@@ -64,7 +65,7 @@ public class EditInstanceActivity extends Activity implements LoaderCallbacks<Cu
         initActionBar();
 
         setContentView(R.layout.activity_edit_instance);
-        Views.inject(this);
+        ButterKnife.inject(this);
 
         if (isEditorMode) getLoaderManager().initLoader(READ_INSTANCES_ACTION, null, this);
     }
@@ -137,7 +138,8 @@ public class EditInstanceActivity extends Activity implements LoaderCallbacks<Cu
             String url = mInstanceUrl.getText().toString();
             String login = mInstanceLogin.getText().toString();
             String password = mInstancePassword.getText().toString();
-            ScApiSession.getSession(this, url, login, password, this, this);
+            ScApiSessionFactory.getSession(RequestQueueProvider.getRequestQueue(this),
+                    url, login, password, this, this);
         }
     }
 

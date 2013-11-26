@@ -18,8 +18,8 @@ import net.sitecore.android.mediauploader.R;
 import net.sitecore.android.mediauploader.model.UploadStatus;
 import net.sitecore.android.mediauploader.provider.UploadMediaContract.Uploads.Query;
 
+import butterknife.ButterKnife;
 import butterknife.InjectView;
-import butterknife.Views;
 
 public class UploadsListAdapter extends CursorAdapter implements OnMenuItemClickListener {
 
@@ -131,7 +131,7 @@ public class UploadsListAdapter extends CursorAdapter implements OnMenuItemClick
         PopupMenu popup;
 
         ViewHolder(View v) {
-            Views.inject(this, v);
+            ButterKnife.inject(this, v);
         }
     }
 

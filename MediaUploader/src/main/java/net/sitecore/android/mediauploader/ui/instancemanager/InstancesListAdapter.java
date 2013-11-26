@@ -15,7 +15,7 @@ import net.sitecore.android.mediauploader.provider.UploadMediaContract.Instances
 import net.sitecore.android.mediauploader.util.Utils;
 
 import butterknife.InjectView;
-import butterknife.Views;
+import butterknife.ButterKnife;
 
 public class InstancesListAdapter extends CursorAdapter {
     private OnDeleteButtonClickListener mDeletePerformListener;
@@ -65,7 +65,7 @@ public class InstancesListAdapter extends CursorAdapter {
         @InjectView(R.id.checkbox_default_instance) View defaultInstance;
 
         ViewHolder(View parent) {
-            Views.inject(this, parent);
+            ButterKnife.inject(this, parent);
         }
     }
 }

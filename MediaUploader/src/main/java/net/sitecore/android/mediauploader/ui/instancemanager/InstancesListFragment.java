@@ -27,8 +27,8 @@ import net.sitecore.android.mediauploader.ui.ScFragment;
 import net.sitecore.android.mediauploader.ui.instancemanager.InstancesListAdapter.OnDeleteButtonClickListener;
 import net.sitecore.android.mediauploader.util.Utils;
 
+import butterknife.ButterKnife;
 import butterknife.InjectView;
-import butterknife.Views;
 
 public class InstancesListFragment extends ScFragment implements LoaderCallbacks<Cursor>, OnItemClickListener, OnItemLongClickListener {
     private InstancesListAdapter mListAdapter;
@@ -77,7 +77,7 @@ public class InstancesListFragment extends ScFragment implements LoaderCallbacks
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = super.onCreateView(inflater, container, savedInstanceState);
-        Views.inject(this, view);
+        ButterKnife.inject(this, view);
 
         mListView.setOnItemClickListener(this);
         mListView.setOnItemLongClickListener(this);

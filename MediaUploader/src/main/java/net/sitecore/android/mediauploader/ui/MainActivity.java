@@ -20,8 +20,8 @@ import net.sitecore.android.mediauploader.ui.upload.MyUploadsListFragment;
 import net.sitecore.android.mediauploader.util.Prefs;
 import net.sitecore.android.mediauploader.util.Utils;
 
+import butterknife.ButterKnife;
 import butterknife.InjectView;
-import butterknife.Views;
 
 public class MainActivity extends Activity implements SlidingNavigationFragment.Callbacks, OnDefaultInstanceChangeListener {
 
@@ -41,7 +41,7 @@ public class MainActivity extends Activity implements SlidingNavigationFragment.
         requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
 
         setContentView(R.layout.activity_main);
-        Views.inject(this);
+        ButterKnife.inject(this);
 
         mNavigationFragment = (SlidingNavigationFragment) getFragmentManager().findFragmentById(R.id.fragment_navigation);
 

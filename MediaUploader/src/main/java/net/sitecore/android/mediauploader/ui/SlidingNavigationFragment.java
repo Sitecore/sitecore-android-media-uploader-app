@@ -25,7 +25,7 @@ import net.sitecore.android.mediauploader.util.Utils;
 
 import butterknife.InjectView;
 import butterknife.OnClick;
-import butterknife.Views;
+import butterknife.ButterKnife;
 
 public class SlidingNavigationFragment extends Fragment implements LoaderCallbacks<Cursor> {
 
@@ -70,7 +70,7 @@ public class SlidingNavigationFragment extends Fragment implements LoaderCallbac
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         final View v = inflater.inflate(R.layout.fragment_navigation, container, false);
-        Views.inject(this, v);
+        ButterKnife.inject(this, v);
         return v;
     }
 
@@ -192,7 +192,7 @@ static class InstancesAdapter extends CursorAdapter {
         @InjectView(android.R.id.text1) TextView name;
 
         ViewHolder(View v) {
-            Views.inject(this, v);
+            ButterKnife.inject(this, v);
         }
     }
 }

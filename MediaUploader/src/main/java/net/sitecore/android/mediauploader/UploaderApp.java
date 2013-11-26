@@ -13,10 +13,12 @@ import com.squareup.picasso.Picasso;
 
 import net.sitecore.android.mediauploader.util.Prefs;
 import net.sitecore.android.sdk.api.LogUtils;
+import net.sitecore.android.sdk.api.RequestQueueProvider;
 import net.sitecore.android.sdk.api.ScApiSession;
+import net.sitecore.android.sdk.api.ScApiSessionFactory;
 import net.sitecore.android.sdk.api.provider.ScItemsContract.Items;
 
-import butterknife.Views;
+import butterknife.ButterKnife;
 
 public class UploaderApp extends Application {
 
@@ -48,7 +50,7 @@ public class UploaderApp extends Application {
         mImageLoader.setDebugging(isEnabled);
         LogUtils.setLogEnabled(isEnabled);
         VolleyLog.DEBUG = isEnabled;
-        Views.setDebug(isEnabled);
+        ButterKnife.setDebug(isEnabled);
     }
 
     public void getSession(final Listener<ScApiSession> sessionListener, ErrorListener errorListener) {
@@ -68,7 +70,8 @@ public class UploaderApp extends Application {
                 }
             };
 
-            ScApiSession.getSession(this, url, username, password, onSuccess, errorListener);
+            ScApiSessionFactory.getSession(RequestQueueProvider.getRequestQueue(this),
+                    url, username, password, onSuccess, errorListener);
         } else {
             sessionListener.onResponse(mSession);
         }

@@ -37,9 +37,9 @@ import net.sitecore.android.sdk.api.ScApiSession;
 import net.sitecore.android.sdk.api.UploadMediaRequestOptions;
 import net.sitecore.android.sdk.api.model.ItemsResponse;
 
+import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
-import butterknife.Views;
 
 import static net.sitecore.android.sdk.api.LogUtils.LOGD;
 
@@ -62,7 +62,7 @@ public class UploadActivity extends Activity implements ErrorListener {
         initActionBar();
 
         setContentView(R.layout.activity_upload);
-        Views.inject(this);
+        ButterKnife.inject(this);
 
         String itemPath = getIntent().getStringExtra(IntentExtras.ITEM_PATH);
         mEditPath.setText(itemPath);

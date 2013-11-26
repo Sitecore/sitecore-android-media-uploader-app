@@ -24,8 +24,8 @@ import net.sitecore.android.mediauploader.util.ScUtils.MediaParamsBuilder;
 import net.sitecore.android.sdk.api.provider.ScItemsContract.Items;
 import net.sitecore.android.sdk.api.provider.ScItemsContract.Items.Query;
 
+import butterknife.ButterKnife;
 import butterknife.InjectView;
-import butterknife.Views;
 import uk.co.senab.photoview.PhotoViewAttacher;
 
 public class PreviewActivity extends Activity implements LoaderCallbacks<Cursor>, Callback {
@@ -57,7 +57,7 @@ public class PreviewActivity extends Activity implements LoaderCallbacks<Cursor>
         }
 
         setContentView(R.layout.activity_preview);
-        Views.inject(this);
+        ButterKnife.inject(this);
 
         getLoaderManager().initLoader(0, null, this);
     }

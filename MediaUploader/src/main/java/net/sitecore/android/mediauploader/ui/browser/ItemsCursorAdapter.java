@@ -17,8 +17,8 @@ import net.sitecore.android.mediauploader.util.ScUtils;
 import net.sitecore.android.mediauploader.util.ScUtils.MediaParamsBuilder;
 import net.sitecore.android.sdk.api.provider.ScItemsContract.Items.Query;
 
+import butterknife.ButterKnife;
 import butterknife.InjectView;
-import butterknife.Views;
 
 class ItemsCursorAdapter extends CursorAdapter {
     private static final int PREVIEW_IMAGE_ICON_WIDTH = 64;
@@ -68,7 +68,7 @@ class ItemsCursorAdapter extends CursorAdapter {
         @InjectView(R.id.item_icon) ImageView itemIcon;
 
         ViewHolder(View parent) {
-            Views.inject(this, parent);
+            ButterKnife.inject(this, parent);
         }
     }
 

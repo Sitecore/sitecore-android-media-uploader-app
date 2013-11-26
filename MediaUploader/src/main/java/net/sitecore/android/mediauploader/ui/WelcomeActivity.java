@@ -22,11 +22,12 @@ import net.sitecore.android.mediauploader.util.ScUtils;
 import net.sitecore.android.mediauploader.util.Utils;
 import net.sitecore.android.sdk.api.RequestQueueProvider;
 import net.sitecore.android.sdk.api.ScApiSession;
+import net.sitecore.android.sdk.api.ScApiSessionFactory;
 import net.sitecore.android.sdk.api.model.ItemsResponse;
 
+import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
-import butterknife.Views;
 
 import static net.sitecore.android.mediauploader.util.Utils.showToast;
 
@@ -48,7 +49,7 @@ public class WelcomeActivity extends Activity implements ErrorListener, Listener
         }
 
         setContentView(R.layout.activity_welcome);
-        Views.inject(this);
+        ButterKnife.inject(this);
     }
 
     @OnClick(R.id.button_ok)
@@ -57,7 +58,8 @@ public class WelcomeActivity extends Activity implements ErrorListener, Listener
             String url = mUrl.getText().toString();
             String login = mLogin.getText().toString();
             String password = mPassword.getText().toString();
-            ScApiSession.getSession(this, url, login, password, this, this);
+            ScApiSessionFactory.getSession(RequestQueueProvider.getRequestQueue(this),
+                    url, login, password, this, this);
         }
     }
 

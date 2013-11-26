@@ -7,13 +7,9 @@ import android.content.Loader;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.view.LayoutInflater;
-import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
-import android.widget.PopupMenu;
 import android.widget.Toast;
 
 import net.sitecore.android.mediauploader.R;
@@ -23,9 +19,9 @@ import net.sitecore.android.mediauploader.ui.ScFragment;
 import net.sitecore.android.mediauploader.ui.upload.UploadsListAdapter.OnUploadActionsListener;
 import net.sitecore.android.mediauploader.util.ScUtils;
 
+import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
-import butterknife.Views;
 
 import static net.sitecore.android.sdk.api.LogUtils.LOGD;
 
@@ -38,7 +34,7 @@ public class MyUploadsListFragment extends ScFragment implements LoaderCallbacks
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         final View v = super.onCreateView(inflater, container, savedInstanceState);
-        Views.inject(this, v);
+        ButterKnife.inject(this, v);
 
         return v;
     }
