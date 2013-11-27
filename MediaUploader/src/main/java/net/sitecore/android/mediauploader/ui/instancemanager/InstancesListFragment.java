@@ -141,6 +141,7 @@ public class InstancesListFragment extends ScFragment implements LoaderCallbacks
         mChangedListener.onDefaultInstanceChanged();
         mListAdapter.notifyDataSetChanged();
 
+        UploaderApp.from(getActivity()).updateInstancePublicKey();
         UploaderApp.from(getActivity()).cleanInstanceCache();
 
         return true;

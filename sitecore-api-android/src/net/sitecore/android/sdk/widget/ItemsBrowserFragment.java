@@ -1,7 +1,6 @@
 package net.sitecore.android.sdk.widget;
 
 import android.annotation.TargetApi;
-import android.app.Activity;
 import android.app.DialogFragment;
 import android.content.ContentProviderOperation;
 import android.content.Context;
@@ -175,6 +174,7 @@ public class ItemsBrowserFragment extends DialogFragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        mRequestQueue = RequestQueueProvider.getRequestQueue(getActivity());
         if (savedInstanceState != null) {
             // TODO: load saved state
         }
@@ -229,12 +229,6 @@ public class ItemsBrowserFragment extends DialogFragment {
         mIsLoading = isLoading;
         mContainerProgress.setVisibility(isLoading ? View.VISIBLE : View.GONE);
         mContainerList.setVisibility(isLoading ? View.GONE : View.VISIBLE);
-    }
-
-    @Override
-    public void onAttach(Activity activity) {
-        super.onAttach(activity);
-        mRequestQueue = RequestQueueProvider.getRequestQueue(getActivity());
     }
 
     @Override

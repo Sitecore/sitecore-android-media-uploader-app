@@ -6,6 +6,7 @@
     <string name="key_instance_login">instance_login</string>
     <string name="key_instance_password">instance_password</string>
     <string name="key_instance_root_folder">instance_root_folder</string>
+    <string name="key_public_key_value">public_key</string>
 
     <string name="key_side_menu_shown">side_menu_shown</string>
 </resources>

@@ -31,7 +31,6 @@ import net.sitecore.android.mediauploader.model.UploadStatus;
 import net.sitecore.android.mediauploader.provider.UploadMediaContract.Uploads;
 import net.sitecore.android.mediauploader.service.MediaUploaderService;
 import net.sitecore.android.mediauploader.ui.IntentExtras;
-import net.sitecore.android.mediauploader.util.EmptyErrorListener;
 import net.sitecore.android.mediauploader.util.Prefs;
 import net.sitecore.android.sdk.api.ScApiSession;
 import net.sitecore.android.sdk.api.UploadMediaRequestOptions;
@@ -192,12 +191,7 @@ public class UploadActivity extends Activity implements ErrorListener {
             @Override
             protected void onInsertComplete(int token, Object cookie, final Uri uri) {
                 if (!mUploadLater.isChecked()) {
-                    UploaderApp.from(UploadActivity.this).getSession(new Listener<ScApiSession>() {
-                        @Override
-                        public void onResponse(ScApiSession scApiSession) {
-                            uploadMedia(scApiSession, uri);
-                        }
-                    }, new EmptyErrorListener());
+                    uploadMedia(UploaderApp.from(UploadActivity.this).getSession(), uri);
                 }
             }
         }.startInsert(0, null, Uploads.CONTENT_URI, values);

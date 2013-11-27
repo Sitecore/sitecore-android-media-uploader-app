@@ -2,7 +2,6 @@ package net.sitecore.android.mediauploader.ui;
 
 import android.app.Activity;
 import android.content.AsyncQueryHandler;
-import android.content.ContentValues;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -10,12 +9,13 @@ import android.webkit.URLUtil;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.android.volley.Request;
 import com.android.volley.Response.ErrorListener;
 import com.android.volley.Response.Listener;
 import com.android.volley.VolleyError;
 
 import net.sitecore.android.mediauploader.R;
-import net.sitecore.android.mediauploader.UploaderApp;
+import net.sitecore.android.mediauploader.model.Instance;
 import net.sitecore.android.mediauploader.provider.UploadMediaContract.Instances;
 import net.sitecore.android.mediauploader.util.Prefs;
 import net.sitecore.android.mediauploader.util.ScUtils;
@@ -23,6 +23,7 @@ import net.sitecore.android.mediauploader.util.Utils;
 import net.sitecore.android.sdk.api.RequestQueueProvider;
 import net.sitecore.android.sdk.api.ScApiSession;
 import net.sitecore.android.sdk.api.ScApiSessionFactory;
+import net.sitecore.android.sdk.api.ScPublicKey;
 import net.sitecore.android.sdk.api.model.ItemsResponse;
 
 import butterknife.ButterKnife;
@@ -31,7 +32,7 @@ import butterknife.OnClick;
 
 import static net.sitecore.android.mediauploader.util.Utils.showToast;
 
-public class WelcomeActivity extends Activity implements ErrorListener, Listener<ScApiSession> {
+public class WelcomeActivity extends Activity implements ErrorListener {
 
     @InjectView(R.id.edit_url) EditText mUrl;
     @InjectView(R.id.edit_login) EditText mLogin;
@@ -55,11 +56,20 @@ public class WelcomeActivity extends Activity implements ErrorListener, Listener
     @OnClick(R.id.button_ok)
     public void connect() {
         if (validate()) {
-            String url = mUrl.getText().toString();
-            String login = mLogin.getText().toString();
-            String password = mPassword.getText().toString();
-            ScApiSessionFactory.getSession(RequestQueueProvider.getRequestQueue(this),
-                    url, login, password, this, this);
+            final String url = mUrl.getText().toString();
+            final String login = mLogin.getText().toString();
+            final String password = mPassword.getText().toString();
+
+            Request keyRequest = ScApiSessionFactory.buildPublicKeyRequest(url,
+                    new Listener<ScPublicKey>() {
+                        @Override
+                        public void onResponse(ScPublicKey key) {
+                            Utils.saveKeyToPrefs(getApplicationContext(), key);
+                            makeDefaultRequest(ScApiSessionFactory.newSession(url,
+                                    key, login, password));
+                        }
+                    }, WelcomeActivity.this);
+            RequestQueueProvider.getRequestQueue(this).add(keyRequest);
         }
     }
 
@@ -68,10 +78,7 @@ public class WelcomeActivity extends Activity implements ErrorListener, Listener
         Toast.makeText(this, Utils.getMessageFromError(error), Toast.LENGTH_LONG).show();
     }
 
-    @Override
-    public void onResponse(ScApiSession session) {
-        session.setShouldCache(true);
-        UploaderApp.from(this).setSession(session);
+    public void makeDefaultRequest(ScApiSession session) {
         Listener<ItemsResponse> success = new Listener<ItemsResponse>() {
             @Override
             public void onResponse(ItemsResponse response) {
@@ -81,10 +88,9 @@ public class WelcomeActivity extends Activity implements ErrorListener, Listener
                     String login = mLogin.getText().toString();
                     String password = mPassword.getText().toString();
 
-                    Utils.setDefaultInstance(WelcomeActivity.this, name, url, login, password, ScUtils.PATH_MEDIA_LIBRARY);
-                    Prefs.from(WelcomeActivity.this).put(R.string.key_instance_exist, true);
-
-                    saveInstance(name, url, login, password, ScUtils.PATH_MEDIA_LIBRARY);
+                    Instance instance = new Instance(name, url, login, password, ScUtils.PATH_MEDIA_LIBRARY);
+                    Utils.setDefaultInstance(WelcomeActivity.this, instance);
+                    saveInstance(instance);
 
                     showToast(WelcomeActivity.this, R.string.toast_logged_in);
 
@@ -99,16 +105,9 @@ public class WelcomeActivity extends Activity implements ErrorListener, Listener
         RequestQueueProvider.getRequestQueue(this).add(session.getItems(success, this).build());
     }
 
-    private void saveInstance(String name, String url, String login, String password, String defaultRootFolder) {
-        ContentValues values = new ContentValues();
-        values.put(Instances.NAME, name);
-        values.put(Instances.URL, url);
-        values.put(Instances.LOGIN, login);
-        values.put(Instances.PASSWORD, password);
-        values.put(Instances.ROOT_FOLDER, defaultRootFolder);
-
+    private void saveInstance(Instance instance) {
         new AsyncQueryHandler(getContentResolver()) {
-        }.startInsert(0, null, Instances.CONTENT_URI, values);
+        }.startInsert(0, null, Instances.CONTENT_URI, instance.toContentValues());
     }
 
     boolean validate() {

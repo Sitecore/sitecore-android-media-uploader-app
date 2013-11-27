@@ -4,7 +4,6 @@ import android.app.ActionBar;
 import android.app.Activity;
 import android.app.LoaderManager.LoaderCallbacks;
 import android.content.AsyncQueryHandler;
-import android.content.ContentValues;
 import android.content.CursorLoader;
 import android.content.Loader;
 import android.database.Cursor;
@@ -26,6 +25,7 @@ import com.android.volley.VolleyError;
 
 import net.sitecore.android.mediauploader.R;
 import net.sitecore.android.mediauploader.UploaderApp;
+import net.sitecore.android.mediauploader.model.Instance;
 import net.sitecore.android.mediauploader.provider.UploadMediaContract.Instances;
 import net.sitecore.android.mediauploader.provider.UploadMediaContract.Instances.Query;
 import net.sitecore.android.mediauploader.util.ScUtils;
@@ -243,24 +243,19 @@ public class EditInstanceActivity extends Activity implements LoaderCallbacks<Cu
         String password = mInstancePassword.getText().toString();
         String folder = mInstanceRootFolder.getText().toString();
 
+        Instance instance = new Instance(name, url, login, password, folder);
+
         if (isDefaultInstance) {
-            Utils.setDefaultInstance(this, name, url, login, password, folder);
+            Utils.setDefaultInstance(this, instance);
             UploaderApp.from(this).cleanInstanceCache();
         }
 
-        ContentValues values = new ContentValues();
-        values.put(Instances.NAME, name);
-        values.put(Instances.URL, url);
-        values.put(Instances.LOGIN, login);
-        values.put(Instances.PASSWORD, password);
-        values.put(Instances.ROOT_FOLDER, folder);
-
         if (isEditorMode) {
             new AsyncQueryHandler(getContentResolver()) {}
-                    .startUpdate(READ_INSTANCES_ACTION, null, mInstanceUri, values, null, null);
+                    .startUpdate(READ_INSTANCES_ACTION, null, mInstanceUri, instance.toContentValues(), null, null);
         } else {
             new AsyncQueryHandler(getContentResolver()) {}
-                    .startInsert(READ_INSTANCES_ACTION, null, Instances.CONTENT_URI, values);
+                    .startInsert(READ_INSTANCES_ACTION, null, Instances.CONTENT_URI, instance.toContentValues());
         }
     }
 }

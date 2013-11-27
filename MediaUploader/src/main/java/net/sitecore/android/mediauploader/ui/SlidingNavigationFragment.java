@@ -106,6 +106,7 @@ public class SlidingNavigationFragment extends Fragment implements LoaderCallbac
 
                     mCallbacks.onDefaultInstanceSelected();
 
+                    UploaderApp.from(getActivity()).updateInstancePublicKey();
                     UploaderApp.from(getActivity()).cleanInstanceCache();
                 }
             }

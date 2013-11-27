@@ -4,6 +4,7 @@ import android.app.Application;
 import android.content.AsyncQueryHandler;
 import android.content.Context;
 
+import com.android.volley.Request;
 import com.android.volley.Response.ErrorListener;
 import com.android.volley.Response.Listener;
 import com.android.volley.VolleyLog;
@@ -11,11 +12,14 @@ import com.android.volley.VolleyLog;
 import com.crashlytics.android.Crashlytics;
 import com.squareup.picasso.Picasso;
 
+import net.sitecore.android.mediauploader.util.EmptyErrorListener;
 import net.sitecore.android.mediauploader.util.Prefs;
+import net.sitecore.android.mediauploader.util.Utils;
 import net.sitecore.android.sdk.api.LogUtils;
 import net.sitecore.android.sdk.api.RequestQueueProvider;
 import net.sitecore.android.sdk.api.ScApiSession;
 import net.sitecore.android.sdk.api.ScApiSessionFactory;
+import net.sitecore.android.sdk.api.ScPublicKey;
 import net.sitecore.android.sdk.api.provider.ScItemsContract.Items;
 
 import butterknife.ButterKnife;
@@ -23,7 +27,6 @@ import butterknife.ButterKnife;
 public class UploaderApp extends Application {
 
     private Picasso mImageLoader;
-    private ScApiSession mSession;
 
     public static UploaderApp from(Context context) {
         return (UploaderApp) context.getApplicationContext();
@@ -35,7 +38,7 @@ public class UploaderApp extends Application {
 
         mImageLoader = Picasso.with(this);
 
-        if (!BuildConfig.DEBUG ) {
+        if (!BuildConfig.DEBUG) {
             Crashlytics.start(this);
         }
 
@@ -53,37 +56,35 @@ public class UploaderApp extends Application {
         ButterKnife.setDebug(isEnabled);
     }
 
-    public void getSession(final Listener<ScApiSession> sessionListener, ErrorListener errorListener) {
-        if (mSession == null) {
+    public ScApiSession getSession() {
+        ScPublicKey key = Utils.getPublicKey(this);
+        if (key != null) {
             Prefs prefs = Prefs.from(this);
-
             String url = prefs.getString(R.string.key_instance_url);
-            String username = prefs.getString(R.string.key_instance_login);
+            String login = prefs.getString(R.string.key_instance_login);
             String password = prefs.getString(R.string.key_instance_password);
-
-            Listener<ScApiSession> onSuccess = new Listener<ScApiSession>() {
-                @Override
-                public void onResponse(ScApiSession scApiSession) {
-                    mSession = scApiSession;
-                    mSession.setShouldCache(true);
-                    sessionListener.onResponse(scApiSession);
-                }
-            };
-
-            ScApiSessionFactory.getSession(RequestQueueProvider.getRequestQueue(this),
-                    url, username, password, onSuccess, errorListener);
+            return ScApiSessionFactory.newSession(url, key, login, password);
         } else {
-            sessionListener.onResponse(mSession);
+            return null;
         }
     }
 
     public void cleanInstanceCache() {
-        mSession = null;
         new AsyncQueryHandler(getContentResolver()) {
         }.startDelete(0, null, Items.CONTENT_URI, null, null);
     }
 
-    public void setSession(ScApiSession session) {
-        mSession = session;
+    public void updateInstancePublicKey() {
+        String url = Utils.getCurrentInstance(this).url;
+        Listener<ScPublicKey> onSuccess = new Listener<ScPublicKey>() {
+            @Override
+            public void onResponse(ScPublicKey key) {
+                Utils.saveKeyToPrefs(getApplicationContext(), key);
+            }
+        };
+        ErrorListener onError = new EmptyErrorListener();
+
+        Request request = ScApiSessionFactory.buildPublicKeyRequest(url, onSuccess, onError);
+        RequestQueueProvider.getRequestQueue(this).add(request);
     }
 }

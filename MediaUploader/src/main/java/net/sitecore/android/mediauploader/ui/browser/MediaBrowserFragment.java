@@ -1,6 +1,5 @@
 package net.sitecore.android.mediauploader.ui.browser;
 
-import android.app.Activity;
 import android.app.Fragment;
 import android.content.Intent;
 import android.os.Bundle;
@@ -13,15 +12,10 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.android.volley.Response.Listener;
-
-import com.squareup.picasso.Picasso;
-
 import net.sitecore.android.mediauploader.R;
 import net.sitecore.android.mediauploader.UploaderApp;
 import net.sitecore.android.mediauploader.ui.IntentExtras;
 import net.sitecore.android.mediauploader.ui.upload.UploadActivity;
-import net.sitecore.android.sdk.api.ScApiSession;
 import net.sitecore.android.sdk.api.model.ScItem;
 import net.sitecore.android.sdk.widget.ItemsBrowserFragment;
 import net.sitecore.android.sdk.widget.ItemsBrowserFragment.NavigationEventsListener;
@@ -52,11 +46,20 @@ public class MediaBrowserFragment extends Fragment implements NavigationEventsLi
     }
 
     @Override
+    public void onResume() {
+        super.onResume();
+        mItemsFragment.setApiSession(UploaderApp.from(getActivity()).getSession());
+    }
+
+    @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
+
         if (mItemsFragment == null) {
             mItemsFragment = new ItemsFragment();
+            mItemsFragment.setNavigationEventsListener(this);
+
         }
     }
 
@@ -69,26 +72,7 @@ public class MediaBrowserFragment extends Fragment implements NavigationEventsLi
                 add(R.id.fragment_browser_container, mItemsFragment).
                 commit();
 
-        mItemsFragment.setNavigationEventsListener(this);
-
-        UploaderApp.from(getActivity()).getSession(new Listener<ScApiSession>() {
-            @Override
-            public void onResponse(ScApiSession apiSession) {
-                mItemsFragment.setApiSession(apiSession);
-            }
-        }, null);
-
         return root;
-    }
-
-    @Override
-    public void onViewCreated(View view, Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-    }
-
-    @Override
-    public void onAttach(Activity activity) {
-        super.onAttach(activity);
     }
 
     @Override
@@ -158,7 +142,6 @@ public class MediaBrowserFragment extends Fragment implements NavigationEventsLi
 
         @Override
         public void onScItemClick(ScItem item) {
-            Toast.makeText(getActivity(), item.getDisplayName() + " clicked", Toast.LENGTH_SHORT).show();
             if (item.hasChildren()) {
                 super.onScItemClick(item);
             } else {
@@ -173,7 +156,7 @@ public class MediaBrowserFragment extends Fragment implements NavigationEventsLi
 
         @Override
         protected ItemViewBinder onGetListItemView() {
-            return new ItemsListAdapter(Picasso.with(getActivity()));
+            return new ItemsListAdapter(UploaderApp.from(getActivity()).getImageLoader());
         }
     }
 }
