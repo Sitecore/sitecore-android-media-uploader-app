@@ -1,53 +1,44 @@
 package net.sitecore.android.mediauploader.ui.browser;
 
-import android.app.LoaderManager.LoaderCallbacks;
-import android.content.CursorLoader;
+import android.app.Activity;
+import android.app.Fragment;
 import android.content.Intent;
-import android.content.Loader;
-import android.database.Cursor;
 import android.os.Bundle;
-import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.AdapterView;
-import android.widget.AdapterView.OnItemClickListener;
-import android.widget.ListView;
+import android.view.ViewGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.android.volley.Response.ErrorListener;
 import com.android.volley.Response.Listener;
-import com.android.volley.VolleyError;
+
+import com.squareup.picasso.Picasso;
 
 import net.sitecore.android.mediauploader.R;
 import net.sitecore.android.mediauploader.UploaderApp;
 import net.sitecore.android.mediauploader.ui.IntentExtras;
-import net.sitecore.android.mediauploader.ui.ScFragment;
 import net.sitecore.android.mediauploader.ui.upload.UploadActivity;
-import net.sitecore.android.mediauploader.util.ScUtils;
-import net.sitecore.android.mediauploader.util.Utils;
-import net.sitecore.android.sdk.api.RequestQueueProvider;
 import net.sitecore.android.sdk.api.ScApiSession;
-import net.sitecore.android.sdk.api.ScRequest;
-import net.sitecore.android.sdk.api.model.ItemsResponse;
-import net.sitecore.android.sdk.api.model.RequestScope;
 import net.sitecore.android.sdk.api.model.ScItem;
-import net.sitecore.android.sdk.api.provider.ScItemsContract.Items;
-import net.sitecore.android.sdk.api.provider.ScItemsContract.Items.Query;
+import net.sitecore.android.sdk.widget.ItemsBrowserFragment;
+import net.sitecore.android.sdk.widget.ItemsBrowserFragment.NavigationEventsListener;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
-import butterknife.OnClick;
 
 import static net.sitecore.android.sdk.api.LogUtils.LOGD;
+import static net.sitecore.android.sdk.api.LogUtils.LOGE;
 
-public class MediaBrowserFragment extends ScFragment implements LoaderCallbacks<Cursor>,
-        Listener<ItemsResponse>, ErrorListener, OnItemClickListener {
+public class MediaBrowserFragment extends Fragment implements NavigationEventsListener {
 
     private static final String ARG_ITEM_ROOT = "item_root";
+
+    private ItemsFragment mItemsFragment;
+
+    @InjectView(R.id.current_path) TextView mCurrentPath;
 
     public static MediaBrowserFragment newInstance(String root) {
         LOGD("MediaBrowserFragment.newInstance:" + root);
@@ -60,78 +51,45 @@ public class MediaBrowserFragment extends ScFragment implements LoaderCallbacks<
         return fragment;
     }
 
-    private ItemsCursorAdapter mAdapter;
-    private ItemStack mItemStack = new ItemStack();
-
-    @InjectView(R.id.current_path) TextView mCurrentPath;
-    @InjectView(android.R.id.list) ListView mListView;
-    @InjectView(R.id.list_empty) View mEmptyList;
-
-    @InjectView(R.id.layout_navigate_up) View mNavigateUp;
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
+        if (mItemsFragment == null) {
+            mItemsFragment = new ItemsFragment();
+        }
     }
 
     @Override
-    protected View onCreateContentView(LayoutInflater inflater) {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View root = inflater.inflate(R.layout.fragment_media_browser, null);
         ButterKnife.inject(this, root);
 
-        mListView.setEmptyView(mEmptyList);
-        mListView.setOnItemClickListener(this);
+        getFragmentManager().beginTransaction().
+                add(R.id.fragment_browser_container, mItemsFragment).
+                commit();
+
+        mItemsFragment.setNavigationEventsListener(this);
+
+        UploaderApp.from(getActivity()).getSession(new Listener<ScApiSession>() {
+            @Override
+            public void onResponse(ScApiSession apiSession) {
+                mItemsFragment.setApiSession(apiSession);
+            }
+        }, null);
 
         return root;
     }
 
     @Override
-    public void onActivityCreated(Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
-
-        mAdapter = new ItemsCursorAdapter(getActivity());
-        mListView.setAdapter(mAdapter);
-        setContentShown(true);
-        updateRootItem();
+    public void onViewCreated(View view, Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
     }
 
-    private void updateRootItem() {
-        if (getArguments() != null) {
-            final String root = getArguments().getString(ARG_ITEM_ROOT);
-
-            UploaderApp.from(getActivity()).getSession(new Listener<ScApiSession>() {
-                @Override
-                public void onResponse(ScApiSession scApiSession) {
-                    ScRequest request = scApiSession.getItems(mRootItemReceived, mRootItemNotReceived)
-                            .byItemPath(root)
-                            .build();
-                    RequestQueueProvider.getRequestQueue(getActivity()).add(request);
-                }
-            }, this);
-        }
+    @Override
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
     }
-
-    private Listener<ItemsResponse> mRootItemReceived = new Listener<ItemsResponse>() {
-        @Override
-        public void onResponse(ItemsResponse itemsResponse) {
-            if (itemsResponse.getTotalCount() == 0) {
-                setEmpty(true);
-                return;
-            }
-            setRootItem(itemsResponse.getItems().get(0));
-
-            getLoaderManager().restartLoader(0, null, MediaBrowserFragment.this);
-        }
-    };
-
-    private ErrorListener mRootItemNotReceived = new ErrorListener() {
-        @Override
-        public void onErrorResponse(VolleyError volleyError) {
-            //setEmpty(true);
-            //TODO: show error view
-        }
-    };
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
@@ -143,7 +101,8 @@ public class MediaBrowserFragment extends ScFragment implements LoaderCallbacks<
         switch (item.getItemId()) {
             case R.id.action_upload_here:
                 final Intent intent = new Intent(getActivity(), UploadActivity.class);
-                intent.putExtra(IntentExtras.ITEM_PATH, mItemStack.getCurrentFullPath());
+                intent.putExtra(IntentExtras.ITEM_PATH, mItemsFragment.getCurrentItem().
+                        getPath());
                 startActivity(intent);
                 return true;
 
@@ -152,108 +111,8 @@ public class MediaBrowserFragment extends ScFragment implements LoaderCallbacks<
         }
     }
 
-    @Override
-    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-        if (mNavigateUp.getVisibility() == View.GONE) mNavigateUp.setVisibility(View.VISIBLE);
-        Cursor c = mAdapter.getCursor();
-        c.moveToPosition(position);
-
-        final String template = c.getString(Query.TEMPLATE);
-        if (ScUtils.isImageTemplate(template)) {
-            Intent intent = new Intent(getActivity(), PreviewActivity.class);
-            intent.putExtra(PreviewActivity.IMAGE_ITEM_ID_KEY, c.getString(Query.ITEM_ID));
-            startActivity(intent);
-            return;
-        }
-
-        final String itemId = c.getString(Query.ITEM_ID);
-        final String name = c.getString(Query.DISPLAY_NAME);
-        final String path = c.getString(Query.PATH);
-
-        mItemStack.goInside(itemId, name, path);
-        updateCurrentPath(mItemStack.getCurrentPath());
-
-        getLoaderManager().restartLoader(0, null, this);
-        updateChildren(itemId);
-    }
-
-    public ItemStack getItemStack() {
-        return mItemStack;
-    }
-
-    @OnClick(R.id.layout_navigate_up)
-    public void goUp() {
-        if (mItemStack.canGoUp()) {
-            mItemStack.goUp();
-            updateChildren(mItemStack.getCurrentItemId());
-            updateCurrentPath(mItemStack.getCurrentPath());
-            getLoaderManager().restartLoader(0, null, this);
-
-            if (!mItemStack.canGoUp()) mNavigateUp.setVisibility(View.GONE);
-        } else {
-            Toast.makeText(getActivity(), "You are in root folder", Toast.LENGTH_LONG).show();
-        }
-    }
-
-    private void updateChildren(final String itemId) {
-        UploaderApp.from(getActivity()).getSession(new Listener<ScApiSession>() {
-            @Override
-            public void onResponse(ScApiSession apiSession) {
-                ScRequest request = apiSession.getItems(MediaBrowserFragment.this, MediaBrowserFragment.this)
-                        .byItemId(itemId)
-                        .withScope(RequestScope.CHILDREN)
-                        .build();
-
-                RequestQueueProvider.getRequestQueue(getActivity()).add(request);
-                getActivity().setProgressBarIndeterminateVisibility(true);
-            }
-        }, null);
-    }
-
     private void updateCurrentPath(String text) {
         mCurrentPath.setText(text);
-    }
-
-    @Override
-    public Loader<Cursor> onCreateLoader(int id, Bundle args) {
-        String selection = null;
-        String itemId = mItemStack.getCurrentItemId();
-        if (!TextUtils.isEmpty(itemId)) {
-            selection = Items.PARENT_ITEM_ID + "='" + itemId + "'";
-        }
-        return new CursorLoader(getActivity(), Items.CONTENT_URI, Query.PROJECTION, selection, null, null);
-    }
-
-    @Override
-    public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
-        LOGD("onLoadFinished: cursor with " + data.getCount() + " items.");
-        mAdapter.swapCursor(data);
-    }
-
-    @Override
-    public void onLoaderReset(Loader<Cursor> loader) {
-        mAdapter.swapCursor(null);
-    }
-
-    private void setRootItem(ScItem item) {
-        mItemStack.clear();
-        mItemStack.goInside(item.getId(), item.getDisplayName(), item.getPath());
-
-        updateCurrentPath(mItemStack.getCurrentPath());
-        updateChildren(mItemStack.getCurrentItemId());
-    }
-
-    @Override
-    public void onResponse(ItemsResponse itemsResponse) {
-        if (getActivity() != null) getActivity().setProgressBarIndeterminateVisibility(false);
-
-    }
-
-    @Override
-    public void onErrorResponse(VolleyError volleyError) {
-        if (getActivity() != null) getActivity().setProgressBarIndeterminateVisibility(false);
-        LOGD(Utils.getMessageFromError(volleyError));
-        //setEmpty(true);
     }
 
     public void setRootFolder(String root) {
@@ -262,7 +121,59 @@ public class MediaBrowserFragment extends ScFragment implements LoaderCallbacks<
 
     public void refresh() {
         if (getActivity() != null) {
-            updateRootItem();
+//            TODO : refresh items after refresh menu item clicked
+        }
+    }
+
+    @Override
+    public void onGoUp(ScItem item) {
+        updateCurrentPath(item.getPath());
+    }
+
+    @Override
+    public void onGoInside(ScItem item) {
+        updateCurrentPath(item.getPath());
+    }
+
+    @Override
+    public void onDestroyView() {
+        try {
+            getFragmentManager().beginTransaction().remove(mItemsFragment).commit();
+        } catch (Exception e) {
+            LOGE("Exception in onDestroyView()", e);
+        }
+        super.onDestroyView();
+    }
+
+    public static class ItemsFragment extends ItemsBrowserFragment {
+
+        public ItemsFragment() {
+            super();
+        }
+
+        @Override
+        protected View onCreateUpButtonView(LayoutInflater inflater) {
+            return inflater.inflate(R.layout.layout_media_browser_up_view, null);
+        }
+
+        @Override
+        public void onScItemClick(ScItem item) {
+            Toast.makeText(getActivity(), item.getDisplayName() + " clicked", Toast.LENGTH_SHORT).show();
+            if (item.hasChildren()) {
+                super.onScItemClick(item);
+            } else {
+                Toast.makeText(getActivity(), item.getDisplayName() + " has no children", Toast.LENGTH_SHORT).show();
+            }
+        }
+
+        @Override
+        public void onScItemLongClick(ScItem item) {
+            Toast.makeText(getActivity(), item.getDisplayName() + " long clicked", Toast.LENGTH_SHORT).show();
+        }
+
+        @Override
+        protected ItemViewBinder onGetListItemView() {
+            return new ItemsListAdapter(Picasso.with(getActivity()));
         }
     }
 }

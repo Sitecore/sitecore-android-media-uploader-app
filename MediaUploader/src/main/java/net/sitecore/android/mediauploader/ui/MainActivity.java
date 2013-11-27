@@ -101,8 +101,9 @@ public class MainActivity extends Activity implements SlidingNavigationFragment.
 
     @Override
     public void onBackPressed() {
-        if (mNavigationFragment != null && mNavigationFragment.isMediaBrowserSelected() && mMediaBrowserFragment.getItemStack().canGoUp()) {
-            mMediaBrowserFragment.goUp();
+        // TODO : added function for moving up in the items browser
+        if (mNavigationFragment != null && mNavigationFragment.isMediaBrowserSelected()) {
+//            mMediaBrowserFragment.goUp();
         } else {
             super.onBackPressed();
         }
