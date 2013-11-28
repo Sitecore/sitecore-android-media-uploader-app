@@ -12,11 +12,15 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.android.volley.RequestQueue;
+
 import net.sitecore.android.mediauploader.R;
 import net.sitecore.android.mediauploader.UploaderApp;
 import net.sitecore.android.mediauploader.ui.IntentExtras;
 import net.sitecore.android.mediauploader.ui.upload.UploadActivity;
 import net.sitecore.android.mediauploader.util.ScUtils;
+import net.sitecore.android.sdk.api.RequestQueueProvider;
+import net.sitecore.android.sdk.api.ScApiSession;
 import net.sitecore.android.sdk.api.model.ScItem;
 import net.sitecore.android.sdk.widget.ItemsBrowserFragment;
 import net.sitecore.android.sdk.widget.ItemsBrowserFragment.NavigationEventsListener;
@@ -49,7 +53,8 @@ public class MediaBrowserFragment extends Fragment implements NavigationEventsLi
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
         if (mItemsFragment == null) {
-            mItemsFragment = new ItemsFragment();
+            mItemsFragment = new ItemsFragment(UploaderApp.from(getActivity()).getSession(),
+                    RequestQueueProvider.getRequestQueue(getActivity()));
             mItemsFragment.setNavigationEventsListener(this);
         }
     }
@@ -67,7 +72,6 @@ public class MediaBrowserFragment extends Fragment implements NavigationEventsLi
     @Override
     public void onResume() {
         super.onResume();
-        mItemsFragment.setApiSession(UploaderApp.from(getActivity()).getSession());
     }
 
     @Override
@@ -130,8 +134,8 @@ public class MediaBrowserFragment extends Fragment implements NavigationEventsLi
 
     public static class ItemsFragment extends ItemsBrowserFragment {
 
-        public ItemsFragment() {
-            super();
+        public ItemsFragment(ScApiSession apiSession, RequestQueue requestQueue) {
+            super(apiSession, requestQueue);
         }
 
         @Override
@@ -154,7 +158,6 @@ public class MediaBrowserFragment extends Fragment implements NavigationEventsLi
 
         @Override
         public void onScItemLongClick(ScItem item) {
-
             Toast.makeText(getActivity(), item.getDisplayName() + " long clicked", Toast.LENGTH_SHORT).show();
         }
 

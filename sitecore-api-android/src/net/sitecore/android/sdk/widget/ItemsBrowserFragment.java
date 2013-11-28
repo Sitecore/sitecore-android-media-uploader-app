@@ -161,6 +161,11 @@ public class ItemsBrowserFragment extends DialogFragment {
 
     private boolean mIsLoading = true;
 
+    public ItemsBrowserFragment(ScApiSession apiSession, RequestQueue requestQueue) {
+        mApiSession = apiSession;
+        mRequestQueue = requestQueue;
+    }
+
     private final AdapterView.OnItemClickListener mOnItemClickListener = new AdapterView.OnItemClickListener() {
         @Override
         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -223,6 +228,7 @@ public class ItemsBrowserFragment extends DialogFragment {
     @Override
     public void onStart() {
         super.onStart();
+        refresh();
         //Next hack makes dialog MATCH_PARENT
         /*
         final Dialog dialog = getDialog();
@@ -303,10 +309,8 @@ public class ItemsBrowserFragment extends DialogFragment {
 
     /**
      *
-     * @param session
      */
-    public void setApiSession(ScApiSession session) {
-        mApiSession = session;
+    public void refresh() {
         mApiSession.setShouldCache(true);
 
         mNetworkEventsListener.onUpdateRequestStarted();

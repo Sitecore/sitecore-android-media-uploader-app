@@ -18,7 +18,7 @@ import net.sitecore.android.sdk.widget.ItemsBrowserFragment.ItemViewBinder;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 
-class ItemsListAdapter implements ItemViewBinder {
+public class ItemsListAdapter implements ItemViewBinder {
     private static final int PREVIEW_IMAGE_ICON_WIDTH = 64;
     private static final int PREVIEW_IMAGE_ICON_HEIGHT = 0;
 
@@ -28,7 +28,7 @@ class ItemsListAdapter implements ItemViewBinder {
 
     private Picasso mImageLoader;
 
-    ItemsListAdapter(Picasso imageLoader) {
+    public ItemsListAdapter(Picasso imageLoader) {
         mImageLoader = imageLoader;
     }
 

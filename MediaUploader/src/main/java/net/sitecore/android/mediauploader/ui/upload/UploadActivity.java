@@ -13,6 +13,7 @@ import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
 import android.widget.EditText;
@@ -21,20 +22,27 @@ import android.widget.Toast;
 
 import java.io.File;
 
+import com.android.volley.RequestQueue;
 import com.android.volley.Response.ErrorListener;
 import com.android.volley.Response.Listener;
 import com.android.volley.VolleyError;
 
 import net.sitecore.android.mediauploader.R;
 import net.sitecore.android.mediauploader.UploaderApp;
+import net.sitecore.android.mediauploader.model.Instance;
 import net.sitecore.android.mediauploader.model.UploadStatus;
 import net.sitecore.android.mediauploader.provider.UploadMediaContract.Uploads;
 import net.sitecore.android.mediauploader.service.MediaUploaderService;
 import net.sitecore.android.mediauploader.ui.IntentExtras;
-import net.sitecore.android.mediauploader.util.Prefs;
+import net.sitecore.android.mediauploader.ui.browser.ItemsListAdapter;
+import net.sitecore.android.mediauploader.util.UploaderPrefs;
+import net.sitecore.android.sdk.api.RequestQueueProvider;
 import net.sitecore.android.sdk.api.ScApiSession;
 import net.sitecore.android.sdk.api.UploadMediaRequestOptions;
 import net.sitecore.android.sdk.api.model.ItemsResponse;
+import net.sitecore.android.sdk.api.model.ScItem;
+import net.sitecore.android.sdk.widget.ItemsBrowserFragment;
+import net.sitecore.android.sdk.widget.ItemsBrowserFragment.NavigationEventsListener;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
@@ -42,7 +50,7 @@ import butterknife.OnClick;
 
 import static net.sitecore.android.sdk.api.LogUtils.LOGD;
 
-public class UploadActivity extends Activity implements ErrorListener {
+public class UploadActivity extends Activity implements ErrorListener, OnClickListener {
 
     private static final int SOURCE_TYPE_GALLERY = 0;
     private static final int SOURCE_TYPE_CAMERA = 1;
@@ -53,6 +61,7 @@ public class UploadActivity extends Activity implements ErrorListener {
     @InjectView(R.id.checkbox_upload_later) CheckBox mUploadLater;
 
     private Uri mImageUri;
+    private PathSelectorDialog mPathSelector;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -63,6 +72,7 @@ public class UploadActivity extends Activity implements ErrorListener {
         setContentView(R.layout.activity_upload);
         ButterKnife.inject(this);
 
+        mEditPath.setOnClickListener(this);
         String itemPath = getIntent().getStringExtra(IntentExtras.ITEM_PATH);
         mEditPath.setText(itemPath);
     }
@@ -166,15 +176,12 @@ public class UploadActivity extends Activity implements ErrorListener {
             return;
         }
 
-        Prefs prefs = Prefs.from(this);
-        final String url = prefs.getString(R.string.key_instance_url);
-        final String username = prefs.getString(R.string.key_instance_login);
-        final String password = prefs.getString(R.string.key_instance_password);
+        Instance instance = UploaderPrefs.from(this).getCurrentInstance();
 
         final ContentValues values = new ContentValues();
-        values.put(Uploads.URL, url);
-        values.put(Uploads.USERNAME, username);
-        values.put(Uploads.PASSWORD, password);
+        values.put(Uploads.URL, instance.url);
+        values.put(Uploads.USERNAME, instance.login);
+        values.put(Uploads.PASSWORD, instance.password);
         values.put(Uploads.ITEM_NAME, mEditName.getText().toString());
         values.put(Uploads.ITEM_PATH, mEditPath.getText().toString());
         values.put(Uploads.FILE_URI, mImageUri.toString());
@@ -213,6 +220,7 @@ public class UploadActivity extends Activity implements ErrorListener {
                 this);
     }
 
+
     class MediaUploadedListener implements Listener<ItemsResponse> {
 
         private Uri mUploadUri;
@@ -232,5 +240,42 @@ public class UploadActivity extends Activity implements ErrorListener {
 
     @Override
     public void onErrorResponse(VolleyError volleyError) {
+    }
+
+    @Override
+    public void onClick(View v) {
+        if (mPathSelector == null) {
+            mPathSelector = new PathSelectorDialog(UploaderApp.from(this).getSession(),
+                    RequestQueueProvider.getRequestQueue(this));
+            mPathSelector.setNavigationEventsListener(new NavigationEventsListener() {
+                @Override
+                public void onGoUp(ScItem item) {
+
+                }
+
+                @Override
+                public void onGoInside(ScItem item) {
+
+                }
+
+                @Override
+                public void onInitialized(ScItem item) {
+
+                }
+            });
+        }
+        mPathSelector.show(getFragmentManager(), "dialog");
+    }
+
+    public static class PathSelectorDialog extends ItemsBrowserFragment {
+
+        public PathSelectorDialog(ScApiSession apiSession, RequestQueue requestQueue) {
+            super(apiSession, requestQueue);
+        }
+
+        @Override
+        protected ItemViewBinder onGetListItemView() {
+            return new ItemsListAdapter(UploaderApp.from(getActivity()).getImageLoader());
+        }
     }
 }
