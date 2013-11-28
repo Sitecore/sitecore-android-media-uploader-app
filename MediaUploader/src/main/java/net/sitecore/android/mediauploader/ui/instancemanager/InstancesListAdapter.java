@@ -12,10 +12,10 @@ import android.widget.TextView;
 
 import net.sitecore.android.mediauploader.R;
 import net.sitecore.android.mediauploader.provider.UploadMediaContract.Instances.Query;
-import net.sitecore.android.mediauploader.util.Utils;
+import net.sitecore.android.mediauploader.util.UploaderPrefs;
 
-import butterknife.InjectView;
 import butterknife.ButterKnife;
+import butterknife.InjectView;
 
 public class InstancesListAdapter extends CursorAdapter {
     private OnDeleteButtonClickListener mDeletePerformListener;
@@ -47,7 +47,7 @@ public class InstancesListAdapter extends CursorAdapter {
     public void bindView(View view, final Context context, final Cursor c) {
         ViewHolder holder = (ViewHolder) view.getTag();
 
-        if (Utils.isDefaultInstance(context, c.getString(Query.NAME))) {
+        if (UploaderPrefs.from(context).isDefaultInstance(c.getString(Query.NAME))) {
             holder.defaultInstance.setVisibility(View.VISIBLE);
             holder.deleteButton.setVisibility(View.GONE);
         } else {

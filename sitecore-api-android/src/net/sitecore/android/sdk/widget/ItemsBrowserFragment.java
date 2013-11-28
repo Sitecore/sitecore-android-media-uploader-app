@@ -1,17 +1,24 @@
 package net.sitecore.android.sdk.widget;
 
 import android.annotation.TargetApi;
+import android.app.Activity;
 import android.app.DialogFragment;
 import android.content.ContentProviderOperation;
 import android.content.Context;
 import android.content.Loader;
+import android.content.res.TypedArray;
 import android.os.Build;
 import android.os.Bundle;
+import android.text.TextUtils;
+import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.Button;
+import android.widget.FrameLayout;
+import android.widget.GridView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 
@@ -44,10 +51,17 @@ import static net.sitecore.android.sdk.api.provider.ScItemsContract.Items;
 @TargetApi(Build.VERSION_CODES.ICE_CREAM_SANDWICH)
 public class ItemsBrowserFragment extends DialogFragment {
 
+    public static final String DEFAULT_ROOT_FOLDER = "/sitecore/media library";
+    public static final int DEFAULT_GRID_COLUMNS_COUNT = 2;
+
     private static final String BY_ITEM_PARENT_ID = Items.PARENT_ITEM_ID + "=?";
     private static final String EXTRA_ITEM_ID = "item_id";
 
     private static final String SAVED_ITEMS = "items";
+
+    private static final int STYLE_LIST = 0;
+    private static final int STYLE_GRID = 1;
+
 
     /**
      * Defines how to map {@link ScItem} to list item view.
@@ -62,7 +76,7 @@ public class ItemsBrowserFragment extends DialogFragment {
         /**
          * Makes a new view to hold the data of the item.
          */
-        public View newView(Context context, LayoutInflater inflater, ScItem item);
+        public View newView(Context context, ViewGroup parent, LayoutInflater inflater, ScItem item);
 
     }
 
@@ -72,6 +86,7 @@ public class ItemsBrowserFragment extends DialogFragment {
     public interface NavigationEventsListener {
 
         /**
+         *
          * @param item Current {@link ScItem} after event finished.
          */
         public void onGoUp(ScItem item);
@@ -81,6 +96,8 @@ public class ItemsBrowserFragment extends DialogFragment {
          * @param item Current {@link ScItem} after event finished.
          */
         public void onGoInside(ScItem item);
+
+        public void onInitialized(ScItem item);
     }
 
     private static final NavigationEventsListener sEmptyNavigationEventsListener = new NavigationEventsListener() {
@@ -90,6 +107,10 @@ public class ItemsBrowserFragment extends DialogFragment {
 
         @Override
         public void onGoInside(ScItem item) {
+        }
+
+        @Override
+        public void onInitialized(ScItem item) {
         }
     };
 
@@ -125,12 +146,16 @@ public class ItemsBrowserFragment extends DialogFragment {
     private View mContainerProgress;
     private LinearLayout mContainerList;
     private View mGoUpView;
-    private ListView mListView;
+    private AbsListView mListView;
 
     private ScItemsAdapter mAdapter;
 
     private RequestQueue mRequestQueue;
     private ScApiSession mApiSession;
+
+    private int mStyle = STYLE_LIST;
+    private int mColumnCount = 2;
+    private String mRootFolder = DEFAULT_ROOT_FOLDER;
 
     private LinkedList<ScItem> mItems = new LinkedList<ScItem>();
 
@@ -195,6 +220,20 @@ public class ItemsBrowserFragment extends DialogFragment {
         return v;
     }
 
+    @Override
+    public void onStart() {
+        super.onStart();
+        //Next hack makes dialog MATCH_PARENT
+        /*
+        final Dialog dialog = getDialog();
+        if (dialog != null) {
+            WindowManager.LayoutParams lp = new WindowManager.LayoutParams();
+            lp.copyFrom(dialog.getWindow().getAttributes());
+            lp.width = WindowManager.LayoutParams.MATCH_PARENT;
+            lp.height = WindowManager.LayoutParams.MATCH_PARENT;
+            dialog.getWindow().setAttributes(lp);
+        }*/
+    }
 
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
@@ -207,9 +246,34 @@ public class ItemsBrowserFragment extends DialogFragment {
 
         mContainerList.addView(mGoUpView, 0, new LinearLayout.LayoutParams(MATCH_PARENT, WRAP_CONTENT));
 
-        mListView = (ListView) view.findViewById(android.R.id.list);
+        if (mStyle == STYLE_LIST) {
+            mListView = new ListView(getActivity());
+
+        } else {
+            GridView grid = new GridView(getActivity());
+            grid.setNumColumns(mColumnCount);
+            mListView = grid;
+        }
+
+        mListView.setDrawSelectorOnTop(false);
+        mContainerList.addView(mListView, new FrameLayout.LayoutParams(
+                ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
+
         mListView.setOnItemClickListener(mOnItemClickListener);
         mListView.setOnItemLongClickListener(mOnItemLongClickListener);
+    }
+
+    @Override
+    public void onInflate(Activity activity, AttributeSet attrs, Bundle savedInstanceState) {
+        super.onInflate(activity, attrs, savedInstanceState);
+        TypedArray a = activity.obtainStyledAttributes(attrs,R.styleable.ItemsBrowserFragment);
+
+        mStyle = a.getInt(R.styleable.ItemsBrowserFragment_style, STYLE_LIST);
+        mColumnCount = a.getInt(R.styleable.ItemsBrowserFragment_columnCount, DEFAULT_GRID_COLUMNS_COUNT);
+        String root = a.getString(R.styleable.ItemsBrowserFragment_rootFolder);
+        if (!TextUtils.isEmpty(root)) mRootFolder = root;
+
+        a.recycle();
     }
 
     /**
@@ -225,7 +289,7 @@ public class ItemsBrowserFragment extends DialogFragment {
         return upButton;
     }
 
-    public void setLoading(boolean isLoading) {
+    private void setLoading(boolean isLoading) {
         mIsLoading = isLoading;
         mContainerProgress.setVisibility(isLoading ? View.VISIBLE : View.GONE);
         mContainerList.setVisibility(isLoading ? View.GONE : View.VISIBLE);
@@ -237,19 +301,33 @@ public class ItemsBrowserFragment extends DialogFragment {
         super.onDetach();
     }
 
+    /**
+     *
+     * @param session
+     */
     public void setApiSession(ScApiSession session) {
         mApiSession = session;
         mApiSession.setShouldCache(true);
 
+        mNetworkEventsListener.onUpdateRequestStarted();
         ScRequest request = mApiSession.getItems(mFirstItemResponseListener, mErrorListener)
                 .withScope(RequestScope.SELF, RequestScope.CHILDREN)
-                .byItemPath("/sitecore/media library")
+                .byItemPath(mRootFolder)
                 .build();
 
         request.setTag(ItemsBrowserFragment.this);
 
         mRequestQueue.add(request);
         setLoading(true);
+    }
+
+    public void setRootFolder(String rootFolder) {
+        mRootFolder = rootFolder;
+    }
+
+    public void update() {
+        final ScItem item = mItems.peek();
+        sendUpdateChildrenRequest(item.getId());
     }
 
     private void reloadChildrenFromDatabase(String itemId) {
@@ -263,6 +341,7 @@ public class ItemsBrowserFragment extends DialogFragment {
     private void sendUpdateChildrenRequest(String itemId) {
         LOGD("getChildren: " + itemId);
         if (mApiSession != null) {
+            mNetworkEventsListener.onUpdateRequestStarted();
             ScRequest request = mApiSession.getItems(mItemsResponseListener, mErrorListener)
                     .byItemId(itemId)
                     .withScope(RequestScope.CHILDREN)
@@ -284,6 +363,9 @@ public class ItemsBrowserFragment extends DialogFragment {
             ScItem item = itemsResponse.getItems().get(0);
             mItems.push(item);
 
+            mNavigationEventsListener.onInitialized(item);
+            mNetworkEventsListener.onUpdateRequestFinished();
+
             final Bundle bundle = new Bundle();
             bundle.putString(EXTRA_ITEM_ID, item.getId());
             getLoaderManager().initLoader(0, bundle, mLoaderCallbacks);
@@ -293,6 +375,7 @@ public class ItemsBrowserFragment extends DialogFragment {
     private final Response.Listener<ItemsResponse> mItemsResponseListener = new Response.Listener<ItemsResponse>() {
         @Override
         public void onResponse(ItemsResponse itemsResponse) {
+            mNetworkEventsListener.onUpdateRequestFinished();
         }
     };
 
@@ -300,6 +383,7 @@ public class ItemsBrowserFragment extends DialogFragment {
         @Override
         public void onErrorResponse(VolleyError volleyError) {
             setLoading(false);
+            mNetworkEventsListener.onUpdateRequestFinished();
         }
     };
 
@@ -309,7 +393,7 @@ public class ItemsBrowserFragment extends DialogFragment {
         public Loader<List<ScItem>> onCreateLoader(int id, Bundle args) {
             if (args == null) return new ScItemsLoader(getActivity(), null, null);
 
-            final String currentItemId = args.getString("item_id");
+            final String currentItemId = args.getString(EXTRA_ITEM_ID);
             return new ScItemsLoader(getActivity(), BY_ITEM_PARENT_ID, new String[]{currentItemId});
         }
 
@@ -324,6 +408,15 @@ public class ItemsBrowserFragment extends DialogFragment {
             mAdapter.clear();
         }
     };
+
+    public void setListStyle() {
+        mStyle = STYLE_LIST;
+    }
+
+    public void setGridStyle(int columnCount) {
+        mStyle = STYLE_GRID;
+        mColumnCount = columnCount;
+    }
 
     /**
      * @return Current item or null if data wasn't loaded.
@@ -357,7 +450,7 @@ public class ItemsBrowserFragment extends DialogFragment {
 
     /**
      * Override this method to change the way ListItem views are created from {@link ScItem}.
-     * @return
+     * @return {@link ItemViewBinder}
      */
     protected ItemViewBinder onGetListItemView() {
         return new DefaultItemViewBinder();

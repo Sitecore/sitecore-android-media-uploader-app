@@ -29,6 +29,7 @@ import net.sitecore.android.mediauploader.model.Instance;
 import net.sitecore.android.mediauploader.provider.UploadMediaContract.Instances;
 import net.sitecore.android.mediauploader.provider.UploadMediaContract.Instances.Query;
 import net.sitecore.android.mediauploader.util.ScUtils;
+import net.sitecore.android.mediauploader.util.UploaderPrefs;
 import net.sitecore.android.mediauploader.util.Utils;
 import net.sitecore.android.sdk.api.RequestQueueProvider;
 import net.sitecore.android.sdk.api.ScApiSession;
@@ -153,11 +154,21 @@ public class EditInstanceActivity extends Activity implements LoaderCallbacks<Cu
             case READ_INSTANCES_ACTION:
                 return new CursorLoader(this, mInstanceUri, Query.PROJECTION, null, null, null);
             case READ_NAMES_ACTION:
-                return new CursorLoader(this, Instances.CONTENT_URI,
-                        new String[]{Instances._ID, Instances.NAME}, null, null, null);
+                Instance instance = getInstanceFromFields();
+                return new CursorLoader(this, Instances.CONTENT_URI, NamesQuery.PROJECTION, NamesQuery.SELECTION,
+                        new String[]{instance.name, String.valueOf(mInstanceId)}, null);
             default:
                 return null;
         }
+    }
+
+    interface NamesQuery {
+        String[] PROJECTION = new String[] {
+                Instances._ID,
+                Instances.NAME
+        };
+
+        String SELECTION = Instances.NAME + "=? and " + Instances._ID + "!=?";
     }
 
     @Override
@@ -165,34 +176,23 @@ public class EditInstanceActivity extends Activity implements LoaderCallbacks<Cu
         switch (loader.getId()) {
             case READ_INSTANCES_ACTION: {
                 if (!data.moveToFirst()) return;
-                isDefaultInstance = Utils.isDefaultInstance(this, data.getString(Query.NAME));
+                isDefaultInstance = UploaderPrefs.from(this).isDefaultInstance(data.getString(Query.NAME));
                 mInstanceId = data.getLong(Query._ID);
-                initViews(data);
+                initViews(new Instance(data));
                 break;
             }
             case READ_NAMES_ACTION: {
-                if (!checkName(data)) return;
+                if (data.moveToFirst()) {
+                    mInstanceName.setError("Instance name already exists");
+                    return;
+                }
                 saveInstanceIfValid();
+                data.close();
                 getLoaderManager().destroyLoader(READ_NAMES_ACTION);
                 break;
             }
         }
 
-    }
-
-    private boolean checkName(Cursor data) {
-        boolean valid = true;
-        while (data.moveToNext()) {
-            String name = data.getString(1);
-            if (name.equals(mInstanceName.getText().toString())) {
-                long id = data.getLong(0);
-                if (mInstanceId != id) {
-                    mInstanceName.setError("Instance name already exists");
-                    valid = false;
-                }
-            }
-        }
-        return valid;
     }
 
     private void saveInstanceIfValid() {
@@ -202,12 +202,12 @@ public class EditInstanceActivity extends Activity implements LoaderCallbacks<Cu
         }
     }
 
-    private void initViews(Cursor cursor) {
-        mInstanceName.setText(cursor.getString(Query.NAME));
-        mInstanceUrl.setText(cursor.getString(Query.URL));
-        mInstanceLogin.setText(cursor.getString(Query.LOGIN));
-        mInstancePassword.setText(cursor.getString(Query.PASSWORD));
-        mInstanceRootFolder.setText(cursor.getString(Query.ROOT_FOLDER));
+    private void initViews(Instance instance) {
+        mInstanceName.setText(instance.name);
+        mInstanceUrl.setText(instance.url);
+        mInstanceLogin.setText(instance.login);
+        mInstancePassword.setText(instance.password);
+        mInstanceRootFolder.setText(instance.rootFolder);
     }
 
     @Override
@@ -237,25 +237,27 @@ public class EditInstanceActivity extends Activity implements LoaderCallbacks<Cu
     }
 
     private void saveOrUpdateInstance() {
+        Instance instance = getInstanceFromFields();
+
+        if (isDefaultInstance) {
+            UploaderApp.from(this).switchInstance(instance);
+        }
+
+        if (isEditorMode) {
+            new AsyncQueryHandler(getContentResolver()) {
+            }.startUpdate(READ_INSTANCES_ACTION, null, mInstanceUri, instance.toContentValues(), null, null);
+        } else {
+            new AsyncQueryHandler(getContentResolver()) {
+            }.startInsert(READ_INSTANCES_ACTION, null, Instances.CONTENT_URI, instance.toContentValues());
+        }
+    }
+
+    private Instance getInstanceFromFields() {
         String name = mInstanceName.getText().toString();
         String url = mInstanceUrl.getText().toString();
         String login = mInstanceLogin.getText().toString();
         String password = mInstancePassword.getText().toString();
         String folder = mInstanceRootFolder.getText().toString();
-
-        Instance instance = new Instance(name, url, login, password, folder);
-
-        if (isDefaultInstance) {
-            Utils.setDefaultInstance(this, instance);
-            UploaderApp.from(this).cleanInstanceCache();
-        }
-
-        if (isEditorMode) {
-            new AsyncQueryHandler(getContentResolver()) {}
-                    .startUpdate(READ_INSTANCES_ACTION, null, mInstanceUri, instance.toContentValues(), null, null);
-        } else {
-            new AsyncQueryHandler(getContentResolver()) {}
-                    .startInsert(READ_INSTANCES_ACTION, null, Instances.CONTENT_URI, instance.toContentValues());
-        }
+        return new Instance(name, url, login, password, folder);
     }
 }

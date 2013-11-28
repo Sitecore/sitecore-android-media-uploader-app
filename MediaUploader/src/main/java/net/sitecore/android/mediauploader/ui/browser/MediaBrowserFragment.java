@@ -16,6 +16,7 @@ import net.sitecore.android.mediauploader.R;
 import net.sitecore.android.mediauploader.UploaderApp;
 import net.sitecore.android.mediauploader.ui.IntentExtras;
 import net.sitecore.android.mediauploader.ui.upload.UploadActivity;
+import net.sitecore.android.mediauploader.util.ScUtils;
 import net.sitecore.android.sdk.api.model.ScItem;
 import net.sitecore.android.sdk.widget.ItemsBrowserFragment;
 import net.sitecore.android.sdk.widget.ItemsBrowserFragment.NavigationEventsListener;
@@ -29,10 +30,8 @@ import static net.sitecore.android.sdk.api.LogUtils.LOGE;
 public class MediaBrowserFragment extends Fragment implements NavigationEventsListener {
 
     private static final String ARG_ITEM_ROOT = "item_root";
-
-    private ItemsFragment mItemsFragment;
-
     @InjectView(R.id.current_path) TextView mCurrentPath;
+    private ItemsFragment mItemsFragment;
 
     public static MediaBrowserFragment newInstance(String root) {
         LOGD("MediaBrowserFragment.newInstance:" + root);
@@ -46,20 +45,12 @@ public class MediaBrowserFragment extends Fragment implements NavigationEventsLi
     }
 
     @Override
-    public void onResume() {
-        super.onResume();
-        mItemsFragment.setApiSession(UploaderApp.from(getActivity()).getSession());
-    }
-
-    @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
-
         if (mItemsFragment == null) {
             mItemsFragment = new ItemsFragment();
             mItemsFragment.setNavigationEventsListener(this);
-
         }
     }
 
@@ -68,11 +59,25 @@ public class MediaBrowserFragment extends Fragment implements NavigationEventsLi
         View root = inflater.inflate(R.layout.fragment_media_browser, null);
         ButterKnife.inject(this, root);
 
-        getFragmentManager().beginTransaction().
-                add(R.id.fragment_browser_container, mItemsFragment).
-                commit();
+        getFragmentManager().beginTransaction().add(R.id.fragment_browser_container, mItemsFragment).commit();
 
         return root;
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        mItemsFragment.setApiSession(UploaderApp.from(getActivity()).getSession());
+    }
+
+    @Override
+    public void onDestroyView() {
+        try {
+            getFragmentManager().beginTransaction().remove(mItemsFragment).commit();
+        } catch (Exception e) {
+            LOGE("Exception in onDestroyView()", e);
+        }
+        super.onDestroyView();
     }
 
     @Override
@@ -85,8 +90,7 @@ public class MediaBrowserFragment extends Fragment implements NavigationEventsLi
         switch (item.getItemId()) {
             case R.id.action_upload_here:
                 final Intent intent = new Intent(getActivity(), UploadActivity.class);
-                intent.putExtra(IntentExtras.ITEM_PATH, mItemsFragment.getCurrentItem().
-                        getPath());
+                intent.putExtra(IntentExtras.ITEM_PATH, mItemsFragment.getCurrentItem().getPath());
                 startActivity(intent);
                 return true;
 
@@ -120,13 +124,8 @@ public class MediaBrowserFragment extends Fragment implements NavigationEventsLi
     }
 
     @Override
-    public void onDestroyView() {
-        try {
-            getFragmentManager().beginTransaction().remove(mItemsFragment).commit();
-        } catch (Exception e) {
-            LOGE("Exception in onDestroyView()", e);
-        }
-        super.onDestroyView();
+    public void onInitialized(ScItem item) {
+        updateCurrentPath(item.getPath());
     }
 
     public static class ItemsFragment extends ItemsBrowserFragment {
@@ -145,12 +144,17 @@ public class MediaBrowserFragment extends Fragment implements NavigationEventsLi
             if (item.hasChildren()) {
                 super.onScItemClick(item);
             } else {
-                Toast.makeText(getActivity(), item.getDisplayName() + " has no children", Toast.LENGTH_SHORT).show();
+                if (ScUtils.isImageTemplate(item.getTemplate())) {
+                    Intent intent = new Intent(getActivity(), PreviewActivity.class);
+                    intent.putExtra(PreviewActivity.IMAGE_ITEM_ID_KEY, item.getId());
+                    startActivity(intent);
+                }
             }
         }
 
         @Override
         public void onScItemLongClick(ScItem item) {
+
             Toast.makeText(getActivity(), item.getDisplayName() + " long clicked", Toast.LENGTH_SHORT).show();
         }
 

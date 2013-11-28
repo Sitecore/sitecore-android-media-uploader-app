@@ -21,11 +21,12 @@ import android.widget.Toast;
 
 import net.sitecore.android.mediauploader.R;
 import net.sitecore.android.mediauploader.UploaderApp;
+import net.sitecore.android.mediauploader.model.Instance;
 import net.sitecore.android.mediauploader.provider.UploadMediaContract.Instances;
 import net.sitecore.android.mediauploader.provider.UploadMediaContract.Instances.Query;
 import net.sitecore.android.mediauploader.ui.ScFragment;
 import net.sitecore.android.mediauploader.ui.instancemanager.InstancesListAdapter.OnDeleteButtonClickListener;
-import net.sitecore.android.mediauploader.util.Utils;
+import net.sitecore.android.mediauploader.util.UploaderPrefs;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
@@ -49,7 +50,7 @@ public class InstancesListFragment extends ScFragment implements LoaderCallbacks
 
             @Override
             public void onDeleteButtonClicked(String name) {
-                if (Utils.isDefaultInstance(getActivity(), name)) {
+                if (UploaderPrefs.from(getActivity()).isDefaultInstance(name)) {
                     Toast.makeText(getActivity(), "You cannot remove default instance",
                             Toast.LENGTH_LONG).show();
                     return;
@@ -99,7 +100,6 @@ public class InstancesListFragment extends ScFragment implements LoaderCallbacks
             case R.id.action_add_instance:
                 startActivity(new Intent(getActivity(), EditInstanceActivity.class));
                 return true;
-
             default:
                 return super.onOptionsItemSelected(item);
         }
@@ -136,24 +136,10 @@ public class InstancesListFragment extends ScFragment implements LoaderCallbacks
         Cursor cursor = mListAdapter.getCursor();
         cursor.moveToPosition(position);
 
-        saveInstanceToPrefs(cursor);
+        UploaderApp.from(getActivity()).switchInstance(new Instance(cursor));
 
         mChangedListener.onDefaultInstanceChanged();
         mListAdapter.notifyDataSetChanged();
-
-        UploaderApp.from(getActivity()).updateInstancePublicKey();
-        UploaderApp.from(getActivity()).cleanInstanceCache();
-
         return true;
-    }
-
-    private void saveInstanceToPrefs(Cursor cursor) {
-        String name = cursor.getString(Query.NAME);
-        String url = cursor.getString(Query.URL);
-        String login = cursor.getString(Query.LOGIN);
-        String password = cursor.getString(Query.PASSWORD);
-        String folder = cursor.getString(Query.ROOT_FOLDER);
-
-        Utils.setDefaultInstance(getActivity(), name, url, login, password, folder);
     }
 }

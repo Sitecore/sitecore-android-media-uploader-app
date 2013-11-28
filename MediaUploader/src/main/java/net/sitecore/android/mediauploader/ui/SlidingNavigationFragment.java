@@ -19,13 +19,14 @@ import android.widget.TextView;
 
 import net.sitecore.android.mediauploader.R;
 import net.sitecore.android.mediauploader.UploaderApp;
+import net.sitecore.android.mediauploader.model.Instance;
 import net.sitecore.android.mediauploader.provider.UploadMediaContract.Instances;
 import net.sitecore.android.mediauploader.provider.UploadMediaContract.Instances.Query;
-import net.sitecore.android.mediauploader.util.Utils;
+import net.sitecore.android.mediauploader.util.UploaderPrefs;
 
+import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
-import butterknife.ButterKnife;
 
 public class SlidingNavigationFragment extends Fragment implements LoaderCallbacks<Cursor> {
 
@@ -57,7 +58,7 @@ public class SlidingNavigationFragment extends Fragment implements LoaderCallbac
 
     public void updateInstanceSelection() {
         Cursor data = mInstancesAdapter.getCursor();
-        String defaultInstanceName = Utils.getDefaultInstanceName(getActivity());
+        String defaultInstanceName = UploaderPrefs.from(getActivity()).getCurrentInstance().name;
 
         data.moveToFirst();
         do {
@@ -92,22 +93,13 @@ public class SlidingNavigationFragment extends Fragment implements LoaderCallbac
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 Cursor cursor = mInstancesAdapter.getCursor();
                 cursor.moveToPosition(position);
+                Instance instance = new Instance(cursor);
 
-                String name = cursor.getString(Query.NAME);
-                if (!name.equals(Utils.getDefaultInstanceName(getActivity()))) {
-                    String url = cursor.getString(Query.URL);
-                    String login = cursor.getString(Query.LOGIN);
-                    String password = cursor.getString(Query.PASSWORD);
-                    String folder = cursor.getString(Query.ROOT_FOLDER);
-
+                String defaultInstanceName = UploaderPrefs.from(getActivity()).getCurrentInstance().name;
+                if (!instance.name.equals(defaultInstanceName)) {
                     getActivity().getContentResolver().notifyChange(Instances.CONTENT_URI, null);
-
-                    Utils.setDefaultInstance(getActivity(), name, url, login, password, folder);
-
+                    UploaderApp.from(getActivity()).switchInstance(instance);
                     mCallbacks.onDefaultInstanceSelected();
-
-                    UploaderApp.from(getActivity()).updateInstancePublicKey();
-                    UploaderApp.from(getActivity()).cleanInstanceCache();
                 }
             }
 

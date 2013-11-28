@@ -1,8 +1,11 @@
 package net.sitecore.android.mediauploader.model;
 
 import android.content.ContentValues;
+import android.database.Cursor;
 
 import net.sitecore.android.mediauploader.provider.UploadMediaContract.Instances;
+
+import static net.sitecore.android.mediauploader.provider.UploadMediaContract.Instances.Query;
 
 public class Instance {
     public final String name;
@@ -27,5 +30,13 @@ public class Instance {
         values.put(Instances.PASSWORD, password);
         values.put(Instances.ROOT_FOLDER, rootFolder);
         return values;
+    }
+
+    public Instance(Cursor cursor) {
+        this.name = cursor.getString(Query.NAME);
+        this.url = cursor.getString(Query.URL);
+        this.login= cursor.getString(Query.LOGIN);
+        this.password = cursor.getString(Query.PASSWORD);
+        this.rootFolder = cursor.getString(Query.ROOT_FOLDER);
     }
 }

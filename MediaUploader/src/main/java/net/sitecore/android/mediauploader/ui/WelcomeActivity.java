@@ -19,6 +19,7 @@ import net.sitecore.android.mediauploader.model.Instance;
 import net.sitecore.android.mediauploader.provider.UploadMediaContract.Instances;
 import net.sitecore.android.mediauploader.util.Prefs;
 import net.sitecore.android.mediauploader.util.ScUtils;
+import net.sitecore.android.mediauploader.util.UploaderPrefs;
 import net.sitecore.android.mediauploader.util.Utils;
 import net.sitecore.android.sdk.api.RequestQueueProvider;
 import net.sitecore.android.sdk.api.ScApiSession;
@@ -64,7 +65,7 @@ public class WelcomeActivity extends Activity implements ErrorListener {
                     new Listener<ScPublicKey>() {
                         @Override
                         public void onResponse(ScPublicKey key) {
-                            Utils.saveKeyToPrefs(getApplicationContext(), key);
+                            UploaderPrefs.from(WelcomeActivity.this).saveKeyToPrefs(key);
                             makeDefaultRequest(ScApiSessionFactory.newSession(url,
                                     key, login, password));
                         }
@@ -89,7 +90,8 @@ public class WelcomeActivity extends Activity implements ErrorListener {
                     String password = mPassword.getText().toString();
 
                     Instance instance = new Instance(name, url, login, password, ScUtils.PATH_MEDIA_LIBRARY);
-                    Utils.setDefaultInstance(WelcomeActivity.this, instance);
+
+                    UploaderPrefs.from(WelcomeActivity.this).setDefaultInstance(instance);
                     saveInstance(instance);
 
                     showToast(WelcomeActivity.this, R.string.toast_logged_in);

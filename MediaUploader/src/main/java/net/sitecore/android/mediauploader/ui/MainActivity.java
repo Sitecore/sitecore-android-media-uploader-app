@@ -18,7 +18,7 @@ import net.sitecore.android.mediauploader.ui.instancemanager.InstancesListFragme
 import net.sitecore.android.mediauploader.ui.instancemanager.InstancesListFragment.OnDefaultInstanceChangeListener;
 import net.sitecore.android.mediauploader.ui.upload.MyUploadsListFragment;
 import net.sitecore.android.mediauploader.util.Prefs;
-import net.sitecore.android.mediauploader.util.Utils;
+import net.sitecore.android.mediauploader.util.UploaderPrefs;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
@@ -113,7 +113,7 @@ public class MainActivity extends Activity implements SlidingNavigationFragment.
     public void onMediaBrowserSelected() {
         mActionBar.setTitle(R.string.title_media_browser);
 
-        String root = Utils.getDefaultInstanceFolder(this);
+        String root = UploaderPrefs.from(this).getCurrentInstance().rootFolder;
         if (mMediaBrowserFragment == null) {
             mMediaBrowserFragment = MediaBrowserFragment.newInstance(root);
         } else {
@@ -150,7 +150,7 @@ public class MainActivity extends Activity implements SlidingNavigationFragment.
 
     @Override
     public void onDefaultInstanceSelected() {
-        String root = Utils.getDefaultInstanceFolder(this);
+        String root = UploaderPrefs.from(this).getCurrentInstance().rootFolder;;
         if (mMediaBrowserFragment != null) {
             mMediaBrowserFragment.setRootFolder(root);
             mMediaBrowserFragment.refresh();

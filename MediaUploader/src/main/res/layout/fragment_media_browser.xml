@@ -16,7 +16,6 @@
     <FrameLayout
         android:id="@+id/fragment_browser_container"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:name="net.sitecore.android.mediauploader.ui.browser.MediaBrowserFragment$BrowserFragment" />
+        android:layout_height="match_parent" />
 
 </LinearLayout>

@@ -3,6 +3,7 @@ package net.sitecore.android.mediauploader.ui.browser;
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -10,7 +11,7 @@ import com.squareup.picasso.Picasso;
 
 import net.sitecore.android.mediauploader.R;
 import net.sitecore.android.mediauploader.util.ScUtils;
-import net.sitecore.android.mediauploader.util.ScUtils.MediaParamsBuilder;
+import net.sitecore.android.mediauploader.util.MediaParamsBuilder;
 import net.sitecore.android.sdk.api.model.ScItem;
 import net.sitecore.android.sdk.widget.ItemsBrowserFragment.ItemViewBinder;
 
@@ -52,8 +53,8 @@ class ItemsListAdapter implements ItemViewBinder {
     }
 
     @Override
-    public View newView(Context context, LayoutInflater inflater, ScItem item) {
-        final View v = LayoutInflater.from(context).inflate(R.layout.list_item_media, null, false);
+    public View newView(Context context, ViewGroup parent, LayoutInflater inflater, ScItem item) {
+        final View v = LayoutInflater.from(context).inflate(R.layout.list_item_media, parent, false);
         v.setTag(new ViewHolder(v));
         return v;
     }
