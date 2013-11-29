@@ -25,6 +25,7 @@ public class DefaultItemViewBinder implements ItemsBrowserFragment.ItemViewBinde
         holder.text1 = (TextView) v.findViewById(android.R.id.text1);
         holder.text2 = (TextView) v.findViewById(android.R.id.text2);
         v.setTag(holder);
+
         return v;
     }
 

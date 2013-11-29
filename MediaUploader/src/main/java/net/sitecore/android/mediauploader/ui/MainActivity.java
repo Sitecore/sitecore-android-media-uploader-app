@@ -13,12 +13,14 @@ import android.view.View;
 import android.view.Window;
 
 import net.sitecore.android.mediauploader.R;
+import net.sitecore.android.mediauploader.UploaderApp;
 import net.sitecore.android.mediauploader.ui.browser.MediaBrowserFragment;
 import net.sitecore.android.mediauploader.ui.instancemanager.InstancesListFragment;
 import net.sitecore.android.mediauploader.ui.instancemanager.InstancesListFragment.OnDefaultInstanceChangeListener;
 import net.sitecore.android.mediauploader.ui.upload.MyUploadsListFragment;
 import net.sitecore.android.mediauploader.util.Prefs;
 import net.sitecore.android.mediauploader.util.UploaderPrefs;
+import net.sitecore.android.sdk.api.RequestQueueProvider;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
@@ -116,6 +118,8 @@ public class MainActivity extends Activity implements SlidingNavigationFragment.
         String root = UploaderPrefs.from(this).getCurrentInstance().rootFolder;
         if (mMediaBrowserFragment == null) {
             mMediaBrowserFragment = MediaBrowserFragment.newInstance(root);
+            mMediaBrowserFragment.setApiSession(UploaderApp.from(this).getSession());
+            mMediaBrowserFragment.setRequestQueue(RequestQueueProvider.getRequestQueue(this));
         } else {
             mMediaBrowserFragment.setRootFolder(root);
         }

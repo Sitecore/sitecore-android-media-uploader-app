@@ -93,6 +93,7 @@ public class WelcomeActivity extends Activity implements ErrorListener {
 
                     UploaderPrefs.from(WelcomeActivity.this).setDefaultInstance(instance);
                     saveInstance(instance);
+                    Prefs.from(WelcomeActivity.this).put(R.string.key_instance_exist, true);
 
                     showToast(WelcomeActivity.this, R.string.toast_logged_in);
 

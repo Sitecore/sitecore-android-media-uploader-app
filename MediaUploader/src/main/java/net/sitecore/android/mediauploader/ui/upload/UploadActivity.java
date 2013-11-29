@@ -22,7 +22,6 @@ import android.widget.Toast;
 
 import java.io.File;
 
-import com.android.volley.RequestQueue;
 import com.android.volley.Response.ErrorListener;
 import com.android.volley.Response.Listener;
 import com.android.volley.VolleyError;
@@ -34,15 +33,12 @@ import net.sitecore.android.mediauploader.model.UploadStatus;
 import net.sitecore.android.mediauploader.provider.UploadMediaContract.Uploads;
 import net.sitecore.android.mediauploader.service.MediaUploaderService;
 import net.sitecore.android.mediauploader.ui.IntentExtras;
-import net.sitecore.android.mediauploader.ui.browser.ItemsListAdapter;
+import net.sitecore.android.mediauploader.ui.upload.PathSelectorDialog.PathSelectorListener;
 import net.sitecore.android.mediauploader.util.UploaderPrefs;
 import net.sitecore.android.sdk.api.RequestQueueProvider;
 import net.sitecore.android.sdk.api.ScApiSession;
 import net.sitecore.android.sdk.api.UploadMediaRequestOptions;
 import net.sitecore.android.sdk.api.model.ItemsResponse;
-import net.sitecore.android.sdk.api.model.ScItem;
-import net.sitecore.android.sdk.widget.ItemsBrowserFragment;
-import net.sitecore.android.sdk.widget.ItemsBrowserFragment.NavigationEventsListener;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
@@ -50,7 +46,7 @@ import butterknife.OnClick;
 
 import static net.sitecore.android.sdk.api.LogUtils.LOGD;
 
-public class UploadActivity extends Activity implements ErrorListener, OnClickListener {
+public class UploadActivity extends Activity implements ErrorListener, OnClickListener, PathSelectorListener {
 
     private static final int SOURCE_TYPE_GALLERY = 0;
     private static final int SOURCE_TYPE_CAMERA = 1;
@@ -220,7 +216,6 @@ public class UploadActivity extends Activity implements ErrorListener, OnClickLi
                 this);
     }
 
-
     class MediaUploadedListener implements Listener<ItemsResponse> {
 
         private Uri mUploadUri;
@@ -245,37 +240,16 @@ public class UploadActivity extends Activity implements ErrorListener, OnClickLi
     @Override
     public void onClick(View v) {
         if (mPathSelector == null) {
-            mPathSelector = new PathSelectorDialog(UploaderApp.from(this).getSession(),
-                    RequestQueueProvider.getRequestQueue(this));
-            mPathSelector.setNavigationEventsListener(new NavigationEventsListener() {
-                @Override
-                public void onGoUp(ScItem item) {
-
-                }
-
-                @Override
-                public void onGoInside(ScItem item) {
-
-                }
-
-                @Override
-                public void onInitialized(ScItem item) {
-
-                }
-            });
+            mPathSelector = PathSelectorDialog.newInstance("/sitecore/media library");
+            mPathSelector.setApiSession(UploaderApp.from(this).getSession());
+            mPathSelector.setRequestQueue(RequestQueueProvider.getRequestQueue(this));
         }
         mPathSelector.show(getFragmentManager(), "dialog");
     }
 
-    public static class PathSelectorDialog extends ItemsBrowserFragment {
-
-        public PathSelectorDialog(ScApiSession apiSession, RequestQueue requestQueue) {
-            super(apiSession, requestQueue);
-        }
-
-        @Override
-        protected ItemViewBinder onGetListItemView() {
-            return new ItemsListAdapter(UploaderApp.from(getActivity()).getImageLoader());
-        }
+    @Override
+    public void onPathSelected(String path) {
+        mEditPath.setText(path);
     }
+
 }
