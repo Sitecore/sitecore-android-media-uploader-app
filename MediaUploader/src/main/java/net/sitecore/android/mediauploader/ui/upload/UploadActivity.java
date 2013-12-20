@@ -34,6 +34,7 @@ import net.sitecore.android.mediauploader.provider.UploadMediaContract.Uploads;
 import net.sitecore.android.mediauploader.service.MediaUploaderService;
 import net.sitecore.android.mediauploader.ui.IntentExtras;
 import net.sitecore.android.mediauploader.ui.upload.PathSelectorDialog.PathSelectorListener;
+import net.sitecore.android.mediauploader.util.SimpleNetworkListenerImpl;
 import net.sitecore.android.mediauploader.util.UploaderPrefs;
 import net.sitecore.android.sdk.api.RequestQueueProvider;
 import net.sitecore.android.sdk.api.ScApiSession;
@@ -241,8 +242,9 @@ public class UploadActivity extends Activity implements ErrorListener, OnClickLi
     public void onClick(View v) {
         if (mPathSelector == null) {
             mPathSelector = PathSelectorDialog.newInstance("/sitecore/media library");
-            mPathSelector.setApiSession(UploaderApp.from(this).getSession());
-            mPathSelector.setRequestQueue(RequestQueueProvider.getRequestQueue(this));
+            mPathSelector.setNetworkEventsListener(new SimpleNetworkListenerImpl(this));
+            mPathSelector.setApiProperties(RequestQueueProvider.getRequestQueue(this),
+                    UploaderApp.from(this).getSession());
         }
         mPathSelector.show(getFragmentManager(), "dialog");
     }

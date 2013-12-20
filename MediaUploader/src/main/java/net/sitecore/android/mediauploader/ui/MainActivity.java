@@ -118,10 +118,11 @@ public class MainActivity extends Activity implements SlidingNavigationFragment.
         String root = UploaderPrefs.from(this).getCurrentInstance().rootFolder;
         if (mMediaBrowserFragment == null) {
             mMediaBrowserFragment = MediaBrowserFragment.newInstance(root);
-            mMediaBrowserFragment.setApiSession(UploaderApp.from(this).getSession());
-            mMediaBrowserFragment.setRequestQueue(RequestQueueProvider.getRequestQueue(this));
+            mMediaBrowserFragment.setApiProperties(RequestQueueProvider.getRequestQueue(this),
+                    UploaderApp.from(this).getSession());
         } else {
             mMediaBrowserFragment.setRootFolder(root);
+            mMediaBrowserFragment.update();
         }
 
         getFragmentManager().beginTransaction().replace(R.id.fragment_container, mMediaBrowserFragment).commit();
@@ -157,7 +158,7 @@ public class MainActivity extends Activity implements SlidingNavigationFragment.
         String root = UploaderPrefs.from(this).getCurrentInstance().rootFolder;;
         if (mMediaBrowserFragment != null) {
             mMediaBrowserFragment.setRootFolder(root);
-            mMediaBrowserFragment.refresh();
+            mMediaBrowserFragment.update();
         }
     }
 

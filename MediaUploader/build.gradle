@@ -1,25 +1,15 @@
-buildscript {
-    repositories {
-        mavenCentral()
-        maven { url 'http://download.crashlytics.com/maven' }
-    }
-    dependencies {
-        classpath 'com.android.tools.build:gradle:0.6.+'
-        classpath 'com.crashlytics.tools.gradle:crashlytics-gradle:1.+'
-    }
-}
 apply plugin: 'android'
 apply plugin: 'crashlytics'
 
 repositories {
     mavenCentral()
     maven { url 'http://download.crashlytics.com/maven' }
+    maven {url 'http://sitecore.github.io/sitecore-android-sdk/aar'}
 }
 
 dependencies {
+    compile 'net.sitecore.android.sdk:sitecore-api-android:1.1'
     compile project(':SitecoreTheme')
-    compile project(':sitecore-api-android')
-
     compile 'com.jakewharton:butterknife:4.0.1@jar'
     compile 'com.android.support:support-v4:18.0.+'
     compile 'com.squareup.picasso:picasso:2.1.1@jar'
@@ -28,12 +18,12 @@ dependencies {
 }
 
 android {
-    compileSdkVersion 18
+    compileSdkVersion 19
     buildToolsVersion '19.0.0'
 
     defaultConfig {
         minSdkVersion 14
-        targetSdkVersion 18
+        targetSdkVersion 19
     }
 
     signingConfigs {

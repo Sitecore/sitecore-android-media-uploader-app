@@ -10,10 +10,10 @@ import android.widget.TextView;
 import com.squareup.picasso.Picasso;
 
 import net.sitecore.android.mediauploader.R;
-import net.sitecore.android.mediauploader.util.ScUtils;
 import net.sitecore.android.mediauploader.util.MediaParamsBuilder;
+import net.sitecore.android.mediauploader.util.ScUtils;
 import net.sitecore.android.sdk.api.model.ScItem;
-import net.sitecore.android.sdk.widget.ItemsBrowserFragment.ItemViewBinder;
+import net.sitecore.android.sdk.widget.ItemViewBinder;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;

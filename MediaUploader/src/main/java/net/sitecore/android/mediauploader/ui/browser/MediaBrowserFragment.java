@@ -15,11 +15,13 @@ import net.sitecore.android.mediauploader.UploaderApp;
 import net.sitecore.android.mediauploader.ui.IntentExtras;
 import net.sitecore.android.mediauploader.ui.upload.UploadActivity;
 import net.sitecore.android.mediauploader.util.ScUtils;
+import net.sitecore.android.mediauploader.util.SimpleNetworkListenerImpl;
 import net.sitecore.android.sdk.api.model.ScItem;
+import net.sitecore.android.sdk.widget.ItemViewBinder;
 import net.sitecore.android.sdk.widget.ItemsBrowserFragment;
-import net.sitecore.android.sdk.widget.ItemsBrowserFragment.ContentChangedListener;
+import net.sitecore.android.sdk.widget.ItemsBrowserFragment.ContentTreePositionListener;
 
-public class MediaBrowserFragment extends ItemsBrowserFragment implements ContentChangedListener {
+public class MediaBrowserFragment extends ItemsBrowserFragment implements ContentTreePositionListener {
 
     private static final String ARG_ITEM_ROOT = "item_root";
     public static final int CURRENT_PATH_PADDDING = 8;
@@ -40,7 +42,8 @@ public class MediaBrowserFragment extends ItemsBrowserFragment implements Conten
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
-        setNavigationEventsListener(this);
+        setContentTreePositionListener(this);
+        setNetworkEventsListener(new SimpleNetworkListenerImpl(getActivity()));
     }
 
     @Override
@@ -118,7 +121,7 @@ public class MediaBrowserFragment extends ItemsBrowserFragment implements Conten
     }
 
     @Override
-    protected ItemViewBinder getItemViewBinder() {
+    protected ItemViewBinder onCreateItemViewBinder() {
         return new ItemsListAdapter(UploaderApp.from(getActivity()).getImageLoader());
     }
 }

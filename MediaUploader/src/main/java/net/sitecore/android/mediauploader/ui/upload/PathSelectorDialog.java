@@ -12,10 +12,11 @@ import net.sitecore.android.mediauploader.R;
 import net.sitecore.android.mediauploader.UploaderApp;
 import net.sitecore.android.mediauploader.ui.browser.ItemsListAdapter;
 import net.sitecore.android.sdk.api.model.ScItem;
+import net.sitecore.android.sdk.widget.ItemViewBinder;
 import net.sitecore.android.sdk.widget.ItemsBrowserFragment;
-import net.sitecore.android.sdk.widget.ItemsBrowserFragment.ContentChangedListener;
+import net.sitecore.android.sdk.widget.ItemsBrowserFragment.ContentTreePositionListener;
 
-public class PathSelectorDialog extends ItemsBrowserFragment implements ContentChangedListener {
+public class PathSelectorDialog extends ItemsBrowserFragment implements ContentTreePositionListener {
 
     public static final int CURRENT_PATH_PADDING = 8;
 
@@ -39,7 +40,7 @@ public class PathSelectorDialog extends ItemsBrowserFragment implements ContentC
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setNavigationEventsListener(this);
+        setContentTreePositionListener(this);
     }
 
     @Override
@@ -62,7 +63,7 @@ public class PathSelectorDialog extends ItemsBrowserFragment implements ContentC
     }
 
     @Override
-    protected ItemViewBinder getItemViewBinder() {
+    protected ItemViewBinder onCreateItemViewBinder() {
         return new ItemsListAdapter(UploaderApp.from(getActivity()).getImageLoader());
     }
 
