@@ -20,6 +20,8 @@ dependencies {
     compile project(':SitecoreTheme')
     compile project(':sitecore-api-android')
 
+    compile files('libs/espresso-1.0-SNAPSHOT-bundled.jar')
+
     compile 'com.jakewharton:butterknife:4.0.1@jar'
     compile 'com.android.support:support-v4:18.0.+'
     compile 'com.squareup.picasso:picasso:2.1.1@jar'
@@ -34,6 +36,7 @@ android {
     defaultConfig {
         minSdkVersion 14
         targetSdkVersion 18
+        testInstrumentationRunner "com.google.android.apps.common.testing.testrunner.GoogleInstrumentationTestRunner"
     }
 
     signingConfigs {
