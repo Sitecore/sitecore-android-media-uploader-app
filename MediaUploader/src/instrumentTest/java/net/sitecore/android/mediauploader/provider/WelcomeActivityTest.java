@@ -27,7 +27,33 @@ public class WelcomeActivityTest extends ActivityInstrumentationTestCase2<Welcom
         getActivity();
     }
 
-    public void testCaseLogInAsExtranetUser() {
+    public void testCase1LogInWithInvalidPassword() {
+
+        String urlString = "http://mobiledev1ua1.dk.sitecore.net:722";
+        String loginString = "extranet\\creatorex";
+        String passString = "invalid_password";
+        //clear fields
+        onView(withId(R.id.edit_url)).perform(scrollTo(), clearText());
+        onView(withId(R.id.edit_login)).perform(scrollTo(), clearText());
+        onView(withId(R.id.edit_password)).perform(scrollTo(), clearText());
+        //input data
+        onView(withId(R.id.edit_url)).perform(scrollTo(), typeText(urlString));
+        onView(withId(R.id.edit_login)).perform(scrollTo(), typeText(loginString));
+        onView(withId(R.id.edit_password)).perform(scrollTo(), typeText(passString));
+        //check
+        onView(withId(R.id.edit_url)).perform(scrollTo()).check(matches(withText(urlString)));
+        onView(withId(R.id.edit_login)).perform(scrollTo()).check(matches(withText(loginString)));
+        onView(withId(R.id.edit_password)).perform(scrollTo()).check(matches(withText(passString)));
+
+//      //press Login
+        onView(withId(R.id.button_ok)).perform(scrollTo()).perform(click());
+
+        //assert user logged in
+        sleep(5000);
+        onView(withId(R.id.button_ok)).check(matches(isDisplayed()));
+    }
+
+    public void testCase2LogInAsExtranetUser() {
 
         String urlString = "http://mobiledev1ua1.dk.sitecore.net:722";
         String loginString = "extranet\\creatorex";
@@ -49,7 +75,7 @@ public class WelcomeActivityTest extends ActivityInstrumentationTestCase2<Welcom
         onView(withId(R.id.button_ok)).perform(scrollTo()).perform(click());
 
        //assert user logged in
-        sleep(5000);
+        sleep(3000);
         onView(withId(R.id.action_upload_here)).check(matches(isDisplayed()));
     }
 
