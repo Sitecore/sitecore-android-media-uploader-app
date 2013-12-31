@@ -10,13 +10,14 @@ repositories {
 dependencies {
     compile 'net.sitecore.android.sdk:sitecore-api-android:1.1'
     compile project(':SitecoreTheme')
-    compile files('libs/espresso-1.0-SNAPSHOT-bundled.jar')
-
+    
     compile 'com.jakewharton:butterknife:4.0.1@jar'
     compile 'com.android.support:support-v4:18.0.+'
     compile 'com.squareup.picasso:picasso:2.1.1@jar'
     compile 'com.github.chrisbanes.photoview:library:1.2.2'
     compile 'com.crashlytics.android:crashlytics:1.+'
+
+    instrumentTestCompile files('libs/espresso-1.0-SNAPSHOT-bundled.jar')
 }
 
 android {
@@ -47,6 +48,10 @@ android {
             //proguardFiles getDefaultProguardFile('proguard-android.txt'), file('proguard-project.txt')
             signingConfig signingConfigs.release
         }
+    }
+
+    lintOptions {
+        abortOnError false
     }
 
 }
