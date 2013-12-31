@@ -4,6 +4,10 @@ import android.app.Application;
 import android.content.AsyncQueryHandler;
 import android.content.Context;
 
+import java.security.NoSuchAlgorithmException;
+import java.security.spec.InvalidKeySpecException;
+
+import com.android.volley.Request;
 import com.android.volley.Response.ErrorListener;
 import com.android.volley.Response.Listener;
 import com.android.volley.VolleyLog;
@@ -11,19 +15,25 @@ import com.android.volley.VolleyLog;
 import com.crashlytics.android.Crashlytics;
 import com.squareup.picasso.Picasso;
 
+import net.sitecore.android.mediauploader.model.Instance;
+import net.sitecore.android.mediauploader.util.EmptyErrorListener;
 import net.sitecore.android.mediauploader.util.Prefs;
+import net.sitecore.android.mediauploader.util.UploaderPrefs;
 import net.sitecore.android.sdk.api.LogUtils;
 import net.sitecore.android.sdk.api.RequestQueueProvider;
 import net.sitecore.android.sdk.api.ScApiSession;
 import net.sitecore.android.sdk.api.ScApiSessionFactory;
+import net.sitecore.android.sdk.api.ScPublicKey;
 import net.sitecore.android.sdk.api.provider.ScItemsContract.Items;
 
 import butterknife.ButterKnife;
 
+import static net.sitecore.android.sdk.api.LogUtils.LOGE;
+
 public class UploaderApp extends Application {
 
     private Picasso mImageLoader;
-    private ScApiSession mSession;
+    private Prefs mPrefs;
 
     public static UploaderApp from(Context context) {
         return (UploaderApp) context.getApplicationContext();
@@ -32,10 +42,10 @@ public class UploaderApp extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
-
+        mPrefs = Prefs.from(this);
         mImageLoader = Picasso.with(this);
 
-        if (!BuildConfig.DEBUG ) {
+        if (!BuildConfig.DEBUG) {
             Crashlytics.start(this);
         }
 
@@ -53,37 +63,46 @@ public class UploaderApp extends Application {
         ButterKnife.setDebug(isEnabled);
     }
 
-    public void getSession(final Listener<ScApiSession> sessionListener, ErrorListener errorListener) {
-        if (mSession == null) {
-            Prefs prefs = Prefs.from(this);
+    public ScApiSession getSession() {
+        try {
+            String keyValue = mPrefs.getString(R.string.key_public_key_value);
+            ScPublicKey key = new ScPublicKey(keyValue);
 
-            String url = prefs.getString(R.string.key_instance_url);
-            String username = prefs.getString(R.string.key_instance_login);
-            String password = prefs.getString(R.string.key_instance_password);
-
-            Listener<ScApiSession> onSuccess = new Listener<ScApiSession>() {
-                @Override
-                public void onResponse(ScApiSession scApiSession) {
-                    mSession = scApiSession;
-                    mSession.setShouldCache(true);
-                    sessionListener.onResponse(scApiSession);
-                }
-            };
-
-            ScApiSessionFactory.getSession(RequestQueueProvider.getRequestQueue(this),
-                    url, username, password, onSuccess, errorListener);
-        } else {
-            sessionListener.onResponse(mSession);
+            String url = mPrefs.getString(R.string.key_instance_url);
+            String login = mPrefs.getString(R.string.key_instance_login);
+            String password = mPrefs.getString(R.string.key_instance_password);
+            return ScApiSessionFactory.newSession(url, key, login, password);
+        } catch (InvalidKeySpecException e) {
+            LOGE(e);
+            throw new RuntimeException(e);
+        } catch (NoSuchAlgorithmException e) {
+            LOGE(e);
+            throw new RuntimeException(e);
         }
     }
 
-    public void cleanInstanceCache() {
-        mSession = null;
+    public void cleanInstanceCacheAsync() {
         new AsyncQueryHandler(getContentResolver()) {
         }.startDelete(0, null, Items.CONTENT_URI, null, null);
     }
 
-    public void setSession(ScApiSession session) {
-        mSession = session;
+    public void updateInstancePublicKeyAsync() {
+        String url = UploaderPrefs.from(this).getCurrentInstance().url;
+        Listener<ScPublicKey> onSuccess = new Listener<ScPublicKey>() {
+            @Override
+            public void onResponse(ScPublicKey key) {
+                UploaderPrefs.from(getApplicationContext()).saveKeyToPrefs(key);
+            }
+        };
+        ErrorListener onError = new EmptyErrorListener();
+
+        Request request = ScApiSessionFactory.buildPublicKeyRequest(url, onSuccess, onError);
+        RequestQueueProvider.getRequestQueue(this).add(request);
+    }
+
+    public void switchInstance(Instance newInstance) {
+        UploaderPrefs.from(this).setDefaultInstance(newInstance);
+        UploaderApp.from(this).updateInstancePublicKeyAsync();
+        UploaderApp.from(this).cleanInstanceCacheAsync();
     }
 }

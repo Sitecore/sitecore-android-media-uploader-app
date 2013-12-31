@@ -20,7 +20,7 @@ import com.squareup.picasso.Callback;
 import net.sitecore.android.mediauploader.R;
 import net.sitecore.android.mediauploader.UploaderApp;
 import net.sitecore.android.mediauploader.util.ScUtils;
-import net.sitecore.android.mediauploader.util.ScUtils.MediaParamsBuilder;
+import net.sitecore.android.mediauploader.util.MediaParamsBuilder;
 import net.sitecore.android.sdk.api.provider.ScItemsContract.Items;
 import net.sitecore.android.sdk.api.provider.ScItemsContract.Items.Query;
 

@@ -13,12 +13,14 @@ import android.view.View;
 import android.view.Window;
 
 import net.sitecore.android.mediauploader.R;
+import net.sitecore.android.mediauploader.UploaderApp;
 import net.sitecore.android.mediauploader.ui.browser.MediaBrowserFragment;
 import net.sitecore.android.mediauploader.ui.instancemanager.InstancesListFragment;
 import net.sitecore.android.mediauploader.ui.instancemanager.InstancesListFragment.OnDefaultInstanceChangeListener;
 import net.sitecore.android.mediauploader.ui.upload.MyUploadsListFragment;
 import net.sitecore.android.mediauploader.util.Prefs;
-import net.sitecore.android.mediauploader.util.Utils;
+import net.sitecore.android.mediauploader.util.UploaderPrefs;
+import net.sitecore.android.sdk.api.RequestQueueProvider;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
@@ -101,8 +103,9 @@ public class MainActivity extends Activity implements SlidingNavigationFragment.
 
     @Override
     public void onBackPressed() {
-        if (mNavigationFragment != null && mNavigationFragment.isMediaBrowserSelected() && mMediaBrowserFragment.getItemStack().canGoUp()) {
-            mMediaBrowserFragment.goUp();
+        // TODO : added function for moving up in the items browser
+        if (mNavigationFragment != null && mNavigationFragment.isMediaBrowserSelected()) {
+//            mMediaBrowserFragment.goUp();
         } else {
             super.onBackPressed();
         }
@@ -112,11 +115,14 @@ public class MainActivity extends Activity implements SlidingNavigationFragment.
     public void onMediaBrowserSelected() {
         mActionBar.setTitle(R.string.title_media_browser);
 
-        String root = Utils.getDefaultInstanceFolder(this);
+        String root = UploaderPrefs.from(this).getCurrentInstance().rootFolder;
         if (mMediaBrowserFragment == null) {
             mMediaBrowserFragment = MediaBrowserFragment.newInstance(root);
+            mMediaBrowserFragment.setApiProperties(RequestQueueProvider.getRequestQueue(this),
+                    UploaderApp.from(this).getSession());
         } else {
             mMediaBrowserFragment.setRootFolder(root);
+            mMediaBrowserFragment.update();
         }
 
         getFragmentManager().beginTransaction().replace(R.id.fragment_container, mMediaBrowserFragment).commit();
@@ -149,10 +155,10 @@ public class MainActivity extends Activity implements SlidingNavigationFragment.
 
     @Override
     public void onDefaultInstanceSelected() {
-        String root = Utils.getDefaultInstanceFolder(this);
+        String root = UploaderPrefs.from(this).getCurrentInstance().rootFolder;;
         if (mMediaBrowserFragment != null) {
             mMediaBrowserFragment.setRootFolder(root);
-            mMediaBrowserFragment.refresh();
+            mMediaBrowserFragment.update();
         }
     }
 

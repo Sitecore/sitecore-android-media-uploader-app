@@ -13,6 +13,7 @@ import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
 import android.widget.EditText;
@@ -27,12 +28,15 @@ import com.android.volley.VolleyError;
 
 import net.sitecore.android.mediauploader.R;
 import net.sitecore.android.mediauploader.UploaderApp;
+import net.sitecore.android.mediauploader.model.Instance;
 import net.sitecore.android.mediauploader.model.UploadStatus;
 import net.sitecore.android.mediauploader.provider.UploadMediaContract.Uploads;
 import net.sitecore.android.mediauploader.service.MediaUploaderService;
 import net.sitecore.android.mediauploader.ui.IntentExtras;
-import net.sitecore.android.mediauploader.util.EmptyErrorListener;
-import net.sitecore.android.mediauploader.util.Prefs;
+import net.sitecore.android.mediauploader.ui.upload.PathSelectorDialog.PathSelectorListener;
+import net.sitecore.android.mediauploader.util.SimpleNetworkListenerImpl;
+import net.sitecore.android.mediauploader.util.UploaderPrefs;
+import net.sitecore.android.sdk.api.RequestQueueProvider;
 import net.sitecore.android.sdk.api.ScApiSession;
 import net.sitecore.android.sdk.api.UploadMediaRequestOptions;
 import net.sitecore.android.sdk.api.model.ItemsResponse;
@@ -43,7 +47,7 @@ import butterknife.OnClick;
 
 import static net.sitecore.android.sdk.api.LogUtils.LOGD;
 
-public class UploadActivity extends Activity implements ErrorListener {
+public class UploadActivity extends Activity implements ErrorListener, OnClickListener, PathSelectorListener {
 
     private static final int SOURCE_TYPE_GALLERY = 0;
     private static final int SOURCE_TYPE_CAMERA = 1;
@@ -54,6 +58,7 @@ public class UploadActivity extends Activity implements ErrorListener {
     @InjectView(R.id.checkbox_upload_later) CheckBox mUploadLater;
 
     private Uri mImageUri;
+    private PathSelectorDialog mPathSelector;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -64,6 +69,7 @@ public class UploadActivity extends Activity implements ErrorListener {
         setContentView(R.layout.activity_upload);
         ButterKnife.inject(this);
 
+        mEditPath.setOnClickListener(this);
         String itemPath = getIntent().getStringExtra(IntentExtras.ITEM_PATH);
         mEditPath.setText(itemPath);
     }
@@ -167,15 +173,12 @@ public class UploadActivity extends Activity implements ErrorListener {
             return;
         }
 
-        Prefs prefs = Prefs.from(this);
-        final String url = prefs.getString(R.string.key_instance_url);
-        final String username = prefs.getString(R.string.key_instance_login);
-        final String password = prefs.getString(R.string.key_instance_password);
+        Instance instance = UploaderPrefs.from(this).getCurrentInstance();
 
         final ContentValues values = new ContentValues();
-        values.put(Uploads.URL, url);
-        values.put(Uploads.USERNAME, username);
-        values.put(Uploads.PASSWORD, password);
+        values.put(Uploads.URL, instance.url);
+        values.put(Uploads.USERNAME, instance.login);
+        values.put(Uploads.PASSWORD, instance.password);
         values.put(Uploads.ITEM_NAME, mEditName.getText().toString());
         values.put(Uploads.ITEM_PATH, mEditPath.getText().toString());
         values.put(Uploads.FILE_URI, mImageUri.toString());
@@ -192,12 +195,7 @@ public class UploadActivity extends Activity implements ErrorListener {
             @Override
             protected void onInsertComplete(int token, Object cookie, final Uri uri) {
                 if (!mUploadLater.isChecked()) {
-                    UploaderApp.from(UploadActivity.this).getSession(new Listener<ScApiSession>() {
-                        @Override
-                        public void onResponse(ScApiSession scApiSession) {
-                            uploadMedia(scApiSession, uri);
-                        }
-                    }, new EmptyErrorListener());
+                    uploadMedia(UploaderApp.from(UploadActivity.this).getSession(), uri);
                 }
             }
         }.startInsert(0, null, Uploads.CONTENT_URI, values);
@@ -239,4 +237,21 @@ public class UploadActivity extends Activity implements ErrorListener {
     @Override
     public void onErrorResponse(VolleyError volleyError) {
     }
+
+    @Override
+    public void onClick(View v) {
+        if (mPathSelector == null) {
+            mPathSelector = PathSelectorDialog.newInstance("/sitecore/media library");
+            mPathSelector.setNetworkEventsListener(new SimpleNetworkListenerImpl(this));
+            mPathSelector.setApiProperties(RequestQueueProvider.getRequestQueue(this),
+                    UploaderApp.from(this).getSession());
+        }
+        mPathSelector.show(getFragmentManager(), "dialog");
+    }
+
+    @Override
+    public void onPathSelected(String path) {
+        mEditPath.setText(path);
+    }
+
 }

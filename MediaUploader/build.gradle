@@ -1,25 +1,15 @@
-buildscript {
-    repositories {
-        mavenCentral()
-        maven { url 'http://download.crashlytics.com/maven' }
-    }
-    dependencies {
-        classpath 'com.android.tools.build:gradle:0.6.+'
-        classpath 'com.crashlytics.tools.gradle:crashlytics-gradle:1.+'
-    }
-}
 apply plugin: 'android'
 apply plugin: 'crashlytics'
 
 repositories {
     mavenCentral()
     maven { url 'http://download.crashlytics.com/maven' }
+    maven {url 'http://sitecore.github.io/sitecore-android-sdk/aar'}
 }
 
 dependencies {
+    compile 'net.sitecore.android.sdk:sitecore-api-android:1.1'
     compile project(':SitecoreTheme')
-    compile project(':sitecore-api-android')
-
     compile files('libs/espresso-1.0-SNAPSHOT-bundled.jar')
 
     compile 'com.jakewharton:butterknife:4.0.1@jar'
@@ -30,12 +20,12 @@ dependencies {
 }
 
 android {
-    compileSdkVersion 18
+    compileSdkVersion 19
     buildToolsVersion '19.0.0'
 
     defaultConfig {
         minSdkVersion 14
-        targetSdkVersion 18
+        targetSdkVersion 19
         testInstrumentationRunner "com.google.android.apps.common.testing.testrunner.GoogleInstrumentationTestRunner"
     }
 
