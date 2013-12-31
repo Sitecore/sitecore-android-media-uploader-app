@@ -48,7 +48,7 @@ public class UploadMediaProviderUploadsTest extends ProviderTestCase2<UploadMedi
 
     public void testInsert() {
         Uri itemUri = mContentResolver.insert(Uploads.CONTENT_URI, newUploadValues("new_item"));
-        assertEquals("content://net.sitecore.android.provider/instances/3", itemUri.toString());
+        assertEquals("content://net.sitecore.android.provider/uploads/3", itemUri.toString());
 
         String id = Uploads.getUploadId(itemUri);
         assertEquals("3", id);

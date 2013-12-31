@@ -1,5 +1,15 @@
+buildscript {
+    repositories {
+        mavenCentral()
+    }
+    dependencies {
+        classpath 'com.stanfy.spoon:spoon-gradle-plugin:0.9.+'
+    }
+}
+
 apply plugin: 'android'
 apply plugin: 'crashlytics'
+apply plugin: 'spoon'
 
 repositories {
     mavenCentral()
@@ -18,6 +28,7 @@ dependencies {
     compile 'com.crashlytics.android:crashlytics:1.+'
 
     instrumentTestCompile files('libs/espresso-1.0-SNAPSHOT-bundled.jar')
+    instrumentTestCompile 'com.squareup.spoon:spoon-client:1.1.0'
 }
 
 android {
@@ -53,7 +64,10 @@ android {
     lintOptions {
         abortOnError false
     }
+}
 
+spoon {
+    debug = true
 }
 
     
