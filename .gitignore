@@ -25,3 +25,4 @@ proguard.cfg
 .svn
 target
 out
+com_crashlytics_export_strings.xml
