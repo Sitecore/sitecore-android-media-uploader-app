@@ -19,6 +19,8 @@ dependencies {
     compile 'com.squareup.okhttp:okhttp:1.3.0'
     compile files('libs/commons-io-2.4.jar')
     compile files('libs/jsefa-android-1.0.1.RELEASE.jar')
+
+    compile project(":shinobicharts-android-library")
 }
 
 android {
