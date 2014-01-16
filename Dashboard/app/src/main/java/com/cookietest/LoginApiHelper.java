@@ -6,7 +6,6 @@ import java.net.CookiePolicy;
 import java.util.HashMap;
 
 import com.cookietest.retrofit.ApiFactory;
-import com.cookietest.retrofit.LoginApi;
 import com.cookietest.retrofit.TokensApi;
 
 import retrofit.Callback;
@@ -15,15 +14,12 @@ import retrofit.client.Response;
 
 public class LoginApiHelper {
 
-    private final LoginApi mLoginApi;
     private final CookieManager mCookieManager;
 
     public LoginApiHelper() {
         mCookieManager = new CookieManager();
         mCookieManager.setCookiePolicy(CookiePolicy.ACCEPT_ALL);
         CookieHandler.setDefault(mCookieManager);
-
-        mLoginApi = ApiFactory.newLoginApi(mCookieManager);
     }
 
     public void performLogin(final String user, final String pass, final Callback<Cookies> callback) {
@@ -34,7 +30,7 @@ public class LoginApiHelper {
                 tokens.put("Login$Password", pass);
                 tokens.put("Language", "");
 
-                login(tokens, callback, user, pass);
+                ApiFactory.newLoginApi(mCookieManager).performLogin(tokens, callback);
             }
 
             @Override
@@ -45,22 +41,6 @@ public class LoginApiHelper {
 
         TokensApi api = ApiFactory.newTokensApi();
         api.getMainPage(listener);
-    }
-
-    private void login(HashMap<String, String> tokens, final Callback<Cookies> callback, String user, String pass) {
-        Callback<Cookies> listener = new Callback<Cookies>() {
-            @Override
-            public void success(Cookies cookies, Response response) {
-                callback.success(cookies, response);
-            }
-
-            @Override
-            public void failure(RetrofitError error) {
-                callback.failure(error);
-            }
-        };
-
-        mLoginApi.performLogin(tokens, listener);
     }
 
 }

@@ -8,13 +8,15 @@ import java.io.Reader;
 import java.lang.reflect.Type;
 import java.util.LinkedList;
 
-import com.cookietest.csv.Data;
+import com.cookietest.csv.DataRow;
+
 import retrofit.converter.ConversionException;
 import retrofit.converter.Converter;
 import retrofit.mime.TypedInput;
 import retrofit.mime.TypedOutput;
 
 public class CsvConverter implements Converter {
+
     @Override
     public Object fromBody(TypedInput body, Type type) throws ConversionException {
         try {
@@ -25,7 +27,7 @@ public class CsvConverter implements Converter {
                 line.length();
             }
         } catch (IOException e) {}
-        return new LinkedList<Data>();
+        return new LinkedList<DataRow>();
     }
 
     @Override

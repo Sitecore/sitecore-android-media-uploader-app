@@ -10,10 +10,9 @@ import android.widget.Toast;
 
 import java.util.LinkedList;
 
-import com.cookietest.csv.Data;
+import com.cookietest.csv.DataRow;
 import com.cookietest.retrofit.ApiFactory;
 import com.cookietest.retrofit.BasicCallbackHandler;
-import com.cookietest.retrofit.CsvConverter;
 import com.cookietest.retrofit.DashBoardApi;
 import com.shinobicontrols.charts.ChartFragment;
 import com.shinobicontrols.charts.DataAdapter;
@@ -24,7 +23,6 @@ import com.shinobicontrols.charts.ShinobiChart;
 import com.shinobicontrols.charts.SimpleDataAdapter;
 
 import retrofit.Callback;
-import retrofit.RestAdapter;
 import retrofit.client.Response;
 
 public class MainActivity extends Activity {
@@ -83,15 +81,15 @@ public class MainActivity extends Activity {
         api.getTrafficSearchKeywords(mChartDataCallback);
     }
 
-    private final Callback<LinkedList<Data>> mChartDataCallback = new BasicCallbackHandler<LinkedList<Data>>(getActivity()) {
+    private final Callback<LinkedList<DataRow>> mChartDataCallback = new BasicCallbackHandler<LinkedList<DataRow>>(getActivity()) {
         @Override
-        public void success(LinkedList<Data> s, Response response) {
+        public void success(LinkedList<DataRow> s, Response response) {
             Toast.makeText(getActivity(), "result ok", Toast.LENGTH_SHORT).show();
             initChart(s);
         }
     };
 
-    private void initChart(LinkedList<Data> s) {
+    private void initChart(LinkedList<DataRow> s) {
         ChartFragment chartFragment = (ChartFragment) getFragmentManager().findFragmentById(R.id.chart);
         ShinobiChart shinobiChart = chartFragment.getShinobiChart();
 

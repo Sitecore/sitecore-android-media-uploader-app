@@ -6,7 +6,7 @@ import org.jsefa.csv.annotation.CsvDataType;
 import org.jsefa.csv.annotation.CsvField;
 
 @CsvDataType()
-public class Data {
+public class DataRow {
     @CsvField(pos = 1, format = "yyyyMMdd")
     private Date date;
 
