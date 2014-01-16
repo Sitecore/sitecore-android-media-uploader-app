@@ -6,4 +6,5 @@ public class Constants {
             "report=TrafficSearchKeywords&trafficType=&languages=&sites=&startDate=20080101&endDate=20121114&" +
             "addLastModified=true";
     public static final String COOKIE_HEADER = "Cookie";
+    public static final String CMS_URL = "http://mobiledev1ua1.dk.sitecore.net:72/";
 }
