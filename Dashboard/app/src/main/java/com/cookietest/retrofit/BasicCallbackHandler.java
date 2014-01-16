@@ -15,9 +15,6 @@ public abstract class BasicCallbackHandler<T> implements Callback<T> {
     }
 
     @Override
-    abstract public void success(T t, Response response);
-
-    @Override
     public void failure(RetrofitError error) {
         Toast.makeText(mContext, "Error : " + error.getCause(), Toast.LENGTH_LONG).show();
     }

@@ -3,13 +3,14 @@ package com.cookietest;
 import java.net.HttpCookie;
 import java.util.List;
 
-public class Tokens {
+public class Cookies {
+
     private String sitecoreUserticket;
     private String ASPXAUTH;
     private String ASP_NET_SessionId;
     private String CSRFCOOKIE;
 
-    public Tokens(List<HttpCookie> cookies){
+    public Cookies(List<HttpCookie> cookies){
         for (HttpCookie cookie: cookies){
             if (cookie.getName().equals("ASP.NET_SessionId")) {
                 ASP_NET_SessionId = cookie.getValue();
@@ -37,37 +38,6 @@ public class Tokens {
         builder.append("ASP.NET_SessionId").append("=").append(ASP_NET_SessionId).append(";");
         builder.append("__CSRFCOOKIE").append("=").append(CSRFCOOKIE).append(";");
         return builder.toString();
-    }
 
-    public void setSitecoreUserticket(String sitecoreUserticket) {
-        this.sitecoreUserticket = sitecoreUserticket;
-    }
-
-    public void setASPXAUTH(String ASPXAUTH) {
-        this.ASPXAUTH = ASPXAUTH;
-    }
-
-    public void setASP_NET_SessionId(String ASP_NET_SessionId) {
-        this.ASP_NET_SessionId = ASP_NET_SessionId;
-    }
-
-    public void setCSRFCOOKIE(String CSRFCOOKIE) {
-        this.CSRFCOOKIE = CSRFCOOKIE;
-    }
-
-    public String getSitecoreUserticket() {
-        return sitecoreUserticket;
-    }
-
-    public String getASPXAUTH() {
-        return ASPXAUTH;
-    }
-
-    public String getASP_NET_SessionId() {
-        return ASP_NET_SessionId;
-    }
-
-    public String getCSRFCOOKIE() {
-        return CSRFCOOKIE;
     }
 }

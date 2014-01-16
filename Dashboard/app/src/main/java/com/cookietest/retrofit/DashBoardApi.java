@@ -12,7 +12,6 @@ import retrofit.http.POST;
 
 public interface DashBoardApi {
 
-
     @GET(Constants.TRAFFIC_SEARCH_KEYWORDS_URL)
     void getTrafficSearchKeywords(Callback<LinkedList<Data>> listener);
 }

@@ -3,7 +3,6 @@ package com.cookietest;
 import android.app.Activity;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.util.Log;
 
 import java.util.Date;
 import java.util.Random;
