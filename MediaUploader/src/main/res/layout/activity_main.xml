@@ -1,11 +1,27 @@
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="#ffd9dee1"
+    android:orientation="vertical">
 
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="Main" />
-</FrameLayout>
+    <Button
+        android:id="@+id/button_upload"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Upload" />
+
+    <Button
+        android:id="@+id/button_Browse"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Browse" />
+
+    <Button
+        android:id="@+id/button_my_uploads"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="My uploads" />
+
+</LinearLayout>
 
 

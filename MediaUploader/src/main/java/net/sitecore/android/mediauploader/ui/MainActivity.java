@@ -1,8 +1,10 @@
-package net.sitecore.android.mediauploader;
+package net.sitecore.android.mediauploader.ui;
 
 import android.app.Activity;
 import android.os.Bundle;
 import android.view.Menu;
+
+import net.sitecore.android.mediauploader.R;
 
 public class MainActivity extends Activity {
 
