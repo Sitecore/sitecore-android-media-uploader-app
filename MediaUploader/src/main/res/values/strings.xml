@@ -1,18 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">Media Uploader</string>
 
-    <!-- Screen titles -->
-    <string name="title_upload_media">Upload Media</string>
-    <string name="title_media_browser">Media Browser</string>
-    <string name="title_my_uploads">My Uploads</string>
-    <string name="title_instances_manager">Instances Manager</string>
+    <string name="app_name">Android_Media_Uploader</string>
+    <string name="title_section1">Section 1</string>
+    <string name="title_section2">Section 2</string>
+    <string name="title_section3">Section 3</string>
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+    <string name="action_example">Example action</string>
+    <string name="action_settings">Settings</string>
 
-    <!-- Hints for widgets -->
-    <string name="hint_item_name">Item name</string>
-    <string name="hint_item_path">Item path</string>
-
-    <string name="toast_logged_in">Successfully logged in</string>
-    <string name="toast_login_failed">Failed to log in</string>
-
-    <!-- Other texts -->
 </resources>
