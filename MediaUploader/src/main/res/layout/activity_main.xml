@@ -2,25 +2,32 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#ffd9dee1"
+    android:gravity="center"
     android:orientation="vertical">
 
     <Button
         android:id="@+id/button_upload"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Upload" />
+        android:minWidth="200dp"
+        android:text="Upload"
+        android:textColor="@android:color/black" />
 
     <Button
         android:id="@+id/button_Browse"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Browse" />
+        android:minWidth="200dp"
+        android:text="Browse"
+        android:textColor="@android:color/black" />
 
     <Button
         android:id="@+id/button_my_uploads"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="My uploads" />
+        android:minWidth="200dp"
+        android:text="My uploads"
+        android:textColor="@android:color/black" />
 
 </LinearLayout>
 

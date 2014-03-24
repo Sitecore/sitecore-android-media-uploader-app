@@ -10,4 +10,8 @@
     <string name="action_example">Example action</string>
     <string name="action_settings">Settings</string>
 
+    <!-- Hints for widgets -->
+    <string name="hint_item_name">Item name</string>
+    <string name="hint_item_path">Item path</string>
+
 </resources>

@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fillViewport="true">
+
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="300dp">
+
+            <ImageView
+                android:id="@+id/image_preview"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="#666666"
+                android:scaleType="centerCrop" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                android:background="#33ffffff"
+                android:divider="?android:attr/dividerVertical"
+                android:dividerPadding="12dp"
+                android:orientation="horizontal"
+                android:showDividers="middle">
+
+                <Button
+                    android:id="@+id/button_upload_camera"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:drawableLeft="@drawable/ic_menu_camera"
+                    android:paddingLeft="24dp"
+                    android:text="From camera"
+                    android:textColor="@android:color/white" />
+
+                <Button
+                    android:id="@+id/button_upload_gallery"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:drawableLeft="@drawable/ic_menu_gallery"
+                    android:paddingLeft="24dp"
+                    android:text="From gallery"
+                    android:textColor="@android:color/white" />
+            </LinearLayout>
+        </RelativeLayout>
+
+        <EditText
+            android:id="@+id/edit_item_name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/hint_item_name"
+            android:imeOptions="actionDone"
+            android:inputType="text|textAutoComplete" />
+
+        <EditText
+            android:id="@+id/edit_item_path"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:focusable="false"
+            android:hint="@string/hint_item_path"
+            android:imeOptions="actionDone"
+            android:inputType="text"
+            android:text="/sitecore/media library" />
+
+        <CheckBox
+            android:id="@+id/checkbox_upload_later"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Upload later" />
+
+
+    </LinearLayout>
+</ScrollView>

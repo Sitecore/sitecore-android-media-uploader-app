@@ -48,4 +48,6 @@ dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
     compile 'net.sitecore.android.sdk:sitecore-api-android:2.0@aar'
     compile 'net.sitecore.android.sdk:sitecore-ui-android:2.0@aar'
+    compile 'com.jakewharton:butterknife:4.0.1'
+    compile 'com.squareup.picasso:picasso:2.2.0'
 }

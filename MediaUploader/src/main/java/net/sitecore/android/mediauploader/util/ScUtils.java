@@ -3,6 +3,7 @@ package net.sitecore.android.mediauploader.util;
 import android.content.Context;
 
 import net.sitecore.android.mediauploader.R;
+import net.sitecore.android.sdk.api.DownloadMediaOptions;
 
 public class ScUtils {
 
@@ -16,7 +17,7 @@ public class ScUtils {
         else return template.equals(TEMPLATE_IMAGE);
     }
 
-    public static String getMediaDownloadUrl(Context context, String itemId, MediaParamsBuilder params) {
+    public static String getMediaDownloadUrl(Context context, String itemId, DownloadMediaOptions params) {
         return makeDownloadUrl(context, itemId).append(params.toString()).toString();
     }
 
