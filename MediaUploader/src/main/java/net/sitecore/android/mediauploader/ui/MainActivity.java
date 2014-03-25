@@ -14,6 +14,7 @@ import com.android.volley.VolleyError;
 
 import net.sitecore.android.mediauploader.R;
 import net.sitecore.android.mediauploader.model.Instance;
+import net.sitecore.android.mediauploader.ui.browser.BrowserActivity;
 import net.sitecore.android.mediauploader.ui.upload.UploadActivity;
 import net.sitecore.android.mediauploader.util.UploaderPrefs;
 import net.sitecore.android.mediauploader.util.Utils;
@@ -34,25 +35,10 @@ public class MainActivity extends Activity {
         Instance instance = new Instance("test", url, login, password, "/sitecore/media library");
         UploaderPrefs.from(this).setDefaultInstance(instance);
 
-        findViewById(R.id.button_Browse).setOnClickListener(new OnClickListener() {
+        findViewById(R.id.button_browse).setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-                new ScRequestQueue(getContentResolver()).add(ScApiSessionFactory.buildPublicKeyRequest(url,
-                        new Listener<ScPublicKey>() {
-                            @Override
-                            public void onResponse(ScPublicKey scPublicKey) {
-                                UploaderPrefs.from(MainActivity.this).saveKeyToPrefs(scPublicKey);
-                                Toast.makeText(MainActivity.this, "Public key received", Toast.LENGTH_LONG).show();
-                            }
-                        },
-                        new ErrorListener() {
-                            @Override
-                            public void onErrorResponse(VolleyError volleyError) {
-                                Toast.makeText(MainActivity.this, "Error: " + Utils.getMessageFromError(volleyError),
-                                        Toast.LENGTH_LONG).show();
-                            }
-                        }
-                ));
+                startActivity(new Intent(MainActivity.this, BrowserActivity.class));
             }
         });
 
@@ -60,6 +46,12 @@ public class MainActivity extends Activity {
             @Override
             public void onClick(View v) {
                 startActivity(new Intent(MainActivity.this, UploadActivity.class));
+            }
+        });
+
+        findViewById(R.id.button_my_uploads).setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
             }
         });
     }
