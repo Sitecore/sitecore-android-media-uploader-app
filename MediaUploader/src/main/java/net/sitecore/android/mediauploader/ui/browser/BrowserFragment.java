@@ -2,6 +2,7 @@ package net.sitecore.android.mediauploader.ui.browser;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,6 +12,7 @@ import android.widget.TextView;
 
 import net.sitecore.android.mediauploader.R;
 import net.sitecore.android.mediauploader.UploaderApp;
+import net.sitecore.android.mediauploader.ui.IntentExtras;
 import net.sitecore.android.mediauploader.util.ScUtils;
 import net.sitecore.android.sdk.api.DownloadMediaOptions.Builder;
 import net.sitecore.android.sdk.api.ScApiSession;
@@ -29,6 +31,18 @@ public class BrowserFragment extends ItemsGridBrowserFragment {
     @Override
     protected ItemViewBinder onCreateItemViewBinder() {
         return new StyledItemViewBinder();
+    }
+
+    @Override
+    public void onScItemClick(ScItem item) {
+        if (ScUtils.isImageTemplate(item.getTemplate())) {
+            Intent intent = new Intent(getActivity(), PreviewActivity.class);
+            intent.putExtra(IntentExtras.PARENT_ITEM_ID, item.getParentItemId());
+            intent.putExtra(IntentExtras.CURRENT_ITEM_ID, item.getId());
+            startActivity(intent);
+        } else {
+            super.onScItemClick(item);
+        }
     }
 
     @Override
