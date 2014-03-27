@@ -14,4 +14,12 @@
     <string name="hint_item_name">Item name</string>
     <string name="hint_item_path">Item path</string>
 
+    <string name="text_add_new_instance">Add new instance</string>
+
+    <string-array name="array_image_sizes">
+        <item>Small</item>
+        <item>Medium</item>
+        <item>Original</item>
+    </string-array>
+
 </resources>

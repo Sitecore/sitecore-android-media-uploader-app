@@ -18,7 +18,6 @@ public class UploaderPrefs {
     }
 
     public void setDefaultInstance(Instance instance) {
-        mPrefs.put(R.string.key_instance_name, instance.name);
         mPrefs.put(R.string.key_instance_url, instance.url);
         mPrefs.put(R.string.key_instance_login, instance.login);
         mPrefs.put(R.string.key_instance_password, instance.password);
@@ -31,12 +30,11 @@ public class UploaderPrefs {
     }
 
     public Instance getCurrentInstance() {
-        String name = mPrefs.getString(R.string.key_instance_name);
         String url = mPrefs.getString(R.string.key_instance_url);
         String login = mPrefs.getString(R.string.key_instance_login);
         String password = mPrefs.getString(R.string.key_instance_password);
         String rootFolder = mPrefs.getString(R.string.key_instance_root_folder);
-        return new Instance(name, url, login, password, rootFolder);
+        return new Instance(url, login, password, rootFolder);
     }
 
     public boolean isDefaultInstance(String instanceName) {

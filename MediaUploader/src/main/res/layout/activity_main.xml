@@ -26,7 +26,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:minWidth="200dp"
-        android:text="My uploads"
+        android:text="Retrieve public key"
         android:textColor="@android:color/black" />
 
 </LinearLayout>

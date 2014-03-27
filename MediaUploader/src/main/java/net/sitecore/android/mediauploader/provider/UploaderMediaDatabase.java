@@ -26,7 +26,6 @@ public class UploaderMediaDatabase extends SQLiteOpenHelper {
         db.execSQL("CREATE TABLE " + Tables.INSTANCES + " ("
                 + Instances._ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
                 + Instances.URL + " TEXT NOT NULL,"
-                + Instances.NAME + " TEXT NOT NULL,"
                 + Instances.LOGIN + " TEXT NOT NULL,"
                 + Instances.PASSWORD + " TEXT NOT NULL,"
                 + Instances.ROOT_FOLDER + " TEXT NOT NULL )");
