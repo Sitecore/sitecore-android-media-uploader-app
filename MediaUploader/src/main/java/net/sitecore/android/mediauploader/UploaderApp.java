@@ -83,10 +83,7 @@ public class UploaderApp extends Application {
             String login = mPrefs.getString(R.string.key_instance_login);
             String password = mPrefs.getString(R.string.key_instance_password);
             return ScApiSessionFactory.newSession(url, key, login, password);
-        } catch (InvalidKeySpecException e) {
-            LOGE(e);
-            throw new RuntimeException(e);
-        } catch (NoSuchAlgorithmException e) {
+        } catch (InvalidKeySpecException | NoSuchAlgorithmException e) {
             LOGE(e);
             throw new RuntimeException(e);
         }
