@@ -5,71 +5,61 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
-import android.view.View.OnClickListener;
+import android.widget.Button;
 
-import com.android.volley.Response.ErrorListener;
-import com.android.volley.Response.Listener;
-import com.android.volley.VolleyError;
+import javax.inject.Inject;
 
 import net.sitecore.android.mediauploader.R;
-import net.sitecore.android.mediauploader.model.Instance;
+import net.sitecore.android.mediauploader.UploaderApp;
 import net.sitecore.android.mediauploader.ui.browser.BrowserActivity;
 import net.sitecore.android.mediauploader.ui.settings.SettingsActivity;
 import net.sitecore.android.mediauploader.ui.upload.UploadActivity;
-import net.sitecore.android.mediauploader.util.UploaderPrefs;
-import net.sitecore.android.sdk.api.ScApiSessionFactory;
-import net.sitecore.android.sdk.api.ScPublicKey;
-import net.sitecore.android.sdk.api.ScRequestQueue;
+import net.sitecore.android.sdk.api.ScApiSession;
+
+import butterknife.ButterKnife;
+import butterknife.InjectView;
+import butterknife.OnClick;
 
 public class MainActivity extends Activity {
+
+    @Inject ScApiSession mApiSession;
+
+    @InjectView(R.id.button_upload) Button mUploadButton;
+    @InjectView(R.id.button_browse) Button mBrowseButton;
+    @InjectView(R.id.button_my_uploads) Button mMyUploadsButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        final String url = "http://mobiledev1ua1.dk.sitecore.net:722";
-        String login = "extranet\\creatorex";
-        String password = "creatorex";
-        Instance instance = new Instance(url, login, password, "/sitecore/media library");
-        UploaderPrefs.from(this).setDefaultInstance(instance);
+        ButterKnife.inject(this);
+        UploaderApp.from(this).inject(this);
 
-        findViewById(R.id.button_browse).setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                startActivity(new Intent(MainActivity.this, BrowserActivity.class));
-            }
-        });
-
-        findViewById(R.id.button_upload).setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                startActivity(new Intent(MainActivity.this, UploadActivity.class));
-            }
-        });
-
-        findViewById(R.id.button_my_uploads).setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                new ScRequestQueue(getContentResolver()).add(ScApiSessionFactory.buildPublicKeyRequest(url,
-                        new Listener<ScPublicKey>() {
-                            @Override
-                            public void onResponse(ScPublicKey scPublicKey) {
-                                UploaderPrefs.from(MainActivity.this).saveKeyToPrefs(scPublicKey);
-                            }
-                        },
-                        new ErrorListener() {
-                            @Override
-                            public void onErrorResponse(VolleyError volleyError) {
-                            }
-                        }
-                ));
-
-            }
-        });
+        if (mApiSession == null) {
+            // TODO: disable Upload and Browse
+            mUploadButton.setEnabled(false);
+            mBrowseButton.setEnabled(false);
+            mMyUploadsButton.setEnabled(false);
+        }
     }
 
+    @OnClick(R.id.button_upload)
+    public void onUploadClick() {
+        startActivity(new Intent(MainActivity.this, UploadActivity.class));
+    }
+
+    @OnClick(R.id.button_browse)
+    public void onBrowseClick() {
+        startActivity(new Intent(MainActivity.this, BrowserActivity.class));
+    }
+
+    @OnClick(R.id.button_my_uploads)
+    public void onMyUploadsClick() {
+
+    }
+
+    @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.main, menu);
         return true;

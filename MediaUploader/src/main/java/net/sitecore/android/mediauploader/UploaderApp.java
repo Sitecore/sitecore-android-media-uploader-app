@@ -26,6 +26,7 @@ import net.sitecore.android.sdk.api.internal.LogUtils;
 import net.sitecore.android.sdk.api.provider.ScItemsContract.Items;
 
 import butterknife.ButterKnife;
+import dagger.ObjectGraph;
 
 import static net.sitecore.android.sdk.api.internal.LogUtils.LOGE;
 
@@ -33,6 +34,8 @@ public class UploaderApp extends Application {
 
     private Picasso mImageLoader;
     private Prefs mPrefs;
+
+    private ObjectGraph mObjectGraph;
 
     public static UploaderApp from(Context context) {
         return (UploaderApp) context.getApplicationContext();
@@ -46,14 +49,12 @@ public class UploaderApp extends Application {
 
         if (!BuildConfig.DEBUG) {
             //TODO: add crashlytics
-//            Crashlytics.start(this);
+            // Crashlytics.start(this);
         }
 
         setUpLogging(BuildConfig.DEBUG);
-    }
 
-    public Picasso getImageLoader() {
-        return mImageLoader;
+        mObjectGraph = ObjectGraph.create(new UploaderAppModule(this));
     }
 
     private void setUpLogging(boolean isEnabled) {
@@ -63,6 +64,16 @@ public class UploaderApp extends Application {
         ButterKnife.setDebug(isEnabled);
     }
 
+    public void inject(Object o) {
+        mObjectGraph.inject(o);
+    }
+
+    @Deprecated
+    public Picasso getImageLoader() {
+        return mImageLoader;
+    }
+
+    @Deprecated
     public ScApiSession getSession() {
         try {
             String keyValue = mPrefs.getString(R.string.key_public_key_value);
@@ -81,6 +92,7 @@ public class UploaderApp extends Application {
         }
     }
 
+    /*
     public void cleanInstanceCacheAsync() {
         new AsyncQueryHandler(getContentResolver()) {
         }.startDelete(0, null, Items.CONTENT_URI, null, null);
@@ -104,5 +116,5 @@ public class UploaderApp extends Application {
         UploaderPrefs.from(this).setDefaultInstance(newInstance);
         UploaderApp.from(this).updateInstancePublicKeyAsync();
         UploaderApp.from(this).cleanInstanceCacheAsync();
-    }
+    }*/
 }
