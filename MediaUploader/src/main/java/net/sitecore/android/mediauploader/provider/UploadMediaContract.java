@@ -37,9 +37,9 @@ public class UploadMediaContract {
 
             int _ID = 0;
             int URL = 1;
-            int LOGIN = 3;
-            int PASSWORD = 4;
-            int ROOT_FOLDER = 5;
+            int LOGIN = 2;
+            int PASSWORD = 3;
+            int ROOT_FOLDER = 4;
         }
     }
 

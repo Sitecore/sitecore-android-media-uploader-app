@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <EditText
+        android:id="@+id/instance_url"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Instance URL"
+        android:imeOptions="actionNext"
+        android:inputType="textUri"
+        android:singleLine="true"
+        android:text="http://mobiledev1ua1.dk.sitecore.net:722" />
+
+    <EditText
+        android:id="@+id/instance_login"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Domain\\Username"
+        android:imeOptions="actionNext"
+        android:inputType="textPersonName"
+        android:singleLine="true"
+        android:text="extranet\\creatorex" />
+
+    <EditText
+        android:id="@+id/instance_password"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Password"
+        android:imeOptions="actionNext"
+        android:inputType="textPassword"
+        android:singleLine="true"
+        android:text="creatorex" />
+
+    <EditText
+        android:id="@+id/instance_root_folder"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:editable="false"
+        android:hint="Root media folder"
+        android:imeOptions="actionDone"
+        android:singleLine="true"
+        android:text="/sitecore/media library" />
+</LinearLayout>

@@ -24,6 +24,7 @@
         <activity android:name=".ui.browser.BrowserActivity" />
         <activity android:name=".ui.browser.PreviewActivity" />
         <activity android:name=".ui.settings.SettingsActivity" />
+        <activity android:name=".ui.settings.InstanceActivity" />
 
         <provider
             android:name="net.sitecore.android.sdk.api.provider.ScItemsProvider"

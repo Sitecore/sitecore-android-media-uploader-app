@@ -2,21 +2,34 @@
 
 <net.sitecore.android.mediauploader.ui.settings.CheckableRelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:descendantFocusability="blocksDescendants">
+    android:layout_height="wrap_content"
+    android:descendantFocusability="blocksDescendants"
+
+    android:orientation="horizontal">
 
     <TextView
         android:id="@+id/text_instance_url"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
-        android:layout_centerVertical="true" />
+        android:layout_gravity="center_vertical"
+        android:layout_weight="5"
+        android:singleLine="false"
+        android:text="Some instanceSome instanceSome instanceSome instanceSome instance" />
 
     <RadioButton
-        android:id="@+id/radio_button_instance"
-        android:layout_width="wrap_content"
+        android:id="@+id/radio_button_default_instance"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_alignParentRight="true"
-        android:layout_centerVertical="true"
+        android:layout_gravity="center_vertical"
+        android:layout_weight="0.7"
         android:clickable="false" />
+
+    <ImageButton
+        android:id="@+id/button_edit_instance"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
+        android:layout_weight="1"
+        android:background="@android:color/transparent"
+        android:src="@drawable/ic_edit_instance" />
 </net.sitecore.android.mediauploader.ui.settings.CheckableRelativeLayout>

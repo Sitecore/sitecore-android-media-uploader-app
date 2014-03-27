@@ -3,6 +3,7 @@ package net.sitecore.android.mediauploader.ui.settings;
 import android.app.Activity;
 import android.app.LoaderManager.LoaderCallbacks;
 import android.content.CursorLoader;
+import android.content.Intent;
 import android.content.Loader;
 import android.database.Cursor;
 import android.os.Bundle;
@@ -14,10 +15,13 @@ import android.widget.ListView;
 
 import net.sitecore.android.mediauploader.R;
 import net.sitecore.android.mediauploader.provider.UploadMediaContract.Instances;
+import net.sitecore.android.mediauploader.provider.UploadMediaContract.Instances.Query;
 import net.sitecore.android.mediauploader.ui.instancemanager.InstancesListAdapter;
+import net.sitecore.android.mediauploader.ui.instancemanager.InstancesListAdapter.OnEditInstanceListener;
 
-public class SettingsActivity extends Activity implements LoaderCallbacks<Cursor> {
+public class SettingsActivity extends Activity implements LoaderCallbacks<Cursor>, OnEditInstanceListener {
     private ListView mList;
+    private InstancesListAdapter mAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,8 +36,10 @@ public class SettingsActivity extends Activity implements LoaderCallbacks<Cursor
         footerView.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-//                startActivity(new Intent(SettingsActivity.this, EditInstanceActivity.class));
+                startActivity(new Intent(SettingsActivity.this, InstanceActivity.class));
             }
+
+            ;
         });
 
         mList.addFooterView(footerView);
@@ -59,11 +65,21 @@ public class SettingsActivity extends Activity implements LoaderCallbacks<Cursor
         } else {
             findViewById(R.id.empty_text).setVisibility(View.GONE);
         }
-        InstancesListAdapter adapter = new InstancesListAdapter(this, data);
-        mList.setAdapter(adapter);
+        mAdapter = new InstancesListAdapter(this, data, this);
+        mList.setAdapter(mAdapter);
     }
 
     @Override
     public void onLoaderReset(Loader<Cursor> loader) {
+    }
+
+    @Override
+    public void onInstanceSelected(int position) {
+        Cursor c = mAdapter.getCursor();
+        c.moveToPosition(position);
+
+        Intent intent = new Intent(SettingsActivity.this, InstanceActivity.class);
+        intent.setData(Instances.buildInstanceUri(c.getString(Query._ID)));
+        startActivity(intent);
     }
 }

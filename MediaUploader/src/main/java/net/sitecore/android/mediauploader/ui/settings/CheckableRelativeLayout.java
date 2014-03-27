@@ -3,12 +3,12 @@ package net.sitecore.android.mediauploader.ui.settings;
 import android.content.Context;
 import android.util.AttributeSet;
 import android.widget.Checkable;
+import android.widget.LinearLayout;
 import android.widget.RadioButton;
-import android.widget.RelativeLayout;
 
 import net.sitecore.android.mediauploader.R;
 
-public class CheckableRelativeLayout extends RelativeLayout implements Checkable {
+public class CheckableRelativeLayout extends LinearLayout implements Checkable {
     private RadioButton radioButton;
 
     public CheckableRelativeLayout(Context context) {
@@ -26,7 +26,7 @@ public class CheckableRelativeLayout extends RelativeLayout implements Checkable
     @Override
     protected void onFinishInflate() {
         super.onFinishInflate();
-        radioButton = (RadioButton) findViewById(R.id.radio_button_instance);
+        radioButton = (RadioButton) findViewById(R.id.radio_button_default_instance);
     }
 
     @Override

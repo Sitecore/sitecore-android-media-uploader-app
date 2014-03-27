@@ -4,8 +4,11 @@ import android.content.Context;
 import android.database.Cursor;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.CursorAdapter;
+import android.widget.ImageButton;
+import android.widget.RadioButton;
 import android.widget.TextView;
 
 import net.sitecore.android.mediauploader.R;
@@ -15,9 +18,14 @@ import butterknife.ButterKnife;
 import butterknife.InjectView;
 
 public class InstancesListAdapter extends CursorAdapter {
+    private OnEditInstanceListener mOnEditInstanceListener;
 
-    public InstancesListAdapter(Context context, Cursor c) {
+    public interface OnEditInstanceListener {
+        void onInstanceSelected(int position);
+    }
+    public InstancesListAdapter(Context context, Cursor c, OnEditInstanceListener onEditInstanceListener) {
         super(context, c, true);
+        mOnEditInstanceListener = onEditInstanceListener;
     }
 
     @Override
@@ -36,10 +44,18 @@ public class InstancesListAdapter extends CursorAdapter {
 
         String url = c.getString(c.getColumnIndex(Instances.URL));
         holder.instanceUrl.setText(url);
+        holder.editButton.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mOnEditInstanceListener.onInstanceSelected(c.getPosition());
+            }
+        });
     }
 
     class ViewHolder {
         @InjectView(R.id.text_instance_url) TextView instanceUrl;
+        @InjectView(R.id.radio_button_default_instance) RadioButton defaultInstance;
+        @InjectView(R.id.button_edit_instance) ImageButton editButton;
 
         ViewHolder(View parent) {
             ButterKnife.inject(this, parent);
