@@ -14,7 +14,9 @@ import net.sitecore.android.mediauploader.ui.MainActivity;
 import net.sitecore.android.mediauploader.ui.browser.BrowserActivity;
 import net.sitecore.android.mediauploader.ui.browser.BrowserFragment.BrowserItemViewBinder;
 import net.sitecore.android.mediauploader.ui.settings.CreateEditInstanceActivity;
+import net.sitecore.android.mediauploader.ui.upload.UploadActivity;
 import net.sitecore.android.mediauploader.util.Prefs;
+import net.sitecore.android.mediauploader.util.UploaderPrefs;
 import net.sitecore.android.sdk.api.ScApiSession;
 import net.sitecore.android.sdk.api.ScApiSessionFactory;
 import net.sitecore.android.sdk.api.ScPublicKey;
@@ -31,7 +33,8 @@ import static net.sitecore.android.sdk.api.internal.LogUtils.LOGE;
                 MainActivity.class,
                 BrowserActivity.class,
                 BrowserItemViewBinder.class,
-                CreateEditInstanceActivity.class
+                CreateEditInstanceActivity.class,
+                UploadActivity.class
         }
 )
 public final class UploaderAppModule {
@@ -53,6 +56,10 @@ public final class UploaderAppModule {
 
     @Provides @Singleton Prefs providePrefs() {
         return Prefs.from(mApp);
+    }
+
+    @Provides @Singleton UploaderPrefs provideUploaderPrefs() {
+        return UploaderPrefs.from(mApp);
     }
 
     @Provides @Singleton Resources provideResources() {
