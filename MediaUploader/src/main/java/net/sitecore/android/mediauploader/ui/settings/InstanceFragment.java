@@ -47,19 +47,19 @@ public class InstanceFragment extends Fragment {
 
         String url = mInstanceUrl.getText().toString();
         if (TextUtils.isEmpty(url) || !URLUtil.isValidUrl(url)) {
-            mInstanceUrl.setError("Please enter valid CMS Instance url");
+            mInstanceUrl.setError(getString(R.string.text_wrong_instance_url_message));
             valid = false;
         }
 
         String login = mInstanceLogin.getText().toString();
         if (TextUtils.isEmpty(login)) {
-            mInstanceLogin.setError("Please enter valid login");
+            mInstanceLogin.setError(getString(R.string.text_wrong_instance_login_message));
             valid = false;
         }
 
         String password = mInstancePassword.getText().toString();
         if (TextUtils.isEmpty(password)) {
-            mInstancePassword.setError("Please enter valid password");
+            mInstancePassword.setError(getString(R.string.text_wrong_instance_password_message));
             valid = false;
         }
 
@@ -70,12 +70,12 @@ public class InstanceFragment extends Fragment {
         return valid;
     }
 
-    public void setInstance(Instance instance) {
+    public void setSourceInstance(Instance instance) {
         mInstance = instance;
         initViews();
     }
 
-    public Instance getInstance() {
+    public Instance getEnteredInstance() {
         String url = mInstanceUrl.getText().toString();
         String login = mInstanceLogin.getText().toString();
         String password = mInstancePassword.getText().toString();
@@ -90,16 +90,13 @@ public class InstanceFragment extends Fragment {
         mInstanceRootFolder.setText(mInstance.rootFolder);
     }
 
-    @SuppressWarnings("unused")
-    @OnFocusChanged(R.id.instance_root_folder)
-    void focusChanged() {
+    @OnFocusChanged(R.id.instance_root_folder) void focusChanged() {
         if (mInstanceRootFolder.hasFocus()) {
             showFolderSelectionDialog();
         }
     }
 
-    @OnClick(R.id.instance_root_folder)
-    void clicked() {
+    @OnClick(R.id.instance_root_folder) void clicked() {
         showFolderSelectionDialog();
     }
 
@@ -122,7 +119,7 @@ public class InstanceFragment extends Fragment {
         ErrorListener errorListener = new ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                Toast.makeText(getActivity(), "Connection error", Toast.LENGTH_LONG);
+                Toast.makeText(getActivity(), getString(R.string.text_connection_error), Toast.LENGTH_LONG);
             }
         };
 

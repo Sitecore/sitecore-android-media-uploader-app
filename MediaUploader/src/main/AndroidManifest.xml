@@ -24,7 +24,11 @@
         <activity android:name=".ui.browser.BrowserActivity" />
         <activity android:name=".ui.browser.PreviewActivity" />
         <activity android:name=".ui.settings.SettingsActivity" />
-        <activity android:name=".ui.settings.InstanceActivity" />
+        <activity android:name=".ui.settings.CreateEditInstanceActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".ui.settings.SettingsActivity" />
+        </activity>
 
         <provider
             android:name="net.sitecore.android.sdk.api.provider.ScItemsProvider"

@@ -13,6 +13,7 @@ import com.squareup.picasso.Picasso;
 import net.sitecore.android.mediauploader.ui.MainActivity;
 import net.sitecore.android.mediauploader.ui.browser.BrowserActivity;
 import net.sitecore.android.mediauploader.ui.browser.BrowserFragment.BrowserItemViewBinder;
+import net.sitecore.android.mediauploader.ui.settings.CreateEditInstanceActivity;
 import net.sitecore.android.mediauploader.util.Prefs;
 import net.sitecore.android.sdk.api.ScApiSession;
 import net.sitecore.android.sdk.api.ScApiSessionFactory;
@@ -21,7 +22,6 @@ import net.sitecore.android.sdk.api.ScRequestQueue;
 
 import dagger.Module;
 import dagger.Provides;
-import org.w3c.dom.Text;
 
 import static net.sitecore.android.sdk.api.internal.LogUtils.LOGE;
 
@@ -30,7 +30,8 @@ import static net.sitecore.android.sdk.api.internal.LogUtils.LOGE;
         injects = {
                 MainActivity.class,
                 BrowserActivity.class,
-                BrowserItemViewBinder.class
+                BrowserItemViewBinder.class,
+                CreateEditInstanceActivity.class
         }
 )
 public final class UploaderAppModule {

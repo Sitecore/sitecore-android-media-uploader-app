@@ -15,6 +15,15 @@
     <string name="hint_item_path">Item path</string>
 
     <string name="text_add_new_instance">Add new instance</string>
+    <string name="text_instance_exists">Instance already exists</string>
+    <string name="text_instance_is_valid">Entered instance is valid</string>
+    <string name="text_instance_is_not_valid">Entered instance is not valid</string>
+    <string name="text_edit_instance_title">Edit instance</string>
+    <string name="text_add_instance_title">Add instance</string>
+    <string name="text_wrong_instance_url_message">Please enter valid CMS Instance url</string>
+    <string name="text_wrong_instance_login_message">Please enter valid login</string>
+    <string name="text_wrong_instance_password_message">Please enter valid password</string>
+    <string name="text_connection_error">Connection error</string>
 
     <string-array name="array_image_sizes">
         <item>Small</item>

@@ -1,6 +1,7 @@
 package net.sitecore.android.mediauploader.ui.instancemanager;
 
 import android.content.Context;
+import android.content.Intent;
 import android.database.Cursor;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,19 +14,15 @@ import android.widget.TextView;
 
 import net.sitecore.android.mediauploader.R;
 import net.sitecore.android.mediauploader.provider.UploadMediaContract.Instances;
+import net.sitecore.android.mediauploader.provider.UploadMediaContract.Instances.Query;
+import net.sitecore.android.mediauploader.ui.settings.CreateEditInstanceActivity;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 
 public class InstancesListAdapter extends CursorAdapter {
-    private OnEditInstanceListener mOnEditInstanceListener;
-
-    public interface OnEditInstanceListener {
-        void onInstanceSelected(int position);
-    }
-    public InstancesListAdapter(Context context, Cursor c, OnEditInstanceListener onEditInstanceListener) {
+    public InstancesListAdapter(Context context, Cursor c) {
         super(context, c, true);
-        mOnEditInstanceListener = onEditInstanceListener;
     }
 
     @Override
@@ -47,7 +44,9 @@ public class InstancesListAdapter extends CursorAdapter {
         holder.editButton.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-                mOnEditInstanceListener.onInstanceSelected(c.getPosition());
+                Intent intent = new Intent(context, CreateEditInstanceActivity.class);
+                intent.setData(Instances.buildInstanceUri(c.getString(Query._ID)));
+                context.startActivity(intent);
             }
         });
     }

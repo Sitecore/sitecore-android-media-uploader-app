@@ -15,11 +15,9 @@ import android.widget.ListView;
 
 import net.sitecore.android.mediauploader.R;
 import net.sitecore.android.mediauploader.provider.UploadMediaContract.Instances;
-import net.sitecore.android.mediauploader.provider.UploadMediaContract.Instances.Query;
 import net.sitecore.android.mediauploader.ui.instancemanager.InstancesListAdapter;
-import net.sitecore.android.mediauploader.ui.instancemanager.InstancesListAdapter.OnEditInstanceListener;
 
-public class SettingsActivity extends Activity implements LoaderCallbacks<Cursor>, OnEditInstanceListener {
+public class SettingsActivity extends Activity implements LoaderCallbacks<Cursor> {
     private ListView mList;
     private InstancesListAdapter mAdapter;
 
@@ -32,11 +30,11 @@ public class SettingsActivity extends Activity implements LoaderCallbacks<Cursor
         mList.setChoiceMode(AbsListView.CHOICE_MODE_SINGLE);
 
         Button footerView = new Button(this);
-        footerView.setText(getString(R.string.text_add_new_instance));
+        footerView.setText(R.string.text_add_new_instance);
         footerView.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(SettingsActivity.this, InstanceActivity.class));
+                startActivity(new Intent(SettingsActivity.this, CreateEditInstanceActivity.class));
             }
 
             ;
@@ -65,21 +63,11 @@ public class SettingsActivity extends Activity implements LoaderCallbacks<Cursor
         } else {
             findViewById(R.id.empty_text).setVisibility(View.GONE);
         }
-        mAdapter = new InstancesListAdapter(this, data, this);
+        mAdapter = new InstancesListAdapter(this, data);
         mList.setAdapter(mAdapter);
     }
 
     @Override
     public void onLoaderReset(Loader<Cursor> loader) {
-    }
-
-    @Override
-    public void onInstanceSelected(int position) {
-        Cursor c = mAdapter.getCursor();
-        c.moveToPosition(position);
-
-        Intent intent = new Intent(SettingsActivity.this, InstanceActivity.class);
-        intent.setData(Instances.buildInstanceUri(c.getString(Query._ID)));
-        startActivity(intent);
     }
 }
