@@ -35,12 +35,12 @@
         android:text="creatorex" />
 
     <EditText
-        android:id="@+id/instance_root_folder"
+        android:id="@+id/instance_database"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:editable="false"
-        android:hint="Root media folder"
+        android:hint="Database"
         android:imeOptions="actionDone"
         android:singleLine="true"
-        android:text="/sitecore/media library" />
+        android:text="web" />
 </LinearLayout>

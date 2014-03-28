@@ -17,11 +17,12 @@ public class UploaderPrefs {
         return new UploaderPrefs(context);
     }
 
-    public void setDefaultInstance(Instance instance) {
-        mPrefs.put(R.string.key_instance_url, instance.url);
-        mPrefs.put(R.string.key_instance_login, instance.login);
-        mPrefs.put(R.string.key_instance_password, instance.password);
-        mPrefs.put(R.string.key_instance_root_folder, instance.rootFolder);
+    public void setDefaultInstance(Instance instance, int instanceID) {
+        mPrefs.put(R.string.key_instance_url, instance.getUrl());
+        mPrefs.put(R.string.key_instance_login, instance.getLogin());
+        mPrefs.put(R.string.key_instance_password, instance.getPassword());
+        mPrefs.put(R.string.key_instance_root_folder, instance.getRootFolder());
+        mPrefs.put(R.string.key_instance_id, instanceID);
     }
 
     public void saveKeyToPrefs(ScPublicKey key) {
@@ -29,12 +30,17 @@ public class UploaderPrefs {
         mPrefs.put(R.string.key_public_key_value, keyValue);
     }
 
+    public int getCurrentInstanceID() {
+        return mPrefs.getInt(R.string.key_instance_id, -1);
+    }
+
     public Instance getCurrentInstance() {
         String url = mPrefs.getString(R.string.key_instance_url);
         String login = mPrefs.getString(R.string.key_instance_login);
         String password = mPrefs.getString(R.string.key_instance_password);
         String rootFolder = mPrefs.getString(R.string.key_instance_root_folder);
-        return new Instance(url, login, password, rootFolder);
+        String database = mPrefs.getString(R.string.key_instance_root_folder);
+        return new Instance(url, login, password, rootFolder, database);
     }
 
     public boolean isDefaultInstance(String instanceName) {

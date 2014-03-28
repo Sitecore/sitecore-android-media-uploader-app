@@ -174,9 +174,9 @@ public class UploadActivity extends Activity implements ErrorListener, OnClickLi
         Instance instance = UploaderPrefs.from(this).getCurrentInstance();
 
         final ContentValues values = new ContentValues();
-        values.put(Uploads.URL, instance.url);
-        values.put(Uploads.USERNAME, instance.login);
-        values.put(Uploads.PASSWORD, instance.password);
+        values.put(Uploads.URL, instance.getUrl());
+        values.put(Uploads.USERNAME, instance.getLogin());
+        values.put(Uploads.PASSWORD, instance.getPassword());
         values.put(Uploads.ITEM_NAME, mEditName.getText().toString());
         values.put(Uploads.ITEM_PATH, mEditPath.getText().toString());
         values.put(Uploads.FILE_URI, mImageUri.toString());

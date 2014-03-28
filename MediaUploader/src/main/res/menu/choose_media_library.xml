@@ -1,0 +1,11 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context="net.sitecore.android.mediauploader.ui.MainActivity">
+
+    <item
+        android:id="@+id/save"
+        android:icon="@drawable/ic_menu_save"
+        android:orderInCategory="100"
+        android:showAsAction="always"
+        android:title="@string/menu_save_text" />
+</menu>

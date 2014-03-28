@@ -33,9 +33,19 @@ public class Prefs {
         return mPreferences.getBoolean(key, defaultValue);
     }
 
+    public int getInt(int keyResourceId, int defaultValue) {
+        final String key = mContext.getString(keyResourceId);
+        return mPreferences.getInt(key, defaultValue);
+    }
+
     public void put(int stringResourceId, String value) {
         String key = mContext.getString(stringResourceId);
         mPreferences.edit().putString(key, value).commit();
+    }
+
+    public void put(int stringResourceId, int value) {
+        String key = mContext.getString(stringResourceId);
+        mPreferences.edit().putInt(key, value).commit();
     }
 
     public void put(int stringResourceId, boolean value) {

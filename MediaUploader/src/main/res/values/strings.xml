@@ -24,6 +24,9 @@
     <string name="text_wrong_instance_login_message">Please enter valid login</string>
     <string name="text_wrong_instance_password_message">Please enter valid password</string>
     <string name="text_connection_error">Connection error</string>
+    <string name="key_instance_id">instance_id</string>
+    <string name="menu_save_text">Save</string>
+    <string name="text_wrong_instance_database_message">Please enter valid database</string>
 
     <string-array name="array_image_sizes">
         <item>Small</item>

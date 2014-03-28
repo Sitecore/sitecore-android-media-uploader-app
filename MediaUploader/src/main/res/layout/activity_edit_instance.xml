@@ -12,21 +12,24 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:weightSum="2">
 
-        <Button
-            android:id="@+id/button_validate"
+        <ImageButton
+            android:id="@+id/button_delete_instance"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="Validate" />
+            android:background="@android:color/holo_red_dark"
+            android:src="@drawable/ic_delete" />
 
         <Button
-            android:id="@+id/button_save"
+            android:id="@+id/button_next"
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:layout_weight="1"
-            android:text="Save" />
+            android:background="@android:color/holo_blue_dark"
+            android:text="Next" />
 
     </LinearLayout>
 

@@ -29,6 +29,11 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".ui.settings.SettingsActivity" />
         </activity>
+        <activity android:name=".ui.settings.ChooseMediaFolderActivity" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".ui.settings.SettingsActivity" />
+        </activity>
 
         <provider
             android:name="net.sitecore.android.sdk.api.provider.ScItemsProvider"
