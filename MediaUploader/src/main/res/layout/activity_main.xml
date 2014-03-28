@@ -10,24 +10,22 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:minWidth="200dp"
-        android:text="Upload"
-        android:textColor="@android:color/black" />
+        android:text="Upload" />
 
     <Button
         android:id="@+id/button_browse"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:minWidth="200dp"
-        android:text="Browse"
-        android:textColor="@android:color/black" />
+        android:text="Browse" />
 
     <Button
+        android:background="@drawable/button_blue"
         android:id="@+id/button_my_uploads"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:minWidth="200dp"
-        android:text="Retrieve public key"
-        android:textColor="@android:color/black" />
+        android:text="My Uploads" />
 
 </LinearLayout>
 
