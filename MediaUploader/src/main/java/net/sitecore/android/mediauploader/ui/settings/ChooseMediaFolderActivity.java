@@ -167,7 +167,7 @@ public class ChooseMediaFolderActivity extends Activity implements LoaderCallbac
         switch (loader.getId()) {
             case READ_NAMES_ACTION: {
                 if (data.moveToFirst()) {
-                    Toast.makeText(this, R.string.text_instance_exists, Toast.LENGTH_LONG).show();
+                    Toast.makeText(this, R.string.toast_instance_exists, Toast.LENGTH_LONG).show();
                 } else {
                     mPrefs.setSelectedInstance(mInstance);
                     saveInstanceToDB(mInstance);

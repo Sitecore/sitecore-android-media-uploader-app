@@ -7,5 +7,5 @@
         android:icon="@drawable/ic_menu_save"
         android:orderInCategory="100"
         android:showAsAction="always"
-        android:title="@string/menu_save_text" />
+        android:title="@string/menu_save" />
 </menu>

@@ -36,25 +36,25 @@ public class InstanceFragment extends Fragment {
 
         String url = mInstanceUrl.getText().toString();
         if (TextUtils.isEmpty(url) || !URLUtil.isValidUrl(url)) {
-            mInstanceUrl.setError(getString(R.string.text_wrong_instance_url_message));
+            mInstanceUrl.setError(getString(R.string.error_wrong_instance_url));
             valid = false;
         }
 
         String login = mInstanceLogin.getText().toString();
         if (TextUtils.isEmpty(login)) {
-            mInstanceLogin.setError(getString(R.string.text_wrong_instance_login_message));
+            mInstanceLogin.setError(getString(R.string.error_wrong_instance_login));
             valid = false;
         }
 
         String password = mInstancePassword.getText().toString();
         if (TextUtils.isEmpty(password)) {
-            mInstancePassword.setError(getString(R.string.text_wrong_instance_password_message));
+            mInstancePassword.setError(getString(R.string.error_wrong_instance_password));
             valid = false;
         }
 
         String database = mInstanceDatabase.getText().toString();
         if (TextUtils.isEmpty(database)) {
-            mInstanceDatabase.setError(getString(R.string.text_wrong_instance_database_message));
+            mInstanceDatabase.setError(getString(R.string.error_wrong_instance_database));
             valid = false;
         }
 

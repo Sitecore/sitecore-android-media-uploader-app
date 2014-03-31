@@ -2,35 +2,36 @@
 <resources>
 
     <string name="app_name">Media Uploader</string>
-    <string name="title_section1">Section 1</string>
-    <string name="title_section2">Section 2</string>
-    <string name="title_section3">Section 3</string>
-    <string name="navigation_drawer_open">Open navigation drawer</string>
-    <string name="navigation_drawer_close">Close navigation drawer</string>
-    <string name="action_example">Example action</string>
-    <string name="action_settings">Settings</string>
+
+    <!-- Screen titles -->
+    <string name="title_upload">Upload Media</string>
+    <string name="title_edit_instance">Edit instance</string>
+    <string name="title_add_instance">Add instance</string>
+
+    <!-- Menu labels -->
+    <string name="menu_settings">Settings</string>
+    <string name="menu_save">Save</string>
 
     <!-- Hints for widgets -->
     <string name="hint_item_name">Item name</string>
     <string name="hint_item_path">Item path</string>
 
-    <string name="text_add_new_instance">Add new instance</string>
-    <string name="text_instance_exists">Instance already exists</string>
-    <string name="text_instance_is_valid">Entered instance is valid</string>
-    <string name="text_instance_is_not_valid">Entered instance is not valid</string>
-    <string name="text_edit_instance_title">Edit instance</string>
-    <string name="text_add_instance_title">Add instance</string>
-    <string name="text_wrong_instance_url_message">Please enter valid CMS Instance url</string>
-    <string name="text_wrong_instance_login_message">Please enter valid login</string>
-    <string name="text_wrong_instance_password_message">Please enter valid password</string>
-    <string name="text_connection_error">Connection error</string>
-    <string name="title_upload">Upload Media</string>
-    <string name="dialog_select_image">Select image</string>
-    <string name="text_wrong_instance_database_message">Please enter valid database</string>
-    <string name="success_instance_delete">Instance deleted</string>
-    <string name="menu_save_text">Save</string>
+    <!-- error messages -->
+    <string name="error_wrong_instance_url">Please enter valid CMS Instance url</string>
+    <string name="error_wrong_instance_login">Please enter valid login</string>
+    <string name="error_wrong_instance_database">Please enter valid database</string>
+    <string name="error_wrong_instance_password">Please enter valid password</string>
 
-    <string-array name="array_image_sizes">
+    <!-- toast notifications -->
+    <string name="toast_instance_is_not_valid">Entered instance is not valid</string>
+    <string name="toast_instance_exists">Instance already exists</string>
+    <string name="toast_instance_deleted">Instance deleted</string>
+
+    <!-- Other texts -->
+    <string name="text_add_new_instance">Add new instance</string>
+    <string name="dialog_select_image">Select image</string>
+
+    <string-array name="image_sizes">
         <item>Small</item>
         <item>Medium</item>
         <item>Original</item>

@@ -62,10 +62,10 @@ public class CreateEditInstanceActivity extends Activity implements LoaderCallba
         mInstanceUri = getIntent().getData();
         if (mInstanceUri != null) {
             getLoaderManager().initLoader(READ_INSTANCES_ACTION, null, this);
-            setTitle(R.string.text_edit_instance_title);
+            setTitle(R.string.title_edit_instance);
         } else {
             mDeleteButton.setVisibility(View.INVISIBLE);
-            setTitle(R.string.text_add_instance_title);
+            setTitle(R.string.title_add_instance);
         }
 
         mInstanceFragment = (InstanceFragment) getFragmentManager().findFragmentById(R.id.instance_fragment);
@@ -87,7 +87,7 @@ public class CreateEditInstanceActivity extends Activity implements LoaderCallba
             new AsyncQueryHandler(getContentResolver()) {
                 @Override protected void onDeleteComplete(int token, Object cookie, int result) {
                     super.onDeleteComplete(token, cookie, result);
-                    Toast.makeText(CreateEditInstanceActivity.this, R.string.success_instance_delete,
+                    Toast.makeText(CreateEditInstanceActivity.this, R.string.toast_instance_deleted,
                             Toast.LENGTH_LONG).show();
                     if (mIsInstanceSelected) selectLastInstance();
                     finish();
@@ -172,7 +172,7 @@ public class CreateEditInstanceActivity extends Activity implements LoaderCallba
                     intent.putExtra(ChooseMediaFolderActivity.INSTANCE_KEY, enteredInstance);
                     startActivity(intent);
                 } else {
-                    Toast.makeText(CreateEditInstanceActivity.this, R.string.text_instance_is_not_valid,
+                    Toast.makeText(CreateEditInstanceActivity.this, R.string.toast_instance_is_not_valid,
                             Toast.LENGTH_LONG).show();
                 }
             }

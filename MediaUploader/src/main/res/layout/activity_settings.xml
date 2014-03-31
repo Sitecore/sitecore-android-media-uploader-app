@@ -1,5 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
-
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -15,7 +14,7 @@
         android:id="@+id/spinner_image_sizes"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:entries="@array/array_image_sizes" />
+        android:entries="@array/image_sizes" />
 
     <TextView
         android:id="@+id/empty_text"

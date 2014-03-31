@@ -38,6 +38,7 @@ import butterknife.InjectView;
 import static net.sitecore.android.sdk.api.internal.LogUtils.LOGE;
 
 public class SettingsActivity extends Activity implements LoaderCallbacks<Cursor> {
+
     @InjectView(R.id.list_instances) ListView mList;
     @InjectView(R.id.empty_text) TextView mEmptyView;
     @Inject UploaderPrefs mPrefs;
