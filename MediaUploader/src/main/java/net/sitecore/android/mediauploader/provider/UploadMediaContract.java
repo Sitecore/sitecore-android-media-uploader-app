@@ -18,10 +18,6 @@ public class UploadMediaContract {
         public static final String CONTENT_TYPE = CURSOR_DIR_BASE_TYPE + "/vnd.sitecore.instances";
         public static final String CONTENT_ITEM_TYPE = CURSOR_ITEM_BASE_TYPE + "/vnd.sitecore.instance";
 
-        public static String getItemId(Uri uri) {
-            return uri.getPathSegments().get(1);
-        }
-
         public static Uri buildInstanceUri(String instanceId) {
             return CONTENT_URI.buildUpon().appendPath(instanceId).build();
         }
@@ -37,7 +33,8 @@ public class UploadMediaContract {
                     Instances.LOGIN,
                     Instances.PASSWORD,
                     Instances.ROOT_FOLDER,
-                    Instances.DATABASE
+                    Instances.DATABASE,
+                    Instances.SELECTED
             };
 
             int _ID = 0;
@@ -46,6 +43,7 @@ public class UploadMediaContract {
             int PASSWORD = 3;
             int ROOT_FOLDER = 4;
             int DATABASE = 5;
+            int SELECTED = 6;
         }
     }
 
@@ -96,6 +94,7 @@ public class UploadMediaContract {
         String PASSWORD = "instance_password";
         String ROOT_FOLDER = "root_folder";
         String DATABASE = "database";
+        String SELECTED = "selected";
     }
 
     interface UploadColumns {

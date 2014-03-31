@@ -10,12 +10,14 @@ import java.security.spec.InvalidKeySpecException;
 
 import com.squareup.picasso.Picasso;
 
+import net.sitecore.android.mediauploader.model.Instance;
 import net.sitecore.android.mediauploader.ui.MainActivity;
 import net.sitecore.android.mediauploader.ui.browser.BrowserActivity;
 import net.sitecore.android.mediauploader.ui.browser.BrowserFragment.BrowserItemViewBinder;
 import net.sitecore.android.mediauploader.ui.settings.ChooseMediaFolderActivity;
 import net.sitecore.android.mediauploader.ui.settings.CreateEditInstanceActivity;
-import net.sitecore.android.mediauploader.util.Prefs;
+import net.sitecore.android.mediauploader.ui.settings.SettingsActivity;
+import net.sitecore.android.mediauploader.util.UploaderPrefs;
 import net.sitecore.android.sdk.api.ScApiSession;
 import net.sitecore.android.sdk.api.ScApiSessionFactory;
 import net.sitecore.android.sdk.api.ScPublicKey;
@@ -33,7 +35,8 @@ import static net.sitecore.android.sdk.api.internal.LogUtils.LOGE;
                 BrowserActivity.class,
                 BrowserItemViewBinder.class,
                 CreateEditInstanceActivity.class,
-                ChooseMediaFolderActivity.class
+                ChooseMediaFolderActivity.class,
+                SettingsActivity.class
         }
 )
 public final class UploaderAppModule {
@@ -53,8 +56,8 @@ public final class UploaderAppModule {
         return new ScRequestQueue(mApp.getContentResolver());
     }
 
-    @Provides @Singleton Prefs providePrefs() {
-        return Prefs.from(mApp);
+    @Provides @Singleton UploaderPrefs providePrefs() {
+        return UploaderPrefs.from(mApp);
     }
 
     @Provides @Singleton Resources provideResources() {
@@ -62,18 +65,19 @@ public final class UploaderAppModule {
     }
 
     // not @Singleton - may change after settings are changed.
-    @Provides ScApiSession provideApiSession(Prefs prefs) {
-        String keyValue = prefs.getString(R.string.key_public_key_value);
+    @Provides ScApiSession provideApiSession(UploaderPrefs prefs) {
+        String keyValue = prefs.getPublicKey();
         if (TextUtils.isEmpty(keyValue)) {
             return null;
         }
 
         try {
             ScPublicKey key = new ScPublicKey(keyValue);
+            Instance instance = prefs.getCurrentInstance();
 
-            String url = prefs.getString(R.string.key_instance_url);
-            String login = prefs.getString(R.string.key_instance_login);
-            String password = prefs.getString(R.string.key_instance_password);
+            String url = instance.getUrl();
+            String login = instance.getLogin();
+            String password = instance.getPassword();
 
             return ScApiSessionFactory.newSession(url, key, login, password);
         } catch (InvalidKeySpecException | NoSuchAlgorithmException e) {

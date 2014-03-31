@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<net.sitecore.android.mediauploader.ui.settings.CheckableRelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<net.sitecore.android.mediauploader.ui.settings.CheckableRelativeLayout
+    android:id="@+id/instance_list_items_container"
+    xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:descendantFocusability="blocksDescendants"
-
     android:orientation="horizontal">
 
     <TextView
@@ -17,7 +18,7 @@
         android:text="Some instanceSome instanceSome instanceSome instanceSome instance" />
 
     <RadioButton
-        android:id="@+id/radio_button_default_instance"
+        android:id="@+id/radio_button_selected_instance"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_gravity="center_vertical"

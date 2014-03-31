@@ -9,7 +9,6 @@ import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.CursorAdapter;
 import android.widget.ImageButton;
-import android.widget.RadioButton;
 import android.widget.TextView;
 
 import net.sitecore.android.mediauploader.R;
@@ -53,7 +52,6 @@ public class InstancesListAdapter extends CursorAdapter {
 
     class ViewHolder {
         @InjectView(R.id.text_instance_url) TextView instanceUrl;
-        @InjectView(R.id.radio_button_default_instance) RadioButton defaultInstance;
         @InjectView(R.id.button_edit_instance) ImageButton editButton;
 
         ViewHolder(View parent) {

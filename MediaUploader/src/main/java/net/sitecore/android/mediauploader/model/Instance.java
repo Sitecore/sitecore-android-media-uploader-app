@@ -15,14 +15,7 @@ public class Instance implements Parcelable {
     private String password;
     private String rootFolder;
     private String database;
-
-    public Instance(String url, String login, String password, String database, String rootFolder) {
-        this.url = url;
-        this.login = login;
-        this.password = password;
-        this.rootFolder = rootFolder;
-        this.database = database;
-    }
+    private boolean isSelected;
 
     public Instance() {
     }
@@ -67,6 +60,14 @@ public class Instance implements Parcelable {
         this.database = database;
     }
 
+    public boolean isSelected() {
+        return isSelected;
+    }
+
+    public void setSelected(boolean isSelected) {
+        this.isSelected = isSelected;
+    }
+
     public ContentValues toContentValues() {
         ContentValues values = new ContentValues();
         values.put(Instances.URL, url);
@@ -74,15 +75,17 @@ public class Instance implements Parcelable {
         values.put(Instances.PASSWORD, password);
         values.put(Instances.ROOT_FOLDER, rootFolder);
         values.put(Instances.DATABASE, database);
+        values.put(Instances.SELECTED, isSelected ? 1 : 0);
         return values;
     }
 
     public Instance(Cursor cursor) {
         this.url = cursor.getString(Query.URL);
-        this.login= cursor.getString(Query.LOGIN);
+        this.login = cursor.getString(Query.LOGIN);
         this.password = cursor.getString(Query.PASSWORD);
         this.rootFolder = cursor.getString(Query.ROOT_FOLDER);
         this.database = cursor.getString(Query.DATABASE);
+        this.isSelected = (cursor.getInt(Query.SELECTED) != 0);
     }
 
     @Override public int describeContents() {
@@ -95,6 +98,7 @@ public class Instance implements Parcelable {
         dest.writeString(this.password);
         dest.writeString(this.rootFolder);
         dest.writeString(this.database);
+        dest.writeByte(isSelected ? (byte) 1 : (byte) 0);
     }
 
     private Instance(Parcel in) {
@@ -103,6 +107,7 @@ public class Instance implements Parcelable {
         this.password = in.readString();
         this.rootFolder = in.readString();
         this.database = in.readString();
+        this.isSelected = in.readByte() != 0;
     }
 
     public static Creator<Instance> CREATOR = new Creator<Instance>() {

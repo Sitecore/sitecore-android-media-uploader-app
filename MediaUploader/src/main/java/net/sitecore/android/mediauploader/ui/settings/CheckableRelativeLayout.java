@@ -26,7 +26,7 @@ public class CheckableRelativeLayout extends LinearLayout implements Checkable {
     @Override
     protected void onFinishInflate() {
         super.onFinishInflate();
-        radioButton = (RadioButton) findViewById(R.id.radio_button_default_instance);
+        radioButton = (RadioButton) findViewById(R.id.radio_button_selected_instance);
     }
 
     @Override

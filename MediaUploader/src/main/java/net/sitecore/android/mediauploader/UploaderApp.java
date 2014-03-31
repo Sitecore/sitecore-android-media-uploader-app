@@ -1,29 +1,20 @@
 package net.sitecore.android.mediauploader;
 
 import android.app.Application;
-import android.content.AsyncQueryHandler;
 import android.content.Context;
 
 import java.security.NoSuchAlgorithmException;
 import java.security.spec.InvalidKeySpecException;
 
-import com.android.volley.Request;
-import com.android.volley.Response.ErrorListener;
-import com.android.volley.Response.Listener;
 import com.android.volley.VolleyLog;
 
 import com.squareup.picasso.Picasso;
 
-import net.sitecore.android.mediauploader.model.Instance;
-import net.sitecore.android.mediauploader.util.EmptyErrorListener;
 import net.sitecore.android.mediauploader.util.Prefs;
-import net.sitecore.android.mediauploader.util.UploaderPrefs;
 import net.sitecore.android.sdk.api.ScApiSession;
 import net.sitecore.android.sdk.api.ScApiSessionFactory;
 import net.sitecore.android.sdk.api.ScPublicKey;
-import net.sitecore.android.sdk.api.ScRequestQueue;
 import net.sitecore.android.sdk.api.internal.LogUtils;
-import net.sitecore.android.sdk.api.provider.ScItemsContract.Items;
 
 import butterknife.ButterKnife;
 import dagger.ObjectGraph;
@@ -110,7 +101,7 @@ public class UploaderApp extends Application {
     }
 
     public void switchInstance(Instance newInstance) {
-        UploaderPrefs.from(this).setDefaultInstance(newInstance);
+        UploaderPrefs.from(this).setSelectedInstance(newInstance);
         UploaderApp.from(this).updateInstancePublicKeyAsync();
         UploaderApp.from(this).cleanInstanceCacheAsync();
     }*/

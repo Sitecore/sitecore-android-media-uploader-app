@@ -17,33 +17,31 @@ public class UploaderPrefs {
         return new UploaderPrefs(context);
     }
 
-    public void setDefaultInstance(Instance instance, int instanceID) {
+    public void setSelectedInstance(Instance instance) {
         mPrefs.put(R.string.key_instance_url, instance.getUrl());
         mPrefs.put(R.string.key_instance_login, instance.getLogin());
         mPrefs.put(R.string.key_instance_password, instance.getPassword());
         mPrefs.put(R.string.key_instance_root_folder, instance.getRootFolder());
-        mPrefs.put(R.string.key_instance_id, instanceID);
+        mPrefs.put(R.string.key_instance_database, instance.getDatabase());
     }
 
-    public void saveKeyToPrefs(ScPublicKey key) {
+    public void savePublicKey(ScPublicKey key) {
         String keyValue = key.getRawValue();
         mPrefs.put(R.string.key_public_key_value, keyValue);
     }
 
-    public int getCurrentInstanceID() {
-        return mPrefs.getInt(R.string.key_instance_id, -1);
+    public String getPublicKey() {
+        return mPrefs.getString(R.string.key_instance_id);
     }
 
     public Instance getCurrentInstance() {
-        String url = mPrefs.getString(R.string.key_instance_url);
-        String login = mPrefs.getString(R.string.key_instance_login);
-        String password = mPrefs.getString(R.string.key_instance_password);
-        String rootFolder = mPrefs.getString(R.string.key_instance_root_folder);
-        String database = mPrefs.getString(R.string.key_instance_root_folder);
-        return new Instance(url, login, password, rootFolder, database);
-    }
-
-    public boolean isDefaultInstance(String instanceName) {
-        return instanceName.equals(mPrefs.getString(R.string.key_instance_name));
+        Instance instance = new Instance();
+        instance.setUrl(mPrefs.getString(R.string.key_instance_url));
+        instance.setLogin(mPrefs.getString(R.string.key_instance_login));
+        instance.setPassword(mPrefs.getString(R.string.key_instance_password));
+        instance.setRootFolder(mPrefs.getString(R.string.key_instance_root_folder));
+        instance.setDatabase(mPrefs.getString(R.string.key_instance_root_folder));
+        instance.setSelected(true);
+        return instance;
     }
 }
