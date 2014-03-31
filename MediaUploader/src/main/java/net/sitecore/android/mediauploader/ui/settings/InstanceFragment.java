@@ -11,6 +11,7 @@ import android.widget.EditText;
 
 import net.sitecore.android.mediauploader.R;
 import net.sitecore.android.mediauploader.model.Instance;
+import net.sitecore.android.mediauploader.util.ScUtils;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
@@ -71,6 +72,8 @@ public class InstanceFragment extends Fragment {
         instance.setLogin(mInstanceLogin.getText().toString());
         instance.setPassword(mInstancePassword.getText().toString());
         instance.setDatabase(mInstanceDatabase.getText().toString());
+        if (mInstance != null) instance.setRootFolder(mInstance.getRootFolder());
+        else instance.setRootFolder(ScUtils.PATH_MEDIA_LIBRARY);
         return instance;
     }
 

@@ -2,12 +2,14 @@ package net.sitecore.android.mediauploader.ui.settings;
 
 import android.app.Activity;
 import android.app.LoaderManager.LoaderCallbacks;
-import android.content.AsyncQueryHandler;
+import android.content.ContentProviderOperation;
 import android.content.CursorLoader;
 import android.content.Loader;
+import android.content.OperationApplicationException;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.RemoteException;
 import android.support.v4.app.NavUtils;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -16,6 +18,8 @@ import android.widget.Toast;
 
 import javax.inject.Inject;
 
+import java.util.ArrayList;
+
 import com.android.volley.Response.ErrorListener;
 import com.android.volley.Response.Listener;
 import com.android.volley.VolleyError;
@@ -23,7 +27,9 @@ import com.android.volley.VolleyError;
 import net.sitecore.android.mediauploader.R;
 import net.sitecore.android.mediauploader.UploaderApp;
 import net.sitecore.android.mediauploader.model.Instance;
+import net.sitecore.android.mediauploader.provider.UploadMediaContract;
 import net.sitecore.android.mediauploader.provider.UploadMediaContract.Instances;
+import net.sitecore.android.mediauploader.util.ScUtils;
 import net.sitecore.android.mediauploader.util.UploaderPrefs;
 import net.sitecore.android.sdk.api.ScApiSession;
 import net.sitecore.android.sdk.api.ScApiSessionFactory;
@@ -36,6 +42,8 @@ import net.sitecore.android.sdk.ui.ItemsListBrowserFragment;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
+
+import static net.sitecore.android.sdk.api.internal.LogUtils.LOGE;
 
 public class ChooseMediaFolderActivity extends Activity implements LoaderCallbacks<Cursor>, ErrorListener, Listener<ScApiSession> {
     public final static String INSTANCE_KEY = "instance";
@@ -53,15 +61,15 @@ public class ChooseMediaFolderActivity extends Activity implements LoaderCallbac
 
     private ContentTreePositionListener mContentTreePositionListener = new ContentTreePositionListener() {
         @Override public void onGoUp(ScItem item) {
-            mInstanceRootFolder.setTag(item.getPath());
+            mInstanceRootFolder.setText(item.getPath());
         }
 
         @Override public void onGoInside(ScItem item) {
-            mInstanceRootFolder.setTag(item.getPath());
+            mInstanceRootFolder.setText(item.getPath());
         }
 
         @Override public void onInitialized(ScItem item) {
-            mInstanceRootFolder.setTag(item.getPath());
+            mInstanceRootFolder.setText(item.getPath());
         }
     };
 
@@ -136,7 +144,7 @@ public class ChooseMediaFolderActivity extends Activity implements LoaderCallbac
 
     @Override
     public void onResponse(ScApiSession session) {
-        mBrowserFragment.setRootFolder(mInstance.getRootFolder());
+        mBrowserFragment.setRootFolder(ScUtils.PATH_MEDIA_LIBRARY);
         mBrowserFragment.setNetworkEventsListener(mNetworkEventsListener);
         mBrowserFragment.setContentTreePositionListener(mContentTreePositionListener);
         mBrowserFragment.loadContent(session);
@@ -176,13 +184,21 @@ public class ChooseMediaFolderActivity extends Activity implements LoaderCallbac
     }
 
     private void saveInstanceToDB(Instance instance) {
+        ArrayList<ContentProviderOperation> operations = new ArrayList<>();
+        operations.add(ContentProviderOperation.newUpdate(Instances.CONTENT_URI).withValue(Instances.SELECTED, 0)
+                .build());
+        instance.setSelected(true);
         if (mInstanceUri == null) {
-            instance.setSelected(true);
-            new AsyncQueryHandler(getContentResolver()) {
-            }.startInsert(0, null, Instances.CONTENT_URI, instance.toContentValues());
+            operations.add(ContentProviderOperation.newInsert(Instances.CONTENT_URI)
+                    .withValues(instance.toContentValues()).build());
         } else {
-            new AsyncQueryHandler(getContentResolver()) {
-            }.startUpdate(0, null, mInstanceUri, instance.toContentValues(), null, null);
+            operations.add(ContentProviderOperation.newUpdate(mInstanceUri).withValues(instance.toContentValues())
+                    .build());
+        }
+        try {
+            getContentResolver().applyBatch(UploadMediaContract.CONTENT_AUTHORITY, operations);
+        } catch (RemoteException | OperationApplicationException e) {
+            LOGE(e);
         }
     }
 }

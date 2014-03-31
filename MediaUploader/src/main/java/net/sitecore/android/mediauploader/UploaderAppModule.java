@@ -17,6 +17,7 @@ import net.sitecore.android.mediauploader.ui.browser.BrowserFragment.BrowserItem
 import net.sitecore.android.mediauploader.ui.settings.ChooseMediaFolderActivity;
 import net.sitecore.android.mediauploader.ui.settings.CreateEditInstanceActivity;
 import net.sitecore.android.mediauploader.ui.settings.SettingsActivity;
+import net.sitecore.android.mediauploader.ui.upload.UploadActivity;
 import net.sitecore.android.mediauploader.util.UploaderPrefs;
 import net.sitecore.android.sdk.api.ScApiSession;
 import net.sitecore.android.sdk.api.ScApiSessionFactory;
@@ -35,6 +36,7 @@ import static net.sitecore.android.sdk.api.internal.LogUtils.LOGE;
                 BrowserActivity.class,
                 BrowserItemViewBinder.class,
                 CreateEditInstanceActivity.class,
+                UploadActivity.class,
                 ChooseMediaFolderActivity.class,
                 SettingsActivity.class
         }

@@ -24,7 +24,6 @@ import net.sitecore.android.mediauploader.R;
 import net.sitecore.android.mediauploader.UploaderApp;
 import net.sitecore.android.mediauploader.model.Instance;
 import net.sitecore.android.mediauploader.provider.UploadMediaContract.Instances.Query;
-import net.sitecore.android.mediauploader.util.ScUtils;
 import net.sitecore.android.mediauploader.util.Utils;
 import net.sitecore.android.sdk.api.ScApiSession;
 import net.sitecore.android.sdk.api.ScApiSessionFactory;
@@ -137,11 +136,10 @@ public class CreateEditInstanceActivity extends Activity implements LoaderCallba
             public void onResponse(ItemsResponse response) {
                 if (response.getTotalCount() != 0) {
                     Intent intent = new Intent(CreateEditInstanceActivity.this, ChooseMediaFolderActivity.class);
+                    Instance enteredInstance = mInstanceFragment.getEnteredInstance();
                     if (mInstanceUri != null) {
                         intent.setData(mInstanceUri);
                     }
-                    Instance enteredInstance = mInstanceFragment.getEnteredInstance();
-                    enteredInstance.setRootFolder(ScUtils.PATH_MEDIA_LIBRARY);
                     intent.putExtra(ChooseMediaFolderActivity.INSTANCE_KEY, enteredInstance);
                     startActivity(intent);
                 } else {

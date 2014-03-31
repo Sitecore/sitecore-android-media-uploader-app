@@ -2,6 +2,7 @@ package net.sitecore.android.mediauploader.ui;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -13,14 +14,17 @@ import net.sitecore.android.mediauploader.R;
 import net.sitecore.android.mediauploader.UploaderApp;
 import net.sitecore.android.mediauploader.ui.browser.BrowserActivity;
 import net.sitecore.android.mediauploader.ui.settings.SettingsActivity;
+import net.sitecore.android.mediauploader.ui.upload.SelectMediaDialogFragment;
+import net.sitecore.android.mediauploader.ui.upload.SelectMediaDialogFragment.SelectMediaListener;
 import net.sitecore.android.mediauploader.ui.upload.UploadActivity;
+import net.sitecore.android.mediauploader.ui.upload.UploadsListActivity;
 import net.sitecore.android.sdk.api.ScApiSession;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
 
-public class MainActivity extends Activity {
+public class MainActivity extends Activity implements SelectMediaListener{
 
     @Inject ScApiSession mApiSession;
 
@@ -46,7 +50,14 @@ public class MainActivity extends Activity {
 
     @OnClick(R.id.button_upload)
     public void onUploadClick() {
-        startActivity(new Intent(MainActivity.this, UploadActivity.class));
+        new SelectMediaDialogFragment().show(getFragmentManager(), "dialog");
+
+    }
+
+    @Override public void onImageSelected(Uri imageUri) {
+        final Intent intent = new Intent(MainActivity.this, UploadActivity.class);
+        intent.setData(imageUri);
+        startActivity(intent);
     }
 
     @OnClick(R.id.button_browse)
@@ -56,7 +67,7 @@ public class MainActivity extends Activity {
 
     @OnClick(R.id.button_my_uploads)
     public void onMyUploadsClick() {
-
+        startActivity(new Intent(MainActivity.this, UploadsListActivity.class));
     }
 
     @Override
@@ -74,4 +85,5 @@ public class MainActivity extends Activity {
         }
         return super.onOptionsItemSelected(item);
     }
+
 }

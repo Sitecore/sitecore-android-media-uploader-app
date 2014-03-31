@@ -10,6 +10,7 @@ import android.view.ViewGroup;
 import android.widget.CursorAdapter;
 import android.widget.ImageButton;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import net.sitecore.android.mediauploader.R;
 import net.sitecore.android.mediauploader.provider.UploadMediaContract.Instances;
@@ -41,10 +42,12 @@ public class InstancesListAdapter extends CursorAdapter {
         String url = c.getString(c.getColumnIndex(Instances.URL));
         holder.instanceUrl.setText(url);
         holder.editButton.setOnClickListener(new OnClickListener() {
+            private String id = c.getString(Query._ID);
+
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(context, CreateEditInstanceActivity.class);
-                intent.setData(Instances.buildInstanceUri(c.getString(Query._ID)));
+                intent.setData(Instances.buildInstanceUri(id));
                 context.startActivity(intent);
             }
         });

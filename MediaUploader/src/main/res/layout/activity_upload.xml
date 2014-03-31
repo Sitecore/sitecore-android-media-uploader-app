@@ -4,21 +4,15 @@
     android:layout_height="match_parent"
     android:fillViewport="true">
 
-    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical">
 
+        <!--
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="300dp">
-
-            <ImageView
-                android:id="@+id/image_preview"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:background="#666666"
-                android:scaleType="centerCrop" />
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -51,31 +45,48 @@
                     android:textColor="@android:color/white" />
             </LinearLayout>
         </RelativeLayout>
+        -->
+
+        <ImageView
+            android:id="@+id/image_preview"
+            android:layout_width="match_parent"
+            android:layout_height="300dp"
+            android:background="#666666"
+            android:scaleType="centerCrop" />
 
         <EditText
-            android:id="@+id/edit_item_name"
+            android:id="@+id/edit_name"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="@string/hint_item_name"
             android:imeOptions="actionDone"
             android:inputType="text|textAutoComplete" />
 
-        <EditText
-            android:id="@+id/edit_item_path"
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1" />
+
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:focusable="false"
-            android:hint="@string/hint_item_path"
-            android:imeOptions="actionDone"
-            android:inputType="text"
-            android:text="/sitecore/media library" />
+            android:orientation="horizontal">
 
-        <CheckBox
-            android:id="@+id/checkbox_upload_later"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Upload later" />
+            <Button
+                android:id="@+id/button_upload_later"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Later" />
 
+            <Button
+                android:id="@+id/button_upload_now"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Upload" />
+
+        </LinearLayout>
 
     </LinearLayout>
 </ScrollView>

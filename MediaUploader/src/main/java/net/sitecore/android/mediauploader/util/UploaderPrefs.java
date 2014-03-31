@@ -31,7 +31,7 @@ public class UploaderPrefs {
     }
 
     public String getPublicKey() {
-        return mPrefs.getString(R.string.key_instance_id);
+        return mPrefs.getString(R.string.key_public_key_value);
     }
 
     public Instance getCurrentInstance() {
