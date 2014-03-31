@@ -9,23 +9,28 @@
         android:id="@+id/button_upload"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:background="@drawable/button_blue"
         android:minWidth="200dp"
-        android:text="Upload" />
+        android:text="Upload"
+        android:textColor="@android:color/white" />
 
     <Button
         android:id="@+id/button_browse"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:background="@drawable/button_blue"
         android:minWidth="200dp"
-        android:text="Browse" />
+        android:text="Browse"
+        android:textColor="@android:color/white" />
 
     <Button
-        android:background="@drawable/button_blue"
         android:id="@+id/button_my_uploads"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:background="@drawable/button_blue"
         android:minWidth="200dp"
-        android:text="My Uploads" />
+        android:text="My Uploads"
+        android:textColor="@android:color/white" />
 
 </LinearLayout>
 
