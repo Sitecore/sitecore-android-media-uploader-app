@@ -33,6 +33,11 @@ android {
         targetCompatibility JavaVersion.VERSION_1_7
     }
 
+    lintOptions {
+        //abortOnError false
+        disable 'InvalidPackage', 'MissingPrefix'
+    }
+
     buildTypes {
         release {
             runProguard false
