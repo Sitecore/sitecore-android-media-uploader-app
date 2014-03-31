@@ -50,9 +50,8 @@ public class UploadActivity extends Activity implements ErrorListener, SelectMed
 
         getActionBar().setDisplayHomeAsUpEnabled(true);
 
-        if (mImageUri == null) {
-            new SelectMediaDialogFragment().show(getFragmentManager(), "dialog");
-        }
+        mImageUri = getIntent().getData();
+        mPreview.setImageURI(mImageUri);
     }
 
     @Override
