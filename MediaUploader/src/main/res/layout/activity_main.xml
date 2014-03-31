@@ -7,30 +7,27 @@
 
     <Button
         android:id="@+id/button_upload"
+        style="@style/Button.Blue"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:background="@drawable/button_blue"
         android:minWidth="200dp"
-        android:text="Upload"
-        android:textColor="@android:color/white" />
+        android:text="Upload" />
 
     <Button
         android:id="@+id/button_browse"
+        style="@style/Button.Blue"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:background="@drawable/button_blue"
         android:minWidth="200dp"
-        android:text="Browse"
-        android:textColor="@android:color/white" />
+        android:text="Browse" />
 
     <Button
         android:id="@+id/button_my_uploads"
+        style="@style/Button.Blue"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:background="@drawable/button_blue"
         android:minWidth="200dp"
-        android:text="My Uploads"
-        android:textColor="@android:color/white" />
+        android:text="My Uploads" />
 
 </LinearLayout>
 
