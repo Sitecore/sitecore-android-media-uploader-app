@@ -3,6 +3,7 @@ package net.sitecore.android.mediauploader.ui.settings;
 import android.app.Activity;
 import android.app.LoaderManager.LoaderCallbacks;
 import android.content.AsyncQueryHandler;
+import android.content.ContentValues;
 import android.content.CursorLoader;
 import android.content.Intent;
 import android.content.Loader;
@@ -23,7 +24,9 @@ import com.android.volley.VolleyError;
 import net.sitecore.android.mediauploader.R;
 import net.sitecore.android.mediauploader.UploaderApp;
 import net.sitecore.android.mediauploader.model.Instance;
+import net.sitecore.android.mediauploader.provider.UploadMediaContract.Instances;
 import net.sitecore.android.mediauploader.provider.UploadMediaContract.Instances.Query;
+import net.sitecore.android.mediauploader.util.UploaderPrefs;
 import net.sitecore.android.mediauploader.util.Utils;
 import net.sitecore.android.sdk.api.ScApiSession;
 import net.sitecore.android.sdk.api.ScApiSessionFactory;
@@ -40,9 +43,11 @@ public class CreateEditInstanceActivity extends Activity implements LoaderCallba
 
     @InjectView(R.id.button_delete_instance) ImageButton mDeleteButton;
     @Inject ScRequestQueue mRequestQueue;
+    @Inject UploaderPrefs mPrefs;
 
     private InstanceFragment mInstanceFragment;
     private Uri mInstanceUri;
+    private boolean mIsInstanceSelected = false;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -84,10 +89,32 @@ public class CreateEditInstanceActivity extends Activity implements LoaderCallba
                     super.onDeleteComplete(token, cookie, result);
                     Toast.makeText(CreateEditInstanceActivity.this, R.string.success_instance_delete,
                             Toast.LENGTH_LONG).show();
+                    if (mIsInstanceSelected) selectLastInstance();
                     finish();
                 }
             }.startDelete(0, null, mInstanceUri, null, null);
         }
+    }
+
+    private void selectLastInstance() {
+        new AsyncQueryHandler(getContentResolver()) {
+            @Override protected void onQueryComplete(int token, Object cookie, Cursor cursor) {
+                super.onQueryComplete(token, cookie, cursor);
+
+                if (cursor.getCount() > 0) {
+                    if (cursor.moveToLast()) {
+                        String id = cursor.getString(Query._ID);
+                        ContentValues values = new ContentValues();
+                        values.put(Instances.SELECTED, 1);
+
+                        new AsyncQueryHandler(getContentResolver()) {
+                        }.startUpdate(0, null, Instances.buildInstanceUri(id), values, null, null);
+
+                        mPrefs.setSelectedInstance(new Instance(cursor));
+                    }
+                }
+            }
+        }.startQuery(0, null, Instances.CONTENT_URI, Query.PROJECTION, null, null, null);
     }
 
     @OnClick(R.id.button_next) void checkConnection() {
@@ -114,7 +141,9 @@ public class CreateEditInstanceActivity extends Activity implements LoaderCallba
         switch (loader.getId()) {
             case READ_INSTANCES_ACTION: {
                 if (!data.moveToFirst()) return;
-                mInstanceFragment.setSourceInstance(new Instance(data));
+                Instance instance = new Instance(data);
+                mIsInstanceSelected = instance.isSelected();
+                mInstanceFragment.setSourceInstance(instance);
                 break;
             }
         }

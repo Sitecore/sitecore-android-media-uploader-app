@@ -10,7 +10,6 @@ import android.view.ViewGroup;
 import android.widget.CursorAdapter;
 import android.widget.ImageButton;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import net.sitecore.android.mediauploader.R;
 import net.sitecore.android.mediauploader.provider.UploadMediaContract.Instances;
@@ -21,8 +20,8 @@ import butterknife.ButterKnife;
 import butterknife.InjectView;
 
 public class InstancesListAdapter extends CursorAdapter {
-    public InstancesListAdapter(Context context, Cursor c) {
-        super(context, c, true);
+    public InstancesListAdapter(Context context) {
+        super(context, null, false);
     }
 
     @Override

@@ -108,8 +108,9 @@ public class SettingsActivity extends Activity implements LoaderCallbacks<Cursor
         } else {
             mEmptyView.setVisibility(View.GONE);
         }
-        mAdapter = new InstancesListAdapter(this, data);
-        mList.setAdapter(mAdapter);
+        mAdapter = new InstancesListAdapter(this);
+        mAdapter.swapCursor(data);
+        mList.setAdapter(mAdapter)  ;
 
         while (data.moveToNext()) {
             if (data.getInt(Query.SELECTED) != 0) mList.setItemChecked(data.getPosition(), true);
