@@ -86,7 +86,6 @@ public class CreateEditInstanceActivity extends Activity implements LoaderCallba
         if (mInstanceUri != null) {
             new AsyncQueryHandler(getContentResolver()) {
                 @Override protected void onDeleteComplete(int token, Object cookie, int result) {
-                    super.onDeleteComplete(token, cookie, result);
                     Toast.makeText(CreateEditInstanceActivity.this, R.string.toast_instance_deleted,
                             Toast.LENGTH_LONG).show();
                     if (mIsInstanceSelected) selectLastInstance();
@@ -99,8 +98,6 @@ public class CreateEditInstanceActivity extends Activity implements LoaderCallba
     private void selectLastInstance() {
         new AsyncQueryHandler(getContentResolver()) {
             @Override protected void onQueryComplete(int token, Object cookie, Cursor cursor) {
-                super.onQueryComplete(token, cookie, cursor);
-
                 if (cursor.getCount() > 0) {
                     if (cursor.moveToLast()) {
                         String id = cursor.getString(Query._ID);
