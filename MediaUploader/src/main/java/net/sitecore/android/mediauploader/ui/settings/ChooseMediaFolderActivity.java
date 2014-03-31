@@ -169,6 +169,7 @@ public class ChooseMediaFolderActivity extends Activity implements LoaderCallbac
                 if (data.moveToFirst()) {
                     Toast.makeText(this, R.string.text_instance_exists, Toast.LENGTH_LONG).show();
                 } else {
+                    mPrefs.setSelectedInstance(mInstance);
                     saveInstanceToDB(mInstance);
                     NavUtils.navigateUpFromSameTask(this);
                 }
