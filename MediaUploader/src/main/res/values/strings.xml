@@ -27,6 +27,7 @@
     <string name="key_instance_id">instance_id</string>
     <string name="menu_save_text">Save</string>
     <string name="text_wrong_instance_database_message">Please enter valid database</string>
+    <string name="success_instance_delete">Instance deleted</string>
 
     <string-array name="array_image_sizes">
         <item>Small</item>

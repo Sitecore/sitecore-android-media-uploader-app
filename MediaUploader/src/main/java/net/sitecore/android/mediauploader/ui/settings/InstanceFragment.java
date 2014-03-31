@@ -21,7 +21,7 @@ public class InstanceFragment extends Fragment {
     @InjectView(R.id.instance_url) EditText mInstanceUrl;
     @InjectView(R.id.instance_login) EditText mInstanceLogin;
     @InjectView(R.id.instance_password) EditText mInstancePassword;
-    @InjectView(R.id.instance_database) EditText mInstanceDatabse;
+    @InjectView(R.id.instance_database) EditText mInstanceDatabase;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -51,9 +51,9 @@ public class InstanceFragment extends Fragment {
             valid = false;
         }
 
-        String database = mInstanceDatabse.getText().toString();
+        String database = mInstanceDatabase.getText().toString();
         if (TextUtils.isEmpty(database)) {
-            mInstanceDatabse.setError(getString(R.string.text_wrong_instance_database_message));
+            mInstanceDatabase.setError(getString(R.string.text_wrong_instance_database_message));
             valid = false;
         }
 
@@ -70,6 +70,7 @@ public class InstanceFragment extends Fragment {
         instance.setUrl(mInstanceUrl.getText().toString());
         instance.setLogin(mInstanceLogin.getText().toString());
         instance.setPassword(mInstancePassword.getText().toString());
+        instance.setDatabase(mInstanceDatabase.getText().toString());
         return instance;
     }
 
@@ -77,5 +78,6 @@ public class InstanceFragment extends Fragment {
         mInstanceUrl.setText(mInstance.getUrl());
         mInstanceLogin.setText(mInstance.getLogin());
         mInstancePassword.setText(mInstance.getPassword());
+        mInstanceDatabase.setText(mInstance.getDatabase());
     }
 }

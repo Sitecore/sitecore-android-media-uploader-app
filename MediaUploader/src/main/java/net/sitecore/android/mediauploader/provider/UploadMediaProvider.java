@@ -148,7 +148,8 @@ public class UploadMediaProvider extends ContentProvider {
                 break;
 
             case INSTANCE_ID:
-                builder.table(Tables.INSTANCES);
+                String instanceID = Instances.getItemId(uri);
+                builder.table(Tables.INSTANCES).where(Instances._ID + "=?", instanceID);
                 break;
 
             default:

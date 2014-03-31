@@ -24,6 +24,7 @@ import net.sitecore.android.mediauploader.R;
 import net.sitecore.android.mediauploader.UploaderApp;
 import net.sitecore.android.mediauploader.model.Instance;
 import net.sitecore.android.mediauploader.provider.UploadMediaContract.Instances.Query;
+import net.sitecore.android.mediauploader.util.ScUtils;
 import net.sitecore.android.mediauploader.util.Utils;
 import net.sitecore.android.sdk.api.ScApiSession;
 import net.sitecore.android.sdk.api.ScApiSessionFactory;
@@ -38,11 +39,11 @@ import butterknife.OnClick;
 public class CreateEditInstanceActivity extends Activity implements LoaderCallbacks<Cursor>, ErrorListener, Listener<ScApiSession> {
     public static final int READ_INSTANCES_ACTION = 0;
 
+    @InjectView(R.id.button_delete_instance) ImageButton mDeleteButton;
+    @Inject ScRequestQueue mRequestQueue;
+
     private InstanceFragment mInstanceFragment;
     private Uri mInstanceUri;
-    @InjectView(R.id.button_delete_instance) ImageButton mDeleteButton;
-
-    @Inject ScRequestQueue mRequestQueue;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -80,6 +81,12 @@ public class CreateEditInstanceActivity extends Activity implements LoaderCallba
     public void deleteInstance() {
         if (mInstanceUri != null) {
             new AsyncQueryHandler(getContentResolver()) {
+                @Override protected void onDeleteComplete(int token, Object cookie, int result) {
+                    super.onDeleteComplete(token, cookie, result);
+                    Toast.makeText(CreateEditInstanceActivity.this, R.string.success_instance_delete,
+                            Toast.LENGTH_LONG).show();
+                    finish();
+                }
             }.startDelete(0, null, mInstanceUri, null, null);
         }
     }
@@ -133,7 +140,9 @@ public class CreateEditInstanceActivity extends Activity implements LoaderCallba
                     if (mInstanceUri != null) {
                         intent.setData(mInstanceUri);
                     }
-                    intent.putExtra(ChooseMediaFolderActivity.INSTANCE_KEY, mInstanceFragment.getEnteredInstance());
+                    Instance enteredInstance = mInstanceFragment.getEnteredInstance();
+                    enteredInstance.setRootFolder(ScUtils.PATH_MEDIA_LIBRARY);
+                    intent.putExtra(ChooseMediaFolderActivity.INSTANCE_KEY, enteredInstance);
                     startActivity(intent);
                 } else {
                     Toast.makeText(CreateEditInstanceActivity.this, R.string.text_instance_is_not_valid,

@@ -40,14 +40,14 @@ public class ChooseMediaFolderActivity extends Activity implements LoaderCallbac
     public final static String INSTANCE_KEY = "instance";
     public static final int READ_NAMES_ACTION = 1;
     private static final String SELECTION = Instances.URL + "=? and " + Instances.LOGIN + "=? and " +
-            Instances.PASSWORD + "=? and " + Instances.ROOT_FOLDER + "=?";
+            Instances.PASSWORD + "=? and " + Instances.ROOT_FOLDER + "=? and " + Instances.DATABASE + "=?";
+
+    @InjectView(R.id.instance_root_folder) TextView mInstanceRootFolder;
+    @Inject ScRequestQueue mScRequestQueue;
 
     private Instance mInstance;
     private Uri mInstanceUri;
     private ItemsListBrowserFragment mBrowserFragment;
-
-    @InjectView(R.id.instance_root_folder) TextView mInstanceRootFolder;
-    @Inject ScRequestQueue mScRequestQueue;
 
     private ContentTreePositionListener mContentTreePositionListener = new ContentTreePositionListener() {
         @Override public void onGoUp(ScItem item) {
@@ -94,6 +94,12 @@ public class ChooseMediaFolderActivity extends Activity implements LoaderCallbac
         mBrowserFragment = (ItemsListBrowserFragment) getFragmentManager().findFragmentById(R.id.browser_fragment);
     }
 
+    @Override protected void onResume() {
+        super.onResume();
+        ScApiSessionFactory.getSession(mScRequestQueue, mInstance.getUrl(), mInstance.getLogin(),
+                mInstance.getPassword(), this, this);
+    }
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.choose_media_library, menu);
@@ -115,12 +121,6 @@ public class ChooseMediaFolderActivity extends Activity implements LoaderCallbac
 
         }
         return super.onOptionsItemSelected(item);
-    }
-
-    @Override protected void onResume() {
-        super.onResume();
-        ScApiSessionFactory.getSession(mScRequestQueue, mInstance.getUrl(), mInstance.getLogin(),
-                mInstance.getPassword(), this, this);
     }
 
     private void checkInstanceIfExists() {
@@ -145,7 +145,7 @@ public class ChooseMediaFolderActivity extends Activity implements LoaderCallbac
         switch (id) {
             case READ_NAMES_ACTION:
                 String[] selectionArgs = new String[]{mInstance.getUrl(), mInstance.getLogin(), mInstance.getPassword(),
-                        mInstance.getRootFolder()};
+                        mInstance.getRootFolder(), mInstance.getDatabase()};
                 return new CursorLoader(this, Instances.CONTENT_URI, null, SELECTION, selectionArgs, null);
             default:
                 return null;

@@ -73,6 +73,7 @@ public class Instance implements Parcelable {
         values.put(Instances.LOGIN, login);
         values.put(Instances.PASSWORD, password);
         values.put(Instances.ROOT_FOLDER, rootFolder);
+        values.put(Instances.DATABASE, database);
         return values;
     }
 
@@ -81,6 +82,7 @@ public class Instance implements Parcelable {
         this.login= cursor.getString(Query.LOGIN);
         this.password = cursor.getString(Query.PASSWORD);
         this.rootFolder = cursor.getString(Query.ROOT_FOLDER);
+        this.database = cursor.getString(Query.DATABASE);
     }
 
     @Override public int describeContents() {

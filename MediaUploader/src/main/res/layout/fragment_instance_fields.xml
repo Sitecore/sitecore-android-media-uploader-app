@@ -38,7 +38,6 @@
         android:id="@+id/instance_database"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:editable="false"
         android:hint="Database"
         android:imeOptions="actionDone"
         android:singleLine="true"
