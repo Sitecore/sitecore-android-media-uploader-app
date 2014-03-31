@@ -24,6 +24,8 @@
         <activity
             android:name=".ui.upload.UploadActivity"
             android:label="@string/title_upload" />
+        <activity android:name=".ui.upload.UploadsListActivity"
+            android:label="My Uploads" />
 
         <activity android:name=".ui.browser.BrowserActivity" />
         <activity android:name=".ui.browser.PreviewActivity" />

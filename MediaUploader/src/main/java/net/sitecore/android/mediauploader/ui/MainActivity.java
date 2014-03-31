@@ -14,6 +14,7 @@ import net.sitecore.android.mediauploader.UploaderApp;
 import net.sitecore.android.mediauploader.ui.browser.BrowserActivity;
 import net.sitecore.android.mediauploader.ui.settings.SettingsActivity;
 import net.sitecore.android.mediauploader.ui.upload.UploadActivity;
+import net.sitecore.android.mediauploader.ui.upload.UploadsListActivity;
 import net.sitecore.android.sdk.api.ScApiSession;
 
 import butterknife.ButterKnife;
@@ -56,7 +57,7 @@ public class MainActivity extends Activity {
 
     @OnClick(R.id.button_my_uploads)
     public void onMyUploadsClick() {
-
+        startActivity(new Intent(MainActivity.this, UploadsListActivity.class));
     }
 
     @Override
