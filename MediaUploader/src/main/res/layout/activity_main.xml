@@ -23,7 +23,7 @@
         android:layout_centerHorizontal="true"
         android:layout_marginBottom="16dp"
         android:gravity="center_horizontal"
-        android:text="Please set up at least one\n upload site"
+        android:text="@string/text_no_instances"
         android:textAppearance="?android:attr/textAppearanceMedium"
         android:textColor="@android:color/holo_red_light" />
 
@@ -47,7 +47,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:drawableLeft="@drawable/ic_upload"
-                android:text="Upload" />
+                android:text="@string/button_upload" />
         </FrameLayout>
 
         <FrameLayout
@@ -62,7 +62,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:drawableLeft="@drawable/ic_browse"
-                android:text="Browse" />
+                android:text="@string/button_browse" />
         </FrameLayout>
 
         <FrameLayout
@@ -77,7 +77,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:drawableLeft="@drawable/ic_pending"
-                android:text="My Uploads" />
+                android:text="@string/button_my_uploads" />
         </FrameLayout>
     </LinearLayout>
 </RelativeLayout>

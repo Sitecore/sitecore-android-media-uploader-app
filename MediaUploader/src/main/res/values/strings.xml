@@ -16,6 +16,11 @@
     <string name="hint_item_name">Item name</string>
     <string name="hint_item_path">Item path</string>
 
+    <string name="button_upload">Upload</string>
+    <string name="button_browse">Browse</string>
+    <string name="button_my_uploads">My Uploads</string>
+    <string name="button_add_new_instance">Add new instance</string>
+
     <!-- error messages -->
     <string name="error_wrong_instance_url">Please enter valid CMS Instance url</string>
     <string name="error_wrong_instance_login">Please enter valid login</string>
@@ -28,8 +33,8 @@
     <string name="toast_instance_deleted">Instance deleted</string>
 
     <!-- Other texts -->
-    <string name="text_add_new_instance">Add new instance</string>
     <string name="dialog_select_image">Select image</string>
+    <string name="text_no_instances">Please set up at least one\n upload site</string>
 
     <string-array name="image_sizes">
         <item>Small</item>

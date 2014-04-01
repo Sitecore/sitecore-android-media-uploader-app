@@ -56,7 +56,7 @@ public class SettingsActivity extends Activity implements LoaderCallbacks<Cursor
         mList.setChoiceMode(AbsListView.CHOICE_MODE_SINGLE);
 
         Button footerView = new Button(this);
-        footerView.setText(R.string.text_add_new_instance);
+        footerView.setText(R.string.button_add_new_instance);
         footerView.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
