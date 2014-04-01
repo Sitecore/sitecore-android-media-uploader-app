@@ -1,12 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="app_name">Media Uploader</string>
+    <string name="app_name">Sitecore Up</string>
 
     <!-- Screen titles -->
     <string name="title_upload">Upload Media</string>
     <string name="title_edit_instance">Edit instance</string>
     <string name="title_add_instance">Add instance</string>
+    <string name="title_settings">Settings</string>
 
     <!-- Menu labels -->
     <string name="menu_settings">Settings</string>
