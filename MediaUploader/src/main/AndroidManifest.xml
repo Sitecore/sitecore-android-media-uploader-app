@@ -34,7 +34,8 @@
 
         <activity
             android:name=".ui.browser.BrowserActivity"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait"/>
+
         <activity
             android:name=".ui.browser.PreviewActivity"
             android:screenOrientation="portrait" />
