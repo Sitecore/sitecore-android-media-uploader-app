@@ -35,6 +35,15 @@
         android:text="creatorex" />
 
     <EditText
+        android:id="@+id/instance_site"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Site"
+        android:imeOptions="actionNext"
+        android:singleLine="true"
+        android:text="/sitecore/shell" />
+
+    <EditText
         android:id="@+id/instance_database"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -42,4 +51,5 @@
         android:imeOptions="actionDone"
         android:singleLine="true"
         android:text="web" />
+
 </LinearLayout>

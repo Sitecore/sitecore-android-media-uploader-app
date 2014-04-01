@@ -34,6 +34,8 @@ public class UploadMediaContract {
                     Instances.PASSWORD,
                     Instances.ROOT_FOLDER,
                     Instances.DATABASE,
+                    Instances.SITE,
+                    Instances.PUBLIC_KEY,
                     Instances.SELECTED
             };
 
@@ -43,7 +45,9 @@ public class UploadMediaContract {
             int PASSWORD = 3;
             int ROOT_FOLDER = 4;
             int DATABASE = 5;
-            int SELECTED = 6;
+            int SITE = 6;
+            int PUBLIC_KEY = 7;
+            int SELECTED = 8;
         }
     }
 
@@ -89,11 +93,13 @@ public class UploadMediaContract {
     }
 
     interface InstancesColumns {
-        String URL = "instance_url";
-        String LOGIN = "instance_login";
-        String PASSWORD = "instance_password";
+        String URL = "url";
+        String LOGIN = "login";
+        String PASSWORD = "password";
         String ROOT_FOLDER = "root_folder";
         String DATABASE = "database";
+        String SITE = "site";
+        String PUBLIC_KEY = "public_key";
         String SELECTED = "selected";
     }
 

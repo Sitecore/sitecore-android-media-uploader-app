@@ -18,7 +18,6 @@ import com.squareup.picasso.Picasso;
 import net.sitecore.android.mediauploader.R;
 import net.sitecore.android.mediauploader.UploaderApp;
 import net.sitecore.android.mediauploader.ui.IntentExtras;
-import net.sitecore.android.mediauploader.util.Prefs;
 import net.sitecore.android.mediauploader.util.ScUtils;
 import net.sitecore.android.sdk.api.DownloadMediaOptions;
 import net.sitecore.android.sdk.api.DownloadMediaOptions.Builder;
@@ -33,8 +32,6 @@ public class BrowserFragment extends ItemsGridBrowserFragment {
             .maxWidth(200)
             .maxHeight(200)
             .build();
-
-    private ScApiSession mSession;
 
     @Override
     protected View onCreateUpButtonView(LayoutInflater inflater) {
@@ -63,7 +60,6 @@ public class BrowserFragment extends ItemsGridBrowserFragment {
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
-        mSession = UploaderApp.from(activity).getSession();
     }
 
     private static class ViewHolder {
