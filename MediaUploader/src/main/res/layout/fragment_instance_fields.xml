@@ -22,7 +22,7 @@
             android:imeOptions="actionNext"
             android:inputType="textUri"
             android:singleLine="true"
-            android:text="http://mobiledev1ua1.dk.sitecore.net:722" />
+            android:text="mobiledev1ua1.dk.sitecore.net:722" />
         </LinearLayout>
 
     <EditText

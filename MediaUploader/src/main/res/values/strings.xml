@@ -24,11 +24,13 @@
     <string name="button_add_new_instance">Add new site</string>
 
     <!-- error messages -->
+    <string name="error_empty_instance_login">Login cannot be empty</string>
+    <string name="error_empty_instance_url">CMS site url cannot be empty</string>
     <string name="error_wrong_instance_url">Please enter valid CMS site url</string>
-    <string name="error_wrong_instance_login">Please enter valid login</string>
     <string name="error_wrong_instance_site">Please enter valid site</string>
-    <string name="error_wrong_instance_database">Please enter valid database</string>
-    <string name="error_wrong_instance_password">Please enter valid password</string>
+    <string name="error_wrong_instance_database">Database cannot be empty</string>
+    <string name="error_wrong_instance_password">Password cannot be empty</string>
+    <string name="error_wrong_instance_login">Please enter valid login.</string>
 
     <!-- toast notifications -->
     <string name="toast_instance_is_not_valid">Entered site is not valid</string>
