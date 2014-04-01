@@ -12,7 +12,7 @@
         <Spinner
             android:id="@+id/spinner_protocol"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"/>
+            android:layout_height="wrap_content" />
 
         <EditText
             android:id="@+id/instance_url"
@@ -23,7 +23,7 @@
             android:inputType="textUri"
             android:singleLine="true"
             android:text="mobiledev1ua1.dk.sitecore.net:722" />
-        </LinearLayout>
+    </LinearLayout>
 
     <EditText
         android:id="@+id/instance_login"
@@ -51,8 +51,7 @@
         android:layout_height="wrap_content"
         android:hint="Site"
         android:imeOptions="actionNext"
-        android:singleLine="true"
-        android:text="/sitecore/shell" />
+        android:singleLine="true" />
 
     <EditText
         android:id="@+id/instance_database"
