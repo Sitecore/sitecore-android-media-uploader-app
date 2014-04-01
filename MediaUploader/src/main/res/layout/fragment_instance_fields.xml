@@ -8,7 +8,7 @@
         android:id="@+id/instance_url"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Instance URL"
+        android:hint="Site URL"
         android:imeOptions="actionNext"
         android:inputType="textUri"
         android:singleLine="true"

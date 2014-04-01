@@ -14,8 +14,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center_vertical"
         android:layout_weight="5"
-        android:singleLine="false"
-        android:text="Some instanceSome instanceSome instanceSome instanceSome instance" />
+        android:singleLine="false" />
 
     <RadioButton
         android:id="@+id/radio_button_selected_instance"

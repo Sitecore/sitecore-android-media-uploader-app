@@ -19,16 +19,16 @@
     <string name="button_upload">Upload</string>
     <string name="button_browse">Browse</string>
     <string name="button_my_uploads">My Uploads</string>
-    <string name="button_add_new_instance">Add new instance</string>
+    <string name="button_add_new_instance">Add new site</string>
 
     <!-- error messages -->
-    <string name="error_wrong_instance_url">Please enter valid CMS Instance url</string>
+    <string name="error_wrong_instance_url">Please enter valid CMS site url</string>
     <string name="error_wrong_instance_login">Please enter valid login</string>
     <string name="error_wrong_instance_database">Please enter valid database</string>
     <string name="error_wrong_instance_password">Please enter valid password</string>
 
     <!-- toast notifications -->
-    <string name="toast_instance_is_not_valid">Entered instance is not valid</string>
+    <string name="toast_instance_is_not_valid">Entered site is not valid</string>
     <string name="toast_instance_exists">Instance already exists</string>
     <string name="toast_instance_deleted">Instance deleted</string>
 
