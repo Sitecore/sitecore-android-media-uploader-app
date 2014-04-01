@@ -12,6 +12,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.Toast;
 
@@ -43,7 +44,7 @@ public class CreateEditInstanceActivity extends Activity implements LoaderCallba
         Listener<ScPublicKey> {
     public static final int READ_INSTANCES_ACTION = 0;
 
-    @InjectView(R.id.button_delete_instance) ImageButton mDeleteButton;
+    @InjectView(R.id.button_delete_instance) Button mDeleteButton;
     @Inject ScRequestQueue mRequestQueue;
     @Inject UploaderPrefs mPrefs;
 

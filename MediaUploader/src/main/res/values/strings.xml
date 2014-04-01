@@ -22,6 +22,8 @@
     <string name="button_browse">Browse</string>
     <string name="button_my_uploads">My Uploads</string>
     <string name="button_add_new_instance">Add new site</string>
+    <string name="button_delete">Delete</string>
+    <string name="button_next">Next</string>
 
     <!-- error messages -->
     <string name="error_wrong_instance_url">Please enter valid CMS site url</string>
@@ -38,12 +40,8 @@
     <!-- Other texts -->
     <string name="dialog_select_image">Select image</string>
     <string name="text_no_instances">Please set up at least one\n upload site</string>
-
-    <string-array name="image_sizes">
-        <item>Small</item>
-        <item>Medium</item>
-        <item>Original</item>
-    </string-array>
+    <string name="text_image_size">Upload image Size</string>
+    <string name="text_sites">Sites</string>
 
     <string-array name="select_image_source">
         <item>Camera</item>

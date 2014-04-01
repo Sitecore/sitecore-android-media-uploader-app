@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Button
+    style="@style/Button.Blue"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginLeft="16dp"
+    android:layout_marginRight="16dp"
+    android:drawableLeft="@drawable/ic_action_new"
+    android:paddingLeft="48dp"
+    android:text="@string/button_add_new_instance"
+    android:textAppearance="?android:attr/textAppearanceMedium" />

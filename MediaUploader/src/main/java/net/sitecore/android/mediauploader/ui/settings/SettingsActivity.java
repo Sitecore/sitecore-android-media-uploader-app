@@ -10,6 +10,7 @@ import android.content.OperationApplicationException;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.os.RemoteException;
+import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -41,10 +42,15 @@ import static net.sitecore.android.sdk.api.internal.LogUtils.LOGE;
 public class SettingsActivity extends Activity implements LoaderCallbacks<Cursor> {
 
     @InjectView(R.id.list_instances) ListView mList;
-    @InjectView(R.id.empty_text) TextView mEmptyView;
     @Inject UploaderPrefs mPrefs;
 
     private InstancesListAdapter mAdapter;
+    private OnClickListener mNewSiteClickListener = new OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            startActivity(new Intent(SettingsActivity.this, CreateEditInstanceActivity.class));
+        }
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,16 +63,8 @@ public class SettingsActivity extends Activity implements LoaderCallbacks<Cursor
 
         mList.setChoiceMode(AbsListView.CHOICE_MODE_SINGLE);
 
-        Button footerView = new Button(this);
-        footerView.setText(R.string.button_add_new_instance);
-        footerView.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                startActivity(new Intent(SettingsActivity.this, CreateEditInstanceActivity.class));
-            }
-
-            ;
-        });
+        final View footerView = LayoutInflater.from(this).inflate(R.layout.button_new_site, null);
+        footerView.setOnClickListener(mNewSiteClickListener);
 
         mList.addFooterView(footerView);
         mList.setOnItemClickListener(new OnItemClickListener() {
@@ -116,11 +114,6 @@ public class SettingsActivity extends Activity implements LoaderCallbacks<Cursor
 
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
-        if (data.getCount() == 0) {
-            mEmptyView.setVisibility(View.VISIBLE);
-        } else {
-            mEmptyView.setVisibility(View.GONE);
-        }
         mAdapter = new InstancesListAdapter(this);
         mAdapter.swapCursor(data);
         mList.setAdapter(mAdapter)  ;

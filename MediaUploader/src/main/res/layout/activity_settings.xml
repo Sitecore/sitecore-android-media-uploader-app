@@ -8,21 +8,61 @@
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Image size" />
+        android:layout_marginLeft="16dp"
+        android:text="@string/text_image_size"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:textAllCaps="true" />
 
-    <Spinner
-        android:id="@+id/spinner_image_sizes"
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="2dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginRight="8dp"
+        android:background="@android:color/darker_gray" />
+
+    <RadioGroup
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:entries="@array/image_sizes" />
+        android:checkedButton="@+id/radio_image_original"
+        android:orientation="horizontal">
+
+        <RadioButton
+            android:id="@+id/radio_image_small"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Small" />
+
+        <RadioButton
+            android:id="@+id/radio_image_medium"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Medium" />
+
+        <RadioButton
+            android:id="@+id/radio_image_original"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Original" />
+    </RadioGroup>
 
     <TextView
-        android:id="@+id/empty_text"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_gravity="center_vertical"
-        android:text="@string/text_no_instances"
-        android:visibility="gone" />
+        android:layout_marginTop="16dp"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:textAllCaps="true"
+        android:layout_marginLeft="16dp"
+        android:text="@string/text_sites" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="2dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginRight="8dp"
+        android:background="@android:color/darker_gray" />
 
     <ListView
         android:id="@+id/list_instances"

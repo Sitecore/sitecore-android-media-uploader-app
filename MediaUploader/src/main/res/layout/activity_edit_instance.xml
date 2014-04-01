@@ -15,12 +15,14 @@
         android:layout_height="wrap_content"
         android:weightSum="2">
 
-        <ImageButton
+        <Button
             android:id="@+id/button_delete_instance"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:src="@drawable/ic_delete" />
+            android:background="@drawable/button_red"
+            android:drawableLeft="@drawable/ic_delete"
+            android:text="@string/button_delete" />
 
         <Button
             android:id="@+id/button_next"
@@ -28,7 +30,9 @@
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:text="Next" />
+            android:drawableRight="@drawable/ic_action_next_item"
+            android:text="@string/button_next"
+            android:textAppearance="?android:attr/textAppearanceMedium" />
 
     </LinearLayout>
 
