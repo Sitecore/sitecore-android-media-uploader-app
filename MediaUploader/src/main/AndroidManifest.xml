@@ -34,7 +34,12 @@
 
         <activity
             android:name=".ui.browser.BrowserActivity"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".ui.settings.SettingsActivity" />
+        </activity>
+
         <activity
             android:name=".ui.browser.PreviewActivity"
             android:screenOrientation="portrait" />
