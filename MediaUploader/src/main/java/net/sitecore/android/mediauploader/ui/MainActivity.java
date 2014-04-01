@@ -6,7 +6,9 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.Button;
+import android.widget.TextView;
 
 import javax.inject.Inject;
 
@@ -24,13 +26,14 @@ import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
 
-public class MainActivity extends Activity implements SelectMediaListener{
+public class MainActivity extends Activity implements SelectMediaListener {
 
     @Inject ScApiSession mApiSession;
 
     @InjectView(R.id.button_upload) Button mUploadButton;
     @InjectView(R.id.button_browse) Button mBrowseButton;
     @InjectView(R.id.button_my_uploads) Button mMyUploadsButton;
+    @InjectView(R.id.text_no_sites) TextView mNoInstancesView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,11 +49,13 @@ public class MainActivity extends Activity implements SelectMediaListener{
     @Override protected void onResume() {
         super.onResume();
         if (mApiSession == null) {
+            mNoInstancesView.setVisibility(View.VISIBLE);
             // TODO: disable Upload and Browse
             mUploadButton.setEnabled(false);
             mBrowseButton.setEnabled(false);
             mMyUploadsButton.setEnabled(false);
         } else {
+            mNoInstancesView.setVisibility(View.GONE);
             mUploadButton.setEnabled(true);
             mBrowseButton.setEnabled(true);
             mMyUploadsButton.setEnabled(true);
