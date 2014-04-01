@@ -13,8 +13,14 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CursorAdapter;
+import android.widget.TextView;
 
+import net.sitecore.android.mediauploader.model.UploadStatus;
 import net.sitecore.android.mediauploader.provider.UploadMediaContract.Uploads;
+import net.sitecore.android.mediauploader.provider.UploadMediaContract.Uploads.Query;
+
+import butterknife.ButterKnife;
+import butterknife.InjectView;
 
 public class UploadsListActivity extends Activity {
 
@@ -44,7 +50,7 @@ public class UploadsListActivity extends Activity {
         }
 
         @Override public Loader<Cursor> onCreateLoader(int id, Bundle args) {
-            return new CursorLoader(getActivity(), Uploads.CONTENT_URI, null, null, null, null);
+            return new CursorLoader(getActivity(), Uploads.CONTENT_URI, Query.PROJECTION, null, null, null);
         }
 
         @Override public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
@@ -67,11 +73,27 @@ public class UploadsListActivity extends Activity {
         }
 
         @Override public View newView(Context context, Cursor cursor, ViewGroup parent) {
-            return LayoutInflater.from(context).inflate(android.R.layout.simple_list_item_2, parent, false);
+            View v = LayoutInflater.from(context).inflate(android.R.layout.simple_list_item_2, parent, false);
+            ViewHolder holder = new ViewHolder(v);
+            v.setTag(holder);
+            return v;
         }
 
         @Override public void bindView(View view, Context context, Cursor cursor) {
+            ViewHolder holder = (ViewHolder) view.getTag();
+            UploadStatus status = UploadStatus.values()[cursor.getInt(Query.STATUS)];
 
+            holder.text1.setText(cursor.getString(Query.ITEM_NAME));
+            holder.text2.setText("status: " + status.name());
+        }
+    }
+
+    static class ViewHolder {
+        @InjectView(android.R.id.text1)TextView text1;
+        @InjectView(android.R.id.text2)TextView text2;
+
+        ViewHolder(View v) {
+            ButterKnife.inject(this, v);
         }
     }
 
