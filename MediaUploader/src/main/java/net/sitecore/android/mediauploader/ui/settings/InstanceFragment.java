@@ -47,27 +47,12 @@ public class InstanceFragment extends Fragment {
     public boolean isFieldsValid() {
         boolean valid = true;
 
-        String url = mInstanceUrl.getText().toString();
-        if (TextUtils.isEmpty(url) || !URLUtil.isValidUrl(url)) {
-            mInstanceUrl.setError(getString(R.string.error_wrong_instance_url));
-            valid = false;
-        }
-
-        String login = mInstanceLogin.getText().toString();
-        if (TextUtils.isEmpty(login)) {
-            mInstanceLogin.setError(getString(R.string.error_wrong_instance_login));
-            valid = false;
-        }
+        if (!isUrlValid()) return false;
+        if (!isLoginValid()) return false;
 
         String password = mInstancePassword.getText().toString();
         if (TextUtils.isEmpty(password)) {
             mInstancePassword.setError(getString(R.string.error_wrong_instance_password));
-            valid = false;
-        }
-
-        String site = mInstanceSite.getText().toString();
-        if (TextUtils.isEmpty(site) && !site.startsWith("/")) {
-            mInstanceSite.setError(getString(R.string.error_wrong_instance_site));
             valid = false;
         }
 
@@ -80,6 +65,36 @@ public class InstanceFragment extends Fragment {
         return valid;
     }
 
+    private boolean isUrlValid() {
+        String url = mInstanceUrl.getText().toString();
+        if (TextUtils.isEmpty(url)) {
+            mInstanceUrl.setError(getString(R.string.error_empty_instance_url));
+            return false;
+        } else {
+            String protocol = (String) mProtocol.getSelectedItem();
+            String fullUrl = protocol.concat(url);
+            if (!URLUtil.isValidUrl(fullUrl) || url.startsWith("https://") || url.startsWith("http://")) {
+                mInstanceUrl.setError(getString(R.string.error_wrong_instance_url));
+                return false;
+            }
+            return true;
+        }
+    }
+
+    private boolean isLoginValid() {
+        String login = mInstanceLogin.getText().toString();
+        if (TextUtils.isEmpty(login)) {
+            mInstanceLogin.setError(getString(R.string.error_empty_instance_login));
+            return false;
+        } else {
+            if (!login.contains("\\") || login.startsWith("\\") || login.endsWith("\\")) {
+                mInstanceLogin.setError(getString(R.string.error_wrong_instance_login));
+                return false;
+            }
+            return true;
+        }
+    }
+
     public void setSourceInstance(Instance instance) {
         mInstance = instance;
         initViews();
@@ -87,7 +102,11 @@ public class InstanceFragment extends Fragment {
 
     public Instance getEnteredInstance() {
         Instance instance = new Instance();
-        instance.setUrl(mInstanceUrl.getText().toString());
+
+        String protocol = (String) mProtocol.getSelectedItem();
+        String fullUrl = protocol.concat(mInstanceUrl.getText().toString());
+        instance.setUrl(fullUrl);
+
         instance.setLogin(mInstanceLogin.getText().toString());
         instance.setPassword(mInstancePassword.getText().toString());
         instance.setDatabase(mInstanceDatabase.getText().toString());

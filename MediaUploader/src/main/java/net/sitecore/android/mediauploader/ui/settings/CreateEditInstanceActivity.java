@@ -10,6 +10,7 @@ import android.content.Loader;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
@@ -29,10 +30,10 @@ import net.sitecore.android.mediauploader.provider.UploadMediaContract.Instances
 import net.sitecore.android.mediauploader.provider.UploadMediaContract.Instances.Query;
 import net.sitecore.android.mediauploader.util.UploaderPrefs;
 import net.sitecore.android.mediauploader.util.Utils;
+import net.sitecore.android.sdk.api.RequestBuilder;
 import net.sitecore.android.sdk.api.ScApiSession;
 import net.sitecore.android.sdk.api.ScApiSessionFactory;
 import net.sitecore.android.sdk.api.ScPublicKey;
-import net.sitecore.android.sdk.api.ScRequest;
 import net.sitecore.android.sdk.api.ScRequestQueue;
 import net.sitecore.android.sdk.api.model.ItemsResponse;
 
@@ -179,10 +180,12 @@ public class CreateEditInstanceActivity extends Activity implements LoaderCallba
         };
         ScApiSession session = ScApiSessionFactory.newSession(enteredInstance.getUrl(), scPublicKey,
                 enteredInstance.getLogin(), enteredInstance.getPassword());
-        ScRequest request = session.readItemsRequest(success, this)
-                .database(mInstanceFragment.getEnteredInstance().getDatabase())
-                .fromSite(enteredInstance.getSite())
-                .build();
-        mRequestQueue.add(request);
+        RequestBuilder builder = session.readItemsRequest(success, this)
+                .database(mInstanceFragment.getEnteredInstance().getDatabase());
+        if (!TextUtils.isEmpty(enteredInstance.getSite())) {
+                builder.fromSite(enteredInstance.getSite());
+        }
+
+        mRequestQueue.add(builder.build());
     }
 }
