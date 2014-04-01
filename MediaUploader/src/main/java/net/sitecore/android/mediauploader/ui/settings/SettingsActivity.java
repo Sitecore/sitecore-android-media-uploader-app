@@ -10,6 +10,7 @@ import android.content.OperationApplicationException;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.os.RemoteException;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.AbsListView;
@@ -49,6 +50,7 @@ public class SettingsActivity extends Activity implements LoaderCallbacks<Cursor
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         UploaderApp.from(this).inject(this);
+        getActionBar().setDisplayHomeAsUpEnabled(true);
 
         setContentView(R.layout.activity_settings);
         ButterKnife.inject(this);
@@ -75,6 +77,16 @@ public class SettingsActivity extends Activity implements LoaderCallbacks<Cursor
         });
 
         getLoaderManager().initLoader(0, null, this);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                finish();
+                return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     @Override
