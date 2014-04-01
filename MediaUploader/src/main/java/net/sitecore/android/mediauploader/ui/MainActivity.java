@@ -36,6 +36,8 @@ public class MainActivity extends Activity implements SelectMediaListener{
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        getActionBar().setDisplayShowHomeEnabled(false);
+        getActionBar().setDisplayShowTitleEnabled(false);
 
         ButterKnife.inject(this);
         UploaderApp.from(this).inject(this);

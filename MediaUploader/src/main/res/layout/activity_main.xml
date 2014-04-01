@@ -1,34 +1,85 @@
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#ffd9dee1"
-    android:gravity="center"
-    android:orientation="vertical">
+    android:background="@drawable/background">
 
-    <Button
-        android:id="@+id/button_upload"
-        style="@style/Button.Blue"
+    <ImageView
+        android:id="@+id/image_logo"
+        android:layout_width="match_parent"
+        android:layout_height="64dp"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginLeft="48dp"
+        android:layout_marginRight="48dp"
+        android:layout_marginBottom="8dp"
+        android:scaleType="fitCenter"
+        android:src="@drawable/sitecore" />
+
+    <TextView
+        android:id="@+id/text_no_sites"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:minWidth="200dp"
-        android:text="Upload" />
+        android:layout_above="@id/image_logo"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="16dp"
+        android:gravity="center_horizontal"
+        android:text="Please set up at least one\n upload site"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:textColor="@android:color/holo_red_light" />
 
-    <Button
-        android:id="@+id/button_browse"
-        style="@style/Button.Blue"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:minWidth="200dp"
-        android:text="Browse" />
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@id/text_no_sites"
+        android:gravity="center_horizontal"
+        android:orientation="vertical"
+        android:padding="48dp">
 
-    <Button
-        android:id="@+id/button_my_uploads"
-        style="@style/Button.Blue"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:minWidth="200dp"
-        android:text="My Uploads" />
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1">
 
-</LinearLayout>
+            <Button
+                android:id="@+id/button_upload"
+                style="@style/Button.Blue.Main"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:drawableLeft="@drawable/ic_upload"
+                android:text="Upload" />
+        </FrameLayout>
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1">
+
+            <Button
+                android:id="@+id/button_browse"
+                style="@style/Button.Blue.Main"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:drawableLeft="@drawable/ic_browse"
+                android:text="Browse" />
+        </FrameLayout>
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1">
+
+            <Button
+                android:id="@+id/button_my_uploads"
+                style="@style/Button.Blue.Main"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:drawableLeft="@drawable/ic_pending"
+                android:text="My Uploads" />
+        </FrameLayout>
+    </LinearLayout>
+</RelativeLayout>
 
 

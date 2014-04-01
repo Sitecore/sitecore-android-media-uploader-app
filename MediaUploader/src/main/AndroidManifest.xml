@@ -9,11 +9,12 @@
         android:name=".UploaderApp"
         android:allowBackup="true"
         android:icon="@drawable/ic_launcher"
-        android:theme="@style/Theme.Sitecore.MediaUploader"
-        android:label="@string/app_name">
+        android:label="@string/app_name"
+        android:theme="@style/Theme.Sitecore.MediaUploader">
         <activity
             android:name=".ui.MainActivity"
-            android:label="@string/app_name">
+            android:label=""
+            android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -23,19 +24,31 @@
 
         <activity
             android:name=".ui.upload.UploadActivity"
-            android:label="@string/title_upload" />
-        <activity android:name=".ui.upload.UploadsListActivity"
-            android:label="My Uploads" />
+            android:label="@string/title_upload"
+            android:screenOrientation="portrait" />
 
-        <activity android:name=".ui.browser.BrowserActivity" />
-        <activity android:name=".ui.browser.PreviewActivity" />
-        <activity android:name=".ui.settings.SettingsActivity" />
-        <activity android:name=".ui.settings.CreateEditInstanceActivity">
+        <activity
+            android:name=".ui.upload.UploadsListActivity"
+            android:label="My Uploads"
+            android:screenOrientation="portrait" />
+
+        <activity
+            android:name=".ui.browser.BrowserActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".ui.browser.PreviewActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".ui.settings.SettingsActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".ui.settings.CreateEditInstanceActivity"
+            android:screenOrientation="portrait">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".ui.settings.SettingsActivity" />
         </activity>
-        <activity android:name=".ui.settings.ChooseMediaFolderActivity" >
+        <activity android:name=".ui.settings.ChooseMediaFolderActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".ui.settings.SettingsActivity" />
