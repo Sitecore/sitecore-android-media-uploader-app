@@ -54,7 +54,7 @@ public class InstanceFragment extends Fragment {
         }
 
         String site = mInstanceSite.getText().toString();
-        if (TextUtils.isEmpty(site) && site.startsWith("/")) {
+        if (TextUtils.isEmpty(site) && !site.startsWith("/")) {
             mInstanceSite.setError(getString(R.string.error_wrong_instance_database));
             valid = false;
         }
