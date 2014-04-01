@@ -4,15 +4,26 @@
     android:layout_height="wrap_content"
     android:orientation="vertical">
 
-    <EditText
-        android:id="@+id/instance_url"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Site URL"
-        android:imeOptions="actionNext"
-        android:inputType="textUri"
-        android:singleLine="true"
-        android:text="http://mobiledev1ua1.dk.sitecore.net:722" />
+        android:orientation="horizontal">
+
+        <Spinner
+            android:id="@+id/spinner_protocol"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+
+        <EditText
+            android:id="@+id/instance_url"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Site URL"
+            android:imeOptions="actionNext"
+            android:inputType="textUri"
+            android:singleLine="true"
+            android:text="http://mobiledev1ua1.dk.sitecore.net:722" />
+        </LinearLayout>
 
     <EditText
         android:id="@+id/instance_login"

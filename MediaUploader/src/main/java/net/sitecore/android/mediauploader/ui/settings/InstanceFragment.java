@@ -7,7 +7,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.URLUtil;
+import android.widget.ArrayAdapter;
 import android.widget.EditText;
+import android.widget.Spinner;
 
 import net.sitecore.android.mediauploader.R;
 import net.sitecore.android.mediauploader.model.Instance;
@@ -23,11 +25,21 @@ public class InstanceFragment extends Fragment {
     @InjectView(R.id.instance_login) EditText mInstanceLogin;
     @InjectView(R.id.instance_password) EditText mInstancePassword;
     @InjectView(R.id.instance_database) EditText mInstanceDatabase;
+    @InjectView(R.id.spinner_protocol) Spinner mProtocol;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View root = inflater.inflate(R.layout.fragment_instance_fields, null);
         ButterKnife.inject(this, root);
+
+        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(
+                getActivity(),
+                R.array.protocols,
+                android.R.layout.simple_spinner_item
+        );
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        mProtocol.setAdapter(adapter);
+
         return root;
     }
 
