@@ -17,10 +17,10 @@
 
         <Button
             android:id="@+id/button_delete_instance"
+            style="@style/Button.Red"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:background="@drawable/button_red"
             android:drawableLeft="@drawable/ic_delete"
             android:text="@string/button_delete" />
 

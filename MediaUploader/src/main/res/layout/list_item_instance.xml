@@ -5,6 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:descendantFocusability="blocksDescendants"
+    android:minHeight="?android:attr/listPreferredItemHeight"
     android:orientation="horizontal">
 
     <RadioButton
@@ -23,12 +24,21 @@
         android:layout_weight="5"
         android:singleLine="false" />
 
+    <View
+        android:layout_width="2dp"
+        android:layout_height="match_parent"
+        android:layout_marginBottom="8dp"
+        android:layout_marginTop="8dp"
+        android:background="@android:color/darker_gray" />
+
     <ImageButton
         android:id="@+id/button_edit_instance"
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:layout_gravity="center_vertical"
+        android:layout_marginBottom="8dp"
+        android:layout_marginTop="8dp"
         android:layout_weight="1"
-        android:background="@android:color/transparent"
-        android:src="@drawable/ic_edit_instance" />
+        android:background="@android:drawable/list_selector_background"
+        android:src="@drawable/ic_action_edit" />
 </net.sitecore.android.mediauploader.ui.settings.CheckableRelativeLayout>
