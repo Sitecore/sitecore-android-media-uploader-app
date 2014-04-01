@@ -87,10 +87,6 @@ public class InstanceFragment extends Fragment {
             mInstanceLogin.setError(getString(R.string.error_empty_instance_login));
             return false;
         } else {
-            if (!login.contains("\\") || login.startsWith("\\") || login.endsWith("\\")) {
-                mInstanceLogin.setError(getString(R.string.error_wrong_instance_login));
-                return false;
-            }
             return true;
         }
     }
