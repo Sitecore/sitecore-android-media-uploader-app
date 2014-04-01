@@ -3,23 +3,15 @@ package net.sitecore.android.mediauploader;
 import android.app.Application;
 import android.content.Context;
 
-import java.security.NoSuchAlgorithmException;
-import java.security.spec.InvalidKeySpecException;
-
 import com.android.volley.VolleyLog;
 
 import com.squareup.picasso.Picasso;
 
 import net.sitecore.android.mediauploader.util.Prefs;
-import net.sitecore.android.sdk.api.ScApiSession;
-import net.sitecore.android.sdk.api.ScApiSessionFactory;
-import net.sitecore.android.sdk.api.ScPublicKey;
 import net.sitecore.android.sdk.api.internal.LogUtils;
 
 import butterknife.ButterKnife;
 import dagger.ObjectGraph;
-
-import static net.sitecore.android.sdk.api.internal.LogUtils.LOGE;
 
 public class UploaderApp extends Application {
 
@@ -62,22 +54,6 @@ public class UploaderApp extends Application {
     @Deprecated
     public Picasso getImageLoader() {
         return mImageLoader;
-    }
-
-    @Deprecated
-    public ScApiSession getSession() {
-        try {
-            String keyValue = mPrefs.getString(R.string.key_public_key_value);
-            ScPublicKey key = new ScPublicKey(keyValue);
-
-            String url = mPrefs.getString(R.string.key_instance_url);
-            String login = mPrefs.getString(R.string.key_instance_login);
-            String password = mPrefs.getString(R.string.key_instance_password);
-            return ScApiSessionFactory.newSession(url, key, login, password);
-        } catch (InvalidKeySpecException | NoSuchAlgorithmException e) {
-            LOGE(e);
-            throw new RuntimeException(e);
-        }
     }
 
     /*

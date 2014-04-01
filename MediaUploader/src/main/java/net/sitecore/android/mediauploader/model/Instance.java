@@ -15,6 +15,8 @@ public class Instance implements Parcelable {
     private String password;
     private String rootFolder;
     private String database;
+    private String site;
+    private String publicKey;
     private boolean isSelected;
 
     public Instance() {
@@ -68,6 +70,22 @@ public class Instance implements Parcelable {
         this.isSelected = isSelected;
     }
 
+    public String getSite() {
+        return site;
+    }
+
+    public void setSite(String site) {
+        this.site = site;
+    }
+
+    public String getPublicKey() {
+        return publicKey;
+    }
+
+    public void setPublicKey(String publicKey) {
+        this.publicKey = publicKey;
+    }
+
     public ContentValues toContentValues() {
         ContentValues values = new ContentValues();
         values.put(Instances.URL, url);
@@ -75,6 +93,8 @@ public class Instance implements Parcelable {
         values.put(Instances.PASSWORD, password);
         values.put(Instances.ROOT_FOLDER, rootFolder);
         values.put(Instances.DATABASE, database);
+        values.put(Instances.SITE, site);
+        values.put(Instances.PUBLIC_KEY, publicKey);
         values.put(Instances.SELECTED, isSelected ? 1 : 0);
         return values;
     }
@@ -85,6 +105,8 @@ public class Instance implements Parcelable {
         this.password = cursor.getString(Query.PASSWORD);
         this.rootFolder = cursor.getString(Query.ROOT_FOLDER);
         this.database = cursor.getString(Query.DATABASE);
+        this.site = cursor.getString(Query.SITE);
+        this.publicKey = cursor.getString(Query.PUBLIC_KEY);
         this.isSelected = (cursor.getInt(Query.SELECTED) != 0);
     }
 
@@ -98,6 +120,8 @@ public class Instance implements Parcelable {
         dest.writeString(this.password);
         dest.writeString(this.rootFolder);
         dest.writeString(this.database);
+        dest.writeString(this.site);
+        dest.writeString(this.publicKey);
         dest.writeByte(isSelected ? (byte) 1 : (byte) 0);
     }
 
@@ -107,6 +131,8 @@ public class Instance implements Parcelable {
         this.password = in.readString();
         this.rootFolder = in.readString();
         this.database = in.readString();
+        this.site = in.readString();
+        this.publicKey = in.readString();
         this.isSelected = in.readByte() != 0;
     }
 

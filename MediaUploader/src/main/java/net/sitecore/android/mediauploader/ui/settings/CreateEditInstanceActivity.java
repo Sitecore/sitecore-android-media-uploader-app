@@ -30,6 +30,7 @@ import net.sitecore.android.mediauploader.util.UploaderPrefs;
 import net.sitecore.android.mediauploader.util.Utils;
 import net.sitecore.android.sdk.api.ScApiSession;
 import net.sitecore.android.sdk.api.ScApiSessionFactory;
+import net.sitecore.android.sdk.api.ScPublicKey;
 import net.sitecore.android.sdk.api.ScRequest;
 import net.sitecore.android.sdk.api.ScRequestQueue;
 import net.sitecore.android.sdk.api.model.ItemsResponse;
@@ -38,7 +39,8 @@ import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
 
-public class CreateEditInstanceActivity extends Activity implements LoaderCallbacks<Cursor>, ErrorListener, Listener<ScApiSession> {
+public class CreateEditInstanceActivity extends Activity implements LoaderCallbacks<Cursor>, ErrorListener,
+        Listener<ScPublicKey> {
     public static final int READ_INSTANCES_ACTION = 0;
 
     @InjectView(R.id.button_delete_instance) ImageButton mDeleteButton;
@@ -109,6 +111,8 @@ public class CreateEditInstanceActivity extends Activity implements LoaderCallba
 
                         mPrefs.setSelectedInstance(new Instance(cursor));
                     }
+                } else {
+                    mPrefs.cleanSelectedInstance();
                 }
             }
         }.startQuery(0, null, Instances.CONTENT_URI, Query.PROJECTION, null, null, null);
@@ -117,9 +121,7 @@ public class CreateEditInstanceActivity extends Activity implements LoaderCallba
     @OnClick(R.id.button_next) void checkConnection() {
         if (mInstanceFragment.isFieldsValid()) {
             Instance instance = mInstanceFragment.getEnteredInstance();
-            ScApiSessionFactory.getSession(mRequestQueue, instance.getUrl(), instance.getLogin(),
-                    instance.getPassword(), this, this);
-
+            mRequestQueue.add(ScApiSessionFactory.buildPublicKeyRequest(instance.getUrl(), this, this));
         }
     }
 
@@ -155,14 +157,14 @@ public class CreateEditInstanceActivity extends Activity implements LoaderCallba
         Toast.makeText(this, Utils.getMessageFromError(error), Toast.LENGTH_LONG).show();
     }
 
-    @Override
-    public void onResponse(ScApiSession session) {
+    @Override public void onResponse(ScPublicKey scPublicKey) {
+        final Instance enteredInstance = mInstanceFragment.getEnteredInstance();
+        enteredInstance.setPublicKey(scPublicKey.getRawValue());
         Listener<ItemsResponse> success = new Listener<ItemsResponse>() {
             @Override
             public void onResponse(ItemsResponse response) {
                 if (response.getTotalCount() != 0) {
                     Intent intent = new Intent(CreateEditInstanceActivity.this, ChooseMediaFolderActivity.class);
-                    Instance enteredInstance = mInstanceFragment.getEnteredInstance();
                     if (mInstanceUri != null) {
                         intent.setData(mInstanceUri);
                     }
@@ -174,8 +176,12 @@ public class CreateEditInstanceActivity extends Activity implements LoaderCallba
                 }
             }
         };
+        ScApiSession session = ScApiSessionFactory.newSession(enteredInstance.getUrl(), scPublicKey,
+                enteredInstance.getLogin(), enteredInstance.getPassword());
         ScRequest request = session.readItemsRequest(success, this)
-                .database(mInstanceFragment.getEnteredInstance().getDatabase()).build();
+                .database(mInstanceFragment.getEnteredInstance().getDatabase())
+                .fromSite(enteredInstance.getSite())
+                .build();
         mRequestQueue.add(request);
     }
 }

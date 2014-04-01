@@ -41,12 +41,19 @@ public class MainActivity extends Activity implements SelectMediaListener{
 
         ButterKnife.inject(this);
         UploaderApp.from(this).inject(this);
+    }
 
+    @Override protected void onResume() {
+        super.onResume();
         if (mApiSession == null) {
             // TODO: disable Upload and Browse
             mUploadButton.setEnabled(false);
             mBrowseButton.setEnabled(false);
             mMyUploadsButton.setEnabled(false);
+        } else {
+            mUploadButton.setEnabled(true);
+            mBrowseButton.setEnabled(true);
+            mMyUploadsButton.setEnabled(true);
         }
     }
 

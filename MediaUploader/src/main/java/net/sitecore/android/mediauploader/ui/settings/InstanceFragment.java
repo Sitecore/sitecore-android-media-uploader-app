@@ -21,11 +21,12 @@ import butterknife.InjectView;
 public class InstanceFragment extends Fragment {
     private Instance mInstance;
 
+    @InjectView(R.id.spinner_protocol) Spinner mProtocol;
     @InjectView(R.id.instance_url) EditText mInstanceUrl;
     @InjectView(R.id.instance_login) EditText mInstanceLogin;
     @InjectView(R.id.instance_password) EditText mInstancePassword;
     @InjectView(R.id.instance_database) EditText mInstanceDatabase;
-    @InjectView(R.id.spinner_protocol) Spinner mProtocol;
+    @InjectView(R.id.instance_site) EditText mInstanceSite;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -64,6 +65,12 @@ public class InstanceFragment extends Fragment {
             valid = false;
         }
 
+        String site = mInstanceSite.getText().toString();
+        if (TextUtils.isEmpty(site) && site.startsWith("/")) {
+            mInstanceSite.setError(getString(R.string.error_wrong_instance_database));
+            valid = false;
+        }
+
         String database = mInstanceDatabase.getText().toString();
         if (TextUtils.isEmpty(database)) {
             mInstanceDatabase.setError(getString(R.string.error_wrong_instance_database));
@@ -84,6 +91,7 @@ public class InstanceFragment extends Fragment {
         instance.setLogin(mInstanceLogin.getText().toString());
         instance.setPassword(mInstancePassword.getText().toString());
         instance.setDatabase(mInstanceDatabase.getText().toString());
+        instance.setSite(mInstanceSite.getText().toString());
         if (mInstance != null) instance.setRootFolder(mInstance.getRootFolder());
         else instance.setRootFolder(ScUtils.PATH_MEDIA_LIBRARY);
         return instance;
@@ -94,5 +102,6 @@ public class InstanceFragment extends Fragment {
         mInstanceLogin.setText(mInstance.getLogin());
         mInstancePassword.setText(mInstance.getPassword());
         mInstanceDatabase.setText(mInstance.getDatabase());
+        mInstanceSite.setText(mInstance.getSite());
     }
 }

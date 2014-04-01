@@ -1,7 +1,6 @@
 package net.sitecore.android.mediauploader;
 
 import android.content.res.Resources;
-import android.text.TextUtils;
 
 import javax.inject.Singleton;
 
@@ -68,18 +67,16 @@ public final class UploaderAppModule {
 
     // not @Singleton - may change after settings are changed.
     @Provides ScApiSession provideApiSession(UploaderPrefs prefs) {
-        String keyValue = prefs.getPublicKey();
-        if (TextUtils.isEmpty(keyValue)) {
-            return null;
-        }
-
         try {
-            ScPublicKey key = new ScPublicKey(keyValue);
             Instance instance = prefs.getCurrentInstance();
+            if (instance == null) {
+                return null;
+            }
 
             String url = instance.getUrl();
             String login = instance.getLogin();
             String password = instance.getPassword();
+            ScPublicKey key = new ScPublicKey(instance.getPublicKey());
 
             return ScApiSessionFactory.newSession(url, key, login, password);
         } catch (InvalidKeySpecException | NoSuchAlgorithmException e) {
