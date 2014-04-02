@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<net.sitecore.android.mediauploader.ui.settings.CheckableRelativeLayout
+<net.sitecore.android.mediauploader.ui.widget.CheckableLinearLayout
     android:id="@+id/instance_list_items_container"
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
@@ -41,4 +41,4 @@
         android:layout_weight="1"
         android:background="@android:drawable/list_selector_background"
         android:src="@drawable/ic_action_edit" />
-</net.sitecore.android.mediauploader.ui.settings.CheckableRelativeLayout>
+</net.sitecore.android.mediauploader.ui.widget.CheckableLinearLayout>
