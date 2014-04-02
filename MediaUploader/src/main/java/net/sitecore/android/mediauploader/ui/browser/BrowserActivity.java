@@ -29,6 +29,7 @@ import net.sitecore.android.mediauploader.UploaderApp;
 import net.sitecore.android.mediauploader.model.Instance;
 import net.sitecore.android.mediauploader.provider.UploadMediaContract.Instances;
 import net.sitecore.android.mediauploader.provider.UploadMediaContract.Instances.Query;
+import net.sitecore.android.mediauploader.util.ScUtils;
 import net.sitecore.android.mediauploader.util.Utils;
 import net.sitecore.android.sdk.api.ScApiSession;
 import net.sitecore.android.sdk.api.ScApiSessionFactory;
@@ -93,7 +94,7 @@ public class BrowserActivity extends Activity implements ContentTreePositionList
         mFragment = new BrowserFragment();
         mFragment.setContentTreePositionListener(BrowserActivity.this);
         mFragment.setNetworkEventsListener(BrowserActivity.this);
-        mFragment.setRootFolder(instance.getRootFolder());
+        mFragment.setRootFolder(ScUtils.PATH_MEDIA_LIBRARY);
 
         getFragmentManager().beginTransaction().replace(R.id.fragment_container, mFragment).commitAllowingStateLoss();
 
