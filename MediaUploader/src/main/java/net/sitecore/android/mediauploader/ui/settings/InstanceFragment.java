@@ -73,8 +73,8 @@ public class InstanceFragment extends Fragment {
         } else {
             String protocol = (String) mProtocol.getSelectedItem();
             String fullUrl = protocol.concat(url);
-            if (!URLUtil.isValidUrl(fullUrl) || url.startsWith("https://") || url.startsWith("http://")) {
-                mInstanceUrl.setError(getString(R.string.error_wrong_instance_url));
+            if (!URLUtil.isValidUrl(fullUrl) || url.startsWith("https") || url.startsWith("http")) {
+                mInstanceUrl.setError(fullUrl + " " + getString(R.string.error_wrong_instance_url));
                 return false;
             }
             return true;
@@ -113,7 +113,8 @@ public class InstanceFragment extends Fragment {
     }
 
     private void initViews() {
-        mInstanceUrl.setText(mInstance.getUrl());
+        String url = mInstance.getUrl().replace("http://", "").replace("https://", "");
+        mInstanceUrl.setText(url);
         mInstanceLogin.setText(mInstance.getLogin());
         mInstancePassword.setText(mInstance.getPassword());
         mInstanceDatabase.setText(mInstance.getDatabase());
