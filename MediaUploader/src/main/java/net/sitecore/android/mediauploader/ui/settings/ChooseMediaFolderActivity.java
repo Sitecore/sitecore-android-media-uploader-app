@@ -3,7 +3,6 @@ package net.sitecore.android.mediauploader.ui.settings;
 import android.app.Activity;
 import android.app.LoaderManager.LoaderCallbacks;
 import android.content.ContentProviderOperation;
-import android.content.CursorLoader;
 import android.content.Loader;
 import android.content.OperationApplicationException;
 import android.database.Cursor;
@@ -11,7 +10,6 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.RemoteException;
 import android.support.v4.app.NavUtils;
-import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -48,11 +46,7 @@ import static net.sitecore.android.sdk.api.internal.LogUtils.LOGE;
 
 public class ChooseMediaFolderActivity extends Activity implements LoaderCallbacks<Cursor>, ErrorListener, Listener<ScApiSession> {
 
-    public static final  String INSTANCE_KEY = "instance";
-    public static final int READ_NAMES_ACTION = 1;
-
-    private static final String SELECTION = Instances.URL + "=? and " + Instances.LOGIN + "=? and " +
-            Instances.PASSWORD + "=? and " + Instances.ROOT_FOLDER + "=? and " + Instances.SITE + "=?";
+    public static final String INSTANCE_KEY = "instance";
 
     @InjectView(R.id.instance_root_folder) TextView mInstanceRootFolder;
     @Inject ScRequestQueue mScRequestQueue;
@@ -78,11 +72,9 @@ public class ChooseMediaFolderActivity extends Activity implements LoaderCallbac
 
     private NetworkEventsListener mNetworkEventsListener = new NetworkEventsListener() {
         @Override public void onUpdateRequestStarted() {
-
         }
 
         @Override public void onUpdateSuccess(ItemsResponse itemsResponse) {
-
         }
 
         @Override public void onUpdateError(VolleyError volleyError) {
@@ -134,7 +126,7 @@ public class ChooseMediaFolderActivity extends Activity implements LoaderCallbac
     }
 
     private void checkInstanceIfExists() {
-        getLoaderManager().restartLoader(READ_NAMES_ACTION, null, this);
+        getLoaderManager().restartLoader(0, null, this);
     }
 
     @Override
@@ -153,32 +145,20 @@ public class ChooseMediaFolderActivity extends Activity implements LoaderCallbac
 
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
-        switch (id) {
-            case READ_NAMES_ACTION:
-                String[] selectionArgs = new String[]{mInstance.getUrl(), mInstance.getLogin(), mInstance.getPassword(),
-                        mInstance.getRootFolder(), mInstance.getSite()};
-                return new CursorLoader(this, Instances.CONTENT_URI, null, SELECTION, selectionArgs, null);
-            default:
-                return null;
-        }
+        return new DuplicateInstancesLoader(this, mInstance);
     }
 
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
-        switch (loader.getId()) {
-            case READ_NAMES_ACTION: {
-                if (data.moveToFirst()) {
-                    Toast.makeText(this, R.string.toast_instance_exists, Toast.LENGTH_LONG).show();
-                } else {
-                    mPrefs.setSelectedInstance(mInstance);
-                    saveInstanceToDB(mInstance);
-                    NavUtils.navigateUpFromSameTask(this);
-                }
-                data.close();
-                getLoaderManager().destroyLoader(READ_NAMES_ACTION);
-                break;
-            }
+        if (data.moveToFirst()) {
+            Toast.makeText(this, R.string.toast_instance_exists, Toast.LENGTH_LONG).show();
+        } else {
+            mPrefs.setSelectedInstance(mInstance);
+            saveInstanceToDB(mInstance);
+            NavUtils.navigateUpFromSameTask(this);
         }
+        data.close();
+        getLoaderManager().destroyLoader(0);
     }
 
     @Override
@@ -187,16 +167,25 @@ public class ChooseMediaFolderActivity extends Activity implements LoaderCallbac
 
     private void saveInstanceToDB(Instance instance) {
         ArrayList<ContentProviderOperation> operations = new ArrayList<>();
-        operations.add(ContentProviderOperation.newUpdate(Instances.CONTENT_URI).withValue(Instances.SELECTED, 0)
-                .build());
+
+        //
+        operations.add(ContentProviderOperation.newUpdate(Instances.CONTENT_URI)
+                        .withValue(Instances.SELECTED, 0)
+                        .build()
+        );
         instance.setSelected(true);
         if (mInstanceUri == null) {
             operations.add(ContentProviderOperation.newInsert(Instances.CONTENT_URI)
-                    .withValues(instance.toContentValues()).build());
+                            .withValues(instance.toContentValues())
+                            .build()
+            );
         } else {
-            operations.add(ContentProviderOperation.newUpdate(mInstanceUri).withValues(instance.toContentValues())
-                    .build());
+            operations.add(ContentProviderOperation.newUpdate(mInstanceUri)
+                            .withValues(instance.toContentValues())
+                            .build()
+            );
         }
+
         try {
             getContentResolver().applyBatch(UploadMediaContract.CONTENT_AUTHORITY, operations);
         } catch (RemoteException | OperationApplicationException e) {
