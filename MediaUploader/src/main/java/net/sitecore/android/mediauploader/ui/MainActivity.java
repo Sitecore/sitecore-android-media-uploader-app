@@ -9,6 +9,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import javax.inject.Inject;
 
@@ -16,8 +17,8 @@ import net.sitecore.android.mediauploader.R;
 import net.sitecore.android.mediauploader.UploaderApp;
 import net.sitecore.android.mediauploader.ui.browser.BrowserActivity;
 import net.sitecore.android.mediauploader.ui.settings.SettingsActivity;
-import net.sitecore.android.mediauploader.ui.upload.SelectMediaDialogFragment;
-import net.sitecore.android.mediauploader.ui.upload.SelectMediaDialogFragment.SelectMediaListener;
+import net.sitecore.android.mediauploader.ui.upload.SelectMediaDialogHelper;
+import net.sitecore.android.mediauploader.ui.upload.SelectMediaDialogHelper.SelectMediaListener;
 import net.sitecore.android.mediauploader.ui.upload.UploadActivity;
 import net.sitecore.android.mediauploader.ui.upload.UploadsListActivity;
 import net.sitecore.android.sdk.api.ScApiSession;
@@ -34,6 +35,7 @@ public class MainActivity extends Activity implements SelectMediaListener {
     @InjectView(R.id.button_browse) Button mBrowseButton;
     @InjectView(R.id.button_my_uploads) Button mMyUploadsButton;
     @InjectView(R.id.text_no_sites) TextView mNoInstancesView;
+    private SelectMediaDialogHelper mMediaDialogHelper;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,7 +52,7 @@ public class MainActivity extends Activity implements SelectMediaListener {
         super.onResume();
         if (mApiSession == null) {
             mNoInstancesView.setVisibility(View.VISIBLE);
-            // TODO: disable Upload and Browse
+
             mUploadButton.setEnabled(false);
             mBrowseButton.setEnabled(false);
             mMyUploadsButton.setEnabled(false);
@@ -64,8 +66,8 @@ public class MainActivity extends Activity implements SelectMediaListener {
 
     @OnClick(R.id.button_upload)
     public void onUploadClick() {
-        new SelectMediaDialogFragment().show(getFragmentManager(), "dialog");
-
+        mMediaDialogHelper = new SelectMediaDialogHelper(this, this);
+        mMediaDialogHelper.showDialog();
     }
 
     @Override public void onImageSelected(Uri imageUri) {
@@ -88,6 +90,14 @@ public class MainActivity extends Activity implements SelectMediaListener {
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.main, menu);
         return true;
+    }
+
+    @Override public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (resultCode == Activity.RESULT_OK) {
+            mMediaDialogHelper.onActivityResult(requestCode, data);
+        } else {
+            super.onActivityResult(requestCode, resultCode, data);
+        }
     }
 
     @Override

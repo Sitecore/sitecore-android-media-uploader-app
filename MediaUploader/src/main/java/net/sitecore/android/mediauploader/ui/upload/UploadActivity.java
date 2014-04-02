@@ -21,7 +21,7 @@ import net.sitecore.android.mediauploader.UploaderApp;
 import net.sitecore.android.mediauploader.model.Instance;
 import net.sitecore.android.mediauploader.model.UploadStatus;
 import net.sitecore.android.mediauploader.provider.UploadMediaContract.Uploads;
-import net.sitecore.android.mediauploader.ui.upload.SelectMediaDialogFragment.SelectMediaListener;
+import net.sitecore.android.mediauploader.ui.upload.SelectMediaDialogHelper.SelectMediaListener;
 import net.sitecore.android.mediauploader.util.UploaderPrefs;
 import net.sitecore.android.sdk.api.ScApiSession;
 
@@ -40,6 +40,7 @@ public class UploadActivity extends Activity implements ErrorListener, SelectMed
     @Inject UploaderPrefs mUploaderPrefs;
 
     private Uri mImageUri;
+    private SelectMediaDialogHelper mMediaDialogHelper;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -72,7 +73,7 @@ public class UploadActivity extends Activity implements ErrorListener, SelectMed
         new AsyncQueryHandler(getContentResolver()) {
             @Override
             protected void onInsertComplete(int token, Object cookie, final Uri uri) {
-                    uploadMedia(uri);
+                uploadMedia(uri);
             }
         }.startInsert(0, null, Uploads.CONTENT_URI, values);
 
@@ -88,13 +89,22 @@ public class UploadActivity extends Activity implements ErrorListener, SelectMed
 
         Toast.makeText(this, "Added to My Uploads", Toast.LENGTH_LONG).show();
 
-        new AsyncQueryHandler(getContentResolver()){
+        new AsyncQueryHandler(getContentResolver()) {
         }.startInsert(0, null, Uploads.CONTENT_URI, values);
     }
 
     @OnClick(R.id.image_preview)
     public void onPreviewClick() {
-        new SelectMediaDialogFragment().show(getFragmentManager(), "dialog");
+        mMediaDialogHelper = new SelectMediaDialogHelper(this, this);
+        mMediaDialogHelper.showDialog();
+    }
+
+    @Override public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (resultCode == Activity.RESULT_OK) {
+            mMediaDialogHelper.onActivityResult(requestCode, data);
+        } else {
+            super.onActivityResult(requestCode, resultCode, data);
+        }
     }
 
     private ContentValues populateUploadValues() {
