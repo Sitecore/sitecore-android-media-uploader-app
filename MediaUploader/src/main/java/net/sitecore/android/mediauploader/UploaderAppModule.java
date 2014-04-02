@@ -81,6 +81,7 @@ public final class UploaderAppModule {
 
             ScApiSession session = ScApiSessionFactory.newSession(url, key, login, password);
             if (!TextUtils.isEmpty(instance.getSite())) session.setDefaultSite(instance.getSite());
+            session.setDefaultDatabase(instance.getDatabase());
 
             return session;
         } catch (InvalidKeySpecException | NoSuchAlgorithmException e) {

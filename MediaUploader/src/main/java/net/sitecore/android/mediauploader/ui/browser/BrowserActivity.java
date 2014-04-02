@@ -7,6 +7,7 @@ import android.content.CursorLoader;
 import android.content.Loader;
 import android.database.Cursor;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -90,7 +91,7 @@ public class BrowserActivity extends Activity implements ContentTreePositionList
         return super.onOptionsItemSelected(item);
     }
 
-    private void initFragment(Instance instance) {
+    private void initFragment(final Instance instance) {
         mFragment = new BrowserFragment();
         mFragment.setContentTreePositionListener(BrowserActivity.this);
         mFragment.setNetworkEventsListener(BrowserActivity.this);
@@ -100,6 +101,8 @@ public class BrowserActivity extends Activity implements ContentTreePositionList
 
         Listener<ScApiSession> successListener = new Listener<ScApiSession>() {
             @Override public void onResponse(final ScApiSession session) {
+                if (!TextUtils.isEmpty(instance.getSite())) session.setDefaultSite(instance.getSite());
+                session.setDefaultDatabase(instance.getDatabase());
                 mFragment.loadContent(session);
             }
         };

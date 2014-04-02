@@ -49,7 +49,7 @@ public class ChooseMediaFolderActivity extends Activity implements LoaderCallbac
     public final static String INSTANCE_KEY = "instance";
     public static final int READ_NAMES_ACTION = 1;
     private static final String SELECTION = Instances.URL + "=? and " + Instances.LOGIN + "=? and " +
-            Instances.PASSWORD + "=? and " + Instances.ROOT_FOLDER + "=? and " + Instances.DATABASE + "=?";
+            Instances.PASSWORD + "=? and " + Instances.ROOT_FOLDER + "=?";
 
     @InjectView(R.id.instance_root_folder) TextView mInstanceRootFolder;
     @Inject ScRequestQueue mScRequestQueue;
@@ -155,7 +155,7 @@ public class ChooseMediaFolderActivity extends Activity implements LoaderCallbac
         switch (id) {
             case READ_NAMES_ACTION:
                 String[] selectionArgs = new String[]{mInstance.getUrl(), mInstance.getLogin(), mInstance.getPassword(),
-                        mInstance.getRootFolder(), mInstance.getDatabase()};
+                        mInstance.getRootFolder()};
                 return new CursorLoader(this, Instances.CONTENT_URI, null, SELECTION, selectionArgs, null);
             default:
                 return null;
