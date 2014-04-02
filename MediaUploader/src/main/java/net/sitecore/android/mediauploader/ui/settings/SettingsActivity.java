@@ -68,7 +68,7 @@ public class SettingsActivity extends Activity implements LoaderCallbacks<Cursor
         mList.addFooterView(footerView);
         mList.setOnItemClickListener(new OnItemClickListener() {
             @Override public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                mPrefs.setSelectedInstance(new Instance(mAdapter.getCursor()));
+                UploaderApp.from(getApplicationContext()).switchInstance(new Instance(mAdapter.getCursor()));
                 switchInstances(id);
             }
         });

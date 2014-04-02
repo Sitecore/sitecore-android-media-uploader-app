@@ -2,6 +2,7 @@ package net.sitecore.android.mediauploader.ui.browser;
 
 import android.app.Activity;
 import android.app.LoaderManager.LoaderCallbacks;
+import android.content.AsyncQueryHandler;
 import android.content.Context;
 import android.content.CursorLoader;
 import android.content.Loader;
@@ -37,6 +38,7 @@ import net.sitecore.android.sdk.api.ScApiSessionFactory;
 import net.sitecore.android.sdk.api.ScRequestQueue;
 import net.sitecore.android.sdk.api.model.ItemsResponse;
 import net.sitecore.android.sdk.api.model.ScItem;
+import net.sitecore.android.sdk.api.provider.ScItemsContract.Items;
 import net.sitecore.android.sdk.ui.ItemsBrowserFragment.ContentTreePositionListener;
 import net.sitecore.android.sdk.ui.ItemsBrowserFragment.NetworkEventsListener;
 
@@ -109,6 +111,9 @@ public class BrowserActivity extends Activity implements ContentTreePositionList
 
         ScApiSessionFactory.getSession(mRequestQueue, instance.getUrl(), instance.getLogin(), instance.getPassword(),
                 successListener, BrowserActivity.this);
+
+        new AsyncQueryHandler(getContentResolver()) {
+        }.startDelete(0, null, Items.CONTENT_URI, null, null);
     }
 
     @Override public void onErrorResponse(VolleyError error) {

@@ -14,7 +14,6 @@ import android.text.TextUtils;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
-import android.widget.ImageButton;
 import android.widget.Toast;
 
 import javax.inject.Inject;
@@ -111,7 +110,7 @@ public class CreateEditInstanceActivity extends Activity implements LoaderCallba
                         new AsyncQueryHandler(getContentResolver()) {
                         }.startUpdate(0, null, Instances.buildInstanceUri(id), values, null, null);
 
-                        mPrefs.setSelectedInstance(new Instance(cursor));
+                        UploaderApp.from(getApplicationContext()).switchInstance(new Instance(cursor));
                     }
                 } else {
                     mPrefs.cleanSelectedInstance();
