@@ -147,6 +147,7 @@ public class ChooseMediaFolderActivity extends Activity implements LoaderCallbac
         mBrowserFragment.setRootFolder(ScUtils.PATH_MEDIA_LIBRARY);
         mBrowserFragment.setNetworkEventsListener(mNetworkEventsListener);
         mBrowserFragment.setContentTreePositionListener(mContentTreePositionListener);
+        session.setDefaultDatabase(mInstance.getDatabase());
         mBrowserFragment.loadContent(session);
     }
 
