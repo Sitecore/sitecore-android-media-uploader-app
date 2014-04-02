@@ -8,11 +8,36 @@
     <TextView
         android:id="@+id/instance_root_folder"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="16dp"
+        android:layout_marginTop="4dp"
+        android:textAppearance="?android:attr/textAppearanceMedium" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="2dp"
+        android:layout_marginBottom="8dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginRight="8dp"
+        android:background="@android:color/darker_gray" />
 
     <fragment
-        android:name="net.sitecore.android.sdk.ui.ItemsListBrowserFragment"
         android:id="@+id/browser_fragment"
+        android:name="net.sitecore.android.sdk.ui.ItemsListBrowserFragment"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="0dp"
+        android:layout_weight="1" />
+
+    <Button
+        android:id="@+id/button_save"
+        style="@style/Button.Blue"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp"
+        android:drawableLeft="@drawable/ic_menu_save"
+        android:paddingLeft="48dp"
+        android:text="@string/text_save_upload_folder"
+        android:textAppearance="?android:attr/textAppearanceMedium" />
+
 </LinearLayout>

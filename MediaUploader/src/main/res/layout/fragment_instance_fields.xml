@@ -4,6 +4,22 @@
     android:layout_height="wrap_content"
     android:orientation="vertical">
 
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:textAllCaps="true"
+        android:layout_marginLeft="16dp"
+        android:text="Site" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="2dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginRight="8dp"
+        android:background="@android:color/darker_gray" />
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -18,7 +34,7 @@
             android:id="@+id/instance_url"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Site URL"
+            android:hint="@string/hint_url"
             android:imeOptions="actionNext"
             android:inputType="textUri"
             android:singleLine="true"
@@ -26,10 +42,34 @@
     </LinearLayout>
 
     <EditText
+        android:id="@+id/instance_site"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="@string/hint_site"
+        android:imeOptions="actionNext"
+        android:singleLine="true" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:textAllCaps="true"
+        android:layout_marginLeft="16dp"
+        android:text="User" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="2dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginRight="8dp"
+        android:background="@android:color/darker_gray" />
+
+    <EditText
         android:id="@+id/instance_login"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Domain\\Username"
+        android:hint="@string/hint_username"
         android:imeOptions="actionNext"
         android:inputType="textPersonName"
         android:singleLine="true"
@@ -39,18 +79,10 @@
         android:id="@+id/instance_password"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Password"
-        android:imeOptions="actionNext"
+        android:hint="@string/hint_password"
+        android:imeOptions="actionDone"
         android:inputType="textPassword"
         android:singleLine="true"
         android:text="creatorex" />
-
-    <EditText
-        android:id="@+id/instance_site"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="Site"
-        android:imeOptions="actionNext"
-        android:singleLine="true" />
 
 </LinearLayout>

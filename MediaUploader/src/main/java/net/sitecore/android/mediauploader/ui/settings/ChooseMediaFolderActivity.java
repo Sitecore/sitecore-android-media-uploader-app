@@ -42,12 +42,15 @@ import net.sitecore.android.sdk.ui.ItemsListBrowserFragment;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
+import butterknife.OnClick;
 
 import static net.sitecore.android.sdk.api.internal.LogUtils.LOGE;
 
 public class ChooseMediaFolderActivity extends Activity implements LoaderCallbacks<Cursor>, ErrorListener, Listener<ScApiSession> {
-    public final static String INSTANCE_KEY = "instance";
+
+    public static final  String INSTANCE_KEY = "instance";
     public static final int READ_NAMES_ACTION = 1;
+
     private static final String SELECTION = Instances.URL + "=? and " + Instances.LOGIN + "=? and " +
             Instances.PASSWORD + "=? and " + Instances.ROOT_FOLDER + "=? and " + Instances.SITE + "=?";
 
@@ -111,26 +114,23 @@ public class ChooseMediaFolderActivity extends Activity implements LoaderCallbac
     }
 
     @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.choose_media_library, menu);
-        return true;
-    }
-
-    @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case android.R.id.home:
                 finish();
                 return true;
-            case R.id.save:
-                if (mBrowserFragment.getCurrentItem() != null) {
-                    mInstance.setRootFolder(mBrowserFragment.getCurrentItem().getPath());
-                }
-                checkInstanceIfExists();
-                return true;
 
+            default:
+                return super.onOptionsItemSelected(item);
         }
-        return super.onOptionsItemSelected(item);
+    }
+
+    @OnClick(R.id.button_save)
+    public void saveCurrentFolder() {
+        if (mBrowserFragment.getCurrentItem() != null) {
+            mInstance.setRootFolder(mBrowserFragment.getCurrentItem().getPath());
+        }
+        checkInstanceIfExists();
     }
 
     private void checkInstanceIfExists() {

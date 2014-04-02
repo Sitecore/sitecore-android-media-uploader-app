@@ -54,7 +54,9 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".ui.settings.SettingsActivity" />
         </activity>
-        <activity android:name=".ui.settings.ChooseMediaFolderActivity">
+        <activity
+            android:name=".ui.settings.ChooseMediaFolderActivity"
+            android:label="@string/title_chose_media_folder">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".ui.settings.SettingsActivity" />
