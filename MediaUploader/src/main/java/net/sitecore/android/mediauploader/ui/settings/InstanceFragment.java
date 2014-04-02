@@ -59,7 +59,7 @@ public class InstanceFragment extends Fragment {
     }
 
     private boolean isUrlValid() {
-        String url = mInstanceUrl.getText().toString();
+        String url = mInstanceUrl.getText().toString().toLowerCase();
         if (TextUtils.isEmpty(url)) {
             mInstanceUrl.setError(getString(R.string.error_empty_instance_url));
             return false;
@@ -75,7 +75,7 @@ public class InstanceFragment extends Fragment {
     }
 
     private boolean isLoginValid() {
-        String login = mInstanceLogin.getText().toString();
+        String login = mInstanceLogin.getText().toString().toLowerCase();
         if (TextUtils.isEmpty(login)) {
             mInstanceLogin.setError(getString(R.string.error_empty_instance_login));
             return false;
@@ -94,11 +94,11 @@ public class InstanceFragment extends Fragment {
 
         String protocol = (String) mProtocol.getSelectedItem();
         String fullUrl = protocol.concat(mInstanceUrl.getText().toString());
-        instance.setUrl(fullUrl);
+        instance.setUrl(fullUrl.toLowerCase());
 
-        instance.setLogin(mInstanceLogin.getText().toString());
+        instance.setLogin(mInstanceLogin.getText().toString().toLowerCase());
         instance.setPassword(mInstancePassword.getText().toString());
-        instance.setSite(mInstanceSite.getText().toString());
+        instance.setSite(mInstanceSite.getText().toString().toLowerCase());
         instance.setDatabase("master");
         if (mInstance != null) instance.setRootFolder(mInstance.getRootFolder());
         else instance.setRootFolder(ScUtils.PATH_MEDIA_LIBRARY);
