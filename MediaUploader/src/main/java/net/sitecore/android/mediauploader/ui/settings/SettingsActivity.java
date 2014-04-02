@@ -86,6 +86,10 @@ public class SettingsActivity extends Activity implements LoaderCallbacks<Cursor
         return super.onOptionsItemSelected(item);
     }
 
+    @Override public void onBackPressed() {
+        NavUtils.navigateUpFromSameTask(this);
+    }
+
     @Override
     protected void onDestroy() {
         super.onDestroy();
