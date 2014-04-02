@@ -74,7 +74,7 @@ public class InstanceFragment extends Fragment {
             String protocol = (String) mProtocol.getSelectedItem();
             String fullUrl = protocol.concat(url);
             if (!URLUtil.isValidUrl(fullUrl) || url.startsWith("https") || url.startsWith("http")) {
-                mInstanceUrl.setError(fullUrl + " " + getString(R.string.error_wrong_instance_url));
+                mInstanceUrl.setError(getString(R.string.error_wrong_instance_url, fullUrl));
                 return false;
             }
             return true;
