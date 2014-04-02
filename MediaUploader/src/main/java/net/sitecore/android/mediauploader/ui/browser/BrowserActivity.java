@@ -144,27 +144,26 @@ public class BrowserActivity extends Activity implements ContentTreePositionList
     }
 
     @Override public void onLoadFinished(Loader loader, Cursor data) {
-        if (data.moveToFirst()) {
-            Instance instance = null;
-            int selectedInstancePos = 0;
-            while (data.moveToNext()) {
-                if (data.getInt(Query.SELECTED) == 1) {
-                    instance = new Instance(data);
-                    selectedInstancePos = data.getPosition();
-                    break;
-                }
+        Instance instance = null;
+        int selectedInstancePos = 0;
+        while (data.moveToNext()) {
+            if (data.getInt(Query.SELECTED) == 1) {
+                instance = new Instance(data);
+                selectedInstancePos = data.getPosition();
+                break;
             }
-            if (data.getCount() == 1) {
-                mInstancesSpinner.setVisibility(View.GONE);
-            } else {
-                mAdapter = new InstancesSpinnerAdapter(this);
-                mAdapter.swapCursor(data);
-                mInstancesSpinner.setAdapter(mAdapter);
-                mInstancesSpinner.setSelection(selectedInstancePos);
-            }
-            if (instance != null) {
-                initFragment(instance);
-            }
+        }
+        if (data.getCount() == 1) {
+            mInstancesSpinner.setVisibility(View.GONE);
+        } else {
+            mAdapter = new InstancesSpinnerAdapter(this);
+            mAdapter.swapCursor(data);
+            mInstancesSpinner.setAdapter(mAdapter);
+            mInstancesSpinner.setSelection(selectedInstancePos);
+        }
+
+        if (instance != null) {
+            initFragment(instance);
         }
     }
 
