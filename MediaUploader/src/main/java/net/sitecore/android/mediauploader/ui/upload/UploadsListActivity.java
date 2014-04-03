@@ -47,6 +47,7 @@ public class UploadsListActivity extends Activity {
         @Override public void onActivityCreated(Bundle savedInstanceState) {
             super.onActivityCreated(savedInstanceState);
             setEmptyText("No uploads");
+            getLoaderManager().initLoader(0, null, this);
         }
 
         @Override public Loader<Cursor> onCreateLoader(int id, Bundle args) {
