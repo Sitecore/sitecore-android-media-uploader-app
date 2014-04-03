@@ -117,13 +117,17 @@ public class SettingsActivity extends Activity implements LoaderCallbacks<Cursor
 
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
-        mAdapter = new InstancesListAdapter(this);
-        mAdapter.swapCursor(data);
-        mList.setAdapter(mAdapter)  ;
-
-        while (data.moveToNext()) {
-            if (data.getInt(Query.SELECTED) != 0) mList.setItemChecked(data.getPosition(), true);
+        if (mAdapter == null) {
+            mAdapter = new InstancesListAdapter(this);
+            mList.setAdapter(mAdapter);
         }
+
+        int selectedPosition = 0;
+        while (data.moveToNext()) {
+            if (data.getInt(Query.SELECTED) != 0) selectedPosition = data.getPosition();
+        }
+        mAdapter.swapCursor(data);
+        mList.setItemChecked(selectedPosition, true);
     }
 
     @Override
