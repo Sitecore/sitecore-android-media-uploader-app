@@ -115,6 +115,7 @@ public class UploadActivity extends Activity implements ErrorListener, SelectMed
         values.put(Uploads.USERNAME, instance.getLogin());
         values.put(Uploads.PASSWORD, instance.getPassword());
         values.put(Uploads.ITEM_NAME, mEditName.getText().toString());
+        values.put(Uploads.ITEM_PATH, instance.getRootFolder());
         values.put(Uploads.FILE_URI, mImageUri.toString());
 
         return values;
