@@ -11,6 +11,7 @@ import android.os.Bundle;
 import android.os.RemoteException;
 import android.support.v4.app.NavUtils;
 import android.view.MenuItem;
+import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -41,10 +42,11 @@ import net.sitecore.android.sdk.ui.ItemsListBrowserFragment;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
+import org.w3c.dom.Text;
 
 import static net.sitecore.android.sdk.api.internal.LogUtils.LOGE;
 
-public class ChooseMediaFolderActivity extends Activity implements LoaderCallbacks<Cursor>, ErrorListener, Listener<ScApiSession> {
+public class ChooseMediaFolderActivity extends Activity implements LoaderCallbacks<Cursor>, ErrorListener {
 
     public static final String INSTANCE_KEY = "instance";
 
@@ -87,23 +89,29 @@ public class ChooseMediaFolderActivity extends Activity implements LoaderCallbac
         setContentView(R.layout.activity_choose_media_library);
         getActionBar().setDisplayHomeAsUpEnabled(true);
 
+        UploaderApp.from(this).inject(this);
+        ButterKnife.inject(this);
+
         mInstanceUri = getIntent().getData();
         mInstance = getIntent().getParcelableExtra(INSTANCE_KEY);
         if (mInstance == null) {
             throw new IllegalStateException("You should pass instance to start this activity");
         }
 
-        UploaderApp.from(this).inject(this);
-        ButterKnife.inject(this);
-
         mBrowserFragment = (ItemsListBrowserFragment) getFragmentManager().findFragmentById(R.id.browser_fragment);
+        ScApiSessionFactory.getSession(mScRequestQueue, mInstance.getUrl(), mInstance.getLogin(),
+                mInstance.getPassword(), mSessionListener, this);
     }
 
-    @Override protected void onResume() {
-        super.onResume();
-        ScApiSessionFactory.getSession(mScRequestQueue, mInstance.getUrl(), mInstance.getLogin(),
-                mInstance.getPassword(), this, this);
-    }
+    private Listener<ScApiSession> mSessionListener = new Listener<ScApiSession>() {
+        @Override public void onResponse(ScApiSession session) {
+            mBrowserFragment.setRootFolder(ScUtils.PATH_MEDIA_LIBRARY);
+            mBrowserFragment.setNetworkEventsListener(mNetworkEventsListener);
+            mBrowserFragment.setContentTreePositionListener(mContentTreePositionListener);
+            session.setDefaultDatabase(mInstance.getDatabase());
+            mBrowserFragment.loadContent(session);
+        }
+    };
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -131,16 +139,6 @@ public class ChooseMediaFolderActivity extends Activity implements LoaderCallbac
 
     @Override
     public void onErrorResponse(VolleyError volleyError) {
-
-    }
-
-    @Override
-    public void onResponse(ScApiSession session) {
-        mBrowserFragment.setRootFolder(ScUtils.PATH_MEDIA_LIBRARY);
-        mBrowserFragment.setNetworkEventsListener(mNetworkEventsListener);
-        mBrowserFragment.setContentTreePositionListener(mContentTreePositionListener);
-        session.setDefaultDatabase(mInstance.getDatabase());
-        mBrowserFragment.loadContent(session);
     }
 
     @Override
@@ -168,7 +166,6 @@ public class ChooseMediaFolderActivity extends Activity implements LoaderCallbac
     private void saveInstanceToDB(Instance instance) {
         ArrayList<ContentProviderOperation> operations = new ArrayList<>();
 
-        //
         operations.add(ContentProviderOperation.newUpdate(Instances.CONTENT_URI)
                         .withValue(Instances.SELECTED, 0)
                         .build()
