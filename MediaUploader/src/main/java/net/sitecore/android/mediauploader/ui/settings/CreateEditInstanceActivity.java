@@ -165,11 +165,11 @@ public class CreateEditInstanceActivity extends Activity implements LoaderCallba
             @Override
             public void onResponse(ItemsResponse response) {
                 if (response.getTotalCount() != 0) {
-                    Intent intent = new Intent(CreateEditInstanceActivity.this, ChooseMediaFolderActivity.class);
+                    Intent intent = new Intent(CreateEditInstanceActivity.this, MediaFolderSelectionActivity.class);
                     if (mInstanceUri != null) {
                         intent.setData(mInstanceUri);
                     }
-                    intent.putExtra(ChooseMediaFolderActivity.INSTANCE_KEY, enteredInstance);
+                    intent.putExtra(MediaFolderSelectionActivity.INSTANCE_KEY, enteredInstance);
                     startActivity(intent);
                 } else {
                     Toast.makeText(CreateEditInstanceActivity.this, R.string.toast_instance_is_not_valid,

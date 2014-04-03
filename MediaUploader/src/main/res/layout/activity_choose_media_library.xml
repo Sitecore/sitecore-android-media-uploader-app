@@ -23,7 +23,7 @@
 
     <fragment
         android:id="@+id/browser_fragment"
-        android:name="net.sitecore.android.sdk.ui.ItemsListBrowserFragment"
+        android:name="net.sitecore.android.mediauploader.ui.settings.MediaFolderSelectionActivity$SelectionFragment"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1" />

@@ -7,7 +7,6 @@ import android.content.res.Resources;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -35,7 +34,7 @@ public class BrowserFragment extends ItemsGridBrowserFragment {
 
     @Override
     protected View onCreateUpButtonView(LayoutInflater inflater) {
-        return new Button(getActivity());
+        return inflater.inflate(R.layout.layout_up_button, null);
     }
 
     @Override

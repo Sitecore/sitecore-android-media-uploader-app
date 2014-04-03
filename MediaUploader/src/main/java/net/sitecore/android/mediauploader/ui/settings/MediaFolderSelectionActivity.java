@@ -10,8 +10,9 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.RemoteException;
 import android.support.v4.app.NavUtils;
+import android.view.LayoutInflater;
 import android.view.MenuItem;
-import android.widget.EditText;
+import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -42,11 +43,10 @@ import net.sitecore.android.sdk.ui.ItemsListBrowserFragment;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
-import org.w3c.dom.Text;
 
 import static net.sitecore.android.sdk.api.internal.LogUtils.LOGE;
 
-public class ChooseMediaFolderActivity extends Activity implements LoaderCallbacks<Cursor>, ErrorListener {
+public class MediaFolderSelectionActivity extends Activity implements LoaderCallbacks<Cursor>, ErrorListener {
 
     public static final String INSTANCE_KEY = "instance";
 
@@ -56,7 +56,7 @@ public class ChooseMediaFolderActivity extends Activity implements LoaderCallbac
 
     private Instance mInstance;
     private Uri mInstanceUri;
-    private ItemsListBrowserFragment mBrowserFragment;
+    private SelectionFragment mSelectionFragment;
 
     private ContentTreePositionListener mContentTreePositionListener = new ContentTreePositionListener() {
         @Override public void onGoUp(ScItem item) {
@@ -98,18 +98,18 @@ public class ChooseMediaFolderActivity extends Activity implements LoaderCallbac
             throw new IllegalStateException("You should pass instance to start this activity");
         }
 
-        mBrowserFragment = (ItemsListBrowserFragment) getFragmentManager().findFragmentById(R.id.browser_fragment);
+        mSelectionFragment = (SelectionFragment) getFragmentManager().findFragmentById(R.id.browser_fragment);
         ScApiSessionFactory.getSession(mScRequestQueue, mInstance.getUrl(), mInstance.getLogin(),
                 mInstance.getPassword(), mSessionListener, this);
     }
 
     private Listener<ScApiSession> mSessionListener = new Listener<ScApiSession>() {
         @Override public void onResponse(ScApiSession session) {
-            mBrowserFragment.setRootFolder(ScUtils.PATH_MEDIA_LIBRARY);
-            mBrowserFragment.setNetworkEventsListener(mNetworkEventsListener);
-            mBrowserFragment.setContentTreePositionListener(mContentTreePositionListener);
+            mSelectionFragment.setRootFolder(ScUtils.PATH_MEDIA_LIBRARY);
+            mSelectionFragment.setNetworkEventsListener(mNetworkEventsListener);
+            mSelectionFragment.setContentTreePositionListener(mContentTreePositionListener);
             session.setDefaultDatabase(mInstance.getDatabase());
-            mBrowserFragment.loadContent(session);
+            mSelectionFragment.loadContent(session);
         }
     };
 
@@ -119,7 +119,6 @@ public class ChooseMediaFolderActivity extends Activity implements LoaderCallbac
             case android.R.id.home:
                 finish();
                 return true;
-
             default:
                 return super.onOptionsItemSelected(item);
         }
@@ -127,8 +126,8 @@ public class ChooseMediaFolderActivity extends Activity implements LoaderCallbac
 
     @OnClick(R.id.button_save)
     public void saveCurrentFolder() {
-        if (mBrowserFragment.getCurrentItem() != null) {
-            mInstance.setRootFolder(mBrowserFragment.getCurrentItem().getPath());
+        if (mSelectionFragment.getCurrentItem() != null) {
+            mInstance.setRootFolder(mSelectionFragment.getCurrentItem().getPath());
         }
         checkInstanceIfExists();
     }
@@ -187,6 +186,13 @@ public class ChooseMediaFolderActivity extends Activity implements LoaderCallbac
             getContentResolver().applyBatch(UploadMediaContract.CONTENT_AUTHORITY, operations);
         } catch (RemoteException | OperationApplicationException e) {
             LOGE(e);
+        }
+    }
+
+    public static class SelectionFragment extends ItemsListBrowserFragment {
+
+        @Override protected View onCreateUpButtonView(LayoutInflater inflater) {
+            return inflater.inflate(R.layout.layout_up_button, null);
         }
     }
 }
