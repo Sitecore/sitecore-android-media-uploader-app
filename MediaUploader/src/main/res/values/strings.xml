@@ -15,7 +15,7 @@
     <string name="menu_save">Save</string>
 
     <!-- Hints for widgets -->
-    <string name="hint_media_name">Media name</string>
+    <string name="hint_media_name">Name</string>
     <string name="hint_password">Password</string>
     <string name="hint_username">Domain\\Username</string>
     <string name="hint_url">Url</string>

@@ -74,10 +74,11 @@
 
             <Button
                 android:id="@+id/button_upload_later"
+                style="@style/Button.Gray"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="Later" />
+                android:text="Upload later" />
 
             <Button
                 android:id="@+id/button_upload_now"

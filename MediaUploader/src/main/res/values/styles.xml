@@ -6,12 +6,17 @@
         <item name="android:background">@drawable/button_blue</item>
     </style>
 
+    <style name="Button.Gray" parent="android:Widget.Button">
+        <item name="android:textColor">@android:color/black</item>
+        <item name="android:background">@drawable/button_gray</item>
+    </style>
+
     <style name="Button.Red" parent="android:Widget.Button">
         <item name="android:textColor">@android:color/white</item>
         <item name="android:background">@drawable/button_red</item>
     </style>
 
-    <style name="Button.Blue.Main" parent="Button.Blue">
+    <style name="Button.Main" parent="Button.Gray">
         <item name="android:minHeight">64dp</item>
         <item name="android:minWidth">240dp</item>
         <item name="android:textAppearance">?android:attr/textAppearanceLarge</item>
