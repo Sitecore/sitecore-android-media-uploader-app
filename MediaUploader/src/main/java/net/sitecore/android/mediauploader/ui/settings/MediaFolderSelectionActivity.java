@@ -198,9 +198,7 @@ public class MediaFolderSelectionActivity extends Activity implements LoaderCall
         }
 
         @Override protected ItemViewBinder onCreateItemViewBinder() {
-            final SelectionFragmentItemViewBinder viewBinder = new SelectionFragmentItemViewBinder();
-            UploaderApp.from(getActivity()).inject(viewBinder);
-            return viewBinder;
+            return new SelectionFragmentItemViewBinder();
         }
     }
 }
