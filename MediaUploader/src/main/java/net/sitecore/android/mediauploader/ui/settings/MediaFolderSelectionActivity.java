@@ -90,6 +90,7 @@ public class MediaFolderSelectionActivity extends Activity implements LoaderCall
         setContentView(R.layout.activity_choose_media_library);
         getActionBar().setDisplayHomeAsUpEnabled(true);
 
+        UploaderApp.from(getApplicationContext()).cleanInstanceCacheAsync();
         UploaderApp.from(this).inject(this);
         ButterKnife.inject(this);
 
