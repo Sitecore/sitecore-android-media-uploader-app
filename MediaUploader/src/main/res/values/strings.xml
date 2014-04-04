@@ -50,6 +50,7 @@
     <string name="title_chose_media_folder">Folder for upload</string>
     <string name="text_save_upload_folder">Upload to this folder</string>
     <string name="navigate_up_text">Up</string>
+    <string name="toast_added_to_uploads">Added to My Uploads</string>
 
     <string-array name="select_image_source">
         <item>Camera</item>

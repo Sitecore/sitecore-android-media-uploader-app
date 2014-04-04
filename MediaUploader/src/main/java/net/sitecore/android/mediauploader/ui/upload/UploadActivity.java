@@ -29,6 +29,7 @@ import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
 
+import static net.sitecore.android.mediauploader.util.Utils.showToast;
 import static net.sitecore.android.sdk.api.internal.LogUtils.LOGD;
 
 public class UploadActivity extends Activity implements ErrorListener, SelectMediaListener {
@@ -87,10 +88,11 @@ public class UploadActivity extends Activity implements ErrorListener, SelectMed
         final ContentValues values = populateUploadValues();
         values.put(Uploads.STATUS, UploadStatus.PENDING.name());
 
-        Toast.makeText(this, "Added to My Uploads", Toast.LENGTH_LONG).show();
-
         new AsyncQueryHandler(getContentResolver()) {
         }.startInsert(0, null, Uploads.CONTENT_URI, values);
+
+        showToast(this, R.string.toast_added_to_uploads);
+        finish();
     }
 
     @OnClick(R.id.image_preview)

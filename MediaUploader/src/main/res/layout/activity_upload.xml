@@ -78,7 +78,8 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="Upload later" />
+                android:text="Upload later"
+                android:textAppearance="?android:attr/textAppearanceMedium" />
 
             <Button
                 android:id="@+id/button_upload_now"
@@ -86,7 +87,8 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="Upload" />
+                android:text="Upload"
+                android:textAppearance="?android:attr/textAppearanceMedium" />
 
         </LinearLayout>
 
