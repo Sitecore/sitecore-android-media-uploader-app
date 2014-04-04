@@ -52,6 +52,6 @@
         android:layout_gravity="center_vertical"
         android:layout_marginBottom="8dp"
         android:layout_marginTop="8dp"
-        android:background="@android:drawable/list_selector_background"
+        android:background="?android:attr/selectableItemBackground"
         android:src="@drawable/ic_action_edit" />
 </net.sitecore.android.mediauploader.ui.widget.CheckableLinearLayout>
