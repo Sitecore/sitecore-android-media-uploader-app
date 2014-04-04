@@ -3,9 +3,7 @@ package net.sitecore.android.mediauploader.ui.browser;
 import android.app.ActionBar;
 import android.app.Activity;
 import android.app.LoaderManager.LoaderCallbacks;
-import android.content.CursorLoader;
 import android.content.Loader;
-import android.database.Cursor;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.v4.view.PagerAdapter;
@@ -19,34 +17,44 @@ import android.view.ViewGroup.LayoutParams;
 import android.view.Window;
 import android.widget.Toast;
 
+import javax.inject.Inject;
+
 import java.util.ArrayList;
+import java.util.List;
+
+import com.squareup.picasso.Picasso;
 
 import net.sitecore.android.mediauploader.R;
 import net.sitecore.android.mediauploader.UploaderApp;
-import net.sitecore.android.mediauploader.ui.IntentExtras;
 import net.sitecore.android.mediauploader.util.ScUtils;
 import net.sitecore.android.sdk.api.DownloadMediaOptions.Builder;
+import net.sitecore.android.sdk.api.model.ScItem;
+import net.sitecore.android.sdk.api.model.ScItemsLoader;
 import net.sitecore.android.sdk.api.provider.ScItemsContract.Items;
-import net.sitecore.android.sdk.api.provider.ScItemsContract.Items.Query;
-import net.sitecore.android.sdk.api.provider.ScItemsDatabase.Tables;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import uk.co.senab.photoview.PhotoView;
 
-public class PreviewActivity extends Activity implements LoaderCallbacks<Cursor> {
+public class PreviewActivity extends Activity implements LoaderCallbacks<List<ScItem>> {
+    public static final String PARENT_ITEM_ID = "parent_item_id";
+    public static final String CURRENT_ITEM_ID = "current_item_id";
+
     public static final int MAXIMUM_IMAGE_HEIGHT = 2000;
     public static final int MAXIMUM_IMAGE_WIDTH = 1000;
-    private String SORT_ORDER = Tables.ITEMS + "." + Items.ITEM_ID + " asc";
 
     @InjectView(R.id.pager_pictures_preview) ViewPager mViewPager;
+    @Inject Picasso mImageLoader;
 
     private String mParentItemID;
     private String mCurrentItemID;
+    private String mInstanceUrl;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        UploaderApp.from(this).inject(this);
 
         requestWindowFeature(Window.FEATURE_ACTION_BAR_OVERLAY);
 
@@ -56,8 +64,9 @@ public class PreviewActivity extends Activity implements LoaderCallbacks<Cursor>
         Drawable drawable = getResources().getDrawable(R.color.preview_activity_action_bar);
         actionBar.setBackgroundDrawable(drawable);
 
-        mParentItemID = getIntent().getStringExtra(IntentExtras.PARENT_ITEM_ID);
-        mCurrentItemID = getIntent().getStringExtra(IntentExtras.CURRENT_ITEM_ID);
+        mParentItemID = getIntent().getStringExtra(PARENT_ITEM_ID);
+        mCurrentItemID = getIntent().getStringExtra(CURRENT_ITEM_ID);
+        mInstanceUrl = getIntent().getStringExtra(BrowserFragment.INSTANCE_URL);
         if (TextUtils.isEmpty(mParentItemID)) {
             Toast.makeText(this, "You have to specify image url for this activity", Toast.LENGTH_LONG).show();
             finish();
@@ -79,13 +88,15 @@ public class PreviewActivity extends Activity implements LoaderCallbacks<Cursor>
     }
 
     @Override
-    public Loader<Cursor> onCreateLoader(int id, Bundle args) {
+    public Loader<List<ScItem>> onCreateLoader(int id, Bundle args) {
         String selection = Items.PARENT_ITEM_ID + "='" + mParentItemID + "'";
-        return new CursorLoader(this, Items.CONTENT_URI, Query.PROJECTION, selection, null, SORT_ORDER);
+        return new ScItemsLoader(this, selection, null);
     }
 
     @Override
-    public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
+    public void onLoadFinished(Loader<List<ScItem>> loader, List<ScItem> data) {
+        if (data == null || data.size() == 0) return;
+
         Builder builder = new Builder();
         builder.maxWidth(MAXIMUM_IMAGE_WIDTH);
         builder.maxHeight(MAXIMUM_IMAGE_HEIGHT);
@@ -94,21 +105,18 @@ public class PreviewActivity extends Activity implements LoaderCallbacks<Cursor>
         final ArrayList<String> names = new ArrayList<>();
         int currentPosition = 0;
 
-        while (data.moveToNext()) {
-            String template = data.getString(Query.TEMPLATE);
-            if (ScUtils.isImageTemplate(template)) {
-                String itemUrl = ScUtils.getMediaDownloadUrl(this, data.getString(Query.ITEM_ID), builder.build());
-                String itemName = data.getString(Query.DISPLAY_NAME);
-                if (mCurrentItemID.equalsIgnoreCase(data.getString(Query.ITEM_ID))){
+        for (ScItem scItem : data) {
+            if (ScUtils.isImageTemplate(scItem.getTemplate())) {
+                String itemUrl = mInstanceUrl + scItem.getMediaDownloadUrl(builder.build());
+                if (mCurrentItemID.equalsIgnoreCase(scItem.getId())) {
                     // Not the best solution
                     currentPosition = urls.size();
                 }
                 urls.add(itemUrl);
-                names.add(itemName);
+                names.add(scItem.getDisplayName());
             }
         }
         prepareViewPager(names, urls, currentPosition);
-
     }
 
     private void prepareViewPager(final ArrayList<String> names, ArrayList<String> urls, int currentPosition) {
@@ -134,7 +142,7 @@ public class PreviewActivity extends Activity implements LoaderCallbacks<Cursor>
     }
 
     @Override
-    public void onLoaderReset(Loader<Cursor> loader) {
+    public void onLoaderReset(Loader<List<ScItem>> loader) {
     }
 
     class SamplePagerAdapter extends PagerAdapter {
@@ -153,7 +161,7 @@ public class PreviewActivity extends Activity implements LoaderCallbacks<Cursor>
         public View instantiateItem(ViewGroup container, int position) {
             PhotoView photoView = new PhotoView(container.getContext());
 
-            UploaderApp.from(PreviewActivity.this).getImageLoader().load(mImageUrls.get(position))
+            mImageLoader.load(mImageUrls.get(position))
                     .placeholder(R.drawable.ic_placeholder)
                     .error(R.drawable.ic_action_cancel)
                     .into(photoView);

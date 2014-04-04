@@ -9,11 +9,13 @@ import java.security.NoSuchAlgorithmException;
 import java.security.spec.InvalidKeySpecException;
 
 import com.squareup.picasso.Picasso;
+import com.squareup.picasso.Picasso.Builder;
 
 import net.sitecore.android.mediauploader.model.Instance;
 import net.sitecore.android.mediauploader.ui.MainActivity;
 import net.sitecore.android.mediauploader.ui.browser.BrowserActivity;
 import net.sitecore.android.mediauploader.ui.browser.BrowserItemViewBinder;
+import net.sitecore.android.mediauploader.ui.browser.PreviewActivity;
 import net.sitecore.android.mediauploader.ui.settings.CreateEditInstanceActivity;
 import net.sitecore.android.mediauploader.ui.settings.MediaFolderSelectionActivity;
 import net.sitecore.android.mediauploader.ui.settings.SettingsActivity;
@@ -38,7 +40,8 @@ import static net.sitecore.android.sdk.api.internal.LogUtils.LOGE;
                 CreateEditInstanceActivity.class,
                 UploadActivity.class,
                 MediaFolderSelectionActivity.class,
-                SettingsActivity.class
+                SettingsActivity.class,
+                PreviewActivity.class
         }
 )
 public final class UploaderAppModule {

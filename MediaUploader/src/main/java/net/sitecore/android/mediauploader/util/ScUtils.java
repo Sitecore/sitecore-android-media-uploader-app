@@ -16,17 +16,4 @@ public class ScUtils {
         if (template.equals(TEMPLATE_JPEG)) return true;
         else return template.equals(TEMPLATE_IMAGE);
     }
-
-    public static String getMediaDownloadUrl(Context context, String itemId, DownloadMediaOptions params) {
-        return makeDownloadUrl(context, itemId).append(params.toString()).toString();
-    }
-
-    private static StringBuilder makeDownloadUrl(Context context, String itemId) {
-        String id = itemId.replace("{", "").replace("}", "").replace("-", "");
-        final String url = Prefs.from(context).getString(R.string.key_instance_url);
-        StringBuilder builder = new StringBuilder();
-        builder.append(String.format("%s/~/media/%s.ashx", url, id));
-        return builder;
-    }
-
 }

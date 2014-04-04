@@ -14,7 +14,6 @@ import com.squareup.picasso.Picasso;
 
 import net.sitecore.android.mediauploader.R;
 import net.sitecore.android.mediauploader.util.ScUtils;
-import net.sitecore.android.mediauploader.util.UploaderPrefs;
 import net.sitecore.android.sdk.api.DownloadMediaOptions;
 import net.sitecore.android.sdk.api.DownloadMediaOptions.Builder;
 import net.sitecore.android.sdk.api.model.ScItem;
@@ -28,10 +27,14 @@ public class BrowserItemViewBinder implements ItemViewBinder {
             .maxWidth(200)
             .maxHeight(200)
             .build();
+    private final String mInstanceUrl;
 
-    @Inject UploaderPrefs mPrefs;
     @Inject Resources mResources;
     @Inject Picasso mImageLoader;
+
+    public BrowserItemViewBinder(String instanceUrl) {
+        mInstanceUrl = instanceUrl;
+    }
 
     @Override
     public void bindView(Context context, View v, ScItem item) {
@@ -40,11 +43,8 @@ public class BrowserItemViewBinder implements ItemViewBinder {
         holder.name.setText(item.getDisplayName());
         if (ScUtils.isImageTemplate(item.getTemplate())) {
 
-            String itemUrl = item.getMediaDownloadUrl(IMAGE_OPTIONS);
-            //TODO: inject prefs instead of session
-            mImageLoader.load(mPrefs.getCurrentInstance().getUrl() + itemUrl)
-                    .placeholder(R.drawable.ic_placeholder)
-                    .error(R.drawable.ic_action_cancel)
+            String imageUrl = mInstanceUrl + item.getMediaDownloadUrl(IMAGE_OPTIONS);
+            mImageLoader.load(imageUrl).placeholder(R.drawable.ic_placeholder).error(R.drawable.ic_action_cancel)
                     .into(holder.icon);
         } else {
             holder.icon.setImageDrawable(mResources.getDrawable(R.drawable.ic_browse));
