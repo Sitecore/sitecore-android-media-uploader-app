@@ -36,6 +36,7 @@ import net.sitecore.android.sdk.api.ScApiSessionFactory;
 import net.sitecore.android.sdk.api.ScRequestQueue;
 import net.sitecore.android.sdk.api.model.ItemsResponse;
 import net.sitecore.android.sdk.api.model.ScItem;
+import net.sitecore.android.sdk.ui.ItemViewBinder;
 import net.sitecore.android.sdk.ui.ItemsBrowserFragment.ContentTreePositionListener;
 import net.sitecore.android.sdk.ui.ItemsBrowserFragment.NetworkEventsListener;
 import net.sitecore.android.sdk.ui.ItemsListBrowserFragment;
@@ -193,6 +194,12 @@ public class MediaFolderSelectionActivity extends Activity implements LoaderCall
 
         @Override protected View onCreateUpButtonView(LayoutInflater inflater) {
             return inflater.inflate(R.layout.layout_up_button, null);
+        }
+
+        @Override protected ItemViewBinder onCreateItemViewBinder() {
+            final SelectionFragmentItemViewBinder viewBinder = new SelectionFragmentItemViewBinder();
+            UploaderApp.from(getActivity()).inject(viewBinder);
+            return viewBinder;
         }
     }
 }

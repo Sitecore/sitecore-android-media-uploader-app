@@ -13,9 +13,10 @@ import com.squareup.picasso.Picasso;
 import net.sitecore.android.mediauploader.model.Instance;
 import net.sitecore.android.mediauploader.ui.MainActivity;
 import net.sitecore.android.mediauploader.ui.browser.BrowserActivity;
-import net.sitecore.android.mediauploader.ui.browser.BrowserFragment.BrowserItemViewBinder;
-import net.sitecore.android.mediauploader.ui.settings.MediaFolderSelectionActivity;
+import net.sitecore.android.mediauploader.ui.browser.BrowserItemViewBinder;
 import net.sitecore.android.mediauploader.ui.settings.CreateEditInstanceActivity;
+import net.sitecore.android.mediauploader.ui.settings.MediaFolderSelectionActivity;
+import net.sitecore.android.mediauploader.ui.settings.SelectionFragmentItemViewBinder;
 import net.sitecore.android.mediauploader.ui.settings.SettingsActivity;
 import net.sitecore.android.mediauploader.ui.upload.UploadActivity;
 import net.sitecore.android.mediauploader.util.UploaderPrefs;
@@ -38,7 +39,8 @@ import static net.sitecore.android.sdk.api.internal.LogUtils.LOGE;
                 CreateEditInstanceActivity.class,
                 UploadActivity.class,
                 MediaFolderSelectionActivity.class,
-                SettingsActivity.class
+                SettingsActivity.class,
+                SelectionFragmentItemViewBinder.class
         }
 )
 public final class UploaderAppModule {
