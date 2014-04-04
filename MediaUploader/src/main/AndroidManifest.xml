@@ -34,6 +34,7 @@
 
         <activity
             android:name=".ui.browser.BrowserActivity"
+            android:label="@string/title_media_browser"
             android:screenOrientation="portrait" />
 
         <activity

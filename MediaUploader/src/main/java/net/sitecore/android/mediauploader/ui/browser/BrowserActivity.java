@@ -60,7 +60,6 @@ public class BrowserActivity extends Activity implements ContentTreePositionList
         super.onCreate(savedInstanceState);
 
         getActionBar().setDisplayHomeAsUpEnabled(true);
-        setTitle(getString(R.string.title_media_browser));
 
         setContentView(R.layout.activity_browser);
         UploaderApp.from(this).inject(this);

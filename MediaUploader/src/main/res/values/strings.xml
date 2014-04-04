@@ -8,7 +8,7 @@
     <string name="title_edit_instance">Edit site</string>
     <string name="title_add_instance">Add site</string>
     <string name="title_settings">Settings</string>
-    <string name="title_media_browser">Media browser</string>
+    <string name="title_media_browser">Media Browser</string>
 
     <!-- Menu labels -->
     <string name="menu_settings">Settings</string>
