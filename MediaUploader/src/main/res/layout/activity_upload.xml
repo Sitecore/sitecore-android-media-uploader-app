@@ -9,44 +9,6 @@
         android:layout_height="match_parent"
         android:orientation="vertical">
 
-        <!--
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="300dp">
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_alignParentBottom="true"
-                android:background="#33ffffff"
-                android:divider="?android:attr/dividerVertical"
-                android:dividerPadding="12dp"
-                android:orientation="horizontal"
-                android:showDividers="middle">
-
-                <Button
-                    android:id="@+id/button_upload_camera"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:drawableLeft="@drawable/ic_menu_camera"
-                    android:paddingLeft="24dp"
-                    android:text="From camera"
-                    android:textColor="@android:color/white" />
-
-                <Button
-                    android:id="@+id/button_upload_gallery"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:drawableLeft="@drawable/ic_menu_gallery"
-                    android:paddingLeft="24dp"
-                    android:text="From gallery"
-                    android:textColor="@android:color/white" />
-            </LinearLayout>
-        </RelativeLayout>
-        -->
-
         <ImageView
             android:id="@+id/image_preview"
             android:layout_width="match_parent"
@@ -78,7 +40,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="Upload later"
+                android:text="@string/button_upload_later"
                 android:textAppearance="?android:attr/textAppearanceMedium" />
 
             <Button
@@ -87,7 +49,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="Upload"
+                android:text="@string/button_upload"
                 android:textAppearance="?android:attr/textAppearanceMedium" />
 
         </LinearLayout>
