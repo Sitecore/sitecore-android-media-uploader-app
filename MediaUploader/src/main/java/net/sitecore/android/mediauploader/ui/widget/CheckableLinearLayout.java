@@ -5,9 +5,6 @@ import android.util.AttributeSet;
 import android.view.View;
 import android.widget.Checkable;
 import android.widget.LinearLayout;
-import android.widget.RadioButton;
-
-import net.sitecore.android.mediauploader.R;
 
 public class CheckableLinearLayout extends LinearLayout implements Checkable {
     private Checkable mCheckable;

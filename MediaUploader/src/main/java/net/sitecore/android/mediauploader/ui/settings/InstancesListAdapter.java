@@ -1,4 +1,4 @@
-package net.sitecore.android.mediauploader.ui.instancemanager;
+package net.sitecore.android.mediauploader.ui.settings;
 
 import android.content.Context;
 import android.content.Intent;
@@ -28,18 +28,18 @@ public class InstancesListAdapter extends CursorAdapter {
     public View newView(Context context, Cursor cursor, ViewGroup parent) {
         final View v = LayoutInflater.from(context).inflate(R.layout.list_item_instance, parent, false);
         final ViewHolder holder = new ViewHolder(v);
-        if (v != null) {
-            v.setTag(holder);
-        }
+        v.setTag(holder);
         return v;
     }
 
     @Override
     public void bindView(View view, final Context context, final Cursor c) {
-        ViewHolder holder = (ViewHolder) view.getTag();
+        final String url = c.getString(c.getColumnIndex(Instances.URL));
+        final String folder = c.getString(c.getColumnIndex(Instances.ROOT_FOLDER));
 
-        String url = c.getString(c.getColumnIndex(Instances.URL));
+        final ViewHolder holder = (ViewHolder) view.getTag();
         holder.instanceUrl.setText(url);
+        holder.folder.setText(folder);
         holder.editButton.setOnClickListener(new OnClickListener() {
             private String id = c.getString(Query._ID);
 
@@ -52,8 +52,9 @@ public class InstancesListAdapter extends CursorAdapter {
         });
     }
 
-    class ViewHolder {
+    static class ViewHolder {
         @InjectView(R.id.text_instance_url) TextView instanceUrl;
+        @InjectView(R.id.text_folder) TextView folder;
         @InjectView(R.id.button_edit_instance) ImageButton editButton;
 
         ViewHolder(View parent) {

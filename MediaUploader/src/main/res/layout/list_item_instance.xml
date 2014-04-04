@@ -10,19 +10,33 @@
 
     <RadioButton
         android:id="@+id/radio_button_selected_instance"
-        android:layout_width="0dp"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_vertical"
-        android:layout_weight="0.7"
         android:clickable="false" />
 
-    <TextView
-        android:id="@+id/text_instance_url"
+    <LinearLayout
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center_vertical"
-        android:layout_weight="5"
-        android:singleLine="false" />
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:gravity="center"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/text_instance_url"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:ellipsize="marquee"
+            android:gravity="center_vertical"
+            android:singleLine="true"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/text_folder"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:singleLine="false" />
+    </LinearLayout>
 
     <View
         android:layout_width="2dp"
@@ -33,12 +47,11 @@
 
     <ImageButton
         android:id="@+id/button_edit_instance"
-        android:layout_width="0dp"
+        android:layout_width="48dp"
         android:layout_height="match_parent"
         android:layout_gravity="center_vertical"
         android:layout_marginBottom="8dp"
         android:layout_marginTop="8dp"
-        android:layout_weight="1"
         android:background="@android:drawable/list_selector_background"
         android:src="@drawable/ic_action_edit" />
 </net.sitecore.android.mediauploader.ui.widget.CheckableLinearLayout>

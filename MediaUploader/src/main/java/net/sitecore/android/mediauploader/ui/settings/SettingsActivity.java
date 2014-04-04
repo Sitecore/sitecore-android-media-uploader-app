@@ -30,7 +30,6 @@ import net.sitecore.android.mediauploader.model.Instance;
 import net.sitecore.android.mediauploader.provider.UploadMediaContract;
 import net.sitecore.android.mediauploader.provider.UploadMediaContract.Instances;
 import net.sitecore.android.mediauploader.provider.UploadMediaContract.Instances.Query;
-import net.sitecore.android.mediauploader.ui.instancemanager.InstancesListAdapter;
 import net.sitecore.android.mediauploader.util.UploaderPrefs;
 
 import butterknife.ButterKnife;
