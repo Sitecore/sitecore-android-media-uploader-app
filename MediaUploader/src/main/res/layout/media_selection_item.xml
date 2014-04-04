@@ -11,7 +11,7 @@
         android:layout_width="0dp"
         android:layout_height="match_parent"
         android:layout_weight="1"
-        android:src="@drawable/ic_launcher" />
+        android:src="@drawable/ic_browse" />
 
     <TextView
         android:id="@+id/item_name"
