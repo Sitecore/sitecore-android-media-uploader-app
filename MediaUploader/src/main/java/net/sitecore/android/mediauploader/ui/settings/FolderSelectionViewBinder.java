@@ -13,7 +13,7 @@ import net.sitecore.android.sdk.ui.ItemViewBinder;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 
-public class SelectionFragmentItemViewBinder implements ItemViewBinder {
+public class FolderSelectionViewBinder implements ItemViewBinder {
     @Override
     public void bindView(Context context, View v, ScItem item) {
         ViewHolder holder = (ViewHolder) v.getTag();

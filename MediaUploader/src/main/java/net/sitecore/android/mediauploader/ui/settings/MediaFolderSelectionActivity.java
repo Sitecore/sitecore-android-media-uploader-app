@@ -57,7 +57,7 @@ public class MediaFolderSelectionActivity extends Activity implements LoaderCall
 
     private Instance mInstance;
     private Uri mInstanceUri;
-    private SelectionFragment mSelectionFragment;
+    private FolderSelectionFragment mFolderSelectionFragment;
 
     private ContentTreePositionListener mContentTreePositionListener = new ContentTreePositionListener() {
         @Override public void onGoUp(ScItem item) {
@@ -100,18 +100,19 @@ public class MediaFolderSelectionActivity extends Activity implements LoaderCall
             throw new IllegalStateException("You should pass instance to start this activity");
         }
 
-        mSelectionFragment = (SelectionFragment) getFragmentManager().findFragmentById(R.id.browser_fragment);
+        mFolderSelectionFragment = (FolderSelectionFragment) getFragmentManager()
+                .findFragmentById(R.id.browser_fragment);
         ScApiSessionFactory.getSession(mScRequestQueue, mInstance.getUrl(), mInstance.getLogin(),
                 mInstance.getPassword(), mSessionListener, this);
     }
 
     private Listener<ScApiSession> mSessionListener = new Listener<ScApiSession>() {
         @Override public void onResponse(ScApiSession session) {
-            mSelectionFragment.setRootFolder(ScUtils.PATH_MEDIA_LIBRARY);
-            mSelectionFragment.setNetworkEventsListener(mNetworkEventsListener);
-            mSelectionFragment.setContentTreePositionListener(mContentTreePositionListener);
+            mFolderSelectionFragment.setRootFolder(ScUtils.PATH_MEDIA_LIBRARY);
+            mFolderSelectionFragment.setNetworkEventsListener(mNetworkEventsListener);
+            mFolderSelectionFragment.setContentTreePositionListener(mContentTreePositionListener);
             session.setDefaultDatabase(mInstance.getDatabase());
-            mSelectionFragment.loadContent(session);
+            mFolderSelectionFragment.loadContent(session);
         }
     };
 
@@ -128,8 +129,8 @@ public class MediaFolderSelectionActivity extends Activity implements LoaderCall
 
     @OnClick(R.id.button_save)
     public void saveCurrentFolder() {
-        if (mSelectionFragment.getCurrentItem() != null) {
-            mInstance.setRootFolder(mSelectionFragment.getCurrentItem().getPath());
+        if (mFolderSelectionFragment.getCurrentItem() != null) {
+            mInstance.setRootFolder(mFolderSelectionFragment.getCurrentItem().getPath());
         }
         checkInstanceIfExists();
     }
@@ -191,14 +192,14 @@ public class MediaFolderSelectionActivity extends Activity implements LoaderCall
         }
     }
 
-    public static class SelectionFragment extends ItemsListBrowserFragment {
+    public static class FolderSelectionFragment extends ItemsListBrowserFragment {
 
         @Override protected View onCreateUpButtonView(LayoutInflater inflater) {
             return inflater.inflate(R.layout.layout_up_button, null);
         }
 
         @Override protected ItemViewBinder onCreateItemViewBinder() {
-            return new SelectionFragmentItemViewBinder();
+            return new FolderSelectionViewBinder();
         }
     }
 }
