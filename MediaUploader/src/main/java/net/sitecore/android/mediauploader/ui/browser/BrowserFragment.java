@@ -46,6 +46,7 @@ public class BrowserFragment extends ItemsGridBrowserFragment {
             intent.putExtra(PreviewActivity.PARENT_ITEM_ID, item.getParentItemId());
             intent.putExtra(PreviewActivity.CURRENT_ITEM_ID, item.getId());
             intent.putExtra(INSTANCE_URL, getArguments().getString(INSTANCE_URL, ""));
+            intent.putExtra(INSTANCE_DATABASE, getArguments().getString(INSTANCE_DATABASE, ""));
             startActivity(intent);
         } else {
             super.onScItemClick(item);

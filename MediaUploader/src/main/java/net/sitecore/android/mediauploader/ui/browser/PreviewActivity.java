@@ -49,6 +49,7 @@ public class PreviewActivity extends Activity implements LoaderCallbacks<List<Sc
     private String mParentItemID;
     private String mCurrentItemID;
     private String mInstanceUrl;
+    private String mDatabase;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -67,6 +68,7 @@ public class PreviewActivity extends Activity implements LoaderCallbacks<List<Sc
         mParentItemID = getIntent().getStringExtra(PARENT_ITEM_ID);
         mCurrentItemID = getIntent().getStringExtra(CURRENT_ITEM_ID);
         mInstanceUrl = getIntent().getStringExtra(BrowserFragment.INSTANCE_URL);
+        mDatabase = getIntent().getStringExtra(BrowserFragment.INSTANCE_DATABASE);
         if (TextUtils.isEmpty(mParentItemID)) {
             Toast.makeText(this, "You have to specify image url for this activity", Toast.LENGTH_LONG).show();
             finish();
@@ -100,6 +102,7 @@ public class PreviewActivity extends Activity implements LoaderCallbacks<List<Sc
         Builder builder = new Builder();
         builder.maxWidth(MAXIMUM_IMAGE_WIDTH);
         builder.maxHeight(MAXIMUM_IMAGE_HEIGHT);
+        builder.database(mDatabase);
 
         ArrayList<String> urls = new ArrayList<>();
         final ArrayList<String> names = new ArrayList<>();
