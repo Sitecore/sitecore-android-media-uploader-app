@@ -29,6 +29,7 @@ import net.sitecore.android.mediauploader.UploaderApp;
 import net.sitecore.android.mediauploader.model.Instance;
 import net.sitecore.android.mediauploader.provider.UploadMediaContract;
 import net.sitecore.android.mediauploader.provider.UploadMediaContract.Instances;
+import net.sitecore.android.mediauploader.provider.UploadMediaContract.Instances.Query;
 import net.sitecore.android.mediauploader.util.ScUtils;
 import net.sitecore.android.mediauploader.util.UploaderPrefs;
 import net.sitecore.android.mediauploader.util.Utils;
@@ -154,14 +155,31 @@ public class MediaFolderSelectionActivity extends Activity implements LoaderCall
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
         if (data.moveToFirst()) {
-            Toast.makeText(this, R.string.toast_instance_exists, Toast.LENGTH_LONG).show();
+            if (checkIsCurrentInstance(data)) {
+                performSave();
+            } else {
+                Toast.makeText(this, R.string.toast_instance_exists, Toast.LENGTH_LONG).show();
+            }
         } else {
-            mPrefs.setSelectedInstance(mInstance);
-            saveInstanceToDB(mInstance);
-            NavUtils.navigateUpFromSameTask(this);
+            performSave();
         }
         data.close();
         getLoaderManager().destroyLoader(0);
+    }
+
+    private boolean checkIsCurrentInstance(Cursor data) {
+        if (data.getCount() == 1 && mInstanceUri != null) {
+            String id = Instances.getInstanceId(mInstanceUri);
+            return id.equals(String.valueOf(data.getInt(Query._ID)));
+        } else {
+            return false;
+        }
+    }
+
+    private void performSave() {
+        mPrefs.setSelectedInstance(mInstance);
+        saveInstanceToDB(mInstance);
+        NavUtils.navigateUpFromSameTask(this);
     }
 
     @Override
