@@ -19,6 +19,9 @@ import butterknife.ButterKnife;
 import butterknife.InjectView;
 
 public class InstanceFragment extends Fragment {
+    private static final int HTTPS_POSITION = 1;
+    private static final int HTTP_POSITION = 0;
+    
     private Instance mInstance;
 
     @InjectView(R.id.spinner_protocol) Spinner mProtocol;
@@ -106,7 +109,13 @@ public class InstanceFragment extends Fragment {
     }
 
     private void initViews() {
-        String url = mInstance.getUrl().replace("http://", "").replace("https://", "");
+        String url = mInstance.getUrl();
+        if (url.contains("https://")) {
+            mProtocol.setSelection(HTTPS_POSITION);
+        } else {
+            mProtocol.setSelection(HTTP_POSITION);
+        }
+        url = url.replace("http://", "").replace("https://", "");
         mInstanceUrl.setText(url);
         mInstanceLogin.setText(mInstance.getLogin());
         mInstancePassword.setText(mInstance.getPassword());
