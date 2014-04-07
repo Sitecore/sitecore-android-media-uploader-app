@@ -15,11 +15,13 @@ import net.sitecore.android.sdk.ui.ItemsGridBrowserFragment;
 
 public class BrowserFragment extends ItemsGridBrowserFragment {
     public static final String INSTANCE_URL = "url";
+    public static final String INSTANCE_DATABASE = "database";
 
-    public static BrowserFragment newInstance(String url) {
+    public static BrowserFragment newInstance(String url, String database) {
         BrowserFragment fragment = new BrowserFragment();
         Bundle args = new Bundle();
         args.putString(INSTANCE_URL, url);
+        args.putString(INSTANCE_DATABASE, database);
         fragment.setArguments(args);
         return fragment;
     }
@@ -31,7 +33,8 @@ public class BrowserFragment extends ItemsGridBrowserFragment {
 
     @Override
     protected ItemViewBinder onCreateItemViewBinder() {
-        final BrowserItemViewBinder viewBinder = new BrowserItemViewBinder(getArguments().getString(INSTANCE_URL, ""));
+        final BrowserItemViewBinder viewBinder = new BrowserItemViewBinder(getArguments().getString(INSTANCE_URL, ""),
+                getArguments().getString(INSTANCE_DATABASE, ""));
         UploaderApp.from(getActivity()).inject(viewBinder);
         return viewBinder;
     }

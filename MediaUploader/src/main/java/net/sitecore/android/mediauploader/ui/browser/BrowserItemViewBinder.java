@@ -14,7 +14,6 @@ import com.squareup.picasso.Picasso;
 
 import net.sitecore.android.mediauploader.R;
 import net.sitecore.android.mediauploader.util.ScUtils;
-import net.sitecore.android.sdk.api.DownloadMediaOptions;
 import net.sitecore.android.sdk.api.DownloadMediaOptions.Builder;
 import net.sitecore.android.sdk.api.model.ScItem;
 import net.sitecore.android.sdk.ui.ItemViewBinder;
@@ -23,17 +22,19 @@ import butterknife.ButterKnife;
 import butterknife.InjectView;
 
 public class BrowserItemViewBinder implements ItemViewBinder {
-    public static final DownloadMediaOptions IMAGE_OPTIONS = new Builder()
+    public final Builder IMAGE_OPTIONS = new Builder()
             .maxWidth(200)
-            .maxHeight(200)
-            .build();
+            .maxHeight(200);
+
     private final String mInstanceUrl;
+    private final String mDatabase;
 
     @Inject Resources mResources;
     @Inject Picasso mImageLoader;
 
-    public BrowserItemViewBinder(String instanceUrl) {
+    public BrowserItemViewBinder(String instanceUrl, String database) {
         mInstanceUrl = instanceUrl;
+        mDatabase = database;
     }
 
     @Override
@@ -43,7 +44,7 @@ public class BrowserItemViewBinder implements ItemViewBinder {
         holder.name.setText(item.getDisplayName());
         if (ScUtils.isImageTemplate(item.getTemplate())) {
 
-            String imageUrl = mInstanceUrl + item.getMediaDownloadUrl(IMAGE_OPTIONS);
+            String imageUrl = mInstanceUrl + item.getMediaDownloadUrl(IMAGE_OPTIONS.database(mDatabase).build());
             mImageLoader.load(imageUrl).placeholder(R.drawable.ic_placeholder).error(R.drawable.ic_action_cancel)
                     .into(holder.icon);
         } else {

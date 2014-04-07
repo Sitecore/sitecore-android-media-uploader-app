@@ -93,7 +93,7 @@ public class BrowserActivity extends Activity implements ContentTreePositionList
     }
 
     private void initFragment(final Instance instance) {
-        mFragment = BrowserFragment.newInstance(instance.getUrl());
+        mFragment = BrowserFragment.newInstance(instance.getUrl(), instance.getDatabase());
         mFragment.setContentTreePositionListener(BrowserActivity.this);
         mFragment.setNetworkEventsListener(BrowserActivity.this);
         mFragment.setRootFolder(ScUtils.PATH_MEDIA_LIBRARY);
