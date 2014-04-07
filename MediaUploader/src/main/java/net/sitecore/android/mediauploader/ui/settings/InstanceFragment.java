@@ -47,7 +47,9 @@ public class InstanceFragment extends Fragment {
     }
 
     public boolean isFieldsValid() {
-        boolean valid = true;
+        mInstanceUrl.setError(null);
+        mInstanceLogin.setError(null);
+        mInstancePassword.setError(null);
 
         if (!isUrlValid()) return false;
         if (!isLoginValid()) return false;
@@ -55,10 +57,10 @@ public class InstanceFragment extends Fragment {
         String password = mInstancePassword.getText().toString();
         if (TextUtils.isEmpty(password)) {
             mInstancePassword.setError(getString(R.string.error_wrong_instance_password));
-            valid = false;
+            return false;
         }
 
-        return valid;
+        return true;
     }
 
     private boolean isUrlValid() {
