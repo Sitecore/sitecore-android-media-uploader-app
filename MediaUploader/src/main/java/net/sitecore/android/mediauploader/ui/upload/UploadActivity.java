@@ -80,13 +80,13 @@ public class UploadActivity extends Activity implements ErrorListener, SelectMed
         options.inJustDecodeBounds = true;
         BitmapFactory.decodeStream(getInputStreamFromUri(mImageUri.toString()), null, options);
 
-        options.inSampleSize = calculateTargetImageeSize(options, reqWidth, reqHeight);
+        options.inSampleSize = calculateTargetImageSize(options, reqWidth, reqHeight);
 
         options.inJustDecodeBounds = false;
         return BitmapFactory.decodeStream(getInputStreamFromUri(mImageUri.toString()), null, options);
     }
 
-    public int calculateTargetImageeSize(
+    public int calculateTargetImageSize(
             BitmapFactory.Options options, int reqWidth, int reqHeight) {
         final int height = options.outHeight;
         final int width = options.outWidth;
