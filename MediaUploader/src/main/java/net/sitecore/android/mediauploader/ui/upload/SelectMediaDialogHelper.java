@@ -76,7 +76,7 @@ public class SelectMediaDialogHelper {
                 "ScMobile");
         if (!mediaStorageDir.exists()) {
             if (!mediaStorageDir.mkdirs()) {
-                return new File(mActivity.getCacheDir(), imageName);
+                return new File(mActivity.getExternalFilesDir(Environment.DIRECTORY_PICTURES), imageName);
             }
         }
 
