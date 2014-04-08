@@ -15,6 +15,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewGroup.LayoutParams;
 import android.view.Window;
+import android.widget.ImageView.ScaleType;
 import android.widget.Toast;
 
 import javax.inject.Inject;
@@ -163,6 +164,7 @@ public class PreviewActivity extends Activity implements LoaderCallbacks<List<Sc
         @Override
         public View instantiateItem(ViewGroup container, int position) {
             PhotoView photoView = new PhotoView(container.getContext());
+            photoView.setScaleType(ScaleType.CENTER_INSIDE);
 
             mImageLoader.load(mImageUrls.get(position))
                     .placeholder(R.drawable.ic_placeholder)
