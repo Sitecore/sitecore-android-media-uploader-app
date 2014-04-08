@@ -4,6 +4,8 @@ import android.app.Activity;
 import android.content.AsyncQueryHandler;
 import android.content.ContentValues;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.MenuItem;
@@ -12,6 +14,11 @@ import android.widget.ImageView;
 import android.widget.Toast;
 
 import javax.inject.Inject;
+
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.URL;
 
 import com.android.volley.Response.ErrorListener;
 import com.android.volley.VolleyError;
@@ -31,8 +38,11 @@ import butterknife.OnClick;
 
 import static net.sitecore.android.mediauploader.util.Utils.showToast;
 import static net.sitecore.android.sdk.api.internal.LogUtils.LOGD;
+import static net.sitecore.android.sdk.api.internal.LogUtils.LOGE;
 
 public class UploadActivity extends Activity implements ErrorListener, SelectMediaListener {
+    public static final int MAX_WIDTH = 500;
+    public static final int MAX_HEIGHT = 500;
 
     @InjectView(R.id.edit_name) EditText mEditName;
     @InjectView(R.id.image_preview) ImageView mPreview;
@@ -53,7 +63,59 @@ public class UploadActivity extends Activity implements ErrorListener, SelectMed
         getActionBar().setDisplayHomeAsUpEnabled(true);
 
         mImageUri = getIntent().getData();
-        mPreview.setImageURI(mImageUri);
+        loadImageIntoImageView();
+    }
+
+    private void loadImageIntoImageView() {
+        try {
+            mPreview.setImageBitmap(decodeBitmapFromStream(MAX_WIDTH, MAX_HEIGHT));
+        } catch (IOException e) {
+            LOGE(e);
+            mPreview.setImageResource(R.drawable.ic_action_cancel);
+        }
+    }
+
+    public Bitmap decodeBitmapFromStream(int reqWidth, int reqHeight) throws IOException {
+        final BitmapFactory.Options options = new BitmapFactory.Options();
+        options.inJustDecodeBounds = true;
+        BitmapFactory.decodeStream(getInputStreamFromUri(mImageUri.toString()), null, options);
+
+        options.inSampleSize = calculateTargetImageeSize(options, reqWidth, reqHeight);
+
+        options.inJustDecodeBounds = false;
+        return BitmapFactory.decodeStream(getInputStreamFromUri(mImageUri.toString()), null, options);
+    }
+
+    public int calculateTargetImageeSize(
+            BitmapFactory.Options options, int reqWidth, int reqHeight) {
+        final int height = options.outHeight;
+        final int width = options.outWidth;
+        int inSampleSize = 1;
+
+        if (height > reqHeight || width > reqWidth) {
+            final int halfHeight = height / 2;
+            final int halfWidth = width / 2;
+
+            while ((halfHeight / inSampleSize) > reqHeight
+                    && (halfWidth / inSampleSize) > reqWidth) {
+                inSampleSize *= 2;
+            }
+        }
+        return inSampleSize;
+    }
+
+    private InputStream getInputStreamFromUri(String path) throws IOException {
+        if (path.startsWith("content:")) {
+            Uri uri = Uri.parse(path);
+            return getContentResolver().openInputStream(uri);
+        }
+
+        if (path.startsWith("http:") || path.startsWith("https:") || path.startsWith("file:")) {
+            URL url = new URL(path);
+            return url.openStream();
+        } else {
+            return new FileInputStream(path);
+        }
     }
 
     @Override
@@ -141,6 +203,6 @@ public class UploadActivity extends Activity implements ErrorListener, SelectMed
 
     @Override public void onImageSelected(Uri imageUri) {
         mImageUri = imageUri;
-        mPreview.setImageURI(mImageUri);
+        loadImageIntoImageView();
     }
 }
