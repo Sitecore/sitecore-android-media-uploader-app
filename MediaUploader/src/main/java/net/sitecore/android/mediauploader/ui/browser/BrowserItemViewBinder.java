@@ -23,8 +23,8 @@ import butterknife.InjectView;
 
 public class BrowserItemViewBinder implements ItemViewBinder {
     public final Builder IMAGE_OPTIONS = new Builder()
-            .maxWidth(200)
-            .maxHeight(200);
+            .thumbnail(true)
+            .backgroundColor("transparent");
 
     private final String mInstanceUrl;
     private final String mDatabase;
