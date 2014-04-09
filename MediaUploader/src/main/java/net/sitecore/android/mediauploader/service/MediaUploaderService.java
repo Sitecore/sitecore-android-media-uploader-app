@@ -1,41 +1,37 @@
 package net.sitecore.android.mediauploader.service;
 
-import android.app.Notification;
-import android.app.PendingIntent;
+import android.content.ContentValues;
 import android.content.Intent;
-import android.support.v4.app.NotificationCompat;
+import android.net.Uri;
 
-import net.sitecore.android.mediauploader.R;
-import net.sitecore.android.mediauploader.ui.MainActivity;
+import net.sitecore.android.mediauploader.model.UploadStatus;
+import net.sitecore.android.mediauploader.provider.UploadMediaContract.Uploads;
+import net.sitecore.android.mediauploader.util.NotificationUtils;
 import net.sitecore.android.sdk.api.UploadMediaRequestOptions;
 import net.sitecore.android.sdk.api.UploadMediaService;
 
 import static net.sitecore.android.sdk.api.internal.LogUtils.LOGD;
 
 public class MediaUploaderService extends UploadMediaService {
+    public static final String EXTRA_UPLOAD_OPTIONS = "net.sitecore.android.sdk.api.EXTRA_UPLOAD_OPTIONS";
+    public static final String EXTRA_UPLOAD_URI = "upload_uri";
 
-    static final String EXTRA_UPLOAD_OPTIONS = "net.sitecore.android.sdk.api.EXTRA_UPLOAD_OPTIONS";
+    @Override protected void onHandleIntent(Intent intent) {
+        LOGD("MediaUploaderService.onHandleIntent");
 
-    private static final int NOTIFICATION_IN_PROGRESS = 123;
-
-    @Override
-    public int onStartCommand(Intent intent, int flags, int startId) {
-        LOGD("MediaUploaderService.onStartCommand");
         UploadMediaRequestOptions options = intent.getParcelableExtra(EXTRA_UPLOAD_OPTIONS);
+        Uri uploadItemUri = intent.getParcelableExtra(EXTRA_UPLOAD_URI);
 
-        NotificationCompat.Builder builder = new NotificationCompat.Builder(this);
-        PendingIntent showMainActivityIntent = PendingIntent.getActivity(this, 0,
-                new Intent(this, MainActivity.class), 0);
+        onUploadStarted(uploadItemUri, options.getItemName());
 
-        builder.setContentTitle("Uploading ...")
-                .setContentText(options.getFullUrl())
-                .setContentIntent(showMainActivityIntent)
-                .setSmallIcon(R.drawable.ic_launcher);
+        super.onHandleIntent(intent);
+    }
 
-        Notification n = builder.build();
-        startForeground(NOTIFICATION_IN_PROGRESS, n);
-
-        return super.onStartCommand(intent, flags, startId);
+    public void onUploadStarted(Uri uploadUri, String name) {
+        final ContentValues values = new ContentValues();
+        values.put(Uploads.STATUS, UploadStatus.IN_PROGRESS.name());
+        getContentResolver().update(uploadUri, values, null, null);
+        NotificationUtils.showNotification(getApplicationContext(), UploadStatus.IN_PROGRESS.name(), name, name.hashCode());
     }
 
     @Override

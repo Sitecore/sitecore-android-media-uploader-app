@@ -46,7 +46,7 @@ public class UploaderPrefs {
         instance.setLogin(mPrefs.getString(R.string.key_instance_login));
         instance.setPassword(mPrefs.getString(R.string.key_instance_password));
         instance.setRootFolder(mPrefs.getString(R.string.key_instance_root_folder));
-        instance.setDatabase(mPrefs.getString(R.string.key_instance_root_folder));
+        instance.setDatabase(mPrefs.getString(R.string.key_instance_database));
         instance.setSite(mPrefs.getString(R.string.key_instance_site));
         instance.setPublicKey(mPrefs.getString(R.string.key_instance_public_key));
         instance.setSelected(true);

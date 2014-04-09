@@ -8,6 +8,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.MenuItem;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -28,9 +29,11 @@ import net.sitecore.android.mediauploader.UploaderApp;
 import net.sitecore.android.mediauploader.model.Instance;
 import net.sitecore.android.mediauploader.model.UploadStatus;
 import net.sitecore.android.mediauploader.provider.UploadMediaContract.Uploads;
+import net.sitecore.android.mediauploader.service.MediaUploaderService;
 import net.sitecore.android.mediauploader.ui.upload.SelectMediaDialogHelper.SelectMediaListener;
 import net.sitecore.android.mediauploader.util.UploaderPrefs;
 import net.sitecore.android.sdk.api.ScApiSession;
+import net.sitecore.android.sdk.api.UploadMediaIntentBuilder;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
@@ -187,11 +190,24 @@ public class UploadActivity extends Activity implements ErrorListener, SelectMed
 
     private void uploadMedia(final Uri uploadUri) {
         LOGD("Uploading: " + mImageUri.toString());
-        Intent intent = mApiSession.uploadMediaIntent("/sitecore/media library",
-                mEditName.getText().toString(),
+
+        Instance instance = UploaderPrefs.from(this).getCurrentInstance();
+        String itemName = mEditName.getText().toString();
+
+        mApiSession.setMediaLibraryPath("/");
+        MediaUploadListener responseListener = new
+                MediaUploadListener(getApplicationContext(), uploadUri, itemName);
+
+        UploadMediaIntentBuilder builder = mApiSession.uploadMediaIntent(instance.getRootFolder(), itemName,
                 mImageUri.toString())
-                .setSuccessListener(new SuccessfulMediaUploadListener(getContentResolver(), uploadUri))
-                .build(this);
+                .setDatabase(instance.getDatabase())
+                .setSuccessListener(responseListener)
+                .setErrorListener(responseListener)
+                .setUploadMediaServiceClass(MediaUploaderService.class);
+
+        if (!TextUtils.isEmpty(instance.getSite())) builder.setSite(instance.getSite());
+        Intent intent = builder.build(this);
+        intent.putExtra(MediaUploaderService.EXTRA_UPLOAD_URI, uploadUri);
 
         startService(intent);
     }
