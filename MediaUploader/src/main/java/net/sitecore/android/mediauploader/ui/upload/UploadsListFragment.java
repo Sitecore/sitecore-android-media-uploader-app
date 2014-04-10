@@ -69,7 +69,7 @@ public class UploadsListFragment extends ListFragment implements LoaderCallbacks
         }
 
         @Override public View newView(Context context, Cursor cursor, ViewGroup parent) {
-            View v = LayoutInflater.from(context).inflate(R.layout.fragment_uploads_list, parent, false);
+            View v = LayoutInflater.from(context).inflate(R.layout.layout_uploads_item, parent, false);
             ViewHolder holder = new ViewHolder(v);
             v.setTag(holder);
             return v;
@@ -84,7 +84,9 @@ public class UploadsListFragment extends ListFragment implements LoaderCallbacks
             String path = cursor.getString(Query.ITEM_PATH);
             UploadStatus status = UploadStatus.valueOf(cursor.getString(Query.STATUS));
 
-            mImageLoader.load(itemUri).resize(100, 100).placeholder(R.drawable.ic_placeholder).into(holder.preview);
+            mImageLoader.load(itemUri).resize(150, 150)
+                    .placeholder(R.drawable.ic_placeholder).error(R.drawable.ic_action_cancel)
+                    .into(holder.preview);
             holder.name.setText(name);
             holder.url.setText(url);
             holder.path.setText(path);

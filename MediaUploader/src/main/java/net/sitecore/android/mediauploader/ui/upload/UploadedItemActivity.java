@@ -5,6 +5,7 @@ import android.app.Activity;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.view.MenuItem;
+import android.view.ViewGroup.LayoutParams;
 import android.widget.ImageView.ScaleType;
 
 import javax.inject.Inject;
@@ -40,10 +41,14 @@ public class UploadedItemActivity extends Activity {
         photoView.setScaleType(ScaleType.CENTER_INSIDE);
 
         mImageLoader.load(imageUri)
+                .centerInside()
+                .fit()
                 .placeholder(R.drawable.ic_placeholder)
                 .error(R.drawable.ic_action_cancel)
                 .into(photoView);
-        setContentView(photoView);
+
+        LayoutParams params = new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT);
+        setContentView(photoView, params);
     }
 
     @Override

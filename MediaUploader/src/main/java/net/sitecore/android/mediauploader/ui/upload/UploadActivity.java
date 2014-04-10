@@ -4,8 +4,6 @@ import android.app.Activity;
 import android.content.AsyncQueryHandler;
 import android.content.ContentValues;
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -15,11 +13,6 @@ import android.widget.ImageView;
 import android.widget.Toast;
 
 import javax.inject.Inject;
-
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.URL;
 
 import com.android.volley.Response.ErrorListener;
 import com.android.volley.VolleyError;
@@ -43,7 +36,6 @@ import butterknife.OnClick;
 
 import static net.sitecore.android.mediauploader.util.Utils.showToast;
 import static net.sitecore.android.sdk.api.internal.LogUtils.LOGD;
-import static net.sitecore.android.sdk.api.internal.LogUtils.LOGE;
 
 public class UploadActivity extends Activity implements ErrorListener, SelectMediaListener {
     public static final int MAX_WIDTH = 500;
