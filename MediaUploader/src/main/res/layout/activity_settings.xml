@@ -64,8 +64,9 @@
         android:layout_marginRight="8dp"
         android:background="@android:color/darker_gray" />
 
-    <ListView
-        android:id="@+id/list_instances"
+    <fragment
+        android:id="@+id/fragment_instances"
+        android:name="net.sitecore.android.mediauploader.ui.settings.InstancesListFragment"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
 </LinearLayout>
