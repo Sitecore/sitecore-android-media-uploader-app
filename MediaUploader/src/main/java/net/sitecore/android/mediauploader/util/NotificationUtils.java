@@ -18,6 +18,7 @@ public class NotificationUtils {
                 new Intent(context, UploadsListActivity.class), 0);
 
         builder.setContentTitle(title)
+                .setAutoCancel(true)
                 .setContentText(contentText)
                 .setContentIntent(showMainActivityIntent)
                 .setSmallIcon(R.drawable.ic_launcher);

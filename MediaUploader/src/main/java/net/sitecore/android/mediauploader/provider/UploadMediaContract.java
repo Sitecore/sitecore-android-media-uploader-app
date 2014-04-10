@@ -75,7 +75,8 @@ public class UploadMediaContract {
                     Uploads.ITEM_NAME,
                     Uploads.FILE_URI,
                     Uploads.STATUS,
-                    Uploads.ITEM_PATH
+                    Uploads.ITEM_PATH,
+                    Uploads.FAIL_MESSAGE
             };
 
             int _ID = 0;
@@ -86,6 +87,7 @@ public class UploadMediaContract {
             int FILE_URI = 5;
             int STATUS = 6;
             int ITEM_PATH = 7;
+            int FAIL_MESSAGE = 8;
 
             public String ORDER_BY_STATUS = Uploads.STATUS + " desc";
         }
@@ -111,5 +113,6 @@ public class UploadMediaContract {
         String ITEM_PATH = "item_path";
         String FILE_URI = "file_uri";
         String STATUS = "status";
+        String FAIL_MESSAGE = "message";
     }
 }

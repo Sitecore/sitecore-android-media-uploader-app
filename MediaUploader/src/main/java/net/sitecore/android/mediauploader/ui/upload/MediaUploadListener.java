@@ -11,6 +11,7 @@ import com.android.volley.VolleyError;
 import net.sitecore.android.mediauploader.model.UploadStatus;
 import net.sitecore.android.mediauploader.provider.UploadMediaContract.Uploads;
 import net.sitecore.android.mediauploader.util.NotificationUtils;
+import net.sitecore.android.mediauploader.util.Utils;
 import net.sitecore.android.sdk.api.model.ItemsResponse;
 
 class MediaUploadListener implements Listener<ItemsResponse>, ErrorListener {
@@ -30,7 +31,7 @@ class MediaUploadListener implements Listener<ItemsResponse>, ErrorListener {
     }
 
     @Override public void onErrorResponse(VolleyError volleyError) {
-        onUploadFailed();
+        onUploadFailed(Utils.getMessageFromError(volleyError));
     }
 
     public void onUploadFinished() {
@@ -41,9 +42,10 @@ class MediaUploadListener implements Listener<ItemsResponse>, ErrorListener {
         NotificationUtils.showNotification(mContext, UploadStatus.DONE.name(), mItemName, mItemName.hashCode());
     }
 
-    public void onUploadFailed() {
+    public void onUploadFailed(String errorMessage) {
         final ContentValues values = new ContentValues();
         values.put(Uploads.STATUS, UploadStatus.ERROR.name());
+        values.put(Uploads.FAIL_MESSAGE, errorMessage);
         //TODO: change to AsyncQueryHandler when sdk UploadMediaIntentBuilder will be fixed (wrong thread)
         mContext.getContentResolver().update(mUploadUri, values, null, null);
         NotificationUtils.showNotification(mContext, UploadStatus.ERROR.name(), mItemName, mItemName.hashCode());
