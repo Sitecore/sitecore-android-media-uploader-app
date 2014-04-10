@@ -27,6 +27,7 @@ import com.android.volley.VolleyError;
 import net.sitecore.android.mediauploader.R;
 import net.sitecore.android.mediauploader.UploaderApp;
 import net.sitecore.android.mediauploader.model.Instance;
+import net.sitecore.android.mediauploader.model.MediaFolderOnlyFilter;
 import net.sitecore.android.mediauploader.provider.UploadMediaContract;
 import net.sitecore.android.mediauploader.provider.UploadMediaContract.Instances;
 import net.sitecore.android.mediauploader.provider.UploadMediaContract.Instances.Query;
@@ -102,8 +103,10 @@ public class MediaFolderSelectionActivity extends Activity implements LoaderCall
             throw new IllegalStateException("You should pass instance to start this activity");
         }
 
-        mFolderSelectionFragment = (FolderSelectionFragment) getFragmentManager()
-                .findFragmentById(R.id.browser_fragment);
+        mFolderSelectionFragment = (FolderSelectionFragment) getFragmentManager().findFragmentById(R.id.browser_fragment);
+        mFolderSelectionFragment.setItemsFilter(new MediaFolderOnlyFilter());
+
+
         ScApiSessionFactory.getSession(mScRequestQueue, mInstance.getUrl(), mInstance.getLogin(),
                 mInstance.getPassword(), mSessionListener, this);
     }

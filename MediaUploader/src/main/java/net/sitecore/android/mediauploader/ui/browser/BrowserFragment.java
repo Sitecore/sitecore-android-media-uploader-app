@@ -8,6 +8,7 @@ import android.view.View;
 
 import net.sitecore.android.mediauploader.R;
 import net.sitecore.android.mediauploader.UploaderApp;
+import net.sitecore.android.mediauploader.model.SortByMediaFolderTemplateComparator;
 import net.sitecore.android.mediauploader.util.ScUtils;
 import net.sitecore.android.sdk.api.model.ScItem;
 import net.sitecore.android.sdk.ui.ItemViewBinder;
@@ -24,6 +25,11 @@ public class BrowserFragment extends ItemsGridBrowserFragment {
         args.putString(INSTANCE_DATABASE, database);
         fragment.setArguments(args);
         return fragment;
+    }
+
+    @Override public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setItemsSortOrder(new SortByMediaFolderTemplateComparator());
     }
 
     @Override
