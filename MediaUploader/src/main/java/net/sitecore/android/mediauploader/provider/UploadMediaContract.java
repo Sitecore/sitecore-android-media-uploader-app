@@ -90,6 +90,7 @@ public class UploadMediaContract {
             int FAIL_MESSAGE = 8;
 
             public String ORDER_BY_STATUS = Uploads.STATUS + " desc";
+            public String ORDWE_BY_TIME_ADDED = Uploads._ID + " desc";
         }
 
     }

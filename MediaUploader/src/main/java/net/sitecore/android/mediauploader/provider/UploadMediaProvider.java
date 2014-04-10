@@ -198,6 +198,11 @@ public class UploadMediaProvider extends ContentProvider {
         if (match == INSTANCE_ID) {
             getContext().getContentResolver().notifyChange(Instances.CONTENT_URI, null);
         }
+
+        if (match == UPLOAD_ID) {
+            getContext().getContentResolver().notifyChange(Uploads.CONTENT_URI, null);
+        }
+
         getContext().getContentResolver().notifyChange(uri, null);
         return result;
     }

@@ -36,6 +36,8 @@
             android:label="My Uploads"
             android:screenOrientation="portrait" />
 
+        <activity android:name=".ui.upload.UploadedItemActivity" />
+
         <activity
             android:name=".ui.browser.BrowserActivity"
             android:label="@string/title_media_browser"

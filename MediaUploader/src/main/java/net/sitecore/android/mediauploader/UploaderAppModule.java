@@ -9,7 +9,6 @@ import java.security.NoSuchAlgorithmException;
 import java.security.spec.InvalidKeySpecException;
 
 import com.squareup.picasso.Picasso;
-import com.squareup.picasso.Picasso.Builder;
 
 import net.sitecore.android.mediauploader.model.Instance;
 import net.sitecore.android.mediauploader.ui.MainActivity;
@@ -20,6 +19,8 @@ import net.sitecore.android.mediauploader.ui.settings.CreateEditInstanceActivity
 import net.sitecore.android.mediauploader.ui.settings.MediaFolderSelectionActivity;
 import net.sitecore.android.mediauploader.ui.settings.SettingsActivity;
 import net.sitecore.android.mediauploader.ui.upload.UploadActivity;
+import net.sitecore.android.mediauploader.ui.upload.UploadedItemActivity;
+import net.sitecore.android.mediauploader.ui.upload.UploadsListFragment;
 import net.sitecore.android.mediauploader.util.UploaderPrefs;
 import net.sitecore.android.sdk.api.ScApiSession;
 import net.sitecore.android.sdk.api.ScApiSessionFactory;
@@ -39,7 +40,9 @@ import static net.sitecore.android.sdk.api.internal.LogUtils.LOGE;
                 BrowserItemViewBinder.class,
                 CreateEditInstanceActivity.class,
                 UploadActivity.class,
+                UploadsListFragment.class,
                 MediaFolderSelectionActivity.class,
+                UploadedItemActivity.class,
                 SettingsActivity.class,
                 PreviewActivity.class
         }
