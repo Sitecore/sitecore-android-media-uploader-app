@@ -24,6 +24,8 @@ import java.net.URL;
 import com.android.volley.Response.ErrorListener;
 import com.android.volley.VolleyError;
 
+import com.squareup.picasso.Picasso;
+
 import net.sitecore.android.mediauploader.R;
 import net.sitecore.android.mediauploader.UploaderApp;
 import net.sitecore.android.mediauploader.model.Instance;
@@ -50,6 +52,7 @@ public class UploadActivity extends Activity implements ErrorListener, SelectMed
     @InjectView(R.id.edit_name) EditText mEditName;
     @InjectView(R.id.image_preview) ImageView mPreview;
 
+    @Inject Picasso mImageLoader;
     @Inject ScApiSession mApiSession;
     @Inject UploaderPrefs mUploaderPrefs;
 
@@ -66,59 +69,9 @@ public class UploadActivity extends Activity implements ErrorListener, SelectMed
         getActionBar().setDisplayHomeAsUpEnabled(true);
 
         mImageUri = getIntent().getData();
-        loadImageIntoImageView();
-    }
-
-    private void loadImageIntoImageView() {
-        try {
-            mPreview.setImageBitmap(decodeBitmapFromStream(MAX_WIDTH, MAX_HEIGHT));
-        } catch (IOException e) {
-            LOGE(e);
-            mPreview.setImageResource(R.drawable.ic_action_cancel);
-        }
-    }
-
-    public Bitmap decodeBitmapFromStream(int reqWidth, int reqHeight) throws IOException {
-        final BitmapFactory.Options options = new BitmapFactory.Options();
-        options.inJustDecodeBounds = true;
-        BitmapFactory.decodeStream(getInputStreamFromUri(mImageUri.toString()), null, options);
-
-        options.inSampleSize = calculateTargetImageSize(options, reqWidth, reqHeight);
-
-        options.inJustDecodeBounds = false;
-        return BitmapFactory.decodeStream(getInputStreamFromUri(mImageUri.toString()), null, options);
-    }
-
-    public int calculateTargetImageSize(
-            BitmapFactory.Options options, int reqWidth, int reqHeight) {
-        final int height = options.outHeight;
-        final int width = options.outWidth;
-        int inSampleSize = 1;
-
-        if (height > reqHeight || width > reqWidth) {
-            final int halfHeight = height / 2;
-            final int halfWidth = width / 2;
-
-            while ((halfHeight / inSampleSize) > reqHeight
-                    && (halfWidth / inSampleSize) > reqWidth) {
-                inSampleSize *= 2;
-            }
-        }
-        return inSampleSize;
-    }
-
-    private InputStream getInputStreamFromUri(String path) throws IOException {
-        if (path.startsWith("content:")) {
-            Uri uri = Uri.parse(path);
-            return getContentResolver().openInputStream(uri);
-        }
-
-        if (path.startsWith("http:") || path.startsWith("https:") || path.startsWith("file:")) {
-            URL url = new URL(path);
-            return url.openStream();
-        } else {
-            return new FileInputStream(path);
-        }
+        mImageLoader.load(mImageUri).fit()
+                .placeholder(R.drawable.ic_placeholder).error(R.drawable.ic_action_cancel)
+                .into(mPreview);
     }
 
     @Override
@@ -219,6 +172,8 @@ public class UploadActivity extends Activity implements ErrorListener, SelectMed
 
     @Override public void onImageSelected(Uri imageUri) {
         mImageUri = imageUri;
-        loadImageIntoImageView();
+        mImageLoader.load(mImageUri).fit()
+                .placeholder(R.drawable.ic_placeholder).error(R.drawable.ic_action_cancel)
+                .into(mPreview);
     }
 }
