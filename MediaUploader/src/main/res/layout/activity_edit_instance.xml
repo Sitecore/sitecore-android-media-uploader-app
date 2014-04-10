@@ -6,7 +6,7 @@
 
     <fragment
         android:id="@+id/instance_fragment"
-        android:name="net.sitecore.android.mediauploader.ui.settings.InstanceFragment"
+        android:name="net.sitecore.android.mediauploader.ui.settings.InstanceFieldsFragment"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
 

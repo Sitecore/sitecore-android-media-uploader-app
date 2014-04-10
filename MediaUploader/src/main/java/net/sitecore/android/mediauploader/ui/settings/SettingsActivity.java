@@ -40,7 +40,6 @@ import static net.sitecore.android.sdk.api.internal.LogUtils.LOGE;
 public class SettingsActivity extends Activity implements LoaderCallbacks<Cursor> {
 
     @InjectView(R.id.list_instances) ListView mList;
-    @Inject UploaderPrefs mPrefs;
 
     private InstancesListAdapter mAdapter;
     private OnClickListener mNewSiteClickListener = new OnClickListener() {

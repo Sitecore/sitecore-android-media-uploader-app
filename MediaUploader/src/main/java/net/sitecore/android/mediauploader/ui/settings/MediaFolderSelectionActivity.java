@@ -10,9 +10,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.RemoteException;
 import android.support.v4.app.NavUtils;
-import android.view.LayoutInflater;
 import android.view.MenuItem;
-import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -39,10 +37,8 @@ import net.sitecore.android.sdk.api.ScApiSessionFactory;
 import net.sitecore.android.sdk.api.ScRequestQueue;
 import net.sitecore.android.sdk.api.model.ItemsResponse;
 import net.sitecore.android.sdk.api.model.ScItem;
-import net.sitecore.android.sdk.ui.ItemViewBinder;
 import net.sitecore.android.sdk.ui.ItemsBrowserFragment.ContentTreePositionListener;
 import net.sitecore.android.sdk.ui.ItemsBrowserFragment.NetworkEventsListener;
-import net.sitecore.android.sdk.ui.ItemsListBrowserFragment;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
@@ -104,8 +100,10 @@ public class MediaFolderSelectionActivity extends Activity implements LoaderCall
         }
 
         mFolderSelectionFragment = (FolderSelectionFragment) getFragmentManager().findFragmentById(R.id.browser_fragment);
+        mFolderSelectionFragment.setRootFolder(ScUtils.PATH_MEDIA_LIBRARY);
+        mFolderSelectionFragment.setNetworkEventsListener(mNetworkEventsListener);
+        mFolderSelectionFragment.setContentTreePositionListener(mContentTreePositionListener);
         mFolderSelectionFragment.setItemsFilter(new MediaFolderOnlyFilter());
-
 
         ScApiSessionFactory.getSession(mScRequestQueue, mInstance.getUrl(), mInstance.getLogin(),
                 mInstance.getPassword(), mSessionListener, this);
@@ -113,9 +111,6 @@ public class MediaFolderSelectionActivity extends Activity implements LoaderCall
 
     private Listener<ScApiSession> mSessionListener = new Listener<ScApiSession>() {
         @Override public void onResponse(ScApiSession session) {
-            mFolderSelectionFragment.setRootFolder(ScUtils.PATH_MEDIA_LIBRARY);
-            mFolderSelectionFragment.setNetworkEventsListener(mNetworkEventsListener);
-            mFolderSelectionFragment.setContentTreePositionListener(mContentTreePositionListener);
             session.setDefaultDatabase(mInstance.getDatabase());
             session.setDefaultSite(mInstance.getSite());
             mFolderSelectionFragment.loadContent(session);
@@ -170,6 +165,10 @@ public class MediaFolderSelectionActivity extends Activity implements LoaderCall
         getLoaderManager().destroyLoader(0);
     }
 
+    @Override
+    public void onLoaderReset(Loader<Cursor> loader) {
+    }
+
     private boolean checkIsCurrentInstance(Cursor data) {
         if (data.getCount() == 1 && mInstanceUri != null) {
             String id = Instances.getInstanceId(mInstanceUri);
@@ -183,10 +182,6 @@ public class MediaFolderSelectionActivity extends Activity implements LoaderCall
         mPrefs.setSelectedInstance(mInstance);
         saveInstanceToDB(mInstance);
         NavUtils.navigateUpFromSameTask(this);
-    }
-
-    @Override
-    public void onLoaderReset(Loader<Cursor> loader) {
     }
 
     private void saveInstanceToDB(Instance instance) {
@@ -216,14 +211,4 @@ public class MediaFolderSelectionActivity extends Activity implements LoaderCall
         }
     }
 
-    public static class FolderSelectionFragment extends ItemsListBrowserFragment {
-
-        @Override protected View onCreateUpButtonView(LayoutInflater inflater) {
-            return inflater.inflate(R.layout.layout_up_button, null);
-        }
-
-        @Override protected ItemViewBinder onCreateItemViewBinder() {
-            return new FolderSelectionViewBinder();
-        }
-    }
 }

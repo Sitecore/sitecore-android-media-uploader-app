@@ -42,13 +42,12 @@ import butterknife.OnClick;
 
 public class CreateEditInstanceActivity extends Activity implements LoaderCallbacks<Cursor>, ErrorListener,
         Listener<ScPublicKey> {
-    public static final int READ_INSTANCES_ACTION = 0;
 
     @InjectView(R.id.button_delete_instance) Button mDeleteButton;
     @Inject ScRequestQueue mRequestQueue;
     @Inject UploaderPrefs mPrefs;
 
-    private InstanceFragment mInstanceFragment;
+    private InstanceFieldsFragment mInstanceFieldsFragment;
     private Uri mInstanceUri;
     private boolean mIsInstanceSelected = false;
 
@@ -64,14 +63,14 @@ public class CreateEditInstanceActivity extends Activity implements LoaderCallba
 
         mInstanceUri = getIntent().getData();
         if (mInstanceUri != null) {
-            getLoaderManager().initLoader(READ_INSTANCES_ACTION, null, this);
+            getLoaderManager().initLoader(0, null, this);
             setTitle(R.string.title_edit_instance);
         } else {
             mDeleteButton.setVisibility(View.INVISIBLE);
             setTitle(R.string.title_add_instance);
         }
 
-        mInstanceFragment = (InstanceFragment) getFragmentManager().findFragmentById(R.id.instance_fragment);
+        mInstanceFieldsFragment = (InstanceFieldsFragment) getFragmentManager().findFragmentById(R.id.instance_fragment);
     }
 
     @Override
@@ -120,33 +119,23 @@ public class CreateEditInstanceActivity extends Activity implements LoaderCallba
     }
 
     @OnClick(R.id.button_next) void checkConnection() {
-        if (mInstanceFragment.isFieldsValid()) {
-            Instance instance = mInstanceFragment.getEnteredInstance();
+        if (mInstanceFieldsFragment.isFieldsValid()) {
+            Instance instance = mInstanceFieldsFragment.getEnteredInstance();
             mRequestQueue.add(ScApiSessionFactory.buildPublicKeyRequest(instance.getUrl(), this, this));
         }
     }
 
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
-        switch (id) {
-            case READ_INSTANCES_ACTION:
-                return new CursorLoader(this, mInstanceUri, Query.PROJECTION, null, null, null);
-            default:
-                return null;
-        }
+        return new CursorLoader(this, mInstanceUri, Query.PROJECTION, null, null, null);
     }
 
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
-        switch (loader.getId()) {
-            case READ_INSTANCES_ACTION: {
-                if (!data.moveToFirst()) return;
-                Instance instance = new Instance(data);
-                mIsInstanceSelected = instance.isSelected();
-                mInstanceFragment.setSourceInstance(instance);
-                break;
-            }
-        }
+        if (!data.moveToFirst()) return;
+        Instance instance = new Instance(data);
+        mIsInstanceSelected = instance.isSelected();
+        mInstanceFieldsFragment.setSourceInstance(instance);
     }
 
     @Override
@@ -159,7 +148,7 @@ public class CreateEditInstanceActivity extends Activity implements LoaderCallba
     }
 
     @Override public void onResponse(ScPublicKey scPublicKey) {
-        final Instance enteredInstance = mInstanceFragment.getEnteredInstance();
+        final Instance enteredInstance = mInstanceFieldsFragment.getEnteredInstance();
         enteredInstance.setPublicKey(scPublicKey.getRawValue());
         Listener<ItemsResponse> success = new Listener<ItemsResponse>() {
             @Override
@@ -180,7 +169,7 @@ public class CreateEditInstanceActivity extends Activity implements LoaderCallba
         ScApiSession session = ScApiSessionFactory.newSession(enteredInstance.getUrl(), scPublicKey,
                 enteredInstance.getLogin(), enteredInstance.getPassword());
         RequestBuilder builder = session.readItemsRequest(success, this)
-                .database(mInstanceFragment.getEnteredInstance().getDatabase());
+                .database(mInstanceFieldsFragment.getEnteredInstance().getDatabase());
         if (!TextUtils.isEmpty(enteredInstance.getSite())) {
                 builder.fromSite(enteredInstance.getSite());
         }

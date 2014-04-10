@@ -18,7 +18,8 @@ import net.sitecore.android.mediauploader.util.ScUtils;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 
-public class InstanceFragment extends Fragment {
+public class InstanceFieldsFragment extends Fragment {
+
     private static final int HTTPS_POSITION = 1;
     private static final int HTTP_POSITION = 0;
 
@@ -71,7 +72,7 @@ public class InstanceFragment extends Fragment {
         } else {
             String protocol = (String) mProtocol.getSelectedItem();
             String fullUrl = protocol.concat(url);
-            if (!URLUtil.isValidUrl(fullUrl) || url.startsWith("https") || url.startsWith("http")) {
+            if (!URLUtil.isValidUrl(fullUrl)) {
                 mInstanceUrl.setError(getString(R.string.error_wrong_instance_url, fullUrl));
                 return false;
             }
