@@ -16,6 +16,9 @@ import android.widget.Toast;
 
 import javax.inject.Inject;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 import com.android.volley.Response.ErrorListener;
 import com.android.volley.VolleyError;
 
@@ -142,7 +145,7 @@ public class UploadActivity extends Activity implements ErrorListener, SelectMed
 
     private ContentValues populateUploadValues() {
         final ContentValues values = new ContentValues();
-        values.put(Uploads.ITEM_NAME, mEditName.getText().toString());
+        values.put(Uploads.ITEM_NAME, getItemName());
         values.put(Uploads.FILE_URI, mImageUri.toString());
 
         return values;
@@ -151,7 +154,7 @@ public class UploadActivity extends Activity implements ErrorListener, SelectMed
     private void uploadMedia(final Uri uploadUri, Instance instance) {
         LOGD("Uploading: " + mImageUri.toString());
 
-        String itemName = mEditName.getText().toString();
+        String itemName = getItemName();
 
         mApiSession.setMediaLibraryPath("/");
         MediaUploadListener responseListener = new
@@ -170,6 +173,15 @@ public class UploadActivity extends Activity implements ErrorListener, SelectMed
         intent.putExtra(MediaUploaderService.EXTRA_UPLOAD_URI, uploadUri);
 
         startService(intent);
+    }
+
+    private String getItemName() {
+        String itemName = mEditName.getText().toString();
+        if (TextUtils.isEmpty(itemName)) {
+            String dateString = new SimpleDateFormat("yyyyMMddhhmmss").format(new Date(System.currentTimeMillis()));
+            itemName = "Image_" + dateString;
+        }
+        return itemName;
     }
 
     @Override
