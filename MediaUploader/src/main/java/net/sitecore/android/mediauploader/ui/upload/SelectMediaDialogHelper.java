@@ -11,6 +11,8 @@ import android.os.Environment;
 import android.provider.MediaStore;
 
 import java.io.File;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 import net.sitecore.android.mediauploader.R;
 
@@ -60,8 +62,7 @@ public class SelectMediaDialogHelper {
     }
 
     private void onCameraSelected() {
-        //final File photo = getOutputMediaFile();
-        final File photo = new File(mActivity.getExternalCacheDir(), "image.png");
+        final File photo = getOutputMediaFile();
         mImageUri = Uri.fromFile(photo);
 
         Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
@@ -71,7 +72,8 @@ public class SelectMediaDialogHelper {
     }
 
     private File getOutputMediaFile() {
-        String imageName = "Camera_image.png";
+        String dateString = new SimpleDateFormat("yyyyMMddhhmmss").format(new Date(System.currentTimeMillis()));
+        String imageName = "Image_" + dateString + ".png";
         File mediaStorageDir = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES),
                 "ScMobile");
         if (!mediaStorageDir.exists()) {
