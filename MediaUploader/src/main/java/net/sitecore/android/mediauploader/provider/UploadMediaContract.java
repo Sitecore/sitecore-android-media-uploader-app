@@ -69,25 +69,19 @@ public class UploadMediaContract {
         public interface Query {
             public String[] PROJECTION = {
                     Uploads._ID,
-                    Uploads.URL,
-                    Uploads.USERNAME,
-                    Uploads.PASSWORD,
+                    Uploads.INSTANCE_ID,
                     Uploads.ITEM_NAME,
                     Uploads.FILE_URI,
                     Uploads.STATUS,
-                    Uploads.ITEM_PATH,
                     Uploads.FAIL_MESSAGE
             };
 
             int _ID = 0;
-            int URL = 1;
-            int USERNAME = 2;
-            int PASSWORD = 3;
-            int ITEM_NAME = 4;
-            int FILE_URI = 5;
-            int STATUS = 6;
-            int ITEM_PATH = 7;
-            int FAIL_MESSAGE = 8;
+            int INSTANCE_ID = 1;
+            int ITEM_NAME = 2;
+            int FILE_URI = 3;
+            int STATUS = 4;
+            int FAIL_MESSAGE = 5;
 
             public String ORDER_BY_STATUS = Uploads.STATUS + " desc";
             public String ORDWE_BY_TIME_ADDED = Uploads._ID + " desc";
@@ -107,11 +101,8 @@ public class UploadMediaContract {
     }
 
     interface UploadColumns {
-        String URL = "instance_url";
-        String USERNAME = "instance_login";
-        String PASSWORD = "instance_password";
+        String INSTANCE_ID = "instnace_id";
         String ITEM_NAME = "item_name";
-        String ITEM_PATH = "item_path";
         String FILE_URI = "file_uri";
         String STATUS = "status";
         String FAIL_MESSAGE = "message";

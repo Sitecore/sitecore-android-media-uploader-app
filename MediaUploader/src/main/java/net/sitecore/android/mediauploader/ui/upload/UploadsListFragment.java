@@ -80,16 +80,12 @@ public class UploadsListFragment extends ListFragment implements LoaderCallbacks
 
             final String itemUri = cursor.getString(Query.FILE_URI);
             final String name = cursor.getString(Query.ITEM_NAME);
-            String url = cursor.getString(Query.URL);
-            String path = cursor.getString(Query.ITEM_PATH);
             UploadStatus status = UploadStatus.valueOf(cursor.getString(Query.STATUS));
 
             mImageLoader.load(itemUri).resize(150, 150)
                     .placeholder(R.drawable.ic_placeholder).error(R.drawable.ic_action_cancel)
                     .into(holder.preview);
             holder.name.setText(name);
-            holder.url.setText(url);
-            holder.path.setText(path);
 
             switch (status) {
                 case DONE:
