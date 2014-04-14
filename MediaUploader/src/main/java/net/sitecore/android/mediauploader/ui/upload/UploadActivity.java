@@ -18,18 +18,23 @@ import com.squareup.picasso.Picasso;
 
 import net.sitecore.android.mediauploader.R;
 import net.sitecore.android.mediauploader.UploaderApp;
+import net.sitecore.android.mediauploader.model.Instance;
 import net.sitecore.android.mediauploader.ui.upload.SelectMediaDialogHelper.SelectMediaListener;
+import net.sitecore.android.mediauploader.util.InstancesAsyncHandler;
 import net.sitecore.android.mediauploader.util.UploadHelper;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
 
+import static net.sitecore.android.mediauploader.util.Utils.showToast;
+
 public class UploadActivity extends Activity implements SelectMediaListener {
     @InjectView(R.id.edit_name) EditText mEditName;
     @InjectView(R.id.image_preview) ImageView mPreview;
 
     @Inject Picasso mImageLoader;
+    @Inject Instance mInstance;
 
     private Uri mImageUri;
     private SelectMediaDialogHelper mMediaDialogHelper;
@@ -70,7 +75,8 @@ public class UploadActivity extends Activity implements SelectMediaListener {
 
     @OnClick(R.id.button_upload_later)
     public void onUploadLater() {
-        mUploadHelper.createUpload(getItemName(), mImageUri);
+        new InstancesAsyncHandler(getContentResolver()).insertPendingUpload(getItemName(), mImageUri, mInstance);
+        showToast(this, R.string.toast_added_to_uploads);
         finish();
     }
 

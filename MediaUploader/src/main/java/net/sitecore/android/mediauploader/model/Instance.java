@@ -10,6 +10,8 @@ import net.sitecore.android.mediauploader.provider.UploadMediaContract.Instances
 import static net.sitecore.android.mediauploader.provider.UploadMediaContract.Instances.Query;
 
 public class Instance implements Parcelable {
+
+    private String id;
     private String url;
     private String login;
     private String password;
@@ -20,6 +22,10 @@ public class Instance implements Parcelable {
     private boolean isSelected;
 
     public Instance() {
+    }
+
+    public String getId() {
+        return id;
     }
 
     public String getUrl() {
@@ -100,6 +106,7 @@ public class Instance implements Parcelable {
     }
 
     public Instance(Cursor cursor) {
+        this.id = cursor.getString(Query._ID);
         this.url = cursor.getString(Query.URL);
         this.login = cursor.getString(Query.LOGIN);
         this.password = cursor.getString(Query.PASSWORD);

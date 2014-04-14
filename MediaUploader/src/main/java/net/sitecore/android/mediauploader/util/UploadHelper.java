@@ -47,30 +47,8 @@ public class UploadHelper {
         UploaderApp.from(mContext).inject(this);
     }
 
-    public void createUpload(final String itemName, final Uri fileUri) {
-        new GetSelectedInstance(mContentResolver) {
-            @Override public void onComplete(final Instance instance, int instanceID) {
-                ContentValues values = build(itemName, fileUri);
-                if (instance == null) {
-                    //TODO: make upload failed, cause connected instance was deleted
-                    values.put(Uploads.STATUS, UploadStatus.ERROR.name());
-                    values.put(Uploads.FAIL_MESSAGE, "Instance has been deleted");
-                    return;
-                } else {
-                    values.put(Uploads.INSTANCE_ID, instanceID);
-                    new AsyncQueryHandler(mContentResolver) {
-                        @Override
-                        protected void onInsertComplete(int token, Object cookie, final Uri uri) {
-                            showToast(mContext, R.string.toast_added_to_uploads);
-                        }
-                    }.startInsert(0, null, Uploads.CONTENT_URI, values);
-                }
-            }
-        }.start();
-    }
-
     public void createAndStartUpload(final String itemName, final Uri fileUri) {
-        new GetSelectedInstance(mContext.getContentResolver()) {
+        new GetSelectedInstance(mContentResolver) {
             @Override public void onComplete(final Instance instance, int instanceID) {
                 ContentValues values = build(itemName, fileUri);
                 if (instance == null) {
