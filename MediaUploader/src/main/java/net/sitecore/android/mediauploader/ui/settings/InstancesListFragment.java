@@ -13,21 +13,15 @@ import android.os.RemoteException;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
 
 import java.util.ArrayList;
-import java.util.zip.Inflater;
 
 import net.sitecore.android.mediauploader.R;
 import net.sitecore.android.mediauploader.UploaderApp;
-import net.sitecore.android.mediauploader.model.Instance;
 import net.sitecore.android.mediauploader.provider.UploadMediaContract;
 import net.sitecore.android.mediauploader.provider.UploadMediaContract.Instances;
 import net.sitecore.android.mediauploader.provider.UploadMediaContract.Instances.Query;
-import net.sitecore.android.mediauploader.util.UploaderPrefs;
 
 import static net.sitecore.android.sdk.api.internal.LogUtils.LOGE;
 
@@ -57,12 +51,8 @@ public class InstancesListFragment extends ListFragment implements LoaderCallbac
     }
 
     @Override public void onListItemClick(ListView l, View v, int position, long id) {
-        super.onListItemClick(l, v, position, id);
-
-        final Instance instance = new Instance(mAdapter.getCursor());
-        UploaderPrefs.from(getActivity()).setSelectedInstance(instance);
-        UploaderApp.from(getActivity()).cleanInstanceCacheAsync();
         updateSelectedInstanceId(id);
+        UploaderApp.from(getActivity()).cleanInstanceCacheAsync();
     }
 
     private void updateSelectedInstanceId(long id) {

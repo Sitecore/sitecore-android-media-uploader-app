@@ -36,8 +36,6 @@ import static net.sitecore.android.sdk.api.internal.LogUtils.LOGE;
 
 public class SettingsActivity extends Activity {
 
-    //@InjectView(R.id.list_instances) ListView mList;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

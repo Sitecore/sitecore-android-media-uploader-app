@@ -1,6 +1,7 @@
 package net.sitecore.android.mediauploader;
 
 import android.content.res.Resources;
+import android.database.Cursor;
 import android.text.TextUtils;
 
 import javax.inject.Singleton;
@@ -11,6 +12,8 @@ import java.security.spec.InvalidKeySpecException;
 import com.squareup.picasso.Picasso;
 
 import net.sitecore.android.mediauploader.model.Instance;
+import net.sitecore.android.mediauploader.provider.UploadMediaContract.Instances;
+import net.sitecore.android.mediauploader.provider.UploadMediaContract.Instances.Query;
 import net.sitecore.android.mediauploader.ui.MainActivity;
 import net.sitecore.android.mediauploader.ui.browser.BrowserActivity;
 import net.sitecore.android.mediauploader.ui.browser.BrowserItemViewBinder;
@@ -22,7 +25,6 @@ import net.sitecore.android.mediauploader.ui.upload.UploadActivity;
 import net.sitecore.android.mediauploader.ui.upload.UploadedItemActivity;
 import net.sitecore.android.mediauploader.ui.upload.UploadsListFragment;
 import net.sitecore.android.mediauploader.util.UploadHelper;
-import net.sitecore.android.mediauploader.util.UploaderPrefs;
 import net.sitecore.android.sdk.api.ScApiSession;
 import net.sitecore.android.sdk.api.ScApiSessionFactory;
 import net.sitecore.android.sdk.api.ScPublicKey;
@@ -52,6 +54,7 @@ import static net.sitecore.android.sdk.api.internal.LogUtils.LOGE;
 public final class UploaderAppModule {
 
     private final UploaderApp mApp;
+    private Instance mCurrentInstance;
 
     public UploaderAppModule(UploaderApp app) {
         mApp = app;
@@ -66,18 +69,25 @@ public final class UploaderAppModule {
         return new ScRequestQueue(mApp.getContentResolver());
     }
 
-    @Provides @Singleton UploaderPrefs providePrefs() {
-        return UploaderPrefs.from(mApp);
-    }
-
     @Provides @Singleton Resources provideResources() {
         return mApp.getResources();
     }
 
+    @Provides Instance provideCurrentInstance() {
+        Cursor c = mApp.getContentResolver().query(Instances.CONTENT_URI, Query.PROJECTION, Instances.SELECTED + "=1",
+                null, null);
+        if (c.moveToFirst()) {
+            mCurrentInstance = new Instance(c);
+        } else {
+            mCurrentInstance = null;
+        }
+        c.close();
+        return mCurrentInstance;
+    }
+
     // not @Singleton - may change after settings are changed.
-    @Provides ScApiSession provideApiSession(UploaderPrefs prefs) {
+    @Provides ScApiSession provideApiSession(Instance instance) {
         try {
-            Instance instance = prefs.getCurrentInstance();
             if (instance == null) {
                 return null;
             }

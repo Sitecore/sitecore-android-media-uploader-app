@@ -28,7 +28,6 @@ import net.sitecore.android.mediauploader.UploaderApp;
 import net.sitecore.android.mediauploader.model.Instance;
 import net.sitecore.android.mediauploader.provider.UploadMediaContract.Instances;
 import net.sitecore.android.mediauploader.provider.UploadMediaContract.Instances.Query;
-import net.sitecore.android.mediauploader.util.UploaderPrefs;
 import net.sitecore.android.mediauploader.util.Utils;
 import net.sitecore.android.sdk.api.RequestBuilder;
 import net.sitecore.android.sdk.api.ScApiSession;
@@ -48,7 +47,6 @@ public class CreateEditInstanceActivity extends Activity implements LoaderCallba
     @InjectView(R.id.button_delete_instance) Button mDeleteButton;
     @InjectView(R.id.button_next) Button mNextButton;
     @Inject ScRequestQueue mRequestQueue;
-    @Inject UploaderPrefs mPrefs;
 
     private InstanceFieldsFragment mInstanceFieldsFragment;
     private Uri mInstanceUri;
@@ -128,10 +126,8 @@ public class CreateEditInstanceActivity extends Activity implements LoaderCallba
                         new AsyncQueryHandler(getContentResolver()) {
                         }.startUpdate(0, null, Instances.buildInstanceUri(id), values, null, null);
 
-                        UploaderApp.from(getApplicationContext()).switchInstance(new Instance(cursor));
+                        UploaderApp.from(getApplicationContext()).cleanInstanceCacheAsync();
                     }
-                } else {
-                    mPrefs.cleanSelectedInstance();
                 }
             }
         }.startQuery(0, null, Instances.CONTENT_URI, Query.PROJECTION, null, null, null);

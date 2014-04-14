@@ -30,7 +30,6 @@ import net.sitecore.android.mediauploader.provider.UploadMediaContract;
 import net.sitecore.android.mediauploader.provider.UploadMediaContract.Instances;
 import net.sitecore.android.mediauploader.provider.UploadMediaContract.Instances.Query;
 import net.sitecore.android.mediauploader.util.ScUtils;
-import net.sitecore.android.mediauploader.util.UploaderPrefs;
 import net.sitecore.android.mediauploader.util.Utils;
 import net.sitecore.android.sdk.api.ScApiSession;
 import net.sitecore.android.sdk.api.ScApiSessionFactory;
@@ -52,7 +51,6 @@ public class MediaFolderSelectionActivity extends Activity implements LoaderCall
 
     @InjectView(R.id.instance_root_folder) TextView mInstanceRootFolder;
     @Inject ScRequestQueue mScRequestQueue;
-    @Inject UploaderPrefs mPrefs;
 
     private Instance mInstance;
     private Uri mInstanceUri;
@@ -179,8 +177,8 @@ public class MediaFolderSelectionActivity extends Activity implements LoaderCall
     }
 
     private void performSave() {
-        mPrefs.setSelectedInstance(mInstance);
         saveInstanceToDB(mInstance);
+        UploaderApp.from(this).cleanInstanceCacheAsync();
         NavUtils.navigateUpFromSameTask(this);
     }
 
