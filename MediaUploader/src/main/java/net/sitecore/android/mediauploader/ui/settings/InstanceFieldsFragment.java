@@ -27,9 +27,10 @@ public class InstanceFieldsFragment extends Fragment {
 
     @InjectView(R.id.spinner_protocol) Spinner mProtocol;
     @InjectView(R.id.instance_url) EditText mInstanceUrl;
+    @InjectView(R.id.instance_site) EditText mInstanceSite;
+    @InjectView(R.id.text_media_folder) EditText mInstanceFolder;
     @InjectView(R.id.instance_login) EditText mInstanceLogin;
     @InjectView(R.id.instance_password) EditText mInstancePassword;
-    @InjectView(R.id.instance_site) EditText mInstanceSite;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -126,8 +127,20 @@ public class InstanceFieldsFragment extends Fragment {
         url = url.replace(http, "").replace(https, "");
 
         mInstanceUrl.setText(url);
+        mInstanceSite.setText(mInstance.getSite());
+
+        setMediaFolderText(mInstance.getRootFolder());
+
         mInstanceLogin.setText(mInstance.getLogin());
         mInstancePassword.setText(mInstance.getPassword());
-        mInstanceSite.setText(mInstance.getSite());
+    }
+
+    private void setMediaFolderText(String mediaFolder) {
+        if (TextUtils.isEmpty(mediaFolder)) {
+            mInstanceFolder.setVisibility(View.GONE);
+        } else {
+            mInstanceFolder.setVisibility(View.VISIBLE);
+            mInstanceFolder.setText(mediaFolder);
+        }
     }
 }
