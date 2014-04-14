@@ -13,6 +13,7 @@ import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.Window;
 import android.widget.Button;
 import android.widget.Toast;
 
@@ -40,10 +41,12 @@ import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
 
-public class CreateEditInstanceActivity extends Activity implements LoaderCallbacks<Cursor>, ErrorListener,
-        Listener<ScPublicKey> {
+import static net.sitecore.android.mediauploader.util.Utils.showToast;
+
+public class CreateEditInstanceActivity extends Activity implements LoaderCallbacks<Cursor> {
 
     @InjectView(R.id.button_delete_instance) Button mDeleteButton;
+    @InjectView(R.id.button_next) Button mNextButton;
     @Inject ScRequestQueue mRequestQueue;
     @Inject UploaderPrefs mPrefs;
 
@@ -54,7 +57,7 @@ public class CreateEditInstanceActivity extends Activity implements LoaderCallba
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
+        requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
         getActionBar().setDisplayHomeAsUpEnabled(true);
 
         setContentView(R.layout.activity_edit_instance);
@@ -74,6 +77,23 @@ public class CreateEditInstanceActivity extends Activity implements LoaderCallba
     }
 
     @Override
+    public Loader<Cursor> onCreateLoader(int id, Bundle args) {
+        return new CursorLoader(this, mInstanceUri, Query.PROJECTION, null, null, null);
+    }
+
+    @Override
+    public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
+        if (!data.moveToFirst()) return;
+        Instance instance = new Instance(data);
+        mIsInstanceSelected = instance.isSelected();
+        mInstanceFieldsFragment.setSourceInstance(instance);
+    }
+
+    @Override
+    public void onLoaderReset(Loader<Cursor> loader) {
+    }
+
+    @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case android.R.id.home:
@@ -84,12 +104,11 @@ public class CreateEditInstanceActivity extends Activity implements LoaderCallba
     }
 
     @OnClick(R.id.button_delete_instance)
-    public void deleteInstance() {
+    public void onDeleteInstanceClick() {
         if (mInstanceUri != null) {
             new AsyncQueryHandler(getContentResolver()) {
                 @Override protected void onDeleteComplete(int token, Object cookie, int result) {
-                    Toast.makeText(CreateEditInstanceActivity.this, R.string.toast_instance_deleted,
-                            Toast.LENGTH_LONG).show();
+                    showToast(CreateEditInstanceActivity.this, R.string.toast_instance_deleted);
                     if (mIsInstanceSelected) selectLastInstance();
                     finish();
                 }
@@ -118,62 +137,67 @@ public class CreateEditInstanceActivity extends Activity implements LoaderCallba
         }.startQuery(0, null, Instances.CONTENT_URI, Query.PROJECTION, null, null, null);
     }
 
-    @OnClick(R.id.button_next) void checkConnection() {
+    @OnClick(R.id.button_next) void onNextClick() {
         if (mInstanceFieldsFragment.isFieldsValid()) {
             Instance instance = mInstanceFieldsFragment.getEnteredInstance();
-            mRequestQueue.add(ScApiSessionFactory.buildPublicKeyRequest(instance.getUrl(), this, this));
+            mRequestQueue.add(
+                    ScApiSessionFactory.buildPublicKeyRequest(instance.getUrl(), mSuccessPublicKeyListener, mErrorListener)
+            );
+
+            setLoading(true);
         }
     }
 
-    @Override
-    public Loader<Cursor> onCreateLoader(int id, Bundle args) {
-        return new CursorLoader(this, mInstanceUri, Query.PROJECTION, null, null, null);
+    private void setLoading(boolean isLoading) {
+        setProgressBarIndeterminateVisibility(isLoading);
+        mDeleteButton.setEnabled(!isLoading);
+        mNextButton.setEnabled(!isLoading);
     }
 
-    @Override
-    public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
-        if (!data.moveToFirst()) return;
-        Instance instance = new Instance(data);
-        mIsInstanceSelected = instance.isSelected();
-        mInstanceFieldsFragment.setSourceInstance(instance);
-    }
+    private Listener<ScPublicKey> mSuccessPublicKeyListener = new Listener<ScPublicKey>() {
+        @Override public void onResponse(ScPublicKey scPublicKey) {
+            final Instance enteredInstance = mInstanceFieldsFragment.getEnteredInstance();
+            enteredInstance.setPublicKey(scPublicKey.getRawValue());
 
-    @Override
-    public void onLoaderReset(Loader<Cursor> loader) {
-    }
-
-    @Override
-    public void onErrorResponse(VolleyError error) {
-        Toast.makeText(this, Utils.getMessageFromError(error), Toast.LENGTH_LONG).show();
-    }
-
-    @Override public void onResponse(ScPublicKey scPublicKey) {
-        final Instance enteredInstance = mInstanceFieldsFragment.getEnteredInstance();
-        enteredInstance.setPublicKey(scPublicKey.getRawValue());
-        Listener<ItemsResponse> success = new Listener<ItemsResponse>() {
-            @Override
-            public void onResponse(ItemsResponse response) {
-                if (response.getTotalCount() != 0) {
-                    Intent intent = new Intent(CreateEditInstanceActivity.this, MediaFolderSelectionActivity.class);
-                    if (mInstanceUri != null) {
-                        intent.setData(mInstanceUri);
+            Listener<ItemsResponse> mSuccess = new Listener<ItemsResponse>() {
+                @Override
+                public void onResponse(ItemsResponse response) {
+                    if (response.getTotalCount() != 0) {
+                        showMediaFolderSelectionActivity(enteredInstance);
+                    } else {
+                        showToast(CreateEditInstanceActivity.this, R.string.toast_instance_is_not_valid);
                     }
-                    intent.putExtra(MediaFolderSelectionActivity.INSTANCE_KEY, enteredInstance);
-                    startActivity(intent);
-                } else {
-                    Toast.makeText(CreateEditInstanceActivity.this, R.string.toast_instance_is_not_valid,
-                            Toast.LENGTH_LONG).show();
-                }
-            }
-        };
-        ScApiSession session = ScApiSessionFactory.newSession(enteredInstance.getUrl(), scPublicKey,
-                enteredInstance.getLogin(), enteredInstance.getPassword());
-        RequestBuilder builder = session.readItemsRequest(success, this)
-                .database(mInstanceFieldsFragment.getEnteredInstance().getDatabase());
-        if (!TextUtils.isEmpty(enteredInstance.getSite())) {
-                builder.fromSite(enteredInstance.getSite());
-        }
 
-        mRequestQueue.add(builder.build());
+                    setLoading(false);
+                }
+            };
+
+            ScApiSession session = ScApiSessionFactory.newSession(enteredInstance.getUrl(), scPublicKey,
+                    enteredInstance.getLogin(), enteredInstance.getPassword());
+            RequestBuilder builder = session.readItemsRequest(mSuccess, mErrorListener)
+                    .database(mInstanceFieldsFragment.getEnteredInstance().getDatabase());
+            if (!TextUtils.isEmpty(enteredInstance.getSite())) {
+                builder.fromSite(enteredInstance.getSite());
+            }
+
+            mRequestQueue.add(builder.build());
+        }
+    };
+
+    private void showMediaFolderSelectionActivity(Instance enteredInstance) {
+        final Intent intent = new Intent(CreateEditInstanceActivity.this, MediaFolderSelectionActivity.class);
+        if (mInstanceUri != null) {
+            intent.setData(mInstanceUri);
+        }
+        intent.putExtra(MediaFolderSelectionActivity.INSTANCE_KEY, enteredInstance);
+        startActivity(intent);
     }
+
+    private ErrorListener mErrorListener = new ErrorListener() {
+        @Override public void onErrorResponse(VolleyError error) {
+            setLoading(false);
+            Toast.makeText(CreateEditInstanceActivity.this, Utils.getMessageFromError(error), Toast.LENGTH_LONG).show();
+        }
+    };
+
 }
