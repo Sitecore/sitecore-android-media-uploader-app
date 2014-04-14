@@ -127,15 +127,15 @@ public class UploadHelper {
     }
 
     class StartUploadTask extends AsyncTask<Void, Void, Void> {
-        private String uploadID;
+        private String uploadId;
 
-        StartUploadTask(String uploadID) {
-            this.uploadID = uploadID;
+        StartUploadTask(String uploadId) {
+            this.uploadId = uploadId;
         }
 
         @Override protected Void doInBackground(Void... params) {
             try {
-                Cursor cursor = mContentResolver.query(Uploads.buildUploadUri(uploadID), Query.PROJECTION, null, null,
+                Cursor cursor = mContentResolver.query(Uploads.buildUploadUri(uploadId), Query.PROJECTION, null, null,
                         null);
                 if (cursor != null && cursor.moveToFirst()) {
                     String itemName = cursor.getString(Query.ITEM_NAME);
@@ -143,12 +143,12 @@ public class UploadHelper {
                     UploadStatus status = UploadStatus.valueOf(cursor.getString(Query.STATUS));
 
                     if (status == UploadStatus.IN_PROGRESS) {
-                        LOGD("Upload with id " + uploadID + " already started");
+                        LOGD("Upload with id " + uploadId + " already started");
                         return null;
                     }
 
-                    String instanceID = cursor.getString(Query.INSTANCE_ID);
-                    Cursor c = mContentResolver.query(Instances.buildInstanceUri(instanceID),
+                    String instanceId = cursor.getString(Query.INSTANCE_ID);
+                    Cursor c = mContentResolver.query(Instances.buildInstanceUri(instanceId),
                             Instances.Query.PROJECTION, null, null, null);
 
                     if (c != null && c.moveToFirst()) {
@@ -157,15 +157,15 @@ public class UploadHelper {
                         ScApiSession session = ScApiSessionFactory.newSession(instance.getUrl(), key,
                                 instance.getLogin(), instance.getPassword());
 
-                        uploadMedia(session, Uploads.buildUploadUri(uploadID), instance, itemName, fileUri.toString());
+                        uploadMedia(session, Uploads.buildUploadUri(uploadId), instance, itemName, fileUri.toString());
                     } else {
                         ContentValues values = new ContentValues();
                         values.put(Uploads.STATUS, UploadStatus.ERROR.name());
                         values.put(Uploads.FAIL_MESSAGE, "Instance has been deleted");
-                        mContentResolver.update(Uploads.buildUploadUri(uploadID), values, null, null);
+                        mContentResolver.update(Uploads.buildUploadUri(uploadId), values, null, null);
                     }
                 } else {
-                    LOGE("Upload with id " + uploadID + " has been deleted");
+                    LOGE("Upload with id " + uploadId + " has been deleted");
                     return null;
                 }
             } catch (InvalidKeySpecException | NoSuchAlgorithmException e) {

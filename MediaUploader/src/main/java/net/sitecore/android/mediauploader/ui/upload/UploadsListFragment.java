@@ -73,44 +73,42 @@ public class UploadsListFragment extends ListFragment implements LoaderCallbacks
 
         @Override public View newView(Context context, Cursor cursor, ViewGroup parent) {
             View v = LayoutInflater.from(context).inflate(R.layout.layout_uploads_item, parent, false);
-            ViewHolder holder = new ViewHolder(v);
-
-            final String itemUri = cursor.getString(Query.FILE_URI);
-            final String name = cursor.getString(Query.ITEM_NAME);
-            final String id = cursor.getString(Query._ID);
-            UploadStatus status = UploadStatus.valueOf(cursor.getString(Query.STATUS));
-
+            final ViewHolder holder = new ViewHolder(v);
             holder.preview.setOnClickListener(new OnClickListener() {
                 @Override public void onClick(View v) {
                     Intent intent = new Intent(getActivity(), UploadedItemActivity.class);
-                    intent.putExtra(UploadedItemActivity.EXTRA_IMAGE_URI, itemUri);
-                    intent.putExtra(UploadedItemActivity.EXTRA_ITEM_NAME, name);
+                    intent.putExtra(UploadedItemActivity.EXTRA_IMAGE_URI, holder.imageUri);
+                    intent.putExtra(UploadedItemActivity.EXTRA_ITEM_NAME, holder.itemName);
                     startActivity(intent);
                 }
             });
 
-            if (status == UploadStatus.PENDING) {
-                holder.statusButton.setOnClickListener(new OnClickListener() {
-                    @Override public void onClick(View v) {
-                        mUploadHelper.startUpload(id);
-                    }
-                });
-            }
+            holder.statusButton.setOnClickListener(new OnClickListener() {
+                @Override public void onClick(View v) {
+                    if (holder.status == UploadStatus.PENDING) mUploadHelper.startUpload(holder.id);
+                }
+            });
             v.setTag(holder);
             return v;
         }
 
         @Override public void bindView(View view, Context context, Cursor cursor) {
-            ViewHolder holder = (ViewHolder) view.getTag();
+            final ViewHolder holder = (ViewHolder) view.getTag();
 
-            final String itemUri = cursor.getString(Query.FILE_URI);
+            final String imageUri = cursor.getString(Query.FILE_URI);
             final String name = cursor.getString(Query.ITEM_NAME);
+            final String id = cursor.getString(Query._ID);
             UploadStatus status = UploadStatus.valueOf(cursor.getString(Query.STATUS));
 
-            mImageLoader.load(itemUri).resize(150, 150)
+            mImageLoader.load(imageUri).resize(150, 150)
                     .placeholder(R.drawable.ic_placeholder).error(R.drawable.ic_action_cancel)
                     .into(holder.preview);
+
             holder.name.setText(name);
+            holder.imageUri = imageUri;
+            holder.itemName = name;
+            holder.id = id;
+            holder.status = status;
 
             switch (status) {
                 case DONE:
@@ -133,7 +131,6 @@ public class UploadsListFragment extends ListFragment implements LoaderCallbacks
                     holder.inProgress.setVisibility(View.GONE);
                     break;
             }
-
         }
     }
 
@@ -144,6 +141,11 @@ public class UploadsListFragment extends ListFragment implements LoaderCallbacks
         @InjectView(R.id.upload_path) TextView path;
         @InjectView(R.id.upload_status) ImageView statusButton;
         @InjectView(R.id.upload_in_progress) ProgressBar inProgress;
+
+        public String imageUri;
+        public String itemName;
+        public String id;
+        public UploadStatus status;
 
         ViewHolder(View v) {
             ButterKnife.inject(this, v);
