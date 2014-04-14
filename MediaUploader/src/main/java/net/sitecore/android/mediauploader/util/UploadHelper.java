@@ -1,6 +1,5 @@
 package net.sitecore.android.mediauploader.util;
 
-import android.content.AsyncQueryHandler;
 import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.content.Context;
@@ -9,14 +8,12 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.text.TextUtils;
-import android.widget.Toast;
 
 import javax.inject.Inject;
 
 import java.security.NoSuchAlgorithmException;
 import java.security.spec.InvalidKeySpecException;
 
-import net.sitecore.android.mediauploader.R;
 import net.sitecore.android.mediauploader.UploaderApp;
 import net.sitecore.android.mediauploader.model.Instance;
 import net.sitecore.android.mediauploader.model.UploadStatus;
@@ -30,7 +27,6 @@ import net.sitecore.android.sdk.api.ScApiSessionFactory;
 import net.sitecore.android.sdk.api.ScPublicKey;
 import net.sitecore.android.sdk.api.UploadMediaIntentBuilder;
 
-import static net.sitecore.android.mediauploader.util.Utils.showToast;
 import static net.sitecore.android.sdk.api.internal.LogUtils.LOGD;
 import static net.sitecore.android.sdk.api.internal.LogUtils.LOGE;
 
@@ -47,40 +43,20 @@ public class UploadHelper {
         UploaderApp.from(mContext).inject(this);
     }
 
-    public void createAndStartUpload(final String itemName, final Uri fileUri) {
-        new GetSelectedInstance(mContentResolver) {
-            @Override public void onComplete(final Instance instance, int instanceID) {
-                ContentValues values = build(itemName, fileUri);
-                if (instance == null) {
-                    //TODO: make upload failed, cause connected instance was deleted
-                    values.put(Uploads.STATUS, UploadStatus.ERROR.name());
-                    values.put(Uploads.FAIL_MESSAGE, "Instance has been deleted");
-                    return;
-                } else {
-                    values.put(Uploads.INSTANCE_ID, instanceID);
-
-                    new AsyncQueryHandler(mContext.getContentResolver()) {
-                        @Override
-                        protected void onInsertComplete(int token, Object cookie, final Uri uri) {
-                            uploadMedia(mSession, uri, instance, itemName, fileUri.toString());
-                        }
-                    }.startInsert(0, null, Uploads.CONTENT_URI, values);
-                    Toast.makeText(mContext, "Uploading media started.", Toast.LENGTH_LONG).show();
-                }
-            }
-        }.start();
-    }
-
     public void startUpload(String uploadID) {
         new StartUploadTask(uploadID).execute((Void) null);
     }
 
-    private void uploadMedia(ScApiSession session, final Uri uploadUri, final Instance instance, final String name,
+    public void uploadMedia(final Uri uploadUri, final Instance instance, final String name,
+            final String fileUri) {
+        uploadMedia(mSession, uploadUri, instance, name, fileUri);
+    }
+
+    public void uploadMedia(ScApiSession session, final Uri uploadUri, final Instance instance, final String name,
             final String fileUri) {
         session.setMediaLibraryPath("/");
 
-        MediaUploadListener responseListener = new
-                MediaUploadListener(mContext, uploadUri, name);
+        MediaUploadListener responseListener = new MediaUploadListener(mContext, uploadUri, name);
 
         UploadMediaIntentBuilder builder = session.uploadMediaIntent(instance.getRootFolder(), name, fileUri.toString())
                 .setDatabase(instance.getDatabase())
@@ -94,14 +70,6 @@ public class UploadHelper {
         intent.putExtra(MediaUploaderService.EXTRA_UPLOAD_URI, uploadUri);
 
         mContext.startService(intent);
-    }
-
-    private ContentValues build(String itemName, Uri fileUri) {
-        ContentValues values = new ContentValues();
-        values.put(Uploads.ITEM_NAME, itemName);
-        values.put(Uploads.FILE_URI, fileUri.toString());
-        values.put(Uploads.STATUS, UploadStatus.PENDING.name());
-        return values;
     }
 
     class StartUploadTask extends AsyncTask<Void, Void, Void> {

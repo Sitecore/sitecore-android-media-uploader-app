@@ -11,6 +11,8 @@ import net.sitecore.android.mediauploader.provider.UploadMediaContract.Uploads;
 
 public class InstancesAsyncHandler extends AsyncQueryHandler {
 
+    public static final int TOKEN_INSERT_PENDING = 0;
+
     public InstancesAsyncHandler(ContentResolver cr) {
         super(cr);
     }
@@ -22,6 +24,7 @@ public class InstancesAsyncHandler extends AsyncQueryHandler {
         values.put(Uploads.STATUS, UploadStatus.PENDING.name());
         values.put(Uploads.INSTANCE_ID, instance.getId());
 
-        startInsert(0, null, Uploads.CONTENT_URI, values);
+        startInsert(TOKEN_INSERT_PENDING, null, Uploads.CONTENT_URI, values);
     }
+
 }

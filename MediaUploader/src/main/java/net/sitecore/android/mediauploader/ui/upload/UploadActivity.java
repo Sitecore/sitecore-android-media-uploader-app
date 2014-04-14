@@ -8,6 +8,7 @@ import android.text.TextUtils;
 import android.view.MenuItem;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import javax.inject.Inject;
 
@@ -30,6 +31,7 @@ import butterknife.OnClick;
 import static net.sitecore.android.mediauploader.util.Utils.showToast;
 
 public class UploadActivity extends Activity implements SelectMediaListener {
+
     @InjectView(R.id.edit_name) EditText mEditName;
     @InjectView(R.id.image_preview) ImageView mPreview;
 
@@ -69,7 +71,12 @@ public class UploadActivity extends Activity implements SelectMediaListener {
 
     @OnClick(R.id.button_upload_now)
     public void onUploadNow() {
-        mUploadHelper.createAndStartUpload(getItemName(), mImageUri);
+        final String itemName = getItemName();
+        new InstancesAsyncHandler(getContentResolver()){
+            @Override protected void onInsertComplete(int token, Object cookie, Uri uri) {
+                mUploadHelper.uploadMedia(uri, mInstance, itemName, mImageUri.toString());
+            }
+        }.insertPendingUpload(itemName, mImageUri, mInstance);
         finish();
     }
 
