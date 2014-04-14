@@ -95,7 +95,12 @@ public class UploadMediaProvider extends ContentProvider {
                 builder.table(Tables.INSTANCES).where(Instances._ID + "=?", instanceId);
                 break;
             }
-            
+
+            case UPLOAD_ID:
+                String uploadID = Uploads.getUploadId(uri);
+                builder.table(Tables.UPLOADS).where(Uploads._ID + "=?", uploadID);
+                break;
+
             default:
                 throw new UnsupportedOperationException("Not supported query uri: " + uri);
         }

@@ -26,6 +26,7 @@ import net.sitecore.android.mediauploader.UploaderApp;
 import net.sitecore.android.mediauploader.model.UploadStatus;
 import net.sitecore.android.mediauploader.provider.UploadMediaContract.Uploads;
 import net.sitecore.android.mediauploader.provider.UploadMediaContract.Uploads.Query;
+import net.sitecore.android.mediauploader.util.UploadHelper;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
@@ -34,12 +35,14 @@ public class UploadsListFragment extends ListFragment implements LoaderCallbacks
 
     @Inject Picasso mImageLoader;
 
+    private UploadHelper mUploadHelper;
     private UploadsCursorAdapter mAdapter;
 
     @Override public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
         UploaderApp.from(getActivity()).inject(this);
+        mUploadHelper = new UploadHelper(getActivity().getApplicationContext());
 
         setEmptyText("No uploads");
         getLoaderManager().initLoader(0, null, this);
@@ -71,6 +74,28 @@ public class UploadsListFragment extends ListFragment implements LoaderCallbacks
         @Override public View newView(Context context, Cursor cursor, ViewGroup parent) {
             View v = LayoutInflater.from(context).inflate(R.layout.layout_uploads_item, parent, false);
             ViewHolder holder = new ViewHolder(v);
+
+            final String itemUri = cursor.getString(Query.FILE_URI);
+            final String name = cursor.getString(Query.ITEM_NAME);
+            final String id = cursor.getString(Query._ID);
+            UploadStatus status = UploadStatus.valueOf(cursor.getString(Query.STATUS));
+
+            holder.preview.setOnClickListener(new OnClickListener() {
+                @Override public void onClick(View v) {
+                    Intent intent = new Intent(getActivity(), UploadedItemActivity.class);
+                    intent.putExtra(UploadedItemActivity.EXTRA_IMAGE_URI, itemUri);
+                    intent.putExtra(UploadedItemActivity.EXTRA_ITEM_NAME, name);
+                    startActivity(intent);
+                }
+            });
+
+            if (status == UploadStatus.PENDING) {
+                holder.statusButton.setOnClickListener(new OnClickListener() {
+                    @Override public void onClick(View v) {
+                        mUploadHelper.startUpload(id);
+                    }
+                });
+            }
             v.setTag(holder);
             return v;
         }
@@ -109,14 +134,6 @@ public class UploadsListFragment extends ListFragment implements LoaderCallbacks
                     break;
             }
 
-            holder.preview.setOnClickListener(new OnClickListener() {
-                @Override public void onClick(View v) {
-                    Intent intent = new Intent(getActivity(), UploadedItemActivity.class);
-                    intent.putExtra(UploadedItemActivity.EXTRA_IMAGE_URI, itemUri);
-                    intent.putExtra(UploadedItemActivity.EXTRA_ITEM_NAME, name);
-                    startActivity(intent);
-                }
-            });
         }
     }
 

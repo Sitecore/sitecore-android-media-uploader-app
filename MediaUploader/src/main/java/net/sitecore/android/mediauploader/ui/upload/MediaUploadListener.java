@@ -14,7 +14,7 @@ import net.sitecore.android.mediauploader.util.NotificationUtils;
 import net.sitecore.android.mediauploader.util.Utils;
 import net.sitecore.android.sdk.api.model.ItemsResponse;
 
-class MediaUploadListener implements Listener<ItemsResponse>, ErrorListener {
+public class MediaUploadListener implements Listener<ItemsResponse>, ErrorListener {
     private Context mContext;
     private Uri mUploadUri;
     private String mItemName;
