@@ -1,5 +1,6 @@
 package net.sitecore.android.mediauploader.provider;
 
+import android.app.ActionBar.Tab;
 import android.content.ContentProvider;
 import android.content.ContentProviderOperation;
 import android.content.ContentProviderResult;
@@ -98,10 +99,32 @@ public class UploadMediaProvider extends ContentProvider {
                 break;
             }
 
-            case UPLOAD_ID:
-                String uploadID = Uploads.getUploadId(uri);
-                builder.table(Tables.UPLOADS).where(Uploads._ID + "=?", uploadID);
+            case UPLOAD_ID: {
+                String uploadId = Uploads.getUploadId(uri);
+                builder.table(Tables.UPLOADS).where(Uploads._ID + "=?", uploadId);
                 break;
+            }
+
+            case UPLOAD_ID_INSTANCE: {
+                String uploadId = Uploads.getUploadId(uri);
+                builder.table(Tables.UPLOADS_JOIN_INSTANCE)
+                        // upload
+                        .mapToTable(Uploads._ID, Tables.UPLOADS)
+                        .mapToTable(Uploads.INSTANCE_ID, Tables.UPLOADS)
+                        .mapToTable(Uploads.FILE_URI, Tables.UPLOADS)
+                        .mapToTable(Uploads.STATUS, Tables.UPLOADS)
+                        .mapToTable(Uploads.FAIL_MESSAGE, Tables.UPLOADS)
+                        // instance
+                        .mapToTable(Instances.URL, Tables.INSTANCES)
+                        .mapToTable(Instances.LOGIN, Tables.INSTANCES)
+                        .mapToTable(Instances.PASSWORD, Tables.INSTANCES)
+                        .mapToTable(Instances.ROOT_FOLDER, Tables.INSTANCES)
+                        .mapToTable(Instances.DATABASE, Tables.INSTANCES)
+                        .mapToTable(Instances.SITE, Tables.INSTANCES)
+                        .mapToTable(Instances.PUBLIC_KEY, Tables.INSTANCES)
+                        .where(Tables.UPLOADS + "." + Uploads._ID + "=?", uploadId);
+                break;
+            }
 
             default:
                 throw new UnsupportedOperationException("Not supported query uri: " + uri);

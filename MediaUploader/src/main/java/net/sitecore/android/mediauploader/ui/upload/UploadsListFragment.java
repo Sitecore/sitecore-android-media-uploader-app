@@ -28,7 +28,6 @@ import net.sitecore.android.mediauploader.UploaderApp;
 import net.sitecore.android.mediauploader.model.UploadStatus;
 import net.sitecore.android.mediauploader.provider.UploadMediaContract.Uploads;
 import net.sitecore.android.mediauploader.provider.UploadMediaContract.Uploads.Query;
-import net.sitecore.android.mediauploader.util.UploadHelper;
 import net.sitecore.android.mediauploader.util.StartUploadTask;
 
 import butterknife.ButterKnife;
@@ -51,7 +50,7 @@ public class UploadsListFragment extends ListFragment implements LoaderCallbacks
 
     @Override public Loader<Cursor> onCreateLoader(int id, Bundle args) {
         return new CursorLoader(getActivity(), Uploads.CONTENT_URI, Query.PROJECTION, null, null,
-                Query.ORDWE_BY_TIME_ADDED);
+                Query.ORDER_BY_TIME_ADDED);
     }
 
     @Override public void onLoadFinished(Loader<Cursor> loader, Cursor data) {

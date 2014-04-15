@@ -15,6 +15,9 @@ public class UploaderMediaDatabase extends SQLiteOpenHelper {
     interface Tables {
         String INSTANCES = "instances";
         String UPLOADS = "uploads";
+
+        String UPLOADS_JOIN_INSTANCE = UPLOADS + " INNER JOIN " + INSTANCES + " ON "
+                + UPLOADS + "." + Uploads.INSTANCE_ID + "=" + INSTANCES + "." + Instances._ID;
     }
 
     public UploaderMediaDatabase(Context context) {

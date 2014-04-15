@@ -66,6 +66,10 @@ public class UploadMediaContract {
             return CONTENT_URI.buildUpon().appendPath(id).build();
         }
 
+        public static Uri buildUploadWithInstanceUri(String id) {
+            return CONTENT_URI.buildUpon().appendPath(id).appendPath("instance").build();
+        }
+
         public interface Query {
             public String[] PROJECTION = {
                     Uploads._ID,
@@ -84,7 +88,42 @@ public class UploadMediaContract {
             int FAIL_MESSAGE = 5;
 
             public String ORDER_BY_STATUS = Uploads.STATUS + " desc";
-            public String ORDWE_BY_TIME_ADDED = Uploads._ID + " desc";
+            public String ORDER_BY_TIME_ADDED = Uploads._ID + " desc";
+        }
+
+        public interface UploadWithInstanceQuery {
+
+            public String[] PROJECTION = {
+                    Uploads._ID,
+                    Uploads.INSTANCE_ID,
+                    Uploads.ITEM_NAME,
+                    Uploads.FILE_URI,
+                    Uploads.STATUS,
+                    Uploads.FAIL_MESSAGE,
+                    Instances.URL,
+                    Instances.LOGIN,
+                    Instances.PASSWORD,
+                    Instances.ROOT_FOLDER,
+                    Instances.DATABASE,
+                    Instances.SITE,
+                    Instances.PUBLIC_KEY
+
+            };
+
+            int _ID = 0;
+            int INSTANCE_ID = 1;
+            int ITEM_NAME = 2;
+            int FILE_URI = 3;
+            int STATUS = 4;
+            int FAIL_MESSAGE = 5;
+
+            int URL = 6;
+            int LOGIN = 7;
+            int PASSWORD = 8;
+            int ROOT_FOLDER = 9;
+            int DATABASE = 10;
+            int SITE = 11;
+            int PUBLIC_KEY = 12;
         }
 
     }
