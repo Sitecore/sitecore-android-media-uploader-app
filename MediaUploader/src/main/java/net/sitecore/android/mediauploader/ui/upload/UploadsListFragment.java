@@ -32,6 +32,7 @@ import net.sitecore.android.mediauploader.UploaderApp;
 import net.sitecore.android.mediauploader.model.UploadStatus;
 import net.sitecore.android.mediauploader.provider.UploadMediaContract.Uploads;
 import net.sitecore.android.mediauploader.provider.UploadMediaContract.Uploads.Query;
+import net.sitecore.android.mediauploader.provider.UploadsAsyncHandler;
 import net.sitecore.android.mediauploader.util.StartUploadTask;
 
 import butterknife.ButterKnife;
@@ -70,14 +71,11 @@ public class UploadsListFragment extends ListFragment implements LoaderCallbacks
     }
 
     private static void startUpload(final Context context, final String id) {
-        ContentValues values = new ContentValues();
-        values.put(Uploads.STATUS, UploadStatus.PENDING.name());
-
-        new AsyncQueryHandler(context.getContentResolver()) {
+        new UploadsAsyncHandler(context.getContentResolver()){
             @Override protected void onUpdateComplete(int token, Object cookie, int result) {
                 new StartUploadTask(context).execute(id);
             }
-        }.startUpdate(0, null, Uploads.buildUploadUri(id), values, null, null);
+        }.updateUploadStatus(id, UploadStatus.PENDING);
     }
 
     class UploadsCursorAdapter extends CursorAdapter {
@@ -102,8 +100,9 @@ public class UploadsListFragment extends ListFragment implements LoaderCallbacks
                 @Override public void onClick(View v) {
                     switch (holder.status) {
                         case UPLOAD_LATER:
-                            startUpload(getActivity(), holder.id);
+                            startUpload(context, holder.id);
                             break;
+
                         case ERROR:
                             RetryDialogFragment dialogFragment = RetryDialogFragment.newInstance(holder.itemName,
                                     holder.id, holder.failMessage);
@@ -178,6 +177,7 @@ public class UploadsListFragment extends ListFragment implements LoaderCallbacks
     }
 
     static class RetryDialogFragment extends DialogFragment {
+
         private static final String EXTRA_UPLOAD_ID = "id";
         private static final String EXTRA_FAIL_MESSAGE = "message";
         private static final String EXTRA_ITEM_NAME = "name";

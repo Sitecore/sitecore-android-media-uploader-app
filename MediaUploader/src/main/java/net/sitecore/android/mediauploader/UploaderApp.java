@@ -8,6 +8,7 @@ import com.android.volley.VolleyLog;
 
 import com.squareup.picasso.Picasso;
 
+import net.sitecore.android.mediauploader.provider.ItemsAsyncHandler;
 import net.sitecore.android.mediauploader.util.Prefs;
 import net.sitecore.android.sdk.api.internal.LogUtils;
 import net.sitecore.android.sdk.api.provider.ScItemsContract.Items;
@@ -54,8 +55,7 @@ public class UploaderApp extends Application {
     }
 
     public void cleanInstanceCacheAsync() {
-        new AsyncQueryHandler(getContentResolver()) {
-        }.startDelete(0, null, Items.CONTENT_URI, null, null);
+        new ItemsAsyncHandler(getContentResolver()).deleteItemsBrowserCache();
     }
 
 }

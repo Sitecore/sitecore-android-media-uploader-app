@@ -29,6 +29,7 @@ import com.android.volley.VolleyError;
 import net.sitecore.android.mediauploader.R;
 import net.sitecore.android.mediauploader.UploaderApp;
 import net.sitecore.android.mediauploader.model.Instance;
+import net.sitecore.android.mediauploader.provider.ItemsAsyncHandler;
 import net.sitecore.android.mediauploader.provider.UploadMediaContract.Instances;
 import net.sitecore.android.mediauploader.provider.UploadMediaContract.Instances.Query;
 import net.sitecore.android.mediauploader.util.ScUtils;
@@ -110,8 +111,7 @@ public class BrowserActivity extends Activity implements ContentTreePositionList
         ScApiSessionFactory.getSession(mRequestQueue, instance.getUrl(), instance.getLogin(), instance.getPassword(),
                 successListener, BrowserActivity.this);
 
-        new AsyncQueryHandler(getContentResolver()) {
-        }.startDelete(0, null, Items.CONTENT_URI, null, null);
+        new ItemsAsyncHandler(getContentResolver()).deleteItemsBrowserCache();
     }
 
     @Override public void onErrorResponse(VolleyError error) {

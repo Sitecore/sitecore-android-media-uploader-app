@@ -2,13 +2,9 @@ package net.sitecore.android.mediauploader.service;
 
 import android.content.ContentValues;
 import android.content.Intent;
-import android.database.Cursor;
 import android.net.Uri;
 
-import net.sitecore.android.mediauploader.model.Instance;
 import net.sitecore.android.mediauploader.model.UploadStatus;
-import net.sitecore.android.mediauploader.provider.UploadMediaContract.Instances;
-import net.sitecore.android.mediauploader.provider.UploadMediaContract.Instances.Query;
 import net.sitecore.android.mediauploader.provider.UploadMediaContract.Uploads;
 import net.sitecore.android.mediauploader.util.NotificationUtils;
 import net.sitecore.android.sdk.api.UploadMediaRequestOptions;

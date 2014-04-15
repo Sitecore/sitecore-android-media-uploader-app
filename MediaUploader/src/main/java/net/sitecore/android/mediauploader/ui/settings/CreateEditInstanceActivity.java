@@ -3,7 +3,6 @@ package net.sitecore.android.mediauploader.ui.settings;
 import android.app.Activity;
 import android.app.LoaderManager.LoaderCallbacks;
 import android.content.AsyncQueryHandler;
-import android.content.ContentValues;
 import android.content.CursorLoader;
 import android.content.Intent;
 import android.content.Loader;
@@ -26,6 +25,7 @@ import com.android.volley.VolleyError;
 import net.sitecore.android.mediauploader.R;
 import net.sitecore.android.mediauploader.UploaderApp;
 import net.sitecore.android.mediauploader.model.Instance;
+import net.sitecore.android.mediauploader.provider.InstancesAsyncHandler;
 import net.sitecore.android.mediauploader.provider.UploadMediaContract.Instances;
 import net.sitecore.android.mediauploader.provider.UploadMediaContract.Instances.Query;
 import net.sitecore.android.mediauploader.util.Utils;
@@ -93,44 +93,38 @@ public class CreateEditInstanceActivity extends Activity implements LoaderCallba
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case android.R.id.home:
-                finish();
-                return true;
+        int i = item.getItemId();
+        if (i == android.R.id.home) {
+            finish();
+            return true;
+        } else {
+            return super.onOptionsItemSelected(item);
         }
-        return super.onOptionsItemSelected(item);
     }
 
     @OnClick(R.id.button_delete_instance)
     public void onDeleteInstanceClick() {
-        if (mInstanceUri != null) {
-            new AsyncQueryHandler(getContentResolver()) {
-                @Override protected void onDeleteComplete(int token, Object cookie, int result) {
-                    showToast(CreateEditInstanceActivity.this, R.string.toast_instance_deleted);
-                    if (mIsInstanceSelected) selectLastInstance();
-                    finish();
-                }
-            }.startDelete(0, null, mInstanceUri, null, null);
-        }
+        new InstancesAsyncHandler(getContentResolver()){
+            @Override protected void onDeleteComplete(int token, Object cookie, int result) {
+                showToast(CreateEditInstanceActivity.this, R.string.toast_instance_deleted);
+                if (mIsInstanceSelected) selectLastInstance();
+                finish();
+            }
+        }.deleteInstance(mInstanceUri);
     }
 
     private void selectLastInstance() {
-        new AsyncQueryHandler(getContentResolver()) {
+        new InstancesAsyncHandler(getContentResolver()){
             @Override protected void onQueryComplete(int token, Object cookie, Cursor cursor) {
                 if (cursor.getCount() > 0) {
                     if (cursor.moveToLast()) {
-                        String id = cursor.getString(Query._ID);
-                        ContentValues values = new ContentValues();
-                        values.put(Instances.SELECTED, 1);
-
-                        new AsyncQueryHandler(getContentResolver()) {
-                        }.startUpdate(0, null, Instances.buildInstanceUri(id), values, null, null);
-
+                        String instanceId = cursor.getString(Query._ID);
+                        new InstancesAsyncHandler(getContentResolver()).updateInstanceSelected(instanceId);
                         UploaderApp.from(getApplicationContext()).cleanInstanceCacheAsync();
                     }
                 }
             }
-        }.startQuery(0, null, Instances.CONTENT_URI, Query.PROJECTION, null, null, null);
+        }.queryInstances();
     }
 
     @OnClick(R.id.button_next) void onNextClick() {
