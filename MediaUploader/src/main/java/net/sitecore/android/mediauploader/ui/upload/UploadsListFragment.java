@@ -1,13 +1,9 @@
 package net.sitecore.android.mediauploader.ui.upload;
 
-import android.app.AlertDialog;
-import android.app.Dialog;
-import android.app.DialogFragment;
 import android.app.ListFragment;
 import android.app.LoaderManager.LoaderCallbacks;
 import android.content.Context;
 import android.content.CursorLoader;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.Loader;
 import android.database.Cursor;
@@ -68,18 +64,10 @@ public class UploadsListFragment extends ListFragment implements LoaderCallbacks
         mAdapter.swapCursor(null);
     }
 
-    private static void startUpload(final Context context, final String id) {
-        new UploadsAsyncHandler(context.getContentResolver()) {
-            @Override protected void onUpdateComplete(int token, Object cookie, int result) {
-                new StartUploadTask(context).execute(id);
-            }
-        }.updateUploadStatus(id, UploadStatus.PENDING);
-    }
-
     class UploadsCursorAdapter extends CursorAdapter {
 
         public UploadsCursorAdapter(Context context) {
-            super(context, null, true);
+            super(context, null, false);
         }
 
         @Override public View newView(final Context context, Cursor cursor, ViewGroup parent) {
@@ -98,11 +86,13 @@ public class UploadsListFragment extends ListFragment implements LoaderCallbacks
                 @Override public void onClick(View v) {
                     switch (holder.status) {
                         case UPLOAD_LATER:
+                            //TODO: dont fire update here, move logic to activity
                             startUpload(context, holder.id);
                             break;
 
                         case ERROR:
-                            RetryDialogFragment dialogFragment = RetryDialogFragment.newInstance(holder.itemName,
+                            //TODO: show dialog here, move logic to activity
+                            RetryUploadDialogFragment dialogFragment = RetryUploadDialogFragment.newInstance(holder.itemName,
                                     holder.id, holder.failMessage);
                             dialogFragment.show(getFragmentManager(), "dialog");
                             break;
@@ -155,6 +145,14 @@ public class UploadsListFragment extends ListFragment implements LoaderCallbacks
         }
     }
 
+    private void startUpload(final Context context, final String id) {
+        new UploadsAsyncHandler(context.getContentResolver()) {
+            @Override protected void onUpdateComplete(int token, Object cookie, int result) {
+                new StartUploadTask(context).execute(id);
+            }
+        }.updateUploadStatus(id, UploadStatus.PENDING);
+    }
+
     static class ViewHolder {
         @InjectView(R.id.upload_preview) ImageView preview;
         @InjectView(R.id.upload_name) TextView name;
@@ -174,49 +172,4 @@ public class UploadsListFragment extends ListFragment implements LoaderCallbacks
         }
     }
 
-    static class RetryDialogFragment extends DialogFragment {
-
-        private static final String EXTRA_UPLOAD_ID = "id";
-        private static final String EXTRA_FAIL_MESSAGE = "message";
-        private static final String EXTRA_ITEM_NAME = "name";
-
-        public static RetryDialogFragment newInstance(String name, String uploadId, String failMessage) {
-            RetryDialogFragment frag = new RetryDialogFragment();
-            Bundle args = new Bundle();
-            args.putString(EXTRA_UPLOAD_ID, uploadId);
-            args.putString(EXTRA_FAIL_MESSAGE, failMessage);
-            args.putString(EXTRA_ITEM_NAME, name);
-            frag.setArguments(args);
-            return frag;
-        }
-
-        @Override
-        public Dialog onCreateDialog(Bundle savedInstanceState) {
-            final String id = getArguments().getString(EXTRA_UPLOAD_ID);
-            String failMessage = getArguments().getString(EXTRA_FAIL_MESSAGE);
-            String name = getArguments().getString(EXTRA_ITEM_NAME);
-
-            return new AlertDialog.Builder(getActivity())
-                    .setIcon(R.drawable.ic_upload_error)
-                    .setTitle(name)
-                    .setMessage(failMessage)
-                    .setPositiveButton(R.string.text_retry,
-                            new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialog, int whichButton) {
-                                    startUpload(getActivity(), id);
-                                }
-                            }
-                    )
-                    .setNegativeButton(R.string.text_cancel,
-                            new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialog, int whichButton) {
-                                    dismiss();
-                                }
-                            }
-                    )
-                    .create();
-        }
-    }
 }
