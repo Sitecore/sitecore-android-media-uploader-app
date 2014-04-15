@@ -36,6 +36,7 @@ public class UploadHelper {
 
         Intent intent = builder.build(mContext);
         intent.putExtra(MediaUploaderService.EXTRA_UPLOAD_URI, uploadUri);
+        intent.putExtra(MediaUploaderService.EXTRA_MEDIA_FOLDER, instance.getRootFolder());
 
         mContext.startService(intent);
     }
