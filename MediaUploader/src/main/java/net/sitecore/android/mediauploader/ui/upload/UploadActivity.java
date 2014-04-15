@@ -77,13 +77,13 @@ public class UploadActivity extends Activity implements SelectMediaListener {
             @Override protected void onInsertComplete(int token, Object cookie, Uri uri) {
                 mUploadHelper.uploadMedia(mApiSession, uri, mInstance, itemName, mImageUri.toString());
             }
-        }.insertPendingUpload(itemName, mImageUri, mInstance);
+        }.insertDelayedUpload(itemName, mImageUri, mInstance);
         finish();
     }
 
     @OnClick(R.id.button_upload_later)
     public void onUploadLater() {
-        new InstancesAsyncHandler(getContentResolver()).insertPendingUpload(getItemName(), mImageUri, mInstance);
+        new InstancesAsyncHandler(getContentResolver()).insertDelayedUpload(getItemName(), mImageUri, mInstance);
         showToast(this, R.string.toast_added_to_uploads);
         finish();
     }

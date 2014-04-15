@@ -2,6 +2,8 @@ package net.sitecore.android.mediauploader.ui.upload;
 
 import android.app.ListFragment;
 import android.app.LoaderManager.LoaderCallbacks;
+import android.content.AsyncQueryHandler;
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.CursorLoader;
 import android.content.Intent;
@@ -36,14 +38,12 @@ public class UploadsListFragment extends ListFragment implements LoaderCallbacks
 
     @Inject Picasso mImageLoader;
 
-    private UploadHelper mUploadHelper;
     private UploadsCursorAdapter mAdapter;
 
     @Override public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
         UploaderApp.from(getActivity()).inject(this);
-        mUploadHelper = new UploadHelper(getActivity().getApplicationContext());
 
         setEmptyText("No uploads");
         getLoaderManager().initLoader(0, null, this);
@@ -86,8 +86,15 @@ public class UploadsListFragment extends ListFragment implements LoaderCallbacks
 
             holder.statusButton.setOnClickListener(new OnClickListener() {
                 @Override public void onClick(View v) {
-                    if (holder.status == UploadStatus.PENDING) {
-                        new StartUploadTask(context).execute(holder.id);
+                    if (holder.status == UploadStatus.UPLOAD_LATER) {
+                        ContentValues values = new ContentValues();
+                        values.put(Uploads.STATUS, UploadStatus.PENDING.name());
+
+                        new AsyncQueryHandler(getActivity().getContentResolver()) {
+                            @Override protected void onUpdateComplete(int token, Object cookie, int result) {
+                                new StartUploadTask(context).execute(holder.id);
+                            }
+                        }.startUpdate(0, null, Uploads.buildUploadUri(holder.id), values, null, null);
                     }
                 }
             });
@@ -128,10 +135,14 @@ public class UploadsListFragment extends ListFragment implements LoaderCallbacks
                     holder.inProgress.setVisibility(View.VISIBLE);
                     holder.statusButton.setVisibility(View.GONE);
                     break;
-                case PENDING:
-                    holder.statusButton.setVisibility(View.VISIBLE);
-                    holder.statusButton.setImageResource(R.drawable.ic_upload);
+                case UPLOAD_LATER:
                     holder.inProgress.setVisibility(View.GONE);
+                    holder.statusButton.setImageResource(R.drawable.ic_upload);
+                    holder.statusButton.setVisibility(View.VISIBLE);
+                    break;
+                case PENDING:
+                    holder.statusButton.setVisibility(View.GONE);
+                    holder.inProgress.setVisibility(View.VISIBLE);
                     break;
             }
         }

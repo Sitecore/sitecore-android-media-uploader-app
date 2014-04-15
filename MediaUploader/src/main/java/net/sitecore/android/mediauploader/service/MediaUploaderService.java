@@ -2,9 +2,13 @@ package net.sitecore.android.mediauploader.service;
 
 import android.content.ContentValues;
 import android.content.Intent;
+import android.database.Cursor;
 import android.net.Uri;
 
+import net.sitecore.android.mediauploader.model.Instance;
 import net.sitecore.android.mediauploader.model.UploadStatus;
+import net.sitecore.android.mediauploader.provider.UploadMediaContract.Instances;
+import net.sitecore.android.mediauploader.provider.UploadMediaContract.Instances.Query;
 import net.sitecore.android.mediauploader.provider.UploadMediaContract.Uploads;
 import net.sitecore.android.mediauploader.util.NotificationUtils;
 import net.sitecore.android.sdk.api.UploadMediaRequestOptions;
@@ -30,8 +34,33 @@ public class MediaUploaderService extends UploadMediaService {
     public void onUploadStarted(Uri uploadUri, String name) {
         final ContentValues values = new ContentValues();
         values.put(Uploads.STATUS, UploadStatus.IN_PROGRESS.name());
+
+        String folder = "";
+        Instance instance = getInstance(uploadUri);
+        if (instance != null) {
+            folder = instance.getRootFolder();
+        }
+
         getContentResolver().update(uploadUri, values, null, null);
-        NotificationUtils.showNotification(getApplicationContext(), UploadStatus.IN_PROGRESS.name(), name, name.hashCode());
+        NotificationUtils.showInProgressNotification(getApplicationContext(), name, folder);
+    }
+
+    private Instance getInstance(Uri uploadUri) {
+        Instance instance = null;
+
+        Cursor c = getContentResolver().query(uploadUri, Uploads.Query.PROJECTION, null, null, null);
+        String instanceId = "";
+        if (c != null && c.moveToFirst()) {
+            instanceId = c.getString(Uploads.Query.INSTANCE_ID);
+        }
+
+        Cursor cursor = getContentResolver().query(Instances.buildInstanceUri(instanceId),
+                Query.PROJECTION, null, null, null);
+
+        if (cursor != null && cursor.moveToFirst()) {
+            instance = new Instance(cursor);
+        }
+        return instance;
     }
 
     @Override

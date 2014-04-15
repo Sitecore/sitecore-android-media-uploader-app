@@ -12,21 +12,46 @@ import net.sitecore.android.mediauploader.ui.upload.UploadsListActivity;
 
 public class NotificationUtils {
 
-    public static void showNotification(Context context, String title, String contentText, int id) {
+    public static void showInProgressNotification(Context context, String title, String contentText) {
+        Notification n = buildDefaultNotification(context, title, contentText, false, R.drawable.ic_launcher)
+                .setProgress(0, 0, true)
+                .build();
+        NotificationManager mNotificationManager =
+                (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+
+        mNotificationManager.notify(title.hashCode(), n);
+    }
+
+    public static void showFinishedNotification(Context context, String title, String contentText) {
+        Notification n = buildDefaultNotification(context, title, contentText, true, R.drawable.ic_upload_success)
+                .build();
+        NotificationManager mNotificationManager =
+                (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+
+        mNotificationManager.notify(title.hashCode(), n);
+    }
+
+    public static void showFialNotification(Context context, String title, String contentText) {
+        Notification n = buildDefaultNotification(context, title, contentText, true, R.drawable.ic_upload_error)
+                .build();
+        NotificationManager mNotificationManager =
+                (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+
+        mNotificationManager.notify(title.hashCode(), n);
+    }
+
+    private static NotificationCompat.Builder buildDefaultNotification(Context context, String title,
+            String contentText, boolean autoCancel, int notificationIcon) {
         NotificationCompat.Builder builder = new NotificationCompat.Builder(context);
         PendingIntent showMainActivityIntent = PendingIntent.getActivity(context, 0,
                 new Intent(context, UploadsListActivity.class), 0);
 
         builder.setContentTitle(title)
-                .setAutoCancel(true)
+                .setAutoCancel(autoCancel)
                 .setContentText(contentText)
                 .setContentIntent(showMainActivityIntent)
-                .setSmallIcon(R.drawable.ic_launcher);
+                .setSmallIcon(notificationIcon);
 
-        Notification n = builder.build();
-        NotificationManager mNotificationManager =
-                (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
-
-        mNotificationManager.notify(id, n);
+        return builder;
     }
 }
