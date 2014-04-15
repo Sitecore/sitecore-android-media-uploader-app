@@ -1,7 +1,6 @@
 package net.sitecore.android.mediauploader;
 
 import android.app.Application;
-import android.content.AsyncQueryHandler;
 import android.content.Context;
 
 import com.android.volley.VolleyLog;
@@ -11,7 +10,6 @@ import com.squareup.picasso.Picasso;
 import net.sitecore.android.mediauploader.provider.ItemsAsyncHandler;
 import net.sitecore.android.mediauploader.util.Prefs;
 import net.sitecore.android.sdk.api.internal.LogUtils;
-import net.sitecore.android.sdk.api.provider.ScItemsContract.Items;
 
 import butterknife.ButterKnife;
 import dagger.ObjectGraph;

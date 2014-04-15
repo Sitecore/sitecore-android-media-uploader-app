@@ -2,7 +2,6 @@ package net.sitecore.android.mediauploader.ui.settings;
 
 import android.app.Activity;
 import android.app.LoaderManager.LoaderCallbacks;
-import android.content.AsyncQueryHandler;
 import android.content.CursorLoader;
 import android.content.Intent;
 import android.content.Loader;
@@ -26,7 +25,6 @@ import net.sitecore.android.mediauploader.R;
 import net.sitecore.android.mediauploader.UploaderApp;
 import net.sitecore.android.mediauploader.model.Instance;
 import net.sitecore.android.mediauploader.provider.InstancesAsyncHandler;
-import net.sitecore.android.mediauploader.provider.UploadMediaContract.Instances;
 import net.sitecore.android.mediauploader.provider.UploadMediaContract.Instances.Query;
 import net.sitecore.android.mediauploader.util.Utils;
 import net.sitecore.android.sdk.api.RequestBuilder;
@@ -104,7 +102,7 @@ public class CreateEditInstanceActivity extends Activity implements LoaderCallba
 
     @OnClick(R.id.button_delete_instance)
     public void onDeleteInstanceClick() {
-        new InstancesAsyncHandler(getContentResolver()){
+        new InstancesAsyncHandler(getContentResolver()) {
             @Override protected void onDeleteComplete(int token, Object cookie, int result) {
                 showToast(CreateEditInstanceActivity.this, R.string.toast_instance_deleted);
                 if (mIsInstanceSelected) selectLastInstance();
@@ -114,7 +112,7 @@ public class CreateEditInstanceActivity extends Activity implements LoaderCallba
     }
 
     private void selectLastInstance() {
-        new InstancesAsyncHandler(getContentResolver()){
+        new InstancesAsyncHandler(getContentResolver()) {
             @Override protected void onQueryComplete(int token, Object cookie, Cursor cursor) {
                 if (cursor.getCount() > 0) {
                     if (cursor.moveToLast()) {

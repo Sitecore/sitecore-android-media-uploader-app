@@ -5,8 +5,6 @@ import android.app.Dialog;
 import android.app.DialogFragment;
 import android.app.ListFragment;
 import android.app.LoaderManager.LoaderCallbacks;
-import android.content.AsyncQueryHandler;
-import android.content.ContentValues;
 import android.content.Context;
 import android.content.CursorLoader;
 import android.content.DialogInterface;
@@ -71,7 +69,7 @@ public class UploadsListFragment extends ListFragment implements LoaderCallbacks
     }
 
     private static void startUpload(final Context context, final String id) {
-        new UploadsAsyncHandler(context.getContentResolver()){
+        new UploadsAsyncHandler(context.getContentResolver()) {
             @Override protected void onUpdateComplete(int token, Object cookie, int result) {
                 new StartUploadTask(context).execute(id);
             }
@@ -204,6 +202,7 @@ public class UploadsListFragment extends ListFragment implements LoaderCallbacks
                     .setMessage(failMessage)
                     .setPositiveButton(R.string.text_retry,
                             new DialogInterface.OnClickListener() {
+                                @Override
                                 public void onClick(DialogInterface dialog, int whichButton) {
                                     startUpload(getActivity(), id);
                                 }
@@ -211,6 +210,7 @@ public class UploadsListFragment extends ListFragment implements LoaderCallbacks
                     )
                     .setNegativeButton(R.string.text_cancel,
                             new DialogInterface.OnClickListener() {
+                                @Override
                                 public void onClick(DialogInterface dialog, int whichButton) {
                                     dismiss();
                                 }
