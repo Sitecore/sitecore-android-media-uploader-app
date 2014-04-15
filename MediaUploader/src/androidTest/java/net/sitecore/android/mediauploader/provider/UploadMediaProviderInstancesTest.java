@@ -9,7 +9,7 @@ import android.test.ProviderTestCase2;
 import net.sitecore.android.mediauploader.provider.UploadMediaContract.Instances;
 import net.sitecore.android.mediauploader.provider.UploadMediaContract.Instances.Query;
 
-public class UploadMediaProviderInstancesTest extends ProviderTestCase2<UploadMediaProvider> {
+public class UploadMediaProviderInstancesTest extends BaseUploadMediaProviderTest {
 
     private final String NAME_SAMPLE = "name";
     private final String URL_SAMPLE = "http://test.url";
@@ -22,18 +22,6 @@ public class UploadMediaProviderInstancesTest extends ProviderTestCase2<UploadMe
     private final String UPDATED_LOGIN_SAMPLE = "updated_login";
     private final String UPDATED_PASSWORD_SAMPLE = "updated_password";
     private final String UPDATED_DEFAULT_FOLDER_SAMPLE = "updated_folder";
-
-    private ContentResolver mContentResolver;
-
-    public UploadMediaProviderInstancesTest() {
-        super(UploadMediaProvider.class, UploadMediaContract.CONTENT_AUTHORITY);
-    }
-
-    @Override
-    protected void setUp() throws Exception {
-        super.setUp();
-        mContentResolver = getMockContentResolver();
-    }
 
     public ContentValues getSampleValue() {
         ContentValues value = new ContentValues();
@@ -51,10 +39,9 @@ public class UploadMediaProviderInstancesTest extends ProviderTestCase2<UploadMe
     }
 
     public void testInsert() {
+        mResolver.insert(Instances.CONTENT_URI, getSampleValue());
 
-        mContentResolver.insert(Instances.CONTENT_URI, getSampleValue());
-
-        Cursor c = mContentResolver.query(Instances.CONTENT_URI, null, null, null, null);
+        Cursor c = mResolver.query(Instances.CONTENT_URI, null, null, null, null);
         checkCursor(c, 1);
     }
 
@@ -64,25 +51,25 @@ public class UploadMediaProviderInstancesTest extends ProviderTestCase2<UploadMe
             values[i] = getSampleValue();
         }
 
-        mContentResolver.bulkInsert(Instances.CONTENT_URI, values);
+        mResolver.bulkInsert(Instances.CONTENT_URI, values);
 
-        Cursor c = mContentResolver.query(Instances.CONTENT_URI, null, null, null, null);
+        Cursor c = mResolver.query(Instances.CONTENT_URI, null, null, null, null);
         checkCursor(c, values.length);
     }
 
     public void testDelete() {
-        mContentResolver.insert(Instances.CONTENT_URI, getSampleValue());
+        mResolver.insert(Instances.CONTENT_URI, getSampleValue());
 
-        assertEquals(1, mContentResolver.delete(Instances.CONTENT_URI, null, null));
+        assertEquals(1, mResolver.delete(Instances.CONTENT_URI, null, null));
 
-        Cursor c = mContentResolver.query(Instances.CONTENT_URI, null, null, null, null);
+        Cursor c = mResolver.query(Instances.CONTENT_URI, null, null, null, null);
         checkCursor(c, 0);
     }
 
     public void testQuery() {
-        mContentResolver.insert(Instances.CONTENT_URI, getSampleValue());
+        mResolver.insert(Instances.CONTENT_URI, getSampleValue());
 
-        Cursor c = mContentResolver.query(Instances.CONTENT_URI, Query.PROJECTION, null, null, null);
+        Cursor c = mResolver.query(Instances.CONTENT_URI, Query.PROJECTION, null, null, null);
         checkCursor(c, 1);
         if (!c.moveToFirst()) fail("Trying to read cursor but it is empty");
 
@@ -93,9 +80,9 @@ public class UploadMediaProviderInstancesTest extends ProviderTestCase2<UploadMe
     }
 
     public void testUpdate() {
-        mContentResolver.insert(Instances.CONTENT_URI, getSampleValue());
+        mResolver.insert(Instances.CONTENT_URI, getSampleValue());
 
-        Cursor c = mContentResolver.query(Instances.CONTENT_URI, null, null, null, null);
+        Cursor c = mResolver.query(Instances.CONTENT_URI, null, null, null, null);
         checkCursor(c, 1);
 
         ContentValues newValue = new ContentValues();
@@ -105,9 +92,9 @@ public class UploadMediaProviderInstancesTest extends ProviderTestCase2<UploadMe
         newValue.put(Instances.ROOT_FOLDER, UPDATED_DEFAULT_FOLDER_SAMPLE);
 
         String selection = Instances.LOGIN + "='" + UPDATED_LOGIN_SAMPLE + "'";
-        assertEquals(1, mContentResolver.update(Instances.CONTENT_URI, newValue, selection, null));
+        assertEquals(1, mResolver.update(Instances.CONTENT_URI, newValue, selection, null));
 
-        c = mContentResolver.query(Instances.CONTENT_URI, Query.PROJECTION, null, null, null);
+        c = mResolver.query(Instances.CONTENT_URI, Query.PROJECTION, null, null, null);
         checkCursor(c, 1);
         if (!c.moveToFirst()) fail("Trying to read cursor but it is empty");
 
@@ -118,24 +105,24 @@ public class UploadMediaProviderInstancesTest extends ProviderTestCase2<UploadMe
     }
 
     public void testGetInstanceById() {
-        Uri resultUri = mContentResolver.insert(Instances.CONTENT_URI, getSampleValue());
+        Uri resultUri = mResolver.insert(Instances.CONTENT_URI, getSampleValue());
         assertNotNull(resultUri);
 
-        Cursor cursor = mContentResolver.query(resultUri, Query.PROJECTION, null, null,
+        Cursor cursor = mResolver.query(resultUri, Query.PROJECTION, null, null,
                 null);
         checkCursor(cursor, 1);
     }
 
     public void testDeleteInstanceById() {
-        Uri resultUri = mContentResolver.insert(Instances.CONTENT_URI, getSampleValue());
+        Uri resultUri = mResolver.insert(Instances.CONTENT_URI, getSampleValue());
         assertNotNull(resultUri);
 
-        int count = mContentResolver.delete(resultUri, null, null);
+        int count = mResolver.delete(resultUri, null, null);
         assertEquals(1, count);
     }
 
     public void testUpdateInstanceById() {
-        Uri resultUri = mContentResolver.insert(Instances.CONTENT_URI, getSampleValue());
+        Uri resultUri = mResolver.insert(Instances.CONTENT_URI, getSampleValue());
         assertNotNull(resultUri);
 
         ContentValues values = new ContentValues();
@@ -144,10 +131,10 @@ public class UploadMediaProviderInstancesTest extends ProviderTestCase2<UploadMe
         values.put(Instances.PASSWORD, UPDATED_PASSWORD_SAMPLE);
         values.put(Instances.ROOT_FOLDER, UPDATED_DEFAULT_FOLDER_SAMPLE);
 
-        int count = mContentResolver.update(resultUri, values, null, null);
+        int count = mResolver.update(resultUri, values, null, null);
         assertEquals(1, count);
 
-        Cursor cursor = mContentResolver.query(resultUri, Query.PROJECTION, null, null,
+        Cursor cursor = mResolver.query(resultUri, Query.PROJECTION, null, null,
                 null);
         checkCursor(cursor, 1);
         if (!cursor.moveToFirst()) fail("Trying to read cursor but it is empty");
@@ -160,7 +147,7 @@ public class UploadMediaProviderInstancesTest extends ProviderTestCase2<UploadMe
 
     public void testUnsupportedOperation() {
         try {
-            mContentResolver.insert(Uri.withAppendedPath(Instances.CONTENT_URI, "/error"),
+            mResolver.insert(Uri.withAppendedPath(Instances.CONTENT_URI, "/error"),
                     getSampleValue());
             fail("UnsupportedOperationException should be here");
         } catch (Exception exception) {
