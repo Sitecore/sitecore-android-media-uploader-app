@@ -53,6 +53,8 @@
     <string name="text_sites">Sites</string>
     <string name="text_save_upload_folder">Upload to this folder</string>
     <string name="text_navigate_up">Up</string>
+    <string name="text_retry">Retry</string>
+    <string name="text_cancel">Cancel</string>
 
 
     <string-array name="select_image_source">

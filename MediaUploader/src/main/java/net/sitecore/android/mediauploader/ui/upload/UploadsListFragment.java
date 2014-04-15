@@ -1,11 +1,15 @@
 package net.sitecore.android.mediauploader.ui.upload;
 
+import android.app.AlertDialog;
+import android.app.Dialog;
+import android.app.DialogFragment;
 import android.app.ListFragment;
 import android.app.LoaderManager.LoaderCallbacks;
 import android.content.AsyncQueryHandler;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.CursorLoader;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.Loader;
 import android.database.Cursor;
@@ -65,6 +69,17 @@ public class UploadsListFragment extends ListFragment implements LoaderCallbacks
         mAdapter.swapCursor(null);
     }
 
+    private static void startUpload(final Context context, final String id) {
+        ContentValues values = new ContentValues();
+        values.put(Uploads.STATUS, UploadStatus.PENDING.name());
+
+        new AsyncQueryHandler(context.getContentResolver()) {
+            @Override protected void onUpdateComplete(int token, Object cookie, int result) {
+                new StartUploadTask(context).execute(id);
+            }
+        }.startUpdate(0, null, Uploads.buildUploadUri(id), values, null, null);
+    }
+
     class UploadsCursorAdapter extends CursorAdapter {
 
         public UploadsCursorAdapter(Context context) {
@@ -85,15 +100,15 @@ public class UploadsListFragment extends ListFragment implements LoaderCallbacks
 
             holder.statusButton.setOnClickListener(new OnClickListener() {
                 @Override public void onClick(View v) {
-                    if (holder.status == UploadStatus.UPLOAD_LATER) {
-                        ContentValues values = new ContentValues();
-                        values.put(Uploads.STATUS, UploadStatus.PENDING.name());
-
-                        new AsyncQueryHandler(getActivity().getContentResolver()) {
-                            @Override protected void onUpdateComplete(int token, Object cookie, int result) {
-                                new StartUploadTask(context).execute(holder.id);
-                            }
-                        }.startUpdate(0, null, Uploads.buildUploadUri(holder.id), values, null, null);
+                    switch (holder.status) {
+                        case UPLOAD_LATER:
+                            startUpload(getActivity(), holder.id);
+                            break;
+                        case ERROR:
+                            RetryDialogFragment dialogFragment = RetryDialogFragment.newInstance(holder.itemName,
+                                    holder.id, holder.failMessage);
+                            dialogFragment.show(getFragmentManager(), "dialog");
+                            break;
                     }
                 }
             });
@@ -103,23 +118,19 @@ public class UploadsListFragment extends ListFragment implements LoaderCallbacks
 
         @Override public void bindView(View view, Context context, Cursor cursor) {
             final ViewHolder holder = (ViewHolder) view.getTag();
+            holder.imageUri = cursor.getString(Query.FILE_URI);
+            holder.itemName = cursor.getString(Query.ITEM_NAME);
+            holder.id = cursor.getString(Query._ID);
+            holder.status = UploadStatus.valueOf(cursor.getString(Query.STATUS));
+            holder.failMessage = cursor.getString(Query.FAIL_MESSAGE);
 
-            final String imageUri = cursor.getString(Query.FILE_URI);
-            final String name = cursor.getString(Query.ITEM_NAME);
-            final String id = cursor.getString(Query._ID);
-            UploadStatus status = UploadStatus.valueOf(cursor.getString(Query.STATUS));
-
-            mImageLoader.load(imageUri).resize(150, 150)
+            mImageLoader.load(holder.imageUri).resize(150, 150)
                     .placeholder(R.drawable.ic_placeholder).error(R.drawable.ic_action_cancel)
                     .into(holder.preview);
 
-            holder.name.setText(name);
-            holder.imageUri = imageUri;
-            holder.itemName = name;
-            holder.id = id;
-            holder.status = status;
+            holder.name.setText(holder.itemName);
 
-            switch (status) {
+            switch (holder.status) {
                 case DONE:
                     holder.statusButton.setImageResource(R.drawable.ic_upload_success);
                     holder.inProgress.setVisibility(View.GONE);
@@ -158,10 +169,54 @@ public class UploadsListFragment extends ListFragment implements LoaderCallbacks
         public String imageUri;
         public String itemName;
         public String id;
+        public String failMessage;
         public UploadStatus status;
 
         ViewHolder(View v) {
             ButterKnife.inject(this, v);
+        }
+    }
+
+    static class RetryDialogFragment extends DialogFragment {
+        private static final String EXTRA_UPLOAD_ID = "id";
+        private static final String EXTRA_FAIL_MESSAGE = "message";
+        private static final String EXTRA_ITEM_NAME = "name";
+
+        public static RetryDialogFragment newInstance(String name, String uploadId, String failMessage) {
+            RetryDialogFragment frag = new RetryDialogFragment();
+            Bundle args = new Bundle();
+            args.putString(EXTRA_UPLOAD_ID, uploadId);
+            args.putString(EXTRA_FAIL_MESSAGE, failMessage);
+            args.putString(EXTRA_ITEM_NAME, name);
+            frag.setArguments(args);
+            return frag;
+        }
+
+        @Override
+        public Dialog onCreateDialog(Bundle savedInstanceState) {
+            final String id = getArguments().getString(EXTRA_UPLOAD_ID);
+            String failMessage = getArguments().getString(EXTRA_FAIL_MESSAGE);
+            String name = getArguments().getString(EXTRA_ITEM_NAME);
+
+            return new AlertDialog.Builder(getActivity())
+                    .setIcon(R.drawable.ic_upload_error)
+                    .setTitle(name)
+                    .setMessage(failMessage)
+                    .setPositiveButton(R.string.text_retry,
+                            new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int whichButton) {
+                                    startUpload(getActivity(), id);
+                                }
+                            }
+                    )
+                    .setNegativeButton(R.string.text_cancel,
+                            new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int whichButton) {
+                                    dismiss();
+                                }
+                            }
+                    )
+                    .create();
         }
     }
 }
