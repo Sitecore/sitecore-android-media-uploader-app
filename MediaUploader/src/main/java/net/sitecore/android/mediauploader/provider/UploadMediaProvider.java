@@ -27,6 +27,7 @@ public class UploadMediaProvider extends ContentProvider {
 
     private static final int UPLOADS = 200;
     private static final int UPLOAD_ID = 201;
+    private static final int UPLOAD_ID_INSTANCE = 202;
 
     private UploaderMediaDatabase mDatabaseHelper;
 
@@ -41,6 +42,7 @@ public class UploadMediaProvider extends ContentProvider {
 
         matcher.addURI(authority, "uploads", UPLOADS);
         matcher.addURI(authority, "uploads/#", UPLOAD_ID);
+        matcher.addURI(authority, "uploads/#/instance", UPLOAD_ID_INSTANCE);
 
         return matcher;
     }

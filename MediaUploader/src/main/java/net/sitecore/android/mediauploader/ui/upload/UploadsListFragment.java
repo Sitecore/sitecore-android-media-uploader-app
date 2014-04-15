@@ -27,6 +27,7 @@ import net.sitecore.android.mediauploader.model.UploadStatus;
 import net.sitecore.android.mediauploader.provider.UploadMediaContract.Uploads;
 import net.sitecore.android.mediauploader.provider.UploadMediaContract.Uploads.Query;
 import net.sitecore.android.mediauploader.util.UploadHelper;
+import net.sitecore.android.mediauploader.util.StartUploadTask;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
@@ -71,21 +72,23 @@ public class UploadsListFragment extends ListFragment implements LoaderCallbacks
             super(context, null, true);
         }
 
-        @Override public View newView(Context context, Cursor cursor, ViewGroup parent) {
+        @Override public View newView(final Context context, Cursor cursor, ViewGroup parent) {
             View v = LayoutInflater.from(context).inflate(R.layout.layout_uploads_item, parent, false);
             final ViewHolder holder = new ViewHolder(v);
             holder.preview.setOnClickListener(new OnClickListener() {
                 @Override public void onClick(View v) {
-                    Intent intent = new Intent(getActivity(), UploadedItemActivity.class);
+                    Intent intent = new Intent(context, UploadedItemActivity.class);
                     intent.putExtra(UploadedItemActivity.EXTRA_IMAGE_URI, holder.imageUri);
                     intent.putExtra(UploadedItemActivity.EXTRA_ITEM_NAME, holder.itemName);
-                    startActivity(intent);
+                    context.startActivity(intent);
                 }
             });
 
             holder.statusButton.setOnClickListener(new OnClickListener() {
                 @Override public void onClick(View v) {
-                    if (holder.status == UploadStatus.PENDING) mUploadHelper.startUpload(holder.id);
+                    if (holder.status == UploadStatus.PENDING) {
+                        new StartUploadTask(context).execute(holder.id);
+                    }
                 }
             });
             v.setTag(holder);

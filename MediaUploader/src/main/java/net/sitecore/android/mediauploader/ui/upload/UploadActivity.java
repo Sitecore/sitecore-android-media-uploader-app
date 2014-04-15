@@ -8,7 +8,6 @@ import android.text.TextUtils;
 import android.view.MenuItem;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.Toast;
 
 import javax.inject.Inject;
 
@@ -23,6 +22,7 @@ import net.sitecore.android.mediauploader.model.Instance;
 import net.sitecore.android.mediauploader.ui.upload.SelectMediaDialogHelper.SelectMediaListener;
 import net.sitecore.android.mediauploader.util.InstancesAsyncHandler;
 import net.sitecore.android.mediauploader.util.UploadHelper;
+import net.sitecore.android.sdk.api.ScApiSession;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
@@ -37,10 +37,10 @@ public class UploadActivity extends Activity implements SelectMediaListener {
 
     @Inject Picasso mImageLoader;
     @Inject Instance mInstance;
+    @Inject ScApiSession mApiSession;
 
     private Uri mImageUri;
     private SelectMediaDialogHelper mMediaDialogHelper;
-    private UploadHelper mUploadHelper;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -56,7 +56,7 @@ public class UploadActivity extends Activity implements SelectMediaListener {
                 .placeholder(R.drawable.ic_placeholder).error(R.drawable.ic_action_cancel)
                 .into(mPreview);
 
-        mUploadHelper = new UploadHelper(getApplicationContext());
+
     }
 
     @Override
@@ -71,10 +71,11 @@ public class UploadActivity extends Activity implements SelectMediaListener {
 
     @OnClick(R.id.button_upload_now)
     public void onUploadNow() {
+        final UploadHelper mUploadHelper = new UploadHelper(getApplicationContext());
         final String itemName = getItemName();
         new InstancesAsyncHandler(getContentResolver()){
             @Override protected void onInsertComplete(int token, Object cookie, Uri uri) {
-                mUploadHelper.uploadMedia(uri, mInstance, itemName, mImageUri.toString());
+                mUploadHelper.uploadMedia(mApiSession, uri, mInstance, itemName, mImageUri.toString());
             }
         }.insertPendingUpload(itemName, mImageUri, mInstance);
         finish();

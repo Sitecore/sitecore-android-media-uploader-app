@@ -75,7 +75,6 @@ public class BrowserActivity extends Activity implements ContentTreePositionList
             }
 
             @Override public void onNothingSelected(AdapterView<?> parent) {
-
             }
         });
 
