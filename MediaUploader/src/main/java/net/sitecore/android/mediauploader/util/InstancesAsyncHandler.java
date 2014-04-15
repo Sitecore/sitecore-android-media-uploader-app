@@ -17,11 +17,11 @@ public class InstancesAsyncHandler extends AsyncQueryHandler {
         super(cr);
     }
 
-    public void insertPendingUpload(final String itemName, final Uri fileUri, final Instance instance) {
+    public void insertDelayedUpload(final String itemName, final Uri fileUri, final Instance instance) {
         final ContentValues values = new ContentValues();
         values.put(Uploads.ITEM_NAME, itemName);
         values.put(Uploads.FILE_URI, fileUri.toString());
-        values.put(Uploads.STATUS, UploadStatus.PENDING.name());
+        values.put(Uploads.STATUS, UploadStatus.UPLOAD_LATER.name());
         values.put(Uploads.INSTANCE_ID, instance.getId());
 
         startInsert(TOKEN_INSERT_PENDING, null, Uploads.CONTENT_URI, values);

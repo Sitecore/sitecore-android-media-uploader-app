@@ -17,11 +17,13 @@ import net.sitecore.android.sdk.api.model.ItemsResponse;
 public class MediaUploadListener implements Listener<ItemsResponse>, ErrorListener {
     private Context mContext;
     private Uri mUploadUri;
+    private String mFolder;
     private String mItemName;
 
-    public MediaUploadListener(Context context, Uri uploadUri, String itemName) {
+    public MediaUploadListener(Context context, Uri uploadUri, String folder, String itemName) {
         mContext = context;
         mUploadUri = uploadUri;
+        mFolder = folder;
         mItemName = itemName;
     }
 
@@ -39,7 +41,7 @@ public class MediaUploadListener implements Listener<ItemsResponse>, ErrorListen
         values.put(Uploads.STATUS, UploadStatus.DONE.name());
         //TODO: change to AsyncQueryHandler when sdk UploadMediaIntentBuilder will be fixed (wrong thread)
         mContext.getContentResolver().update(mUploadUri, values, null, null);
-        NotificationUtils.showNotification(mContext, UploadStatus.DONE.name(), mItemName, mItemName.hashCode());
+        NotificationUtils.showFinishedNotification(mContext, mItemName, mFolder);
     }
 
     public void onUploadFailed(String errorMessage) {
@@ -48,6 +50,6 @@ public class MediaUploadListener implements Listener<ItemsResponse>, ErrorListen
         values.put(Uploads.FAIL_MESSAGE, errorMessage);
         //TODO: change to AsyncQueryHandler when sdk UploadMediaIntentBuilder will be fixed (wrong thread)
         mContext.getContentResolver().update(mUploadUri, values, null, null);
-        NotificationUtils.showNotification(mContext, UploadStatus.ERROR.name(), mItemName, mItemName.hashCode());
+        NotificationUtils.showFialNotification(mContext, mItemName, errorMessage);
     }
 }

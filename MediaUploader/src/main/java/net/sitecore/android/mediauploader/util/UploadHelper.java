@@ -56,7 +56,8 @@ public class UploadHelper {
             final String fileUri) {
         session.setMediaLibraryPath("/");
 
-        MediaUploadListener responseListener = new MediaUploadListener(mContext, uploadUri, name);
+        MediaUploadListener responseListener = new MediaUploadListener(mContext, uploadUri, instance.getRootFolder(),
+                name);
 
         UploadMediaIntentBuilder builder = session.uploadMediaIntent(instance.getRootFolder(), name, fileUri.toString())
                 .setDatabase(instance.getDatabase())
