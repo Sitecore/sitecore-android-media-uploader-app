@@ -27,6 +27,7 @@ import com.squareup.picasso.Picasso;
 
 import net.sitecore.android.mediauploader.R;
 import net.sitecore.android.mediauploader.UploaderApp;
+import net.sitecore.android.mediauploader.model.SortByMediaFolderTemplateComparator;
 import net.sitecore.android.mediauploader.util.ScUtils;
 import net.sitecore.android.sdk.api.DownloadMediaOptions.Builder;
 import net.sitecore.android.sdk.api.model.ScItem;
@@ -93,7 +94,9 @@ public class PreviewActivity extends Activity implements LoaderCallbacks<List<Sc
     @Override
     public Loader<List<ScItem>> onCreateLoader(int id, Bundle args) {
         String selection = Items.PARENT_ITEM_ID + "='" + mParentItemID + "'";
-        return new ScItemsLoader(this, selection, null);
+        ScItemsLoader loader = new ScItemsLoader(this, selection, null);
+        loader.setItemsSortOrder(new SortByMediaFolderTemplateComparator());
+        return loader;
     }
 
     @Override
