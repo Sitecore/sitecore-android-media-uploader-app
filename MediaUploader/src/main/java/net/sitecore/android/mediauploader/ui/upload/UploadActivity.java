@@ -51,7 +51,7 @@ public class UploadActivity extends Activity implements SelectMediaListener {
         getActionBar().setDisplayHomeAsUpEnabled(true);
 
         mImageUri = getIntent().getData();
-        mImageLoader.load(mImageUri).fit()
+        mImageLoader.load(mImageUri)
                 .placeholder(R.drawable.ic_placeholder).error(R.drawable.ic_action_cancel)
                 .into(mPreview);
 
