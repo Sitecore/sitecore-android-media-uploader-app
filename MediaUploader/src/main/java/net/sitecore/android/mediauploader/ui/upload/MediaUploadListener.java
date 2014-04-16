@@ -8,6 +8,7 @@ import com.android.volley.Response.ErrorListener;
 import com.android.volley.Response.Listener;
 import com.android.volley.VolleyError;
 
+import net.sitecore.android.mediauploader.R;
 import net.sitecore.android.mediauploader.model.UploadStatus;
 import net.sitecore.android.mediauploader.provider.UploadMediaContract.Uploads;
 import net.sitecore.android.mediauploader.util.NotificationUtils;
@@ -30,7 +31,11 @@ public class MediaUploadListener implements Listener<ItemsResponse>, ErrorListen
 
     @Override
     public void onResponse(ItemsResponse itemsResponse) {
-        onUploadFinished();
+        if (itemsResponse.getResultCount() == 1) {
+            onUploadFinished();
+        } else {
+            onUploadFailed(mContext.getString(R.string.error_upload_failed));
+        }
     }
 
     @Override public void onErrorResponse(VolleyError volleyError) {

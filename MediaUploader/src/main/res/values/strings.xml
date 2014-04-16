@@ -39,6 +39,7 @@
     <string name="error_empty_instance_url">CMS site url cannot be empty</string>
     <string name="error_wrong_instance_url">%s is not a valid CMS site url</string>
     <string name="error_wrong_instance_password">Password cannot be empty</string>
+    <string name="error_upload_failed">Upload failed</string>
 
     <!-- toast notifications -->
     <string name="toast_instance_is_not_valid">Entered site is not valid</string>
