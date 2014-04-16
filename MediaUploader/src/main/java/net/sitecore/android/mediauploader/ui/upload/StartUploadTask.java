@@ -42,7 +42,7 @@ public class StartUploadTask extends AsyncTask<String, Void, Void> {
                 UploadStatus status = UploadStatus.valueOf(cursor.getString(Query.STATUS));
 
                 if (status == UploadStatus.IN_PROGRESS) {
-                    LOGD("Upload with id " + uploadId + " already started");
+                    LOGD("Upload with uploadId " + uploadId + " already started");
                     return null;
                 }
 
@@ -66,7 +66,7 @@ public class StartUploadTask extends AsyncTask<String, Void, Void> {
                     contentResolver.update(Uploads.buildUploadUri(uploadId), values, null, null);
                 }
             } else {
-                LOGE("Upload with id " + uploadId + " has been deleted");
+                LOGE("Upload with uploadId " + uploadId + " has been deleted");
                 return null;
             }
         } catch (InvalidKeySpecException | NoSuchAlgorithmException e) {

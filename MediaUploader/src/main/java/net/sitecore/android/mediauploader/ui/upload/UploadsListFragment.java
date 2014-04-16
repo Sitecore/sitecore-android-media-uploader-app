@@ -1,5 +1,6 @@
 package net.sitecore.android.mediauploader.ui.upload;
 
+import android.app.Activity;
 import android.app.ListFragment;
 import android.app.LoaderManager.LoaderCallbacks;
 import android.content.Context;
@@ -26,16 +27,27 @@ import net.sitecore.android.mediauploader.UploaderApp;
 import net.sitecore.android.mediauploader.model.UploadStatus;
 import net.sitecore.android.mediauploader.provider.UploadMediaContract.Uploads;
 import net.sitecore.android.mediauploader.provider.UploadMediaContract.Uploads.Query;
-import net.sitecore.android.mediauploader.provider.UploadsAsyncHandler;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 
 public class UploadsListFragment extends ListFragment implements LoaderCallbacks<Cursor> {
 
+    public interface UploadsListCallbacks {
+        public void onStartPendingUpload(String uploadId);
+
+        public void onErrorUploadClicked(String uploadId, String itemName, String failMessage);
+    }
+
+    private UploadsListCallbacks mCallbacks;
+    private UploadsCursorAdapter mAdapter;
+
     @Inject Picasso mImageLoader;
 
-    private UploadsCursorAdapter mAdapter;
+    @Override public void onAttach(Activity activity) {
+        super.onAttach(activity);
+        mCallbacks = (UploadsListCallbacks) activity;
+    }
 
     @Override public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
@@ -53,7 +65,7 @@ public class UploadsListFragment extends ListFragment implements LoaderCallbacks
 
     @Override public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
         if (mAdapter == null) {
-            mAdapter = new UploadsCursorAdapter(getActivity());
+            mAdapter = new UploadsCursorAdapter(getActivity(), mCallbacks, mImageLoader);
             setListAdapter(mAdapter);
         }
         mAdapter.swapCursor(data);
@@ -63,14 +75,19 @@ public class UploadsListFragment extends ListFragment implements LoaderCallbacks
         mAdapter.swapCursor(null);
     }
 
-    class UploadsCursorAdapter extends CursorAdapter {
+    static class UploadsCursorAdapter extends CursorAdapter {
 
-        public UploadsCursorAdapter(Context context) {
+        private final UploadsListCallbacks mCallbacks;
+        private final Picasso mImageLoader;
+
+        public UploadsCursorAdapter(Context context, UploadsListCallbacks callbacks, Picasso imageLoader) {
             super(context, null, false);
+            mCallbacks = callbacks;
+            mImageLoader = imageLoader;
         }
 
         @Override public View newView(final Context context, Cursor cursor, ViewGroup parent) {
-            View v = LayoutInflater.from(context).inflate(R.layout.layout_uploads_item, parent, false);
+            View v = LayoutInflater.from(context).inflate(R.layout.list_item_upload, parent, false);
             final ViewHolder holder = new ViewHolder(v);
             holder.preview.setOnClickListener(new OnClickListener() {
                 @Override public void onClick(View v) {
@@ -85,15 +102,11 @@ public class UploadsListFragment extends ListFragment implements LoaderCallbacks
                 @Override public void onClick(View v) {
                     switch (holder.status) {
                         case UPLOAD_LATER:
-                            //TODO: dont fire update here, move logic to activity
-                            startUpload(context, holder.id);
+                            mCallbacks.onStartPendingUpload(holder.uploadId);
                             break;
 
                         case ERROR:
-                            //TODO: show dialog here, move logic to activity
-                            RetryUploadDialogFragment dialogFragment = RetryUploadDialogFragment.newInstance(holder.itemName,
-                                    holder.id, holder.failMessage);
-                            dialogFragment.show(getFragmentManager(), "dialog");
+                            mCallbacks.onErrorUploadClicked(holder.uploadId, holder.itemName, holder.failMessage);
                             break;
                     }
                 }
@@ -106,7 +119,7 @@ public class UploadsListFragment extends ListFragment implements LoaderCallbacks
             final ViewHolder holder = (ViewHolder) view.getTag();
             holder.imageUri = cursor.getString(Query.FILE_URI);
             holder.itemName = cursor.getString(Query.ITEM_NAME);
-            holder.id = cursor.getString(Query._ID);
+            holder.uploadId = cursor.getString(Query._ID);
             holder.status = UploadStatus.valueOf(cursor.getString(Query.STATUS));
             holder.failMessage = cursor.getString(Query.FAIL_MESSAGE);
 
@@ -144,14 +157,6 @@ public class UploadsListFragment extends ListFragment implements LoaderCallbacks
         }
     }
 
-    private void startUpload(final Context context, final String id) {
-        new UploadsAsyncHandler(context.getContentResolver()) {
-            @Override protected void onUpdateComplete(int token, Object cookie, int result) {
-                new StartUploadTask(context).execute(id);
-            }
-        }.updateUploadStatus(id, UploadStatus.PENDING);
-    }
-
     static class ViewHolder {
         @InjectView(R.id.upload_preview) ImageView preview;
         @InjectView(R.id.upload_name) TextView name;
@@ -162,7 +167,7 @@ public class UploadsListFragment extends ListFragment implements LoaderCallbacks
 
         public String imageUri;
         public String itemName;
-        public String id;
+        public String uploadId;
         public String failMessage;
         public UploadStatus status;
 

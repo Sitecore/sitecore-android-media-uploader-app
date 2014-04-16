@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="96dp"
+    android:orientation="horizontal">
+
+    <ProgressBar
+        android:id="@+id/progress_uploading"
+        style="@android:style/Widget.Holo.Light.ProgressBar.Horizontal"
+        android:layout_width="match_parent"
+        android:indeterminate="true"
+        android:layout_alignParentBottom="true"
+        android:layout_height="wrap_content" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@id/progress_uploading"
+        android:orientation="horizontal">
+
+        <ImageView
+            android:id="@+id/upload_preview"
+            android:layout_width="92dp"
+            android:layout_height="match_parent"
+            android:adjustViewBounds="true"
+            android:scaleType="centerInside" />
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical"
+            android:padding="4dp">
+
+            <TextView
+                android:id="@+id/upload_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="item name item name item name item name item name item name item name item name "
+                android:singleLine="true"
+                android:ellipsize="end"
+                android:textAppearance="?android:attr/textAppearanceMedium" />
+
+            <TextView
+                android:id="@+id/upload_url"
+                android:text="http://sitecore.net"
+                android:singleLine="true"
+                android:ellipsize="end"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+            <TextView
+                android:id="@+id/upload_path"
+                android:text="/sitecore/media/folder"
+                android:singleLine="true"
+                android:ellipsize="end"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+        </LinearLayout>
+
+        <ImageButton
+            android:id="@+id/upload_status"
+            android:layout_width="64dp"
+            android:layout_height="64dp"
+            android:src="@drawable/ic_upload"
+            android:background="?android:attr/selectableItemBackground"
+            android:layout_gravity="center" />
+    </LinearLayout>
+
+    <ProgressBar
+        android:id="@+id/upload_in_progress"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:visibility="gone" />
+
+</RelativeLayout>

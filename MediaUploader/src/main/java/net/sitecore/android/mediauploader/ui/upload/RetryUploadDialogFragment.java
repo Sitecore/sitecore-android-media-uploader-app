@@ -1,21 +1,25 @@
 package net.sitecore.android.mediauploader.ui.upload;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.DialogFragment;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
 
 import net.sitecore.android.mediauploader.R;
-import net.sitecore.android.mediauploader.model.UploadStatus;
-import net.sitecore.android.mediauploader.provider.UploadsAsyncHandler;
 
 class RetryUploadDialogFragment extends DialogFragment {
 
-    private static final String EXTRA_UPLOAD_ID = "id";
+    public interface RetryDialogCallbacks {
+        public void onRetryUpload(String uploadId);
+    }
+
+    private static final String EXTRA_UPLOAD_ID = "uploadId";
     private static final String EXTRA_FAIL_MESSAGE = "message";
     private static final String EXTRA_ITEM_NAME = "name";
+
+    private RetryDialogCallbacks mCallbacks;
 
     public static RetryUploadDialogFragment newInstance(String name, String uploadId, String failMessage) {
         RetryUploadDialogFragment fragment = new RetryUploadDialogFragment();
@@ -27,9 +31,14 @@ class RetryUploadDialogFragment extends DialogFragment {
         return fragment;
     }
 
+    @Override public void onAttach(Activity activity) {
+        super.onAttach(activity);
+        mCallbacks = (RetryDialogCallbacks) activity;
+    }
+
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
-        final String id = getArguments().getString(EXTRA_UPLOAD_ID);
+        final String uploadId = getArguments().getString(EXTRA_UPLOAD_ID);
         String failMessage = getArguments().getString(EXTRA_FAIL_MESSAGE);
         String name = getArguments().getString(EXTRA_ITEM_NAME);
 
@@ -42,7 +51,8 @@ class RetryUploadDialogFragment extends DialogFragment {
                             @Override
                             public void onClick(DialogInterface dialog, int whichButton) {
                                 //TODO: dont fire update here, move logic to activity
-                                startUpload(getActivity(), id);
+                                //startUpload(getActivity(), uploadId);
+                                mCallbacks.onRetryUpload(uploadId);
                             }
                         }
                 )
@@ -57,11 +67,4 @@ class RetryUploadDialogFragment extends DialogFragment {
                 .create();
     }
 
-    private void startUpload(final Context context, final String id) {
-        new UploadsAsyncHandler(context.getContentResolver()) {
-            @Override protected void onUpdateComplete(int token, Object cookie, int result) {
-                new StartUploadTask(context).execute(id);
-            }
-        }.updateUploadStatus(id, UploadStatus.PENDING);
-    }
 }
