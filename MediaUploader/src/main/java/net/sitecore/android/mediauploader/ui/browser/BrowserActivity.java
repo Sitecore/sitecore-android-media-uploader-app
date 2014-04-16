@@ -32,7 +32,6 @@ import net.sitecore.android.mediauploader.provider.ItemsAsyncHandler;
 import net.sitecore.android.mediauploader.provider.UploadMediaContract.Instances;
 import net.sitecore.android.mediauploader.provider.UploadMediaContract.Instances.Query;
 import net.sitecore.android.mediauploader.util.ScUtils;
-import net.sitecore.android.mediauploader.util.Utils;
 import net.sitecore.android.sdk.api.ScApiSession;
 import net.sitecore.android.sdk.api.ScApiSessionFactory;
 import net.sitecore.android.sdk.api.ScRequestQueue;
@@ -113,7 +112,7 @@ public class BrowserActivity extends Activity implements ContentTreePositionList
     }
 
     @Override public void onErrorResponse(VolleyError error) {
-        Toast.makeText(this, Utils.getMessageFromError(error), Toast.LENGTH_LONG).show();
+        Toast.makeText(this, ScUtils.getMessageFromError(error), Toast.LENGTH_LONG).show();
     }
 
     @Override

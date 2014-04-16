@@ -24,7 +24,7 @@ import net.sitecore.android.mediauploader.ui.settings.SettingsActivity;
 import net.sitecore.android.mediauploader.ui.upload.UploadActivity;
 import net.sitecore.android.mediauploader.ui.upload.UploadedItemActivity;
 import net.sitecore.android.mediauploader.ui.upload.UploadsListFragment;
-import net.sitecore.android.mediauploader.util.UploadHelper;
+import net.sitecore.android.mediauploader.ui.upload.UploadHelper;
 import net.sitecore.android.sdk.api.ScApiSession;
 import net.sitecore.android.sdk.api.ScApiSessionFactory;
 import net.sitecore.android.sdk.api.ScPublicKey;

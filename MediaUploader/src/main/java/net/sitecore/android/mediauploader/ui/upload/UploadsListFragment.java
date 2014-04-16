@@ -27,7 +27,6 @@ import net.sitecore.android.mediauploader.model.UploadStatus;
 import net.sitecore.android.mediauploader.provider.UploadMediaContract.Uploads;
 import net.sitecore.android.mediauploader.provider.UploadMediaContract.Uploads.Query;
 import net.sitecore.android.mediauploader.provider.UploadsAsyncHandler;
-import net.sitecore.android.mediauploader.util.StartUploadTask;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;

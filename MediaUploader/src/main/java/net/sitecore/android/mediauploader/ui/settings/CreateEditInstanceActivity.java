@@ -26,7 +26,7 @@ import net.sitecore.android.mediauploader.UploaderApp;
 import net.sitecore.android.mediauploader.model.Instance;
 import net.sitecore.android.mediauploader.provider.InstancesAsyncHandler;
 import net.sitecore.android.mediauploader.provider.UploadMediaContract.Instances.Query;
-import net.sitecore.android.mediauploader.util.Utils;
+import net.sitecore.android.mediauploader.util.ScUtils;
 import net.sitecore.android.sdk.api.RequestBuilder;
 import net.sitecore.android.sdk.api.ScApiSession;
 import net.sitecore.android.sdk.api.ScApiSessionFactory;
@@ -184,7 +184,7 @@ public class CreateEditInstanceActivity extends Activity implements LoaderCallba
     private ErrorListener mErrorListener = new ErrorListener() {
         @Override public void onErrorResponse(VolleyError error) {
             setLoading(false);
-            Toast.makeText(CreateEditInstanceActivity.this, Utils.getMessageFromError(error), Toast.LENGTH_LONG).show();
+            Toast.makeText(CreateEditInstanceActivity.this, ScUtils.getMessageFromError(error), Toast.LENGTH_LONG).show();
         }
     };
 

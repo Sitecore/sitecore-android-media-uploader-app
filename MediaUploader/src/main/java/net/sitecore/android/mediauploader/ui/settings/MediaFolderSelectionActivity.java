@@ -30,7 +30,6 @@ import net.sitecore.android.mediauploader.provider.UploadMediaContract;
 import net.sitecore.android.mediauploader.provider.UploadMediaContract.Instances;
 import net.sitecore.android.mediauploader.provider.UploadMediaContract.Instances.Query;
 import net.sitecore.android.mediauploader.util.ScUtils;
-import net.sitecore.android.mediauploader.util.Utils;
 import net.sitecore.android.sdk.api.ScApiSession;
 import net.sitecore.android.sdk.api.ScApiSessionFactory;
 import net.sitecore.android.sdk.api.ScRequestQueue;
@@ -140,7 +139,7 @@ public class MediaFolderSelectionActivity extends Activity implements LoaderCall
 
     @Override
     public void onErrorResponse(VolleyError volleyError) {
-        Toast.makeText(this, Utils.getMessageFromError(volleyError), Toast.LENGTH_LONG).show();
+        Toast.makeText(this, ScUtils.getMessageFromError(volleyError), Toast.LENGTH_LONG).show();
     }
 
     @Override

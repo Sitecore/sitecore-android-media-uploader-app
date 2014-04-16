@@ -10,7 +10,6 @@ import android.os.Bundle;
 import net.sitecore.android.mediauploader.R;
 import net.sitecore.android.mediauploader.model.UploadStatus;
 import net.sitecore.android.mediauploader.provider.UploadsAsyncHandler;
-import net.sitecore.android.mediauploader.util.StartUploadTask;
 
 class RetryUploadDialogFragment extends DialogFragment {
 

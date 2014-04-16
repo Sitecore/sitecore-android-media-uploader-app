@@ -21,7 +21,6 @@ import net.sitecore.android.mediauploader.UploaderApp;
 import net.sitecore.android.mediauploader.model.Instance;
 import net.sitecore.android.mediauploader.ui.upload.SelectMediaDialogHelper.SelectMediaListener;
 import net.sitecore.android.mediauploader.provider.InstancesAsyncHandler;
-import net.sitecore.android.mediauploader.util.UploadHelper;
 import net.sitecore.android.sdk.api.ScApiSession;
 
 import butterknife.ButterKnife;

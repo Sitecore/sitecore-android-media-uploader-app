@@ -11,7 +11,7 @@ import com.android.volley.VolleyError;
 import net.sitecore.android.mediauploader.model.UploadStatus;
 import net.sitecore.android.mediauploader.provider.UploadMediaContract.Uploads;
 import net.sitecore.android.mediauploader.util.NotificationUtils;
-import net.sitecore.android.mediauploader.util.Utils;
+import net.sitecore.android.mediauploader.util.ScUtils;
 import net.sitecore.android.sdk.api.model.ItemsResponse;
 
 public class MediaUploadListener implements Listener<ItemsResponse>, ErrorListener {
@@ -34,7 +34,7 @@ public class MediaUploadListener implements Listener<ItemsResponse>, ErrorListen
     }
 
     @Override public void onErrorResponse(VolleyError volleyError) {
-        onUploadFailed(Utils.getMessageFromError(volleyError));
+        onUploadFailed(ScUtils.getMessageFromError(volleyError));
     }
 
     public void onUploadFinished() {

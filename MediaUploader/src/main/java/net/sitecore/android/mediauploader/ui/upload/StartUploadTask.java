@@ -1,4 +1,4 @@
-package net.sitecore.android.mediauploader.util;
+package net.sitecore.android.mediauploader.ui.upload;
 
 import android.content.ContentResolver;
 import android.content.ContentValues;
