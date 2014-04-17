@@ -1,5 +1,7 @@
 package net.sitecore.android.mediauploader.util;
 
+import android.support.annotation.NonNull;
+
 import com.android.volley.NoConnectionError;
 import com.android.volley.ServerError;
 import com.android.volley.VolleyError;
@@ -16,7 +18,7 @@ public class ScUtils {
 
     public static final String TEMPLATE_MEDIA_FOLDER = "System/Media/Media folder";
 
-    public static boolean isImageTemplate(String template) {
+    public static boolean isImageTemplate(@NonNull String template) {
         if (template.equals(TEMPLATE_UNVERSIONED_JPEG)) return true;
         if (template.equals(TEMPLATE_VERSIONED_JPEG)) return true;
         if (template.equals(TEMPLATE_UNVERSIONED_IMAGE)) return true;

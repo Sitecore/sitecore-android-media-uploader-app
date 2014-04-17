@@ -2,6 +2,7 @@ package net.sitecore.android.mediauploader;
 
 import android.content.res.Resources;
 import android.database.Cursor;
+import android.support.annotation.Nullable;
 import android.text.TextUtils;
 
 import javax.inject.Singleton;
@@ -86,7 +87,7 @@ public final class UploaderAppModule {
     }
 
     // not @Singleton - may change after settings are changed.
-    @Provides ScApiSession provideApiSession(Instance instance) {
+    @Provides ScApiSession provideApiSession(@Nullable Instance instance) {
         try {
             if (instance == null) {
                 return null;
