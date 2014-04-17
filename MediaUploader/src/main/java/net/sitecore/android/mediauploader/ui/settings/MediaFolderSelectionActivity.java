@@ -26,6 +26,7 @@ import net.sitecore.android.mediauploader.R;
 import net.sitecore.android.mediauploader.UploaderApp;
 import net.sitecore.android.mediauploader.model.Instance;
 import net.sitecore.android.mediauploader.model.MediaFolderOnlyFilter;
+import net.sitecore.android.mediauploader.model.SortByMediaFolderTemplateComparator;
 import net.sitecore.android.mediauploader.provider.UploadMediaContract;
 import net.sitecore.android.mediauploader.provider.UploadMediaContract.Instances;
 import net.sitecore.android.mediauploader.provider.UploadMediaContract.Instances.Query;
@@ -101,6 +102,7 @@ public class MediaFolderSelectionActivity extends Activity implements LoaderCall
         mFolderSelectionFragment.setNetworkEventsListener(mNetworkEventsListener);
         mFolderSelectionFragment.setContentTreePositionListener(mContentTreePositionListener);
         mFolderSelectionFragment.setItemsFilter(new MediaFolderOnlyFilter());
+        mFolderSelectionFragment.setItemsSortOrder(new SortByMediaFolderTemplateComparator());
 
         ScApiSessionFactory.getSession(mScRequestQueue, mInstance.getUrl(), mInstance.getLogin(),
                 mInstance.getPassword(), mSessionListener, this);
