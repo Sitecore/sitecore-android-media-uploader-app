@@ -1,5 +1,6 @@
 package net.sitecore.android.mediauploader.ui.upload;
 
+import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.AlertDialog.Builder;
@@ -17,6 +18,7 @@ import java.util.Date;
 
 import net.sitecore.android.mediauploader.R;
 
+import static android.os.Build.VERSION_CODES;
 import static net.sitecore.android.sdk.api.internal.LogUtils.LOGD;
 
 public class SelectMediaDialogHelper {
@@ -57,13 +59,18 @@ public class SelectMediaDialogHelper {
     private void onGallerySelected() {
         Intent intent = new Intent();
         intent.setType("image/*");
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-            intent.setAction(Intent.ACTION_OPEN_DOCUMENT);
+        if (Build.VERSION.SDK_INT >= VERSION_CODES.KITKAT) {
+            setDocumentAction(intent);
         } else {
             intent.setAction(Intent.ACTION_GET_CONTENT);
             intent.addCategory(Intent.CATEGORY_OPENABLE);
         }
         mActivity.startActivityForResult(intent, SOURCE_TYPE_GALLERY);
+    }
+
+    @TargetApi(VERSION_CODES.KITKAT)
+    private void setDocumentAction(Intent intent) {
+        intent.setAction(Intent.ACTION_OPEN_DOCUMENT);
     }
 
     private void onCameraSelected() {

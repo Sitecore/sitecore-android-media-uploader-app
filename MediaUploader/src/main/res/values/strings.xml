@@ -21,6 +21,7 @@
     <string name="hint_username">Domain\\Username</string>
     <string name="hint_url">Url</string>
     <string name="hint_site">Site</string>
+    <string name="hint_media_folder">Media Folder</string>
 
     <string name="button_upload">Upload</string>
     <string name="button_browse">Browse</string>
@@ -33,6 +34,10 @@
     <string name="radiobutton_image_small">Small</string>
     <string name="radiobutton_image_medium">Medium</string>
     <string name="radiobutton_image_original">Original</string>
+
+    <string name="radiobutton_upload_all">All</string>
+    <string name="radiobutton_upload_completed">Completed</string>
+    <string name="radiobutton_upload_not_completed">Not Completed</string>
 
     <!-- error messages -->
     <string name="error_empty_instance_login">Login cannot be empty</string>

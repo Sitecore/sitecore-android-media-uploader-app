@@ -53,6 +53,7 @@
         android:id="@+id/text_media_folder"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:hint="@string/hint_media_folder"
         android:visibility="gone"
         android:enabled="false" />
 

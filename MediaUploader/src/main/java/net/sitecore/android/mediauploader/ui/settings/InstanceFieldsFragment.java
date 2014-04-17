@@ -11,6 +11,8 @@ import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.Spinner;
 
+import java.util.Locale;
+
 import net.sitecore.android.mediauploader.R;
 import net.sitecore.android.mediauploader.model.Instance;
 import net.sitecore.android.mediauploader.util.ScUtils;
@@ -66,7 +68,7 @@ public class InstanceFieldsFragment extends Fragment {
     }
 
     private boolean isUrlValid() {
-        String url = mInstanceUrl.getText().toString().toLowerCase();
+        String url = mInstanceUrl.getText().toString().toLowerCase(Locale.getDefault());
         if (TextUtils.isEmpty(url)) {
             mInstanceUrl.setError(getString(R.string.error_empty_instance_url));
             return false;
@@ -82,7 +84,7 @@ public class InstanceFieldsFragment extends Fragment {
     }
 
     private boolean isLoginValid() {
-        String login = mInstanceLogin.getText().toString().toLowerCase();
+        String login = mInstanceLogin.getText().toString().toLowerCase(Locale.getDefault());
         if (TextUtils.isEmpty(login)) {
             mInstanceLogin.setError(getString(R.string.error_empty_instance_login));
             return false;
@@ -101,11 +103,11 @@ public class InstanceFieldsFragment extends Fragment {
 
         String protocol = (String) mProtocol.getSelectedItem();
         String fullUrl = protocol.concat(mInstanceUrl.getText().toString());
-        instance.setUrl(fullUrl.toLowerCase());
+        instance.setUrl(fullUrl.toLowerCase(Locale.getDefault()));
 
-        instance.setLogin(mInstanceLogin.getText().toString().toLowerCase());
+        instance.setLogin(mInstanceLogin.getText().toString().toLowerCase(Locale.getDefault()));
         instance.setPassword(mInstancePassword.getText().toString());
-        instance.setSite(mInstanceSite.getText().toString().toLowerCase());
+        instance.setSite(mInstanceSite.getText().toString().toLowerCase(Locale.getDefault()));
         instance.setDatabase("master");
         if (mInstance != null) instance.setRootFolder(mInstance.getRootFolder());
         else instance.setRootFolder(ScUtils.PATH_MEDIA_LIBRARY);
