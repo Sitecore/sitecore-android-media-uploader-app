@@ -56,7 +56,7 @@ public class MediaFolderSelectionActivity extends Activity implements LoaderCall
     private Uri mInstanceUri;
     private FolderSelectionFragment mFolderSelectionFragment;
 
-    private ContentTreePositionListener mContentTreePositionListener = new ContentTreePositionListener() {
+    private final ContentTreePositionListener mContentTreePositionListener = new ContentTreePositionListener() {
         @Override public void onGoUp(ScItem item) {
             mInstanceRootFolder.setText(item.getPath());
         }
@@ -70,7 +70,7 @@ public class MediaFolderSelectionActivity extends Activity implements LoaderCall
         }
     };
 
-    private NetworkEventsListener mNetworkEventsListener = new NetworkEventsListener() {
+    private final NetworkEventsListener mNetworkEventsListener = new NetworkEventsListener() {
         @Override public void onUpdateRequestStarted() {
         }
 
@@ -108,7 +108,7 @@ public class MediaFolderSelectionActivity extends Activity implements LoaderCall
                 mInstance.getPassword(), mSessionListener, this);
     }
 
-    private Listener<ScApiSession> mSessionListener = new Listener<ScApiSession>() {
+    private final Listener<ScApiSession> mSessionListener = new Listener<ScApiSession>() {
         @Override public void onResponse(ScApiSession session) {
             session.setDefaultDatabase(mInstance.getDatabase());
             session.setDefaultSite(mInstance.getSite());

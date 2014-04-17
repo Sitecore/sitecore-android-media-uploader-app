@@ -13,7 +13,7 @@ import net.sitecore.android.sdk.api.UploadMediaIntentBuilder;
 
 public class UploadHelper {
 
-    public Context mContext;
+    public final Context mContext;
 
     public UploadHelper(Context context) {
         mContext = context;
@@ -26,7 +26,7 @@ public class UploadHelper {
         MediaUploadListener responseListener = new MediaUploadListener(mContext, uploadUri, instance.getRootFolder(),
                 name);
 
-        UploadMediaIntentBuilder builder = session.uploadMediaIntent(instance.getRootFolder(), name, fileUri.toString())
+        UploadMediaIntentBuilder builder = session.uploadMediaIntent(instance.getRootFolder(), name, fileUri)
                 .setDatabase(instance.getDatabase())
                 .setSuccessListener(responseListener)
                 .setErrorListener(responseListener)

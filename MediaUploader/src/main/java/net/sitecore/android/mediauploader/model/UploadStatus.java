@@ -5,5 +5,5 @@ public enum UploadStatus {
     PENDING,
     DONE,
     IN_PROGRESS,
-    ERROR;
+    ERROR
 }

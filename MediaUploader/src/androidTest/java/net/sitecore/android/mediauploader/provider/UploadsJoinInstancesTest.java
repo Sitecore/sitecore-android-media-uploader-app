@@ -4,7 +4,6 @@ import android.content.ContentValues;
 import android.database.Cursor;
 import android.net.Uri;
 
-import net.sitecore.android.mediauploader.model.Instance;
 import net.sitecore.android.mediauploader.model.UploadStatus;
 import net.sitecore.android.mediauploader.provider.UploadMediaContract.Instances;
 import net.sitecore.android.mediauploader.provider.UploadMediaContract.Uploads;

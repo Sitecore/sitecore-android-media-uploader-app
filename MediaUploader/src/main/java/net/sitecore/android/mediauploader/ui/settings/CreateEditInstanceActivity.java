@@ -142,7 +142,7 @@ public class CreateEditInstanceActivity extends Activity implements LoaderCallba
         mNextButton.setEnabled(!isLoading);
     }
 
-    private Listener<ScPublicKey> mSuccessPublicKeyListener = new Listener<ScPublicKey>() {
+    private final Listener<ScPublicKey> mSuccessPublicKeyListener = new Listener<ScPublicKey>() {
         @Override public void onResponse(ScPublicKey scPublicKey) {
             final Instance enteredInstance = mInstanceFieldsFragment.getEnteredInstance();
             enteredInstance.setPublicKey(scPublicKey.getRawValue());
@@ -181,7 +181,7 @@ public class CreateEditInstanceActivity extends Activity implements LoaderCallba
         startActivity(intent);
     }
 
-    private ErrorListener mErrorListener = new ErrorListener() {
+    private final ErrorListener mErrorListener = new ErrorListener() {
         @Override public void onErrorResponse(VolleyError error) {
             setLoading(false);
             Toast.makeText(CreateEditInstanceActivity.this, ScUtils.getMessageFromError(error), Toast.LENGTH_LONG).show();

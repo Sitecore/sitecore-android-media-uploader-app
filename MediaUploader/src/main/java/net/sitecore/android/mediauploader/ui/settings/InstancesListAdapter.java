@@ -41,7 +41,7 @@ public class InstancesListAdapter extends CursorAdapter {
         holder.instanceUrl.setText(url);
         holder.folder.setText(folder);
         holder.editButton.setOnClickListener(new OnClickListener() {
-            private String id = c.getString(Query._ID);
+            private final String id = c.getString(Query._ID);
 
             @Override
             public void onClick(View v) {

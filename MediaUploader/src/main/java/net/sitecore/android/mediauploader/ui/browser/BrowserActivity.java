@@ -143,7 +143,7 @@ public class BrowserActivity extends Activity implements ContentTreePositionList
     public void onUpdateError(VolleyError volleyError) {
     }
 
-    @Override public Loader onCreateLoader(int id, Bundle args) {
+    @Override public Loader<Cursor> onCreateLoader(int id, Bundle args) {
         return new CursorLoader(this, Instances.CONTENT_URI, Query.PROJECTION, null, null, null);
     }
 

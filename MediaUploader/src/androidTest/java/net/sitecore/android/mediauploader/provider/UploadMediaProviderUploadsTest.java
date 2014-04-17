@@ -1,10 +1,8 @@
 package net.sitecore.android.mediauploader.provider;
 
-import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.database.Cursor;
 import android.net.Uri;
-import android.test.ProviderTestCase2;
 
 import net.sitecore.android.mediauploader.model.UploadStatus;
 import net.sitecore.android.mediauploader.provider.UploadMediaContract.Uploads;
@@ -66,7 +64,6 @@ public class UploadMediaProviderUploadsTest extends BaseUploadMediaProviderTest 
         Cursor c = mResolver.query(Uploads.CONTENT_URI, null, null, null, null);
         assertEquals(0, c.getCount());
     }
-
 
 }
 

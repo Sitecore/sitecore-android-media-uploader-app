@@ -17,7 +17,6 @@ import dagger.ObjectGraph;
 public class UploaderApp extends Application {
 
     private Picasso mImageLoader;
-    private Prefs mPrefs;
 
     private ObjectGraph mObjectGraph;
 
@@ -28,7 +27,6 @@ public class UploaderApp extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
-        mPrefs = Prefs.from(this);
         mImageLoader = Picasso.with(this);
 
         if (!BuildConfig.DEBUG) {

@@ -59,9 +59,4 @@ public class BrowserFragment extends ItemsGridBrowserFragment {
         }
     }
 
-    @Override
-    public void onAttach(Activity activity) {
-        super.onAttach(activity);
-    }
-
 }

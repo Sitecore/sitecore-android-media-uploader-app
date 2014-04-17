@@ -28,7 +28,8 @@ import static net.sitecore.android.sdk.api.internal.LogUtils.LOGE;
 public class InstancesListFragment extends ListFragment implements LoaderCallbacks<Cursor> {
 
     private InstancesListAdapter mAdapter;
-    private OnClickListener mNewSiteClickListener = new OnClickListener() {
+
+    private final OnClickListener mNewSiteClickListener = new OnClickListener() {
         @Override
         public void onClick(View v) {
             startActivity(new Intent(getActivity(), CreateEditInstanceActivity.class));

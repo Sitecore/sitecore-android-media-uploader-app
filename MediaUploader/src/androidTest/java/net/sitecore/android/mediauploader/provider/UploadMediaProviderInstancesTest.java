@@ -1,10 +1,8 @@
 package net.sitecore.android.mediauploader.provider;
 
-import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.database.Cursor;
 import android.net.Uri;
-import android.test.ProviderTestCase2;
 
 import net.sitecore.android.mediauploader.provider.UploadMediaContract.Instances;
 import net.sitecore.android.mediauploader.provider.UploadMediaContract.Instances.Query;

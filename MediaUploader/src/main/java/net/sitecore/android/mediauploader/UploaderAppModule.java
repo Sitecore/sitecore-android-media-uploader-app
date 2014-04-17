@@ -55,7 +55,6 @@ import static net.sitecore.android.sdk.api.internal.LogUtils.LOGE;
 public final class UploaderAppModule {
 
     private final UploaderApp mApp;
-    private Instance mCurrentInstance;
 
     public UploaderAppModule(UploaderApp app) {
         mApp = app;
@@ -77,13 +76,14 @@ public final class UploaderAppModule {
     @Provides Instance provideCurrentInstance() {
         Cursor c = mApp.getContentResolver().query(Instances.CONTENT_URI, Query.PROJECTION, Instances.SELECTED + "=1",
                 null, null);
+        Instance currentInstance;
         if (c.moveToFirst()) {
-            mCurrentInstance = new Instance(c);
+            currentInstance = new Instance(c);
         } else {
-            mCurrentInstance = null;
+            currentInstance = null;
         }
         c.close();
-        return mCurrentInstance;
+        return currentInstance;
     }
 
     // not @Singleton - may change after settings are changed.

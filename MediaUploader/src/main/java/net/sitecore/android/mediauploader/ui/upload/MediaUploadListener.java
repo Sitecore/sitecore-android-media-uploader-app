@@ -17,10 +17,10 @@ import net.sitecore.android.sdk.api.model.ItemsResponse;
 
 public class MediaUploadListener implements Listener<ItemsResponse>, ErrorListener {
 
-    private Context mContext;
-    private Uri mUploadUri;
-    private String mFolder;
-    private String mItemName;
+    private final Context mContext;
+    private final Uri mUploadUri;
+    private final String mFolder;
+    private final String mItemName;
 
     public MediaUploadListener(Context context, Uri uploadUri, String folder, String itemName) {
         mContext = context;

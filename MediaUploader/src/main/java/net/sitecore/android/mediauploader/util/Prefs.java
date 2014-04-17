@@ -7,8 +7,8 @@ public class Prefs {
 
     private static final String PREFS_NAME = "media_uploader.preferences";
 
-    private SharedPreferences mPreferences;
-    private Context mContext;
+    private final SharedPreferences mPreferences;
+    private final Context mContext;
 
     private Prefs(Context context) {
         mPreferences = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);

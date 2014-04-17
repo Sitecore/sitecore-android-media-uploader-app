@@ -1,6 +1,5 @@
 package net.sitecore.android.mediauploader.provider;
 
-import android.app.ActionBar.Tab;
 import android.content.ContentProvider;
 import android.content.ContentProviderOperation;
 import android.content.ContentProviderResult;
@@ -11,6 +10,7 @@ import android.content.UriMatcher;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
+import android.support.annotation.NonNull;
 
 import java.util.ArrayList;
 
@@ -114,7 +114,7 @@ public class UploadMediaProvider extends ContentProvider {
                         .mapToTable(Uploads.FILE_URI, Tables.UPLOADS)
                         .mapToTable(Uploads.STATUS, Tables.UPLOADS)
                         .mapToTable(Uploads.FAIL_MESSAGE, Tables.UPLOADS)
-                        // instance
+                                // instance
                         .mapToTable(Instances.URL, Tables.INSTANCES)
                         .mapToTable(Instances.LOGIN, Tables.INSTANCES)
                         .mapToTable(Instances.PASSWORD, Tables.INSTANCES)
@@ -238,7 +238,7 @@ public class UploadMediaProvider extends ContentProvider {
     }
 
     @Override
-    public ContentProviderResult[] applyBatch(ArrayList<ContentProviderOperation> operations)
+    public ContentProviderResult[] applyBatch(@NonNull ArrayList<ContentProviderOperation> operations)
             throws OperationApplicationException {
         final SQLiteDatabase db = mDatabaseHelper.getWritableDatabase();
         db.beginTransaction();
