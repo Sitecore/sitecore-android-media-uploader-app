@@ -58,6 +58,7 @@ dependencies {
     compile 'com.squareup.dagger:dagger:1.2.1'
     provided 'com.squareup.dagger:dagger-compiler:1.2.1'
 
+    compile project (':SegmentedControl')
     compile fileTree(dir: 'libs', include: ['*.jar'])
     compile 'com.github.chrisbanes.photoview:library:1.2.2'
     compile 'com.squareup.picasso:picasso:2.2.0'
