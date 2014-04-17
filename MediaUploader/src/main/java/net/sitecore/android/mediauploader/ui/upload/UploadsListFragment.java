@@ -14,6 +14,7 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.CursorAdapter;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -42,6 +43,7 @@ public class UploadsListFragment extends ListFragment implements LoaderCallbacks
     private UploadsListCallbacks mCallbacks;
     private UploadsCursorAdapter mAdapter;
 
+    private String mSelection;
     @Inject Picasso mImageLoader;
 
     @Override public void onAttach(Activity activity) {
@@ -59,7 +61,7 @@ public class UploadsListFragment extends ListFragment implements LoaderCallbacks
     }
 
     @Override public Loader<Cursor> onCreateLoader(int id, Bundle args) {
-        return new CursorLoader(getActivity(), Uploads.CONTENT_URI, Query.PROJECTION, null, null,
+        return new CursorLoader(getActivity(), Uploads.CONTENT_URI, Query.PROJECTION, mSelection, null,
                 Query.ORDER_BY_TIME_ADDED);
     }
 
@@ -73,6 +75,21 @@ public class UploadsListFragment extends ListFragment implements LoaderCallbacks
 
     @Override public void onLoaderReset(Loader<Cursor> loader) {
         mAdapter.swapCursor(null);
+    }
+
+    public void showAllUploads() {
+        mSelection = null;
+        getLoaderManager().restartLoader(0, null, this);
+    }
+
+    public void showCompletedUploads() {
+        mSelection = Query.SELECTION_COMPLETED_UPLOADS;
+        getLoaderManager().restartLoader(0, null, this);
+    }
+
+    public void showNotCompletedUploads() {
+        mSelection = Query.SELECTION_NOT_COMPLETED_UPLOADS;
+        getLoaderManager().restartLoader(0, null, this);
     }
 
     static class UploadsCursorAdapter extends CursorAdapter {
@@ -162,7 +179,8 @@ public class UploadsListFragment extends ListFragment implements LoaderCallbacks
         @InjectView(R.id.upload_name) TextView name;
         @InjectView(R.id.upload_url) TextView url;
         @InjectView(R.id.upload_path) TextView path;
-        @InjectView(R.id.upload_status) ImageView statusButton;
+        @InjectView(R.id.image_status) ImageView statusIcon;
+        @InjectView(R.id.button_status_action) ImageButton statusButton;
         @InjectView(R.id.upload_in_progress) ProgressBar inProgress;
 
         public String imageUri;

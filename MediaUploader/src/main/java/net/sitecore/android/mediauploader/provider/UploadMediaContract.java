@@ -3,6 +3,8 @@ package net.sitecore.android.mediauploader.provider;
 import android.net.Uri;
 import android.provider.BaseColumns;
 
+import net.sitecore.android.mediauploader.model.UploadStatus;
+
 import static android.content.ContentResolver.CURSOR_DIR_BASE_TYPE;
 import static android.content.ContentResolver.CURSOR_ITEM_BASE_TYPE;
 
@@ -86,6 +88,9 @@ public class UploadMediaContract {
             int FILE_URI = 3;
             int STATUS = 4;
             int FAIL_MESSAGE = 5;
+
+            public String SELECTION_COMPLETED_UPLOADS = Uploads.STATUS + "='" + UploadStatus.DONE + "'";
+            public String SELECTION_NOT_COMPLETED_UPLOADS = Uploads.STATUS + "!=' " + UploadStatus.DONE + "'";
 
             public String ORDER_BY_STATUS = Uploads.STATUS + " desc";
             public String ORDER_BY_TIME_ADDED = Uploads._ID + " desc";

@@ -3,18 +3,44 @@ package net.sitecore.android.mediauploader.ui.upload;
 import android.app.Activity;
 import android.os.Bundle;
 import android.view.MenuItem;
+import android.widget.RadioGroup;
+import android.widget.RadioGroup.OnCheckedChangeListener;
 
+import net.sitecore.android.mediauploader.R;
 import net.sitecore.android.mediauploader.model.UploadStatus;
 import net.sitecore.android.mediauploader.provider.UploadsAsyncHandler;
 import net.sitecore.android.mediauploader.ui.upload.RetryUploadDialogFragment.RetryDialogCallbacks;
 import net.sitecore.android.mediauploader.ui.upload.UploadsListFragment.UploadsListCallbacks;
 
+import butterknife.ButterKnife;
+import butterknife.InjectView;
+
 public class UploadsListActivity extends Activity implements UploadsListCallbacks, RetryDialogCallbacks {
+
+    @InjectView(R.id.radio_uploads_filter) RadioGroup mUploadsFilter;
+
+    private UploadsListFragment mUploadsListFragment;
 
     @Override protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        getFragmentManager().beginTransaction().replace(android.R.id.content, new UploadsListFragment()).commit();
+        setContentView(R.layout.activity_my_uploads);
+        ButterKnife.inject(this);
+        //getFragmentManager().beginTransaction().replace(android.R.id.content, new UploadsListFragment()).commit();
         getActionBar().setDisplayHomeAsUpEnabled(true);
+
+        mUploadsListFragment = (UploadsListFragment) getFragmentManager().findFragmentById(R.id.fragment_uploads);
+
+        mUploadsFilter.setOnCheckedChangeListener(new OnCheckedChangeListener() {
+            @Override public void onCheckedChanged(RadioGroup group, int checkedId) {
+                if (checkedId == R.id.radio_uploads_all) {
+                    mUploadsListFragment.showAllUploads();
+                } else if (checkedId == R.id.radio_uploads_completed) {
+                    mUploadsListFragment.showCompletedUploads();
+                } else if (checkedId == R.id.radio_uploads_not_completed) {
+                    mUploadsListFragment.showNotCompletedUploads();
+                }
+            }
+        });
     }
 
     @Override
