@@ -56,6 +56,6 @@ public class MediaUploadListener implements Listener<ItemsResponse>, ErrorListen
         values.put(Uploads.FAIL_MESSAGE, errorMessage);
         //TODO: change to AsyncQueryHandler when sdk UploadMediaIntentBuilder will be fixed (wrong thread)
         mContext.getContentResolver().update(mUploadUri, values, null, null);
-        NotificationUtils.showFialNotification(mContext, mItemName, errorMessage);
+        NotificationUtils.showErrorNotification(mContext, mItemName, errorMessage);
     }
 }

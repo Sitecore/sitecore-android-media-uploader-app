@@ -31,7 +31,7 @@ public class NotificationUtils {
         mNotificationManager.notify(title.hashCode(), n);
     }
 
-    public static void showFialNotification(Context context, String title, String contentText) {
+    public static void showErrorNotification(Context context, String title, String contentText) {
         Notification n = buildDefaultNotification(context, title, contentText, true, R.drawable.ic_upload_error)
                 .build();
         NotificationManager mNotificationManager =

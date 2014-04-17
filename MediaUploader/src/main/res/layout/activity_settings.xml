@@ -31,12 +31,14 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
+            android:enabled="false"
             android:text="@string/radiobutton_image_small" />
 
         <RadioButton
             android:id="@+id/radio_image_medium"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:enabled="false"
             android:layout_weight="1"
             android:text="@string/radiobutton_image_medium" />
 
@@ -44,6 +46,7 @@
             android:id="@+id/radio_image_original"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:enabled="false"
             android:layout_weight="1"
             android:text="@string/radiobutton_image_original" />
     </RadioGroup>
