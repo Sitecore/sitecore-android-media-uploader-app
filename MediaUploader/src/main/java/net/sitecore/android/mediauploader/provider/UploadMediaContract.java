@@ -90,7 +90,7 @@ public class UploadMediaContract {
             int FAIL_MESSAGE = 5;
 
             public String SELECTION_COMPLETED_UPLOADS = Uploads.STATUS + "='" + UploadStatus.DONE + "'";
-            public String SELECTION_NOT_COMPLETED_UPLOADS = Uploads.STATUS + "!=' " + UploadStatus.DONE + "'";
+            public String SELECTION_NOT_COMPLETED_UPLOADS = Uploads.STATUS + "!='" + UploadStatus.DONE + "'";
 
             public String ORDER_BY_STATUS = Uploads.STATUS + " desc";
             public String ORDER_BY_TIME_ADDED = Uploads._ID + " desc";

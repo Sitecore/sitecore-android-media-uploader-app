@@ -4,13 +4,12 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <RadioGroup
+    <info.hoang8f.android.segmented.SegmentedGroup
         android:id="@+id/radio_uploads_filter"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:checkedButton="@+id/radio_image_original"
         android:layout_gravity="center_horizontal"
-        android:padding="8dp"
+        android:layout_margin="16dp"
         android:orientation="horizontal">
 
         <RadioButton
@@ -18,20 +17,26 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:checked="true"
-            android:text="All" />
+            android:text="All"
+            style="@style/RadioButton" />
 
         <RadioButton
             android:id="@+id/radio_uploads_completed"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Completed" />
+            android:layout_marginLeft="4dp"
+            android:layout_marginRight="4dp"
+            android:text="Completed"
+            style="@style/RadioButton" />
 
         <RadioButton
             android:id="@+id/radio_uploads_not_completed"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Not Completed" />
-    </RadioGroup>
+            android:layout_marginRight="4dp"
+            android:text="Not Completed"
+            style="@style/RadioButton" />
+    </info.hoang8f.android.segmented.SegmentedGroup>
 
     <fragment
         android:id="@+id/fragment_uploads"
