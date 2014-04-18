@@ -141,6 +141,7 @@ public class BrowserActivity extends Activity implements ContentTreePositionList
 
     @Override
     public void onUpdateError(VolleyError volleyError) {
+        Toast.makeText(this, ScUtils.getMessageFromError(volleyError), Toast.LENGTH_LONG).show();
     }
 
     @Override public Loader<Cursor> onCreateLoader(int id, Bundle args) {
