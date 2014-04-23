@@ -23,7 +23,7 @@ public class NotificationUtils {
     }
 
     public static void showFinishedNotification(Context context, String title, String contentText) {
-        Notification n = buildDefaultNotification(context, title, contentText, true, R.drawable.ic_upload_success)
+        Notification n = buildDefaultNotification(context, title, contentText, true, R.drawable.stat_notify_info)
                 .build();
         NotificationManager mNotificationManager =
                 (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
