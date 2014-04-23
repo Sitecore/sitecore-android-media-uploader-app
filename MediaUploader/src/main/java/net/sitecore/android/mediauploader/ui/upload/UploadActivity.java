@@ -1,13 +1,16 @@
 package net.sitecore.android.mediauploader.ui.upload;
 
+import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.Intent;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
+import android.os.Build.VERSION;
+import android.os.Build.VERSION_CODES;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.MenuItem;
-import android.view.ViewTreeObserver;
+import android.view.ViewTreeObserver.OnGlobalLayoutListener;
 import android.widget.EditText;
 import android.widget.ImageView;
 
@@ -62,14 +65,25 @@ public class UploadActivity extends Activity implements SelectMediaListener {
 
         mImageUri = getIntent().getData();
 
-//      This is made for ability to get real mPreview width and height.
-        mPreview.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
-            @Override
-            public void onGlobalLayout() {
-                mPreview.getViewTreeObserver().removeOnGlobalLayoutListener(this);
-                loadImageIntoPreview();
-            }
-        });
+        // This adds ability to get real mPreview width and height.
+        mPreview.getViewTreeObserver().addOnGlobalLayoutListener(VERSION.SDK_INT >= VERSION_CODES.JELLY_BEAN
+                ? new V16OnGlobalLayoutListener()
+                : new LegacyOnGlobalLayoutListener());
+    }
+
+    @TargetApi(VERSION_CODES.JELLY_BEAN)
+    private class V16OnGlobalLayoutListener implements OnGlobalLayoutListener {
+        @Override public void onGlobalLayout() {
+            mPreview.getViewTreeObserver().removeOnGlobalLayoutListener(this);
+            loadImageIntoPreview();
+        }
+    }
+
+    private class LegacyOnGlobalLayoutListener implements OnGlobalLayoutListener {
+        @Override public void onGlobalLayout() {
+            mPreview.getViewTreeObserver().removeGlobalOnLayoutListener(this);
+            loadImageIntoPreview();
+        }
     }
 
     private void loadImageIntoPreview() {
