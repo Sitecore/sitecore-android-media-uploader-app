@@ -5,7 +5,6 @@ import android.app.ListFragment;
 import android.app.LoaderManager.LoaderCallbacks;
 import android.content.Context;
 import android.content.CursorLoader;
-import android.content.Intent;
 import android.content.Loader;
 import android.database.Cursor;
 import android.os.Bundle;
@@ -106,15 +105,6 @@ public class UploadsListFragment extends ListFragment implements LoaderCallbacks
         @Override public View newView(final Context context, Cursor cursor, ViewGroup parent) {
             View v = LayoutInflater.from(context).inflate(R.layout.list_item_upload, parent, false);
             final ViewHolder holder = new ViewHolder(v);
-            holder.preview.setOnClickListener(new OnClickListener() {
-                @Override public void onClick(View v) {
-                    Intent intent = new Intent(context, UploadedItemActivity.class);
-                    intent.putExtra(UploadedItemActivity.EXTRA_IMAGE_URI, holder.imageUri);
-                    intent.putExtra(UploadedItemActivity.EXTRA_ITEM_NAME, holder.itemName);
-                    context.startActivity(intent);
-                }
-            });
-
             holder.statusButton.setOnClickListener(new OnClickListener() {
                 @Override public void onClick(View v) {
                     switch (holder.status) {
