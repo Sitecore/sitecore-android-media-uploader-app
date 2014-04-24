@@ -50,21 +50,22 @@ public class MediaUploaderService extends UploadMediaService {
     private String resizeIfNeeded(Uri uploadItemUri, String mediaFilePath) {
         String newMediaFilePath = mediaFilePath;
 
+        ImageSize imageSize = ImageSize.ACTUAL;
         Cursor cursor = getContentResolver().query(uploadItemUri, Query.PROJECTION, null, null, null);
         if (cursor != null && cursor.moveToFirst()) {
-            ImageSize imageSize = ImageSize.valueOf(cursor.getString(Query.IMAGE_SIZE));
+            imageSize = ImageSize.valueOf(cursor.getString(Query.IMAGE_SIZE));
+            cursor.close();
+        }
 
-            if (imageSize == ImageSize.ACTUAL) return newMediaFilePath;
+        if (imageSize == ImageSize.ACTUAL) return newMediaFilePath;
 
-            ImageHelper imageHelper = new ImageHelper(this);
-            boolean isResizeNeeded = imageHelper.isResizeNeeded(mediaFilePath, imageSize.getWidth(),
-                    imageSize.getHeight());
-            if (isResizeNeeded) {
-                try {
-                    newMediaFilePath = imageHelper.resize(mediaFilePath, imageSize.getWidth(), imageSize.getHeight());
-                } catch (IOException e) {
-                    LOGE(e);
-                }
+        ImageHelper imageHelper = new ImageHelper(this);
+        boolean isResizeNeeded = imageHelper.isResizeNeeded(mediaFilePath, imageSize);
+        if (isResizeNeeded) {
+            try {
+                newMediaFilePath = imageHelper.resize(mediaFilePath, imageSize);
+            } catch (IOException e) {
+                LOGE(e);
             }
         }
         return newMediaFilePath;

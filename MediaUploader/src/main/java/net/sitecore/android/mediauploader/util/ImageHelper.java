@@ -15,6 +15,8 @@ import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import net.sitecore.android.mediauploader.ui.settings.ImageSize;
+
 import static net.sitecore.android.sdk.api.internal.LogUtils.LOGE;
 
 public class ImageHelper {
@@ -24,6 +26,10 @@ public class ImageHelper {
 
     public ImageHelper(Context context) {
         mContext = context;
+    }
+
+    public boolean isResizeNeeded(String imageUri, ImageSize imageSize) {
+        return isResizeNeeded(imageUri, imageSize.getWidth(), imageSize.getHeight());
     }
 
     public boolean isResizeNeeded(String imageUri, int desiredWidth, int desiredHeight) {
@@ -42,12 +48,12 @@ public class ImageHelper {
         }
     }
 
-    public String resize(String imageUri, int desiredWidth, int desiredHeight) throws IOException {
+    public String resize(String imageUri, ImageSize imageSize) throws IOException {
         BitmapFactory.Options options = new BitmapFactory.Options();
         options.inJustDecodeBounds = true;
 
         BitmapFactory.decodeStream(getInputStreamFromUri(imageUri), null, options);
-        options.inSampleSize = calculateSampleSize(options, desiredWidth, desiredHeight);
+        options.inSampleSize = calculateSampleSize(options, imageSize.getWidth(), imageSize.getHeight());
 
         options.inJustDecodeBounds = false;
         File targetFile = getTemporaryImageFile();
