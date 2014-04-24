@@ -79,6 +79,7 @@ public class UploadMediaContract {
                     Uploads.ITEM_NAME,
                     Uploads.FILE_URI,
                     Uploads.STATUS,
+                    Uploads.IMAGE_SIZE,
                     Uploads.FAIL_MESSAGE
             };
 
@@ -87,7 +88,8 @@ public class UploadMediaContract {
             int ITEM_NAME = 2;
             int FILE_URI = 3;
             int STATUS = 4;
-            int FAIL_MESSAGE = 5;
+            int IMAGE_SIZE = 5;
+            int FAIL_MESSAGE = 6;
 
             public String SELECTION_COMPLETED_UPLOADS = Uploads.STATUS + "='" + UploadStatus.DONE + "'";
             public String SELECTION_NOT_COMPLETED_UPLOADS = Uploads.STATUS + "!='" + UploadStatus.DONE + "'";
@@ -104,6 +106,7 @@ public class UploadMediaContract {
                     Uploads.ITEM_NAME,
                     Uploads.FILE_URI,
                     Uploads.STATUS,
+                    Uploads.IMAGE_SIZE,
                     Uploads.FAIL_MESSAGE,
                     Instances.URL,
                     Instances.LOGIN,
@@ -119,16 +122,17 @@ public class UploadMediaContract {
             int INSTANCE_ID = 1;
             int ITEM_NAME = 2;
             int FILE_URI = 3;
-            int STATUS = 4;
-            int FAIL_MESSAGE = 5;
+            int IMAGE_SIZE = 4;
+            int STATUS = 5;
+            int FAIL_MESSAGE = 6;
 
-            int URL = 6;
-            int LOGIN = 7;
-            int PASSWORD = 8;
-            int ROOT_FOLDER = 9;
-            int DATABASE = 10;
-            int SITE = 11;
-            int PUBLIC_KEY = 12;
+            int URL = 7;
+            int LOGIN = 8;
+            int PASSWORD = 9;
+            int ROOT_FOLDER = 10;
+            int DATABASE = 11;
+            int SITE = 12;
+            int PUBLIC_KEY = 13;
         }
 
     }
@@ -149,6 +153,7 @@ public class UploadMediaContract {
         String ITEM_NAME = "item_name";
         String FILE_URI = "file_uri";
         String STATUS = "status";
+        String IMAGE_SIZE = "image_size";
         String FAIL_MESSAGE = "message";
     }
 }

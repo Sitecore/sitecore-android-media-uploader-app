@@ -10,6 +10,7 @@ import net.sitecore.android.mediauploader.model.UploadStatus;
 import net.sitecore.android.mediauploader.provider.UploadMediaContract.Instances;
 import net.sitecore.android.mediauploader.provider.UploadMediaContract.Instances.Query;
 import net.sitecore.android.mediauploader.provider.UploadMediaContract.Uploads;
+import net.sitecore.android.mediauploader.ui.settings.ImageSize;
 
 public class InstancesAsyncHandler extends AsyncQueryHandler {
 
@@ -24,11 +25,13 @@ public class InstancesAsyncHandler extends AsyncQueryHandler {
         startQuery(0, null, Instances.CONTENT_URI, Query.PROJECTION, null, null, null);
     }
 
-    public void insertDelayedUpload(final String itemName, final Uri fileUri, final Instance instance) {
+    public void insertDelayedUpload(final String itemName, final Uri fileUri, final Instance instance,
+            ImageSize imageSize) {
         final ContentValues values = new ContentValues();
         values.put(Uploads.ITEM_NAME, itemName);
         values.put(Uploads.FILE_URI, fileUri.toString());
         values.put(Uploads.STATUS, UploadStatus.UPLOAD_LATER.name());
+        values.put(Uploads.IMAGE_SIZE, imageSize.name());
         values.put(Uploads.INSTANCE_ID, instance.getId());
 
         startInsert(TOKEN_INSERT_PENDING, null, Uploads.CONTENT_URI, values);

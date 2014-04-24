@@ -8,7 +8,6 @@ import com.android.volley.VolleyLog;
 import com.squareup.picasso.Picasso;
 
 import net.sitecore.android.mediauploader.provider.ItemsAsyncHandler;
-import net.sitecore.android.mediauploader.util.Prefs;
 import net.sitecore.android.sdk.api.internal.LogUtils;
 
 import butterknife.ButterKnife;

@@ -33,7 +33,7 @@
 
     <string name="radiobutton_image_small">Small</string>
     <string name="radiobutton_image_medium">Medium</string>
-    <string name="radiobutton_image_original">Original</string>
+    <string name="radiobutton_image_actual">Actual</string>
 
     <string name="radiobutton_upload_all">All</string>
     <string name="radiobutton_upload_completed">Completed</string>
@@ -62,6 +62,8 @@
     <string name="text_retry">Retry</string>
     <string name="text_cancel">Cancel</string>
 
+    <!-- Prefs keys -->
+    <string name="key_current_image_size">key_image_size</string>
 
     <string-array name="select_image_source">
         <item>Camera</item>

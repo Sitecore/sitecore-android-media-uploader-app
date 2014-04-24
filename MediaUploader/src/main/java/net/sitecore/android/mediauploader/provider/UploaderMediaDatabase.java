@@ -43,6 +43,7 @@ public class UploaderMediaDatabase extends SQLiteOpenHelper {
                 + Uploads.ITEM_NAME + " TEXT NOT NULL, "
                 + Uploads.FILE_URI + " TEXT NOT NULL, "
                 + Uploads.STATUS + " TEXT NOT NULL, "
+                + Uploads.IMAGE_SIZE + " TEXT NOT NULL, "
                 + Uploads.FAIL_MESSAGE + " TEXT)");
     }
 

@@ -3,7 +3,6 @@ package net.sitecore.android.mediauploader.ui.upload;
 import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.Intent;
-import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Build.VERSION;
 import android.os.Build.VERSION_CODES;
@@ -16,10 +15,6 @@ import android.widget.ImageView;
 
 import javax.inject.Inject;
 
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
@@ -30,7 +25,10 @@ import net.sitecore.android.mediauploader.R;
 import net.sitecore.android.mediauploader.UploaderApp;
 import net.sitecore.android.mediauploader.model.Instance;
 import net.sitecore.android.mediauploader.provider.InstancesAsyncHandler;
+import net.sitecore.android.mediauploader.ui.settings.ImageSize;
 import net.sitecore.android.mediauploader.ui.upload.SelectMediaDialogHelper.SelectMediaListener;
+import net.sitecore.android.mediauploader.util.ImageHelper;
+import net.sitecore.android.mediauploader.util.Prefs;
 import net.sitecore.android.sdk.api.ScApiSession;
 
 import butterknife.ButterKnife;
@@ -38,7 +36,6 @@ import butterknife.InjectView;
 import butterknife.OnClick;
 
 import static net.sitecore.android.mediauploader.util.Utils.showToast;
-import static net.sitecore.android.sdk.api.internal.LogUtils.LOGE;
 
 public class UploadActivity extends Activity implements SelectMediaListener {
     private final int MAX_IMAGE_WIDTH = 2000;
@@ -52,6 +49,8 @@ public class UploadActivity extends Activity implements SelectMediaListener {
     @Inject ScApiSession mApiSession;
 
     private Uri mImageUri;
+    private ImageSize mCurrentImageSize;
+    private ImageHelper mImageHelper;
     private SelectMediaDialogHelper mMediaDialogHelper;
 
     @Override
@@ -64,6 +63,9 @@ public class UploadActivity extends Activity implements SelectMediaListener {
         getActionBar().setDisplayHomeAsUpEnabled(true);
 
         mImageUri = getIntent().getData();
+        mCurrentImageSize = ImageSize.valueOf(Prefs.from(this).getString(R.string.key_current_image_size,
+                ImageSize.ACTUAL.name()));
+        mImageHelper = new ImageHelper(this);
 
         // This adds ability to get real mPreview width and height.
         mPreview.getViewTreeObserver().addOnGlobalLayoutListener(VERSION.SDK_INT >= VERSION_CODES.JELLY_BEAN
@@ -88,7 +90,7 @@ public class UploadActivity extends Activity implements SelectMediaListener {
 
     private void loadImageIntoPreview() {
         RequestCreator creator = mImageLoader.load(mImageUri);
-        if (isBitmapResizeNeeded()) {
+        if (mImageHelper.isResizeNeeded(mImageUri.toString(), MAX_IMAGE_WIDTH, MAX_IMAGE_HEIGHT)) {
             creator.resize(mPreview.getWidth(), mPreview.getHeight())
                     .centerInside();
         }
@@ -110,17 +112,19 @@ public class UploadActivity extends Activity implements SelectMediaListener {
     public void onUploadNow() {
         final UploadHelper mUploadHelper = new UploadHelper(getApplicationContext());
         final String itemName = getItemName();
+
         new InstancesAsyncHandler(getContentResolver()) {
             @Override protected void onInsertComplete(int token, Object cookie, Uri uri) {
                 mUploadHelper.uploadMedia(mApiSession, uri, mInstance, itemName, mImageUri.toString());
             }
-        }.insertDelayedUpload(itemName, mImageUri, mInstance);
+        }.insertDelayedUpload(itemName, mImageUri, mInstance, mCurrentImageSize);
         finish();
     }
 
     @OnClick(R.id.button_upload_later)
     public void onUploadLater() {
-        new InstancesAsyncHandler(getContentResolver()).insertDelayedUpload(getItemName(), mImageUri, mInstance);
+        new InstancesAsyncHandler(getContentResolver()).insertDelayedUpload(getItemName(), mImageUri, mInstance,
+                mCurrentImageSize);
         showToast(this, R.string.toast_added_to_uploads);
         finish();
     }
@@ -136,33 +140,6 @@ public class UploadActivity extends Activity implements SelectMediaListener {
             mMediaDialogHelper.onActivityResult(requestCode, data);
         } else {
             super.onActivityResult(requestCode, resultCode, data);
-        }
-    }
-
-    private boolean isBitmapResizeNeeded() {
-        try {
-            BitmapFactory.Options options = new BitmapFactory.Options();
-            options.inJustDecodeBounds = true;
-            BitmapFactory.decodeStream(getInputStreamFromUri(mImageUri.toString()), null, options);
-            int imageHeight = options.outHeight;
-            int imageWidth = options.outWidth;
-            return imageWidth > MAX_IMAGE_WIDTH || imageHeight > MAX_IMAGE_HEIGHT;
-        } catch (IOException e) {
-            LOGE(e);
-            return true;
-        }
-    }
-
-    private InputStream getInputStreamFromUri(String path) throws IOException {
-        if (path.startsWith("content:")) {
-            Uri uri = Uri.parse(path);
-            return getContentResolver().openInputStream(uri);
-        }
-        if (path.startsWith("http:") || path.startsWith("https:") || path.startsWith("file:")) {
-            URL url = new URL(path);
-            return url.openStream();
-        } else {
-            return new FileInputStream(path);
         }
     }
 

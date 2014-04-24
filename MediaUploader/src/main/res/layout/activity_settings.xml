@@ -22,41 +22,41 @@
         android:background="@android:color/darker_gray" />
 
     <info.hoang8f.android.segmented.SegmentedGroup
-        android:id="@+id/radio_uploads_filter"
+        android:id="@+id/radio_image_size"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
-        android:layout_marginTop="16dp"
         android:layout_marginBottom="16dp"
+        android:layout_marginTop="16dp"
         android:orientation="horizontal">
 
         <RadioButton
             android:id="@+id/radio_image_small"
             style="@style/RadioButton"
             android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:paddingLeft="20dp"
             android:paddingRight="20dp"
-            android:layout_height="wrap_content"
             android:text="@string/radiobutton_image_small" />
 
         <RadioButton
             android:id="@+id/radio_image_medium"
             style="@style/RadioButton"
-            android:paddingLeft="20dp"
-            android:paddingRight="20dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:paddingLeft="20dp"
+            android:paddingRight="20dp"
             android:text="@string/radiobutton_image_medium" />
 
         <RadioButton
-            android:id="@+id/radio_image_original"
+            android:id="@+id/radio_image_actual"
             style="@style/RadioButton"
             android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:checked="true"
             android:paddingLeft="20dp"
             android:paddingRight="20dp"
-            android:layout_height="wrap_content"
-            android:text="@string/radiobutton_image_original" />
+            android:text="@string/radiobutton_image_actual" />
     </info.hoang8f.android.segmented.SegmentedGroup>
 
     <TextView
