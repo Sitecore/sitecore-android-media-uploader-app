@@ -27,6 +27,7 @@ import net.sitecore.android.mediauploader.UploaderApp;
 import net.sitecore.android.mediauploader.model.UploadStatus;
 import net.sitecore.android.mediauploader.provider.UploadMediaContract.Uploads;
 import net.sitecore.android.mediauploader.provider.UploadMediaContract.Uploads.Query;
+import net.sitecore.android.mediauploader.provider.UploadMediaContract.Uploads.UploadWithInstanceQuery;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
@@ -60,8 +61,8 @@ public class UploadsListFragment extends ListFragment implements LoaderCallbacks
     }
 
     @Override public Loader<Cursor> onCreateLoader(int id, Bundle args) {
-        return new CursorLoader(getActivity(), Uploads.CONTENT_URI, Query.PROJECTION, mSelection, null,
-                Query.ORDER_BY_TIME_ADDED);
+        return new CursorLoader(getActivity(), Uploads.UPLOADS_JOIN_INSTANCE_URI, UploadWithInstanceQuery.PROJECTION,
+                mSelection, null, Query.ORDER_BY_TIME_ADDED);
     }
 
     @Override public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
@@ -135,6 +136,8 @@ public class UploadsListFragment extends ListFragment implements LoaderCallbacks
                     .into(holder.preview);
 
             holder.name.setText(holder.itemName);
+            holder.url.setText(cursor.getString(UploadWithInstanceQuery.URL));
+            holder.path.setText(cursor.getString(UploadWithInstanceQuery.ROOT_FOLDER));
 
             switch (holder.status) {
                 case DONE:

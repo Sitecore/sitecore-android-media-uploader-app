@@ -10,7 +10,7 @@ import net.sitecore.android.mediauploader.provider.UploadMediaContract.Uploads;
 public class UploaderMediaDatabase extends SQLiteOpenHelper {
     private static final String DB_NAME = "uploader_media.db";
 
-    private static final int VERSION = 3;
+    private static final int VERSION = 4;
 
     interface Tables {
         String INSTANCES = "instances";

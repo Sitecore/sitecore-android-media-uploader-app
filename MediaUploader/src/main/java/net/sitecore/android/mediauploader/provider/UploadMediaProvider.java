@@ -26,6 +26,8 @@ public class UploadMediaProvider extends ContentProvider {
     private static final int INSTANCES = 100;
     private static final int INSTANCE_ID = 101;
 
+    private static final int UPLOADS_INSTANCES = 210;
+
     private static final int UPLOADS = 200;
     private static final int UPLOAD_ID = 201;
     private static final int UPLOAD_ID_INSTANCE = 202;
@@ -43,6 +45,7 @@ public class UploadMediaProvider extends ContentProvider {
 
         matcher.addURI(authority, "uploads", UPLOADS);
         matcher.addURI(authority, "uploads/#", UPLOAD_ID);
+        matcher.addURI(authority, "uploads/instances", UPLOADS_INSTANCES);
         matcher.addURI(authority, "uploads/#/instance", UPLOAD_ID_INSTANCE);
 
         return matcher;
@@ -111,8 +114,10 @@ public class UploadMediaProvider extends ContentProvider {
                         // upload
                         .mapToTable(Uploads._ID, Tables.UPLOADS)
                         .mapToTable(Uploads.INSTANCE_ID, Tables.UPLOADS)
+                        .mapToTable(Uploads.ITEM_NAME, Tables.UPLOADS)
                         .mapToTable(Uploads.FILE_URI, Tables.UPLOADS)
                         .mapToTable(Uploads.STATUS, Tables.UPLOADS)
+                        .mapToTable(Uploads.IMAGE_SIZE, Tables.UPLOADS)
                         .mapToTable(Uploads.FAIL_MESSAGE, Tables.UPLOADS)
                                 // instance
                         .mapToTable(Instances.URL, Tables.INSTANCES)
@@ -123,6 +128,28 @@ public class UploadMediaProvider extends ContentProvider {
                         .mapToTable(Instances.SITE, Tables.INSTANCES)
                         .mapToTable(Instances.PUBLIC_KEY, Tables.INSTANCES)
                         .where(Tables.UPLOADS + "." + Uploads._ID + "=?", uploadId);
+                break;
+
+            }
+
+            case UPLOADS_INSTANCES: {
+                builder.table(Tables.UPLOADS_JOIN_INSTANCE)
+                         // upload
+                        .mapToTable(Uploads._ID, Tables.UPLOADS)
+                        .mapToTable(Uploads.INSTANCE_ID, Tables.UPLOADS)
+                        .mapToTable(Uploads.ITEM_NAME, Tables.UPLOADS)
+                        .mapToTable(Uploads.FILE_URI, Tables.UPLOADS)
+                        .mapToTable(Uploads.STATUS, Tables.UPLOADS)
+                        .mapToTable(Uploads.IMAGE_SIZE, Tables.UPLOADS)
+                        .mapToTable(Uploads.FAIL_MESSAGE, Tables.UPLOADS)
+                         // instance
+                        .mapToTable(Instances.URL, Tables.INSTANCES)
+                        .mapToTable(Instances.LOGIN, Tables.INSTANCES)
+                        .mapToTable(Instances.PASSWORD, Tables.INSTANCES)
+                        .mapToTable(Instances.ROOT_FOLDER, Tables.INSTANCES)
+                        .mapToTable(Instances.DATABASE, Tables.INSTANCES)
+                        .mapToTable(Instances.SITE, Tables.INSTANCES)
+                        .mapToTable(Instances.PUBLIC_KEY, Tables.INSTANCES);
                 break;
             }
 

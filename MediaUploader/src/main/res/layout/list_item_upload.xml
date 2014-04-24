@@ -9,8 +9,8 @@
         android:layout_width="96dp"
         android:layout_height="96dp"
         android:adjustViewBounds="true"
-        android:src="@drawable/ic_placeholder"
-        android:scaleType="centerInside" />
+        android:scaleType="centerInside"
+        android:src="@drawable/ic_placeholder" />
 
     <LinearLayout
         android:layout_width="0dp"
@@ -24,28 +24,26 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="item name item name item name item name item name item name item name item name "
-            android:singleLine="true"
             android:ellipsize="end"
+            android:singleLine="true"
             android:textAppearance="?android:attr/textAppearanceMedium" />
 
         <TextView
             android:id="@+id/upload_url"
-            android:text="http://sitecore.net"
-            android:singleLine="true"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_weight="1"
             android:ellipsize="end"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+            android:singleLine="true" />
 
         <TextView
             android:id="@+id/upload_path"
-            android:text="/sitecore/media/folder"
-            android:singleLine="true"
-            android:ellipsize="end"
-            android:layout_weight="1"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:ellipsize="end"
+            android:maxLines="2"
+            android:textColor="@android:color/darker_gray" />
 
     </LinearLayout>
 
@@ -64,15 +62,15 @@
             android:id="@+id/button_status_action"
             android:layout_width="64dp"
             android:layout_height="64dp"
-            android:src="@drawable/ic_upload"
+            android:layout_gravity="center"
             android:background="?android:attr/selectableItemBackground"
-            android:layout_gravity="center" />
+            android:src="@drawable/ic_upload" />
 
         <ImageView
             android:id="@+id/image_status"
             android:layout_width="64dp"
-            android:layout_gravity="center"
-            android:layout_height="64dp" />
+            android:layout_height="64dp"
+            android:layout_gravity="center" />
     </FrameLayout>
 
 </LinearLayout>

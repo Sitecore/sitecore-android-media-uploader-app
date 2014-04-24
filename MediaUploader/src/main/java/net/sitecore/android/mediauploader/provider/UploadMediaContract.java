@@ -4,6 +4,7 @@ import android.net.Uri;
 import android.provider.BaseColumns;
 
 import net.sitecore.android.mediauploader.model.UploadStatus;
+import net.sitecore.android.mediauploader.provider.UploaderMediaDatabase.Tables;
 
 import static android.content.ContentResolver.CURSOR_DIR_BASE_TYPE;
 import static android.content.ContentResolver.CURSOR_ITEM_BASE_TYPE;
@@ -57,6 +58,8 @@ public class UploadMediaContract {
 
         public static final Uri CONTENT_URI = BASE_CONTENT_URI.buildUpon().appendPath("uploads").build();
 
+        public static final Uri UPLOADS_JOIN_INSTANCE_URI = CONTENT_URI.buildUpon().appendPath("instances").build();
+
         public static final String CONTENT_TYPE = CURSOR_DIR_BASE_TYPE + "/vnd.sitecore.uploads";
         public static final String CONTENT_ITEM_TYPE = CURSOR_ITEM_BASE_TYPE + "/vnd.sitecore.upload";
 
@@ -95,7 +98,7 @@ public class UploadMediaContract {
             public String SELECTION_NOT_COMPLETED_UPLOADS = Uploads.STATUS + "!='" + UploadStatus.DONE + "'";
 
             public String ORDER_BY_STATUS = Uploads.STATUS + " desc";
-            public String ORDER_BY_TIME_ADDED = Uploads._ID + " desc";
+            public String ORDER_BY_TIME_ADDED = Tables.UPLOADS + "." + Uploads._ID + " desc";
         }
 
         public interface UploadWithInstanceQuery {
@@ -149,7 +152,7 @@ public class UploadMediaContract {
     }
 
     interface UploadColumns {
-        String INSTANCE_ID = "instnace_id";
+        String INSTANCE_ID = "instance_id";
         String ITEM_NAME = "item_name";
         String FILE_URI = "file_uri";
         String STATUS = "status";
