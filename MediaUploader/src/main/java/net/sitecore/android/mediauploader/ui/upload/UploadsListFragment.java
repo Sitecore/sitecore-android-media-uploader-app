@@ -21,6 +21,7 @@ import android.widget.TextView;
 import javax.inject.Inject;
 
 import com.squareup.picasso.Picasso;
+import com.squareup.picasso.RequestCreator;
 
 import net.sitecore.android.mediauploader.R;
 import net.sitecore.android.mediauploader.UploaderApp;
@@ -28,11 +29,15 @@ import net.sitecore.android.mediauploader.model.UploadStatus;
 import net.sitecore.android.mediauploader.provider.UploadMediaContract.Uploads;
 import net.sitecore.android.mediauploader.provider.UploadMediaContract.Uploads.Query;
 import net.sitecore.android.mediauploader.provider.UploadMediaContract.Uploads.UploadWithInstanceQuery;
+import net.sitecore.android.mediauploader.util.ImageHelper;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 
 public class UploadsListFragment extends ListFragment implements LoaderCallbacks<Cursor> {
+
+    private static final int IMAGE_PREVIEW_WIDTH = 150;
+    private static final int IMAGE_PREVIEW_HEIGHT = 150;
 
     public interface UploadsListCallbacks {
         public void onStartPendingUpload(String uploadId);
@@ -96,11 +101,13 @@ public class UploadsListFragment extends ListFragment implements LoaderCallbacks
 
         private final UploadsListCallbacks mCallbacks;
         private final Picasso mImageLoader;
+        private final ImageHelper mImageHelper;
 
         public UploadsCursorAdapter(Context context, UploadsListCallbacks callbacks, Picasso imageLoader) {
             super(context, null, false);
             mCallbacks = callbacks;
             mImageLoader = imageLoader;
+            mImageHelper = new ImageHelper(context);
         }
 
         @Override public View newView(final Context context, Cursor cursor, ViewGroup parent) {
@@ -131,8 +138,11 @@ public class UploadsListFragment extends ListFragment implements LoaderCallbacks
             holder.status = UploadStatus.valueOf(cursor.getString(Query.STATUS));
             holder.failMessage = cursor.getString(Query.FAIL_MESSAGE);
 
-            mImageLoader.load(holder.imageUri).resize(150, 150)
-                    .placeholder(R.drawable.ic_placeholder).error(R.drawable.ic_action_cancel)
+            RequestCreator requestCreator = mImageLoader.load(holder.imageUri);
+            if (mImageHelper.isResizeNeeded(holder.imageUri, IMAGE_PREVIEW_WIDTH, IMAGE_PREVIEW_HEIGHT)) {
+                requestCreator.resize(IMAGE_PREVIEW_WIDTH, IMAGE_PREVIEW_HEIGHT).centerInside();
+            }
+            requestCreator.placeholder(R.drawable.ic_placeholder).error(R.drawable.ic_action_cancel)
                     .into(holder.preview);
 
             holder.name.setText(holder.itemName);
