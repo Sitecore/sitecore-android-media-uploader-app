@@ -9,9 +9,12 @@ import android.database.Cursor;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.CursorAdapter;
@@ -52,11 +55,13 @@ public class BrowserActivity extends Activity implements ContentTreePositionList
 
     private BrowserFragment mFragment;
     private InstancesSpinnerAdapter mAdapter;
+    private boolean mIsLoading = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
         getActionBar().setDisplayHomeAsUpEnabled(true);
 
         setContentView(R.layout.activity_browser);
@@ -85,8 +90,26 @@ public class BrowserActivity extends Activity implements ContentTreePositionList
             case android.R.id.home:
                 finish();
                 return true;
+            case R.id.refresh:
+                mFragment.update();
+                return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    private void setLoading(boolean isLoading) {
+        setProgressBarIndeterminateVisibility(isLoading);
+        mIsLoading = isLoading;
+        invalidateOptionsMenu();
+    }
+
+    @Override public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.browser, menu);
+        if (mIsLoading) {
+            menu.getItem(0).setVisible(false);
+        }
+        return true;
     }
 
     private void initFragment(final Instance instance) {
@@ -132,15 +155,17 @@ public class BrowserActivity extends Activity implements ContentTreePositionList
 
     @Override
     public void onUpdateRequestStarted() {
-
+        setLoading(true);
     }
 
     @Override
     public void onUpdateSuccess(ItemsResponse itemsResponse) {
+        setLoading(false);
     }
 
     @Override
     public void onUpdateError(VolleyError volleyError) {
+        setLoading(false);
         Toast.makeText(this, ScUtils.getMessageFromError(volleyError), Toast.LENGTH_LONG).show();
     }
 
