@@ -54,8 +54,8 @@ public class MediaUploaderService extends UploadMediaService {
         Cursor cursor = getContentResolver().query(uploadItemUri, Query.PROJECTION, null, null, null);
         if (cursor != null && cursor.moveToFirst()) {
             imageSize = ImageSize.valueOf(cursor.getString(Query.IMAGE_SIZE));
-            cursor.close();
         }
+        if (cursor != null) cursor.close();
 
         if (imageSize == ImageSize.ACTUAL) return newMediaFilePath;
 
