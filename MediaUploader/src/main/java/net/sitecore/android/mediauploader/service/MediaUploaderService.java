@@ -1,5 +1,6 @@
 package net.sitecore.android.mediauploader.service;
 
+import android.app.Notification;
 import android.content.ContentValues;
 import android.content.Intent;
 import android.database.Cursor;
@@ -36,8 +37,9 @@ public class MediaUploaderService extends UploadMediaService {
         options.setMediaFilePath(mediaFilePath);
 
         changeUploadStatus(uploadItemUri);
-        NotificationUtils.showInProgressNotification(getApplicationContext(), options.getItemName(), mediaFolder);
-
+        String itemName = options.getItemName();
+        Notification n = NotificationUtils.showInProgressNotification(getApplicationContext(), itemName, mediaFolder);
+        startForeground(itemName.hashCode(), n);
         super.onHandleIntent(intent);
     }
 
