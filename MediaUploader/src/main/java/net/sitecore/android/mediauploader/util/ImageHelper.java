@@ -83,6 +83,12 @@ public class ImageHelper {
 
         boolean isWidthBigger = Math.max(width, height) == width;
 
+        if (!isWidthBigger) {
+            int temp = reqWidth;
+            reqWidth = reqHeight;
+            reqHeight = temp;
+        }
+
         if (height > reqHeight || width > reqWidth) {
             if (isWidthBigger) {
                 while ((width / inSampleSize) > reqWidth) {
