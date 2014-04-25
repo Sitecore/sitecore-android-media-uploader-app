@@ -7,11 +7,11 @@
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:textAppearance="?android:attr/textAppearanceMedium"
-        android:textAllCaps="true"
         android:layout_marginLeft="16dp"
-        android:text="Site" />
+        android:layout_marginTop="16dp"
+        android:text="Site"
+        android:textAllCaps="true"
+        android:textAppearance="?android:attr/textAppearanceMedium" />
 
     <View
         android:layout_width="match_parent"
@@ -25,10 +25,31 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal">
 
-        <Spinner
-            android:id="@+id/spinner_protocol"
+        <info.hoang8f.android.segmented.SegmentedGroup
+            android:id="@+id/radio_protocol_type"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginLeft="4dp"
+            android:orientation="horizontal"
+            android:paddingTop="3dp">
+
+            <RadioButton
+                android:id="@+id/radio_protocol_http"
+                style="@style/RadioButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:checked="true"
+                android:text="@string/text_http_protocol" />
+
+            <RadioButton
+                android:id="@+id/radio_protocol_https"
+                style="@style/RadioButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/text_https_protocol" />
+
+        </info.hoang8f.android.segmented.SegmentedGroup>
 
         <EditText
             android:id="@+id/instance_url"
@@ -53,21 +74,21 @@
         android:id="@+id/text_media_folder"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="@string/hint_media_folder"
-        android:imeOptions="actionNone"
+        android:enabled="false"
         android:focusable="false"
         android:focusableInTouchMode="false"
-        android:visibility="gone"
-        android:enabled="false" />
+        android:hint="@string/hint_media_folder"
+        android:imeOptions="actionNone"
+        android:visibility="gone" />
 
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:textAppearance="?android:attr/textAppearanceMedium"
-        android:textAllCaps="true"
         android:layout_marginLeft="16dp"
-        android:text="User" />
+        android:layout_marginTop="16dp"
+        android:text="User"
+        android:textAllCaps="true"
+        android:textAppearance="?android:attr/textAppearanceMedium" />
 
     <View
         android:layout_width="match_parent"

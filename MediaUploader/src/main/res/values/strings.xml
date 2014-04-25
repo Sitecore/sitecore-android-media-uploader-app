@@ -61,6 +61,8 @@
     <string name="text_navigate_up">Up</string>
     <string name="text_retry">Retry</string>
     <string name="text_cancel">Cancel</string>
+    <string name="text_http_protocol">http://</string>
+    <string name="text_https_protocol">https://</string>
 
     <!-- Prefs keys -->
     <string name="key_current_image_size">key_image_size</string>
@@ -69,11 +71,5 @@
         <item>Camera</item>
         <item>Gallery</item>
     </string-array>
-
-    <string-array name="protocols">
-        <item>http://</item>
-        <item>https://</item>
-    </string-array>
-
 
 </resources>

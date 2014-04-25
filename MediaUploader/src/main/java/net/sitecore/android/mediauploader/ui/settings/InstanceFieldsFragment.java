@@ -7,9 +7,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.URLUtil;
-import android.widget.ArrayAdapter;
 import android.widget.EditText;
-import android.widget.Spinner;
+import android.widget.RadioGroup;
 
 import java.util.Locale;
 
@@ -22,12 +21,9 @@ import butterknife.InjectView;
 
 public class InstanceFieldsFragment extends Fragment {
 
-    private static final int HTTPS_POSITION = 1;
-    private static final int HTTP_POSITION = 0;
-
     private Instance mInstance;
 
-    @InjectView(R.id.spinner_protocol) Spinner mProtocol;
+    @InjectView(R.id.radio_protocol_type) RadioGroup mProtocol;
     @InjectView(R.id.instance_url) EditText mInstanceUrl;
     @InjectView(R.id.instance_site) EditText mInstanceSite;
     @InjectView(R.id.text_media_folder) EditText mInstanceFolder;
@@ -38,14 +34,6 @@ public class InstanceFieldsFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View root = inflater.inflate(R.layout.fragment_instance_fields, null);
         ButterKnife.inject(this, root);
-
-        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(
-                getActivity(),
-                R.array.protocols,
-                android.R.layout.simple_spinner_item
-        );
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        mProtocol.setAdapter(adapter);
 
         return root;
     }
@@ -73,8 +61,7 @@ public class InstanceFieldsFragment extends Fragment {
             mInstanceUrl.setError(getString(R.string.error_empty_instance_url));
             return false;
         } else {
-            String protocol = (String) mProtocol.getSelectedItem();
-            String fullUrl = protocol.concat(url);
+            String fullUrl = getCheckedProtocol().concat(url);
             if (!URLUtil.isValidUrl(fullUrl)) {
                 mInstanceUrl.setError(getString(R.string.error_wrong_instance_url, fullUrl));
                 return false;
@@ -101,8 +88,7 @@ public class InstanceFieldsFragment extends Fragment {
     public Instance getEnteredInstance() {
         Instance instance = new Instance();
 
-        String protocol = (String) mProtocol.getSelectedItem();
-        String fullUrl = protocol.concat(mInstanceUrl.getText().toString());
+        String fullUrl = getCheckedProtocol().concat(mInstanceUrl.getText().toString());
         instance.setUrl(fullUrl.toLowerCase(Locale.getDefault()));
 
         instance.setLogin(mInstanceLogin.getText().toString().toLowerCase(Locale.getDefault()));
@@ -114,17 +100,32 @@ public class InstanceFieldsFragment extends Fragment {
         return instance;
     }
 
+    private String getCheckedProtocol() {
+        int checkedRadioButtonId = mProtocol.getCheckedRadioButtonId();
+        String protocol;
+        switch (checkedRadioButtonId) {
+            case R.id.radio_protocol_http:
+                protocol = getString(R.string.text_http_protocol);
+                break;
+            case R.id.radio_protocol_https:
+                protocol = getString(R.string.text_https_protocol);
+                break;
+            default:
+                protocol = getString(R.string.text_http_protocol);
+        }
+        return protocol;
+    }
+
     private void initViews() {
         String url = mInstance.getUrl();
 
-        String[] schemesArray = getResources().getStringArray(R.array.protocols);
-        String http = schemesArray[0];
-        String https = schemesArray[1];
+        String http = getString(R.string.text_http_protocol);
+        String https = getString(R.string.text_https_protocol);
 
         if (url.contains(https)) {
-            mProtocol.setSelection(HTTPS_POSITION);
+            mProtocol.check(R.id.radio_protocol_https);
         } else {
-            mProtocol.setSelection(HTTP_POSITION);
+            mProtocol.check(R.id.radio_protocol_http);
         }
         url = url.replace(http, "").replace(https, "");
 
