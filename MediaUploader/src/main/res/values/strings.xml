@@ -39,6 +39,11 @@
     <string name="radiobutton_upload_completed">Completed</string>
     <string name="radiobutton_upload_not_completed">Not Completed</string>
 
+    <string name="radiobutton_http_protocol">http://</string>
+    <string name="radiobutton_https_protocol">https://</string>
+
+    <string name="edittext_default_site">/sitecore/shell</string>
+
     <!-- error messages -->
     <string name="error_empty_instance_login">Login cannot be empty</string>
     <string name="error_empty_instance_url">CMS site url cannot be empty</string>
@@ -61,8 +66,6 @@
     <string name="text_navigate_up">Up</string>
     <string name="text_retry">Retry</string>
     <string name="text_cancel">Cancel</string>
-    <string name="text_http_protocol">http://</string>
-    <string name="text_https_protocol">https://</string>
 
     <!-- Prefs keys -->
     <string name="key_current_image_size">key_image_size</string>

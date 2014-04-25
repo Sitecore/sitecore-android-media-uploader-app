@@ -40,14 +40,14 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:checked="true"
-                android:text="@string/text_http_protocol" />
+                android:text="@string/radiobutton_http_protocol" />
 
             <RadioButton
                 android:id="@+id/radio_protocol_https"
                 style="@style/RadioButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/text_https_protocol" />
+                android:text="@string/radiobutton_https_protocol" />
 
         </info.hoang8f.android.segmented.SegmentedGroup>
 
@@ -68,7 +68,8 @@
         android:layout_height="wrap_content"
         android:hint="@string/hint_site"
         android:imeOptions="actionNext"
-        android:singleLine="true" />
+        android:singleLine="true"
+        android:text="@string/edittext_default_site" />
 
     <EditText
         android:id="@+id/text_media_folder"

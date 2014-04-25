@@ -105,13 +105,13 @@ public class InstanceFieldsFragment extends Fragment {
         String protocol;
         switch (checkedRadioButtonId) {
             case R.id.radio_protocol_http:
-                protocol = getString(R.string.text_http_protocol);
+                protocol = getString(R.string.radiobutton_http_protocol);
                 break;
             case R.id.radio_protocol_https:
-                protocol = getString(R.string.text_https_protocol);
+                protocol = getString(R.string.radiobutton_https_protocol);
                 break;
             default:
-                protocol = getString(R.string.text_http_protocol);
+                protocol = getString(R.string.radiobutton_http_protocol);
         }
         return protocol;
     }
@@ -119,8 +119,8 @@ public class InstanceFieldsFragment extends Fragment {
     private void initViews() {
         String url = mInstance.getUrl();
 
-        String http = getString(R.string.text_http_protocol);
-        String https = getString(R.string.text_https_protocol);
+        String http = getString(R.string.radiobutton_http_protocol);
+        String https = getString(R.string.radiobutton_https_protocol);
 
         if (url.contains(https)) {
             mProtocol.check(R.id.radio_protocol_https);
