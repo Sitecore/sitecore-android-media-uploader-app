@@ -11,6 +11,7 @@ import android.text.TextUtils;
 import android.view.MenuItem;
 import android.view.ViewTreeObserver.OnGlobalLayoutListener;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 
 import javax.inject.Inject;
@@ -25,6 +26,7 @@ import net.sitecore.android.mediauploader.R;
 import net.sitecore.android.mediauploader.UploaderApp;
 import net.sitecore.android.mediauploader.model.Instance;
 import net.sitecore.android.mediauploader.provider.InstancesAsyncHandler;
+import net.sitecore.android.mediauploader.ui.location.LocationActivity;
 import net.sitecore.android.mediauploader.ui.settings.ImageSize;
 import net.sitecore.android.mediauploader.ui.upload.SelectMediaDialogHelper.SelectMediaListener;
 import net.sitecore.android.mediauploader.util.ImageHelper;
@@ -43,6 +45,7 @@ public class UploadActivity extends Activity implements SelectMediaListener {
 
     @InjectView(R.id.edit_name) EditText mEditName;
     @InjectView(R.id.image_preview) ImageView mPreview;
+    @InjectView(R.id.button_location) ImageButton mLocationButton;
 
     @Inject Picasso mImageLoader;
     @Inject Instance mInstance;
@@ -133,6 +136,11 @@ public class UploadActivity extends Activity implements SelectMediaListener {
     public void onPreviewClick() {
         mMediaDialogHelper = new SelectMediaDialogHelper(this, this);
         mMediaDialogHelper.showDialog();
+    }
+
+    @OnClick(R.id.button_location)
+    public void onLocation() {
+        startActivity(new Intent(this, LocationActivity.class));
     }
 
     @Override public void onActivityResult(int requestCode, int resultCode, Intent data) {
