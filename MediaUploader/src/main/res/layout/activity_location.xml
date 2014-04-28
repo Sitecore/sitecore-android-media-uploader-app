@@ -10,8 +10,21 @@
 
         <EditText
             android:id="@+id/edit_location"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="6"
+            android:drawableLeft="@drawable/ic_search"
+            android:imeOptions="actionSearch"
+            android:inputType="text"
+            android:singleLine="true" />
+
+        <Button
+            android:id="@+id/button_search_location"
+            style="@style/Button.Blue"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="2"
+            android:text="Search" />
     </LinearLayout>
 
     <fragment

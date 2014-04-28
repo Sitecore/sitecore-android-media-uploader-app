@@ -30,11 +30,13 @@
             android:layout_margin="4dp">
 
             <TextView
-                android:id="@+id/text_location"
+                android:id="@+id/textview_location"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
-                android:layout_weight="5" />
+                android:layout_weight="5"
+                android:paddingLeft="4dp"
+                android:textAppearance="?android:attr/textAppearanceMedium" />
 
             <ImageButton
                 android:id="@+id/button_location"

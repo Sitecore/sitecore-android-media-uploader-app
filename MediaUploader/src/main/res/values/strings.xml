@@ -16,6 +16,7 @@
     <string name="menu_settings">Settings</string>
     <string name="menu_save">Save</string>
     <string name="menu_refrseh">Refresh</string>
+    <string name="menu_use">USE</string>
 
     <!-- Hints for widgets -->
     <string name="hint_media_name">Name</string>
