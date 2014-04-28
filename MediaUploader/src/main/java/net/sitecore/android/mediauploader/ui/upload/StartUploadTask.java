@@ -33,13 +33,13 @@ public class StartUploadTask extends AsyncTask<String, Void, Void> {
     @Override protected Void doInBackground(String... params) {
         ContentResolver contentResolver = mContext.getContentResolver();
         String uploadId = params[0];
-        Cursor cursor = contentResolver.query(Uploads.buildUploadUri(uploadId), Query.PROJECTION, null, null, null);
+        Cursor uploadsCursor = contentResolver.query(Uploads.buildUploadUri(uploadId), Query.PROJECTION, null, null, null);
         try {
             // load upload fields
-            if (cursor != null && cursor.moveToFirst()) {
-                String itemName = cursor.getString(Query.ITEM_NAME);
-                Uri fileUri = Uri.parse(cursor.getString(Query.FILE_URI));
-                UploadStatus status = UploadStatus.valueOf(cursor.getString(Query.STATUS));
+            if (uploadsCursor != null && uploadsCursor.moveToFirst()) {
+                String itemName = uploadsCursor.getString(Query.ITEM_NAME);
+                Uri fileUri = Uri.parse(uploadsCursor.getString(Query.FILE_URI));
+                UploadStatus status = UploadStatus.valueOf(uploadsCursor.getString(Query.STATUS));
 
                 if (status == UploadStatus.IN_PROGRESS) {
                     LOGD("Upload with uploadId " + uploadId + " already started");
@@ -47,23 +47,27 @@ public class StartUploadTask extends AsyncTask<String, Void, Void> {
                 }
 
                 //load instance fields
-                String instanceId = cursor.getString(Query.INSTANCE_ID);
-                Cursor c = contentResolver.query(Instances.buildInstanceUri(instanceId), Instances.Query.PROJECTION, null, null, null);
+                String instanceId = uploadsCursor.getString(Query.INSTANCE_ID);
+                Cursor instancesCursor = contentResolver.query(Instances.buildInstanceUri(instanceId), Instances.Query.PROJECTION, null, null, null);
 
-                if (c != null && c.moveToFirst()) {
-                    Instance instance = new Instance(c);
-                    ScPublicKey key = new ScPublicKey(instance.getPublicKey());
-                    ScApiSession session = ScApiSessionFactory.newSession(instance.getUrl(), key,
-                            instance.getLogin(), instance.getPassword());
+                try {
+                    if (instancesCursor != null && instancesCursor.moveToFirst()) {
+                        Instance instance = new Instance(instancesCursor);
+                        ScPublicKey key = new ScPublicKey(instance.getPublicKey());
+                        ScApiSession session = ScApiSessionFactory.newSession(instance.getUrl(), key,
+                                instance.getLogin(), instance.getPassword());
 
-                    UploadHelper helper = new UploadHelper(mContext);
-                    helper.uploadMedia(session, Uploads.buildUploadUri(uploadId), instance, itemName, fileUri.toString());
-                } else {
-                    // instance deleted -> set error
-                    ContentValues values = new ContentValues();
-                    values.put(Uploads.STATUS, UploadStatus.ERROR.name());
-                    values.put(Uploads.FAIL_MESSAGE, "Instance has been deleted");
-                    contentResolver.update(Uploads.buildUploadUri(uploadId), values, null, null);
+                        UploadHelper helper = new UploadHelper(mContext);
+                        helper.uploadMedia(session, Uploads.buildUploadUri(uploadId), instance, itemName, fileUri.toString());
+                    } else {
+                        // instance deleted -> set error
+                        ContentValues values = new ContentValues();
+                        values.put(Uploads.STATUS, UploadStatus.ERROR.name());
+                        values.put(Uploads.FAIL_MESSAGE, "Instance has been deleted");
+                        contentResolver.update(Uploads.buildUploadUri(uploadId), values, null, null);
+                    }
+                } finally {
+                    instancesCursor.close();
                 }
             } else {
                 LOGE("Upload with uploadId " + uploadId + " has been deleted");
@@ -71,6 +75,8 @@ public class StartUploadTask extends AsyncTask<String, Void, Void> {
             }
         } catch (InvalidKeySpecException | NoSuchAlgorithmException e) {
             LOGE(e);
+        } finally {
+            uploadsCursor.close();
         }
         return null;
     }
