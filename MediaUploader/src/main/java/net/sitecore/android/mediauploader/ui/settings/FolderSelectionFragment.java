@@ -33,15 +33,13 @@ public class FolderSelectionFragment extends ItemsListBrowserFragment {
 
         @Override
         public View newView(Context context, ViewGroup parent, LayoutInflater inflater, ScItem item) {
-            View v = LayoutInflater.from(context).inflate(R.layout.media_selection_item, parent, false);
-            ViewHolder holder = new ViewHolder(v);
-            if (v != null) {
-                v.setTag(holder);
-            }
+            final View v = LayoutInflater.from(context).inflate(R.layout.media_selection_item, parent, false);
+            final ViewHolder holder = new ViewHolder(v);
+            v.setTag(holder);
             return v;
         }
 
-        class ViewHolder {
+        static class ViewHolder {
             @InjectView(R.id.item_name) TextView name;
 
             ViewHolder(View parent) {

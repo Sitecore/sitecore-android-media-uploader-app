@@ -10,7 +10,6 @@ import com.squareup.picasso.Picasso;
 import net.sitecore.android.mediauploader.provider.ItemsAsyncHandler;
 import net.sitecore.android.sdk.api.internal.LogUtils;
 
-import butterknife.ButterKnife;
 import dagger.ObjectGraph;
 
 public class UploaderApp extends Application {
@@ -42,7 +41,6 @@ public class UploaderApp extends Application {
         mImageLoader.setDebugging(isEnabled);
         LogUtils.setLogEnabled(isEnabled);
         VolleyLog.DEBUG = isEnabled;
-        ButterKnife.setDebug(isEnabled);
     }
 
     public void inject(Object o) {
