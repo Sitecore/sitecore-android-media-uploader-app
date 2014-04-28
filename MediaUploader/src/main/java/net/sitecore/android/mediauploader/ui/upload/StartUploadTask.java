@@ -33,7 +33,8 @@ public class StartUploadTask extends AsyncTask<String, Void, Void> {
     @Override protected Void doInBackground(String... params) {
         ContentResolver contentResolver = mContext.getContentResolver();
         String uploadId = params[0];
-        try (Cursor cursor = contentResolver.query(Uploads.buildUploadUri(uploadId), Query.PROJECTION, null, null, null)) {
+        Cursor cursor = contentResolver.query(Uploads.buildUploadUri(uploadId), Query.PROJECTION, null, null, null);
+        try {
             // load upload fields
             if (cursor != null && cursor.moveToFirst()) {
                 String itemName = cursor.getString(Query.ITEM_NAME);
