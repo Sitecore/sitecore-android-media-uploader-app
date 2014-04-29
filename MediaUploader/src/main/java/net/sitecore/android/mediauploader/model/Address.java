@@ -6,10 +6,14 @@ import com.google.android.gms.maps.model.LatLng;
 
 public class Address implements android.os.Parcelable {
     public final String address;
+    public final String countryCode;
+    public final String zipCode;
     public final LatLng latLng;
 
-    public Address(String address, LatLng latLng) {
+    public Address(String address, String countryCode, String zipCode, LatLng latLng) {
         this.address = address;
+        this.countryCode = countryCode;
+        this.zipCode = zipCode;
         this.latLng = latLng;
     }
 
@@ -18,12 +22,16 @@ public class Address implements android.os.Parcelable {
     }
 
     @Override public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(this.address);
-        dest.writeParcelable(this.latLng, flags);
+        dest.writeString(address);
+        dest.writeString(countryCode);
+        dest.writeString(zipCode);
+        dest.writeParcelable(latLng, flags);
     }
 
-    public Address(Parcel in) {
+    private Address(Parcel in) {
         this.address = in.readString();
+        this.countryCode = in.readString();
+        this.zipCode = in.readString();
         this.latLng = in.readParcelable(LatLng.class.getClassLoader());
     }
 
