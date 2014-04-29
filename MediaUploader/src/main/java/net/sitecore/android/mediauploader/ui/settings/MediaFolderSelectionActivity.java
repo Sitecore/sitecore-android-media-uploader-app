@@ -151,6 +151,7 @@ public class MediaFolderSelectionActivity extends Activity implements LoaderCall
                 Toast.makeText(this, R.string.toast_instance_exists, Toast.LENGTH_LONG).show();
             }
         } else {
+            mInstance.setSelected(true);
             performSave();
         }
         data.close();
