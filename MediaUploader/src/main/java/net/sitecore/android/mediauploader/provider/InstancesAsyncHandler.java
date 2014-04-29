@@ -48,4 +48,12 @@ public class InstancesAsyncHandler extends AsyncQueryHandler {
         startDelete(0, null, instanceUri, null, null);
     }
 
+    public void insertNewInstance(Instance instance) {
+        startInsert(0, null, Instances.CONTENT_URI, instance.toContentValues());
+    }
+
+    public void updateInstance(Uri instanceUri, Instance instance) {
+        startUpdate(0, null, instanceUri, instance.toContentValues(), null, null);
+    }
+
 }

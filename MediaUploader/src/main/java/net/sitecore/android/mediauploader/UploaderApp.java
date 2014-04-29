@@ -40,7 +40,7 @@ public class UploaderApp extends Application {
     private void setUpLogging(boolean isEnabled) {
         mImageLoader.setDebugging(isEnabled);
         LogUtils.setLogEnabled(isEnabled);
-        VolleyLog.DEBUG = isEnabled;
+        //VolleyLog.DEBUG = isEnabled;
     }
 
     public void inject(Object o) {

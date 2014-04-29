@@ -2,21 +2,16 @@ package net.sitecore.android.mediauploader.ui.settings;
 
 import android.app.Activity;
 import android.app.LoaderManager.LoaderCallbacks;
-import android.content.ContentProviderOperation;
 import android.content.Loader;
-import android.content.OperationApplicationException;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.RemoteException;
 import android.support.v4.app.NavUtils;
 import android.view.MenuItem;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import javax.inject.Inject;
-
-import java.util.ArrayList;
 
 import com.android.volley.Response.ErrorListener;
 import com.android.volley.Response.Listener;
@@ -27,7 +22,7 @@ import net.sitecore.android.mediauploader.UploaderApp;
 import net.sitecore.android.mediauploader.model.Instance;
 import net.sitecore.android.mediauploader.model.MediaFolderOnlyFilter;
 import net.sitecore.android.mediauploader.model.SortByMediaFolderTemplateComparator;
-import net.sitecore.android.mediauploader.provider.UploadMediaContract;
+import net.sitecore.android.mediauploader.provider.InstancesAsyncHandler;
 import net.sitecore.android.mediauploader.provider.UploadMediaContract.Instances;
 import net.sitecore.android.mediauploader.provider.UploadMediaContract.Instances.Query;
 import net.sitecore.android.mediauploader.util.ScUtils;
@@ -42,8 +37,6 @@ import net.sitecore.android.sdk.ui.ItemsBrowserFragment.NetworkEventsListener;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
-
-import static net.sitecore.android.sdk.api.internal.LogUtils.LOGE;
 
 public class MediaFolderSelectionActivity extends Activity implements LoaderCallbacks<Cursor>, ErrorListener {
 
@@ -99,10 +92,10 @@ public class MediaFolderSelectionActivity extends Activity implements LoaderCall
 
         mFolderSelectionFragment = (FolderSelectionFragment) getFragmentManager().findFragmentById(R.id.browser_fragment);
         mFolderSelectionFragment.setRootFolder(ScUtils.PATH_MEDIA_LIBRARY);
-        mFolderSelectionFragment.setNetworkEventsListener(mNetworkEventsListener);
-        mFolderSelectionFragment.setContentTreePositionListener(mContentTreePositionListener);
         mFolderSelectionFragment.setItemsFilter(new MediaFolderOnlyFilter());
         mFolderSelectionFragment.setItemsSortOrder(new SortByMediaFolderTemplateComparator());
+        mFolderSelectionFragment.setNetworkEventsListener(mNetworkEventsListener);
+        mFolderSelectionFragment.setContentTreePositionListener(mContentTreePositionListener);
 
         ScApiSessionFactory.getSession(mScRequestQueue, mInstance.getUrl(), mInstance.getLogin(),
                 mInstance.getPassword(), mSessionListener, this);
@@ -170,44 +163,23 @@ public class MediaFolderSelectionActivity extends Activity implements LoaderCall
 
     private boolean checkIsCurrentInstance(Cursor data) {
         if (data.getCount() == 1 && mInstanceUri != null) {
-            String id = Instances.getInstanceId(mInstanceUri);
-            return id.equals(String.valueOf(data.getInt(Query._ID)));
+            String currentInstanceId = Instances.getInstanceId(mInstanceUri);
+            String dbInstanceId = String.valueOf(data.getInt(Query._ID));
+            return currentInstanceId.equals(dbInstanceId);
         } else {
             return false;
         }
     }
 
     private void performSave() {
-        saveInstanceToDB(mInstance);
-        UploaderApp.from(this).cleanInstanceCacheAsync();
-        NavUtils.navigateUpFromSameTask(this);
-    }
-
-    private void saveInstanceToDB(Instance instance) {
-        ArrayList<ContentProviderOperation> operations = new ArrayList<>();
-
-        operations.add(ContentProviderOperation.newUpdate(Instances.CONTENT_URI)
-                        .withValue(Instances.SELECTED, 0)
-                        .build()
-        );
-        instance.setSelected(true);
+        InstancesAsyncHandler instancesAsyncHandler = new InstancesAsyncHandler(getContentResolver());
         if (mInstanceUri == null) {
-            operations.add(ContentProviderOperation.newInsert(Instances.CONTENT_URI)
-                            .withValues(instance.toContentValues())
-                            .build()
-            );
+            instancesAsyncHandler.insertNewInstance(mInstance);
         } else {
-            operations.add(ContentProviderOperation.newUpdate(mInstanceUri)
-                            .withValues(instance.toContentValues())
-                            .build()
-            );
+            instancesAsyncHandler.updateInstance(mInstanceUri, mInstance);
         }
 
-        try {
-            getContentResolver().applyBatch(UploadMediaContract.CONTENT_AUTHORITY, operations);
-        } catch (RemoteException | OperationApplicationException e) {
-            LOGE(e);
-        }
+        NavUtils.navigateUpFromSameTask(this);
     }
 
 }
