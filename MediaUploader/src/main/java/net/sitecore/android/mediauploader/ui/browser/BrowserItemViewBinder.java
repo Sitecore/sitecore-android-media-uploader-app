@@ -12,13 +12,15 @@ import javax.inject.Inject;
 import com.squareup.picasso.Picasso;
 
 import net.sitecore.android.mediauploader.R;
-import net.sitecore.android.mediauploader.util.ScUtils;
 import net.sitecore.android.sdk.api.DownloadMediaOptions;
 import net.sitecore.android.sdk.api.model.ScItem;
 import net.sitecore.android.sdk.ui.ItemViewBinder;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
+
+import static net.sitecore.android.mediauploader.util.ScUtils.isFileTemplate;
+import static net.sitecore.android.mediauploader.util.ScUtils.isImageTemplate;
 
 public class BrowserItemViewBinder implements ItemViewBinder {
 
@@ -37,15 +39,18 @@ public class BrowserItemViewBinder implements ItemViewBinder {
         ViewHolder holder = (ViewHolder) v.getTag();
 
         holder.name.setText(item.getDisplayName());
-        if (ScUtils.isImageTemplate(item.getTemplate())) {
+        if (isImageTemplate(item.getTemplate())) {
+            holder.icon.setImageResource(R.drawable.ic_placeholder);
 
             String imageUrl = mInstanceUrl + item.getMediaDownloadUrl(mMediaOptions);
             mImageLoader.load(imageUrl)
                     .placeholder(R.drawable.ic_placeholder)
                     .error(R.drawable.ic_action_cancel)
                     .into(holder.icon);
+        } else if (isFileTemplate(item.getTemplate())) {
+            holder.icon.setImageResource(R.drawable.ic_browser_file);
         } else {
-            holder.icon.setImageResource(R.drawable.ic_sc_folder);
+            holder.icon.setImageResource(R.drawable.ic_browser_folder);
         }
     }
 

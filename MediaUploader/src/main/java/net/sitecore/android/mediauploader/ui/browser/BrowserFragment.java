@@ -31,6 +31,7 @@ public class BrowserFragment extends ItemsGridBrowserFragment {
 
     @Override public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setItemsFilter(new MediaBrowserItemsFilter());
         setItemsSortOrder(new SortByMediaFolderTemplateComparator());
         setColumnCount(3);
     }
@@ -69,6 +70,8 @@ public class BrowserFragment extends ItemsGridBrowserFragment {
             intent.putExtra(INSTANCE_URL, getArguments().getString(INSTANCE_URL, ""));
             intent.putExtra(INSTANCE_DATABASE, getArguments().getString(INSTANCE_DATABASE, ""));
             startActivity(intent);
+        } else if (ScUtils.isFileTemplate(item.getTemplate())) {
+            // Do nothing
         } else {
             super.onScItemClick(item);
         }

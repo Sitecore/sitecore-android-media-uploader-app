@@ -16,6 +16,8 @@ public class ScUtils {
     public static final String TEMPLATE_VERSIONED_JPEG = "System/Media/Versioned/Jpeg";
     public static final String TEMPLATE_UNVERSIONED_IMAGE = "System/Media/Unversioned/Image";
 
+    public static final String TEMPLATE_UNVERSIONED_FILE = "System/Media/Unversioned/File";
+
     public static final String TEMPLATE_MEDIA_FOLDER = "System/Media/Media folder";
 
     public static boolean isImageTemplate(@NonNull String template) {
@@ -24,6 +26,10 @@ public class ScUtils {
         if (template.equals(TEMPLATE_UNVERSIONED_IMAGE)) return true;
 
         return false;
+    }
+
+    public static boolean isFileTemplate(String template) {
+        return TEMPLATE_UNVERSIONED_FILE.equals(template);
     }
 
     public static String getMessageFromError(VolleyError error) {
