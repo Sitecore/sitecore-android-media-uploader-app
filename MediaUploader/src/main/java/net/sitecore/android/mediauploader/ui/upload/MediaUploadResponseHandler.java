@@ -67,7 +67,7 @@ public class MediaUploadResponseHandler implements Listener<ItemsResponse>, Erro
         if (!TextUtils.isEmpty(mAddress.countryCode)) fields.put("CountryCode", mAddress.countryCode);
         if (!TextUtils.isEmpty(mAddress.zipCode)) fields.put("ZipCode", mAddress.zipCode);
         fields.put("Latitude", String.valueOf(mAddress.latLng.latitude));
-        fields.put("Longitude", String.valueOf(mAddress.latLng.latitude));
+        fields.put("Longitude", String.valueOf(mAddress.latLng.longitude));
 
         Listener<ItemsResponse> updateListener = new Listener<ItemsResponse>() {
             @Override public void onResponse(ItemsResponse itemsResponse) {
