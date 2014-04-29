@@ -113,7 +113,7 @@ public class CreateEditInstanceActivity extends Activity implements LoaderCallba
 
     private void selectLastInstance() {
         new InstancesAsyncHandler(getContentResolver()) {
-            @Override protected void onQueryComplete(int token, Object cookie, Cursor cursor) {
+            @Override public void onInstancesLoaded(Cursor cursor) {
                 if (cursor.getCount() > 0) {
                     if (cursor.moveToLast()) {
                         String instanceId = cursor.getString(Query._ID);

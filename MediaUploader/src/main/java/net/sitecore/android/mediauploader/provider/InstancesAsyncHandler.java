@@ -3,6 +3,7 @@ package net.sitecore.android.mediauploader.provider;
 import android.content.AsyncQueryHandler;
 import android.content.ContentResolver;
 import android.content.ContentValues;
+import android.database.Cursor;
 import android.net.Uri;
 
 import net.sitecore.android.mediauploader.model.Instance;
@@ -14,15 +15,44 @@ import net.sitecore.android.mediauploader.ui.settings.ImageSize;
 
 public class InstancesAsyncHandler extends AsyncQueryHandler {
 
-    public static final int TOKEN_INSERT_PENDING = 0;
-    public static final int TOKEN_UPDATE_SELECTED = 1;
+    private static final int TOKEN_INSERT_PENDING = 0;
+    private static final int TOKEN_UPDATE_SELECTED = 1;
+
+    private static final int TOKEN_QUERY_ALL = 0;
+    private static final int TOKEN_QUERY_DUPLICATES = 0;
+
+    private static final String SELECTION_DUPLICATE = Instances.URL + "=? and " + Instances.LOGIN + "=? and " +
+            Instances.PASSWORD + "=? and " + Instances.ROOT_FOLDER + "=? and " + Instances.SITE + "=?";
 
     public InstancesAsyncHandler(ContentResolver cr) {
         super(cr);
     }
 
     public void queryInstances() {
-        startQuery(0, null, Instances.CONTENT_URI, Query.PROJECTION, null, null, null);
+        startQuery(TOKEN_QUERY_ALL, null, Instances.CONTENT_URI, Query.PROJECTION, null, null, null);
+    }
+
+    public void queryDuplicateInstances(Instance instance) {
+        final String[] selectionArgs = new String[]{
+                instance.getUrl(),
+                instance.getLogin(),
+                instance.getPassword(),
+                instance.getRootFolder(),
+                instance.getSite()
+        };
+
+        startQuery(TOKEN_QUERY_DUPLICATES, null, Instances.CONTENT_URI, Query.PROJECTION, SELECTION_DUPLICATE, selectionArgs, null);
+    }
+
+    @Override protected final void onQueryComplete(int token, Object cookie, Cursor cursor) {
+        try {
+            onInstancesLoaded(cursor);
+        } finally {
+            cursor.close();
+        }
+    }
+
+    public void onInstancesLoaded(Cursor cursor) {
     }
 
     public void insertDelayedUpload(final String itemName, final Uri fileUri, final Instance instance,

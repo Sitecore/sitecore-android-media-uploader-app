@@ -38,7 +38,7 @@ import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
 
-public class MediaFolderSelectionActivity extends Activity implements LoaderCallbacks<Cursor>, ErrorListener {
+public class MediaFolderSelectionActivity extends Activity implements ErrorListener {
 
     public static final String INSTANCE_KEY = "instance";
 
@@ -125,25 +125,15 @@ public class MediaFolderSelectionActivity extends Activity implements LoaderCall
         if (mFolderSelectionFragment.getCurrentItem() != null) {
             mInstance.setRootFolder(mFolderSelectionFragment.getCurrentItem().getPath());
         }
-        checkInstanceIfExists();
+
+        new InstancesAsyncHandler(getContentResolver()){
+            @Override public void onInstancesLoaded(Cursor cursor) {
+                onDuplicatesLoaded(cursor);
+            }
+        }.queryDuplicateInstances(mInstance);
     }
 
-    private void checkInstanceIfExists() {
-        getLoaderManager().restartLoader(0, null, this);
-    }
-
-    @Override
-    public void onErrorResponse(VolleyError volleyError) {
-        Toast.makeText(this, ScUtils.getMessageFromError(volleyError), Toast.LENGTH_LONG).show();
-    }
-
-    @Override
-    public Loader<Cursor> onCreateLoader(int id, Bundle args) {
-        return new DuplicateInstancesLoader(this, mInstance);
-    }
-
-    @Override
-    public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
+    private void onDuplicatesLoaded(Cursor data) {
         if (data.moveToFirst()) {
             if (checkIsCurrentInstance(data)) {
                 performSave();
@@ -151,15 +141,13 @@ public class MediaFolderSelectionActivity extends Activity implements LoaderCall
                 Toast.makeText(this, R.string.toast_instance_exists, Toast.LENGTH_LONG).show();
             }
         } else {
-            mInstance.setSelected(true);
-            performSave();
+            new InstancesAsyncHandler(getContentResolver()){
+                @Override public void onInstancesLoaded(Cursor cursor) {
+                    if (cursor.getCount() == 0) mInstance.setSelected(true);
+                    performSave();
+                }
+            }.queryInstances();
         }
-        data.close();
-        getLoaderManager().destroyLoader(0);
-    }
-
-    @Override
-    public void onLoaderReset(Loader<Cursor> loader) {
     }
 
     private boolean checkIsCurrentInstance(Cursor data) {
@@ -171,6 +159,13 @@ public class MediaFolderSelectionActivity extends Activity implements LoaderCall
             return false;
         }
     }
+
+    @Override
+    public void onErrorResponse(VolleyError volleyError) {
+        Toast.makeText(this, ScUtils.getMessageFromError(volleyError), Toast.LENGTH_LONG).show();
+    }
+
+
 
     private void performSave() {
         InstancesAsyncHandler instancesAsyncHandler = new InstancesAsyncHandler(getContentResolver());
