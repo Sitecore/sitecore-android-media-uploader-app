@@ -5,9 +5,9 @@ import android.content.Intent;
 import android.net.Uri;
 import android.text.TextUtils;
 
+import net.sitecore.android.mediauploader.model.Address;
 import net.sitecore.android.mediauploader.model.Instance;
 import net.sitecore.android.mediauploader.service.MediaUploaderService;
-import net.sitecore.android.mediauploader.ui.upload.MediaUploadListener;
 import net.sitecore.android.sdk.api.ScApiSession;
 import net.sitecore.android.sdk.api.UploadMediaIntentBuilder;
 
@@ -20,11 +20,11 @@ public class UploadHelper {
     }
 
     public void uploadMedia(ScApiSession session, final Uri uploadUri, final Instance instance, final String name,
-            final String fileUri) {
+            final String fileUri, Address address) {
         session.setMediaLibraryPath("/");
 
-        MediaUploadListener responseListener = new MediaUploadListener(mContext, uploadUri, instance.getRootFolder(),
-                name);
+        MediaUploadResponseHandler responseListener = new MediaUploadResponseHandler(mContext, session, uploadUri, instance.getRootFolder(),
+                name, address);
 
         UploadMediaIntentBuilder builder = session.uploadMediaIntent(instance.getRootFolder(), name, fileUri)
                 .setDatabase(instance.getDatabase())
@@ -40,5 +40,4 @@ public class UploadHelper {
 
         mContext.startService(intent);
     }
-
 }

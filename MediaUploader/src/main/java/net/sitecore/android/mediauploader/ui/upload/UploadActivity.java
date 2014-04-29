@@ -124,16 +124,16 @@ public class UploadActivity extends Activity implements SelectMediaListener {
 
         new InstancesAsyncHandler(getContentResolver()) {
             @Override protected void onInsertComplete(int token, Object cookie, Uri uri) {
-                mUploadHelper.uploadMedia(mApiSession, uri, mInstance, itemName, mImageUri.toString());
+                mUploadHelper.uploadMedia(mApiSession, uri, mInstance, itemName, mImageUri.toString(), mImageAddress);
             }
-        }.insertDelayedUpload(itemName, mImageUri, mInstance, mCurrentImageSize);
+        }.insertDelayedUpload(itemName, mImageUri, mInstance, mCurrentImageSize, mImageAddress);
         finish();
     }
 
     @OnClick(R.id.button_upload_later)
     public void onUploadLater() {
         new InstancesAsyncHandler(getContentResolver()).insertDelayedUpload(getItemName(), mImageUri, mInstance,
-                mCurrentImageSize);
+                mCurrentImageSize, mImageAddress);
         showToast(this, R.string.toast_added_to_uploads);
         finish();
     }

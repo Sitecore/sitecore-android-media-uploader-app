@@ -3,39 +3,83 @@ package net.sitecore.android.mediauploader.ui.upload;
 import android.content.ContentValues;
 import android.content.Context;
 import android.net.Uri;
+import android.text.TextUtils;
+
+import javax.inject.Inject;
+
+import java.util.HashMap;
+import java.util.Map;
 
 import com.android.volley.Response.ErrorListener;
 import com.android.volley.Response.Listener;
 import com.android.volley.VolleyError;
 
 import net.sitecore.android.mediauploader.R;
+import net.sitecore.android.mediauploader.UploaderApp;
+import net.sitecore.android.mediauploader.model.Address;
 import net.sitecore.android.mediauploader.model.UploadStatus;
 import net.sitecore.android.mediauploader.provider.UploadMediaContract.Uploads;
 import net.sitecore.android.mediauploader.util.NotificationUtils;
 import net.sitecore.android.mediauploader.util.ScUtils;
+import net.sitecore.android.sdk.api.ScApiSession;
+import net.sitecore.android.sdk.api.ScRequestQueue;
 import net.sitecore.android.sdk.api.model.ItemsResponse;
+import net.sitecore.android.sdk.api.model.ScItem;
 
-public class MediaUploadListener implements Listener<ItemsResponse>, ErrorListener {
+public class MediaUploadResponseHandler implements Listener<ItemsResponse>, ErrorListener {
 
     private final Context mContext;
     private final Uri mUploadUri;
     private final String mFolder;
     private final String mItemName;
+    private final ScApiSession mSession;
+    private final Address mAddress;
 
-    public MediaUploadListener(Context context, Uri uploadUri, String folder, String itemName) {
+    @Inject ScRequestQueue mScRequestQueue;
+
+    public MediaUploadResponseHandler(Context context, ScApiSession session, Uri uploadUri, String folder,
+            String itemName, Address address) {
         mContext = context;
         mUploadUri = uploadUri;
         mFolder = folder;
         mItemName = itemName;
+        mSession = session;
+        mAddress = address;
+        UploaderApp.from(context).inject(this);
     }
 
     @Override
     public void onResponse(ItemsResponse itemsResponse) {
         if (itemsResponse.getResultCount() == 1) {
+            if (mAddress != null) {
+                performItemUpdate(itemsResponse.getItems().get(0));
+            }
             onUploadFinished();
         } else {
             onUploadFailed(mContext.getString(R.string.error_upload_failed));
         }
+    }
+
+    private void performItemUpdate(ScItem item) {
+        Map<String, String> fields = new HashMap<>(5);
+
+        if (!TextUtils.isEmpty(mAddress.address)) fields.put("LocationDescription", mAddress.address);
+        if (!TextUtils.isEmpty(mAddress.countryCode)) fields.put("CountryCode", mAddress.countryCode);
+        if (!TextUtils.isEmpty(mAddress.zipCode)) fields.put("ZipCode", mAddress.zipCode);
+        fields.put("Latitude", String.valueOf(mAddress.latLng.latitude));
+        fields.put("Longitude", String.valueOf(mAddress.latLng.latitude));
+
+        Listener<ItemsResponse> updateListener = new Listener<ItemsResponse>() {
+            @Override public void onResponse(ItemsResponse itemsResponse) {
+                if (itemsResponse.getResultCount() == 1) {
+                    onUploadFinished();
+                } else {
+                    onUploadFailed(mContext.getString(R.string.error_upload_failed));
+                }
+            }
+        };
+
+        mScRequestQueue.add(mSession.editItemFields(item, fields, updateListener, this));
     }
 
     @Override public void onErrorResponse(VolleyError volleyError) {
