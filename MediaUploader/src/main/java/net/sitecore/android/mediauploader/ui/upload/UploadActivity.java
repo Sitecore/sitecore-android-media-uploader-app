@@ -20,7 +20,6 @@ import javax.inject.Inject;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-import com.google.android.gms.maps.model.LatLng;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.RequestCreator;
 
@@ -29,6 +28,7 @@ import net.sitecore.android.mediauploader.UploaderApp;
 import net.sitecore.android.mediauploader.model.Instance;
 import net.sitecore.android.mediauploader.provider.InstancesAsyncHandler;
 import net.sitecore.android.mediauploader.ui.location.LocationActivity;
+import net.sitecore.android.mediauploader.model.Address;
 import net.sitecore.android.mediauploader.ui.settings.ImageSize;
 import net.sitecore.android.mediauploader.ui.upload.SelectMediaDialogHelper.SelectMediaListener;
 import net.sitecore.android.mediauploader.util.ImageHelper;
@@ -50,7 +50,7 @@ public class UploadActivity extends Activity implements SelectMediaListener {
     @InjectView(R.id.edit_name) EditText mEditName;
     @InjectView(R.id.image_preview) ImageView mPreview;
     @InjectView(R.id.button_location) ImageButton mLocationButton;
-    @InjectView(R.id.textview_location) TextView mLocationText;
+    @InjectView(R.id.textview_location) TextView mLocationAddress;
 
     @Inject Picasso mImageLoader;
     @Inject Instance mInstance;
@@ -59,7 +59,7 @@ public class UploadActivity extends Activity implements SelectMediaListener {
     private Uri mImageUri;
     private ImageSize mCurrentImageSize;
     private ImageHelper mImageHelper;
-    private LatLng mImageLocation;
+    private Address mImageAddress;
     private SelectMediaDialogHelper mMediaDialogHelper;
 
     @Override
@@ -146,14 +146,15 @@ public class UploadActivity extends Activity implements SelectMediaListener {
 
     @OnClick(R.id.button_location)
     public void onLocation() {
-        startActivityForResult(new Intent(this, LocationActivity.class), LOCATION_ACTIVITY_CODE);
+        Intent intent = LocationActivity.prepateIntent(this, mImageAddress);
+        startActivityForResult(intent, LOCATION_ACTIVITY_CODE);
     }
 
     @Override public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (resultCode == Activity.RESULT_OK) {
             if (requestCode == LOCATION_ACTIVITY_CODE) {
-                mLocationText.setText(data.getStringExtra(LocationActivity.EXTRA_ADDRESS_LINE));
-                mImageLocation = data.getParcelableExtra(LocationActivity.EXTRA_LOCATION);
+                mImageAddress = data.getParcelableExtra(LocationActivity.EXTRA_ADDRESS);
+                if (mImageAddress != null) mLocationAddress.setText(mImageAddress.address);
             } else {
                 mMediaDialogHelper.onActivityResult(requestCode, data);
             }

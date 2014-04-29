@@ -3,8 +3,10 @@ package net.sitecore.android.mediauploader.ui.location;
 import android.app.ActionBar;
 import android.app.ActionBar.LayoutParams;
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
@@ -26,13 +28,16 @@ import com.android.volley.Response.ErrorListener;
 import com.android.volley.Response.Listener;
 import com.android.volley.VolleyError;
 
+import com.google.android.gms.maps.CameraUpdate;
+import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap.OnMapLongClickListener;
 import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.model.LatLng;
 
 import net.sitecore.android.mediauploader.R;
 import net.sitecore.android.mediauploader.UploaderApp;
-import net.sitecore.android.mediauploader.requests.ReverseGeocodeRequest;
+import net.sitecore.android.mediauploader.model.Address;
+import net.sitecore.android.mediauploader.requests.GeocodeRequest;
 import net.sitecore.android.mediauploader.util.ScUtils;
 import net.sitecore.android.sdk.api.ScRequestQueue;
 
@@ -41,19 +46,16 @@ import butterknife.InjectView;
 import butterknife.OnClick;
 import butterknife.OnEditorAction;
 
-public class LocationActivity extends Activity implements ErrorListener, Listener<ArrayList<String>> {
-    public final static String EXTRA_ADDRESS_LINE = "address";
-    public final static String EXTRA_LOCATION = "location";
-
+public class LocationActivity extends Activity implements ErrorListener {
+    public final static String EXTRA_ADDRESS = "location";
     private final static String GEOCODING_BASE_URL = "http://maps.googleapis.com/maps/api/geocode/json?";
 
-    @InjectView(R.id.edit_location) EditText mLocationText;
+    @InjectView(R.id.edit_location) EditText mLocationField;
     @InjectView(R.id.button_search_location) Button mSearchAddressButton;
 
     @Inject ScRequestQueue mRequestQueue;
 
-    private LatLng mSelectedLatLng;
-    private String mAddressString;
+    private Address mCurrentAddress;
     private MapFragment mMapFragment;
     private View mUseMenuView;
 
@@ -71,10 +73,13 @@ public class LocationActivity extends Activity implements ErrorListener, Listene
         mMapFragment = (MapFragment) getFragmentManager().findFragmentById(R.id.map);
         mMapFragment.getMap().setOnMapLongClickListener(new OnMapLongClickListener() {
             @Override public void onMapLongClick(LatLng latLng) {
-                mSelectedLatLng = latLng;
                 performReverseGeocodingRequest(latLng);
             }
         });
+        mMapFragment.getMap().setMyLocationEnabled(true);
+
+        mCurrentAddress = getIntent().getParcelableExtra(EXTRA_ADDRESS);
+        if (mCurrentAddress != null) setTitle(mCurrentAddress.address);
     }
 
     private void initActionBar() {
@@ -85,7 +90,7 @@ public class LocationActivity extends Activity implements ErrorListener, Listene
 
         mUseMenuView.setOnClickListener(new OnClickListener() {
             @Override public void onClick(View v) {
-                if (mSelectedLatLng != null) {
+                if (mCurrentAddress != null) {
                     setResult(RESULT_OK, prepareData());
                 }
                 finish();
@@ -101,7 +106,7 @@ public class LocationActivity extends Activity implements ErrorListener, Listene
     @OnEditorAction(R.id.edit_location)
     public boolean onEditorAction(int code) {
         if (code == EditorInfo.IME_ACTION_SEARCH) {
-            performGeocoding(mLocationText.getText().toString());
+            performGeocoding(mLocationField.getText().toString());
             return true;
         }
         return false;
@@ -109,6 +114,7 @@ public class LocationActivity extends Activity implements ErrorListener, Listene
 
     @OnClick(R.id.button_search_location)
     public void onSearchAddress() {
+        performGeocoding(mLocationField.getText().toString());
     }
 
     @Override
@@ -129,17 +135,56 @@ public class LocationActivity extends Activity implements ErrorListener, Listene
 
     private Intent prepareData() {
         Intent intent = new Intent();
-        intent.putExtra(EXTRA_ADDRESS_LINE, mAddressString);
-        intent.putExtra(EXTRA_LOCATION, mSelectedLatLng);
+        intent.putExtra(EXTRA_ADDRESS, mCurrentAddress);
+        return intent;
+    }
+
+    public static Intent prepateIntent(Context context, Address address) {
+        Intent intent = new Intent(context, LocationActivity.class);
+        intent.putExtra(EXTRA_ADDRESS, address);
         return intent;
     }
 
     private void performGeocoding(String text) {
+        if (TextUtils.isEmpty(text)) return;
+
+        Listener<ArrayList<Address>> listener = new Listener<ArrayList<Address>>() {
+            @Override public void onResponse(ArrayList<Address> addresses) {
+                setLoading(false);
+                if (addresses.size() != 0) {
+                    mCurrentAddress = addresses.get(0);
+                    setTitle(mCurrentAddress.address);
+
+                    if (mMapFragment.isDetached()) return;
+
+                    CameraUpdate center = CameraUpdateFactory.newLatLng(mCurrentAddress.latLng);
+                    CameraUpdate zoom = CameraUpdateFactory.zoomTo(15);
+                    mMapFragment.getMap().moveCamera(center);
+                    mMapFragment.getMap().animateCamera(zoom);
+                }
+            }
+        };
+
+        String url = GEOCODING_BASE_URL + "address=" + text + "&sensor=" + true;
+        Request request = new GeocodeRequest(Method.GET, url, listener, this);
+
+        setLoading(true);
+        mRequestQueue.add(request);
     }
 
     private void performReverseGeocodingRequest(LatLng latLng) {
+        Listener<ArrayList<Address>> listener = new Listener<ArrayList<Address>>() {
+            @Override public void onResponse(ArrayList<Address> addresses) {
+                setLoading(false);
+                if (addresses.size() != 0) {
+                    mCurrentAddress = addresses.get(0);
+                    setTitle(mCurrentAddress.address);
+                }
+            }
+        };
+
         String url = GEOCODING_BASE_URL + "latlng=" + latLng.latitude + "," + latLng.longitude + "&sensor=" + true;
-        Request request = new ReverseGeocodeRequest(Method.GET, url, null, this, this);
+        Request request = new GeocodeRequest(Method.GET, url, listener, this);
 
         setLoading(true);
         mRequestQueue.add(request);
@@ -149,13 +194,5 @@ public class LocationActivity extends Activity implements ErrorListener, Listene
         setLoading(false);
         Toast.makeText(LocationActivity.this, ScUtils.getMessageFromError(error), Toast.LENGTH_LONG)
                 .show();
-    }
-
-    @Override public void onResponse(ArrayList<String> addresses) {
-        setLoading(false);
-        if (addresses.size() != 0) {
-            mAddressString = addresses.get(0);
-            setTitle(mAddressString);
-        }
     }
 }
