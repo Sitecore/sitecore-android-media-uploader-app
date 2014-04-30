@@ -53,8 +53,9 @@ public class MediaUploadResponseHandler implements Listener<ItemsResponse>, Erro
         if (itemsResponse.getResultCount() == 1) {
             if (mAddress != null) {
                 performItemUpdate(itemsResponse.getItems().get(0));
+            } else {
+                onUploadFinished();
             }
-            onUploadFinished();
         } else {
             onUploadFailed(mContext.getString(R.string.error_upload_failed));
         }
@@ -71,15 +72,17 @@ public class MediaUploadResponseHandler implements Listener<ItemsResponse>, Erro
 
         Listener<ItemsResponse> updateListener = new Listener<ItemsResponse>() {
             @Override public void onResponse(ItemsResponse itemsResponse) {
-                if (itemsResponse.getResultCount() == 1) {
-                    onUploadFinished();
-                } else {
-                    onUploadFailed(mContext.getString(R.string.error_upload_failed));
-                }
+                onUploadFinished();
             }
         };
 
-        mScRequestQueue.add(mSession.editItemFields(item, fields, updateListener, this));
+        ErrorListener errorListener = new ErrorListener() {
+            @Override public void onErrorResponse(VolleyError error) {
+                onUploadFinished();
+            }
+        };
+
+        mScRequestQueue.add(mSession.editItemFields(item, fields, updateListener, errorListener));
     }
 
     @Override public void onErrorResponse(VolleyError volleyError) {

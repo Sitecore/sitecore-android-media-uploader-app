@@ -113,10 +113,14 @@ public class UploadActivity extends Activity implements SelectMediaListener,
         if (mImageAddress != null) return;
 
         LatLng latLng = ImageHelper.getLatLngFromImage(mImageUri.toString());
-        if (!servicesConnected() && latLng != null) {
+        if (latLng != null) {
             performReverseGeocodingRequest(latLng);
         } else {
             if (servicesConnected()) mLocationClient.connect();
+            else {
+                mLocationButton.setEnabled(false);
+            }
+
         }
     }
 
