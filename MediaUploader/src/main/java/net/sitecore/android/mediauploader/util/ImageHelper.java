@@ -4,6 +4,7 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Bitmap.CompressFormat;
 import android.graphics.BitmapFactory;
+import android.media.ExifInterface;
 import android.net.Uri;
 
 import java.io.File;
@@ -14,6 +15,8 @@ import java.io.InputStream;
 import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+
+import com.google.android.gms.maps.model.LatLng;
 
 import net.sitecore.android.mediauploader.ui.settings.ImageSize;
 
@@ -115,5 +118,23 @@ public class ImageHelper {
         } else {
             return new FileInputStream(path);
         }
+    }
+
+    public static LatLng getLatLngFromImage(String uri) {
+        LatLng latLng = null;
+        try {
+            ExifInterface exif = new ExifInterface(uri);
+            String latitudeString = exif.getAttribute(ExifInterface.TAG_GPS_LATITUDE);
+            String longtitudeString = exif.getAttribute(ExifInterface.TAG_GPS_LONGITUDE);
+
+            if (latitudeString != null && longtitudeString != null) {
+                double latitude = Double.parseDouble(latitudeString);
+                double longtitude = Double.parseDouble(longtitudeString);
+                latLng = new LatLng(latitude, longtitude);
+            }
+        } catch (IOException | NumberFormatException e) {
+            LOGE(e);
+        }
+        return latLng;
     }
 }

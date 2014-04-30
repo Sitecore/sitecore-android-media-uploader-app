@@ -46,9 +46,10 @@ import butterknife.InjectView;
 import butterknife.OnClick;
 import butterknife.OnEditorAction;
 
+import static net.sitecore.android.mediauploader.requests.GeocodeRequest.GEOCODING_BASE_URL;
+
 public class LocationActivity extends Activity implements ErrorListener {
     public final static String EXTRA_ADDRESS = "location";
-    private final static String GEOCODING_BASE_URL = "http://maps.googleapis.com/maps/api/geocode/json?";
 
     @InjectView(R.id.edit_location) EditText mLocationField;
     @InjectView(R.id.button_search_location) Button mSearchAddressButton;
