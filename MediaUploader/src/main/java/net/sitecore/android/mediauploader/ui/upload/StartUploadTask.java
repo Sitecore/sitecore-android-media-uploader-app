@@ -6,10 +6,14 @@ import android.content.Context;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.AsyncTask;
+import android.text.TextUtils;
 
 import java.security.NoSuchAlgorithmException;
 import java.security.spec.InvalidKeySpecException;
 
+import com.google.android.gms.maps.model.LatLng;
+
+import net.sitecore.android.mediauploader.model.Address;
 import net.sitecore.android.mediauploader.model.Instance;
 import net.sitecore.android.mediauploader.model.UploadStatus;
 import net.sitecore.android.mediauploader.provider.UploadMediaContract.Instances;
@@ -39,6 +43,7 @@ public class StartUploadTask extends AsyncTask<String, Void, Void> {
             if (uploadsCursor != null && uploadsCursor.moveToFirst()) {
                 String itemName = uploadsCursor.getString(Query.ITEM_NAME);
                 Uri fileUri = Uri.parse(uploadsCursor.getString(Query.FILE_URI));
+                Address imageAddress = getAddressFromCursor(uploadsCursor);
                 UploadStatus status = UploadStatus.valueOf(uploadsCursor.getString(Query.STATUS));
 
                 if (status == UploadStatus.IN_PROGRESS) {
@@ -58,7 +63,8 @@ public class StartUploadTask extends AsyncTask<String, Void, Void> {
                                 instance.getLogin(), instance.getPassword());
 
                         UploadHelper helper = new UploadHelper(mContext);
-                        helper.uploadMedia(session, Uploads.buildUploadUri(uploadId), instance, itemName, fileUri.toString());
+                        helper.uploadMedia(session, Uploads.buildUploadUri(uploadId), instance, itemName,
+                                fileUri.toString(), imageAddress);
                     } else {
                         // instance deleted -> set error
                         ContentValues values = new ContentValues();
@@ -79,5 +85,16 @@ public class StartUploadTask extends AsyncTask<String, Void, Void> {
             uploadsCursor.close();
         }
         return null;
+    }
+
+    private Address getAddressFromCursor(Cursor cursor) {
+        String addressName = cursor.getString(Query.ADDRESS_NAME);
+        if (TextUtils.isEmpty(addressName)) return null;
+
+        String countryCode = cursor.getString(Query.COUNTRY_CODE);
+        String zipCode = cursor.getString(Query.ZIP_CODE);
+        double latitude = cursor.getDouble(Query.LATITUDE);
+        double longitude = cursor.getDouble(Query.LONGITUDE);
+        return new Address(addressName, countryCode, zipCode, new LatLng(latitude, longitude));
     }
 }

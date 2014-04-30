@@ -6,6 +6,7 @@ import android.content.ContentValues;
 import android.database.Cursor;
 import android.net.Uri;
 
+import net.sitecore.android.mediauploader.model.Address;
 import net.sitecore.android.mediauploader.model.Instance;
 import net.sitecore.android.mediauploader.model.UploadStatus;
 import net.sitecore.android.mediauploader.provider.UploadMediaContract.Instances;
@@ -56,13 +57,21 @@ public class InstancesAsyncHandler extends AsyncQueryHandler {
     }
 
     public void insertDelayedUpload(final String itemName, final Uri fileUri, final Instance instance,
-            ImageSize imageSize) {
+            ImageSize imageSize, Address imageAddress) {
         final ContentValues values = new ContentValues();
         values.put(Uploads.ITEM_NAME, itemName);
         values.put(Uploads.FILE_URI, fileUri.toString());
         values.put(Uploads.STATUS, UploadStatus.UPLOAD_LATER.name());
         values.put(Uploads.IMAGE_SIZE, imageSize.name());
         values.put(Uploads.INSTANCE_ID, instance.getId());
+
+        if (imageAddress != null) {
+            values.put(Uploads.ADDRESS_NAME, imageAddress.address);
+            values.put(Uploads.COUNTRY_CODE, imageAddress.countryCode);
+            values.put(Uploads.ZIP_CODE, imageAddress.zipCode);
+            values.put(Uploads.LATITUDE, imageAddress.latLng.latitude);
+            values.put(Uploads.LONGITUDE, imageAddress.latLng.longitude);
+        }
 
         startInsert(TOKEN_INSERT_PENDING, null, Uploads.CONTENT_URI, values);
     }

@@ -5,9 +5,15 @@
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
-    <uses-permission
-        android:name="android.permission.WRITE_EXTERNAL_STORAGE"
-        android:maxSdkVersion="18" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="com.google.android.providers.gsf.permission.READ_GSERVICES" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+
+    <uses-feature
+        android:glEsVersion="0x00020000"
+        android:required="true" />
 
     <application
         android:name=".UploaderApp"
@@ -40,6 +46,11 @@
         <activity
             android:name=".ui.browser.BrowserActivity"
             android:label="@string/title_media_browser"
+            android:screenOrientation="portrait" />
+
+        <activity
+            android:name=".ui.location.LocationActivity"
+            android:label="@string/title_location"
             android:screenOrientation="portrait" />
 
         <activity
@@ -79,6 +90,13 @@
             android:name=".provider.UploadMediaProvider"
             android:authorities="net.sitecore.android.provider"
             android:exported="false" />
+
+        <meta-data
+            android:name="com.google.android.gms.version"
+            android:value="@integer/google_play_services_version" />
+        <meta-data
+            android:name="com.google.android.maps.v2.API_KEY"
+            android:value="AIzaSyBQo72bRvtIgBKWJ0QsX7yY5Tyw2S32PjQ" />
     </application>
 
 </manifest>

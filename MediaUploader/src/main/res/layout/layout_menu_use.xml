@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout
+    android:id="@+id/actionbar_done"
+    style="?android:actionButtonStyle"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="match_parent">
+
+    <TextView
+        android:id="@+id/textview_button_title"
+        style="?android:actionBarTabTextStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical|right"
+        android:drawableLeft="@drawable/ic_action_done"
+        android:drawablePadding="8dp"
+        android:gravity="center_vertical"
+        android:text="@string/menu_use" />
+</FrameLayout>

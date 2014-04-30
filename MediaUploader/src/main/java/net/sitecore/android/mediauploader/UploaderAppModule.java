@@ -19,9 +19,11 @@ import net.sitecore.android.mediauploader.ui.MainActivity;
 import net.sitecore.android.mediauploader.ui.browser.BrowserActivity;
 import net.sitecore.android.mediauploader.ui.browser.BrowserItemViewBinder;
 import net.sitecore.android.mediauploader.ui.browser.PreviewActivity;
+import net.sitecore.android.mediauploader.ui.location.LocationActivity;
 import net.sitecore.android.mediauploader.ui.settings.CreateEditInstanceActivity;
 import net.sitecore.android.mediauploader.ui.settings.MediaFolderSelectionActivity;
 import net.sitecore.android.mediauploader.ui.settings.SettingsActivity;
+import net.sitecore.android.mediauploader.ui.upload.MediaUploadResponseHandler;
 import net.sitecore.android.mediauploader.ui.upload.UploadActivity;
 import net.sitecore.android.mediauploader.ui.upload.UploadsListFragment;
 import net.sitecore.android.mediauploader.ui.upload.UploadHelper;
@@ -47,7 +49,9 @@ import static net.sitecore.android.sdk.api.internal.LogUtils.LOGE;
                 MediaFolderSelectionActivity.class,
                 SettingsActivity.class,
                 PreviewActivity.class,
-                UploadHelper.class
+                UploadHelper.class,
+                LocationActivity.class,
+                MediaUploadResponseHandler.class
         }
 )
 public final class UploaderAppModule {

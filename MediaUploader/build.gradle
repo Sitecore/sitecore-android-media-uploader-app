@@ -52,6 +52,7 @@ android {
 dependencies {
     compile 'com.android.support:support-v13:+'
     compile 'com.android.support:support-annotations:+'
+    compile 'com.google.android.gms:play-services:4.3.+'
 
     compile 'net.sitecore.android.sdk:sitecore-mobile-sdk:2.0.1@aar'
     compile 'net.sitecore.android.sdk:sitecore-mobile-ui:2.0.1@aar'
