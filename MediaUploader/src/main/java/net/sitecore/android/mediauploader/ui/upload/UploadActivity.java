@@ -238,7 +238,12 @@ public class UploadActivity extends Activity implements SelectMediaListener,
 
     @Override
     public void onConnected(Bundle dataBundle) {
-        startLocationUpdate();
+        Location location = mLocationClient.getLastLocation();
+        if (location == null) {
+            startLocationUpdate();
+        } else {
+            performReverseGeocodingRequest(new LatLng(location.getLatitude(), location.getLongitude()));
+        }
     }
 
     private void startLocationUpdate() {
