@@ -36,6 +36,9 @@ public class InstancesListFragment extends ListFragment implements LoaderCallbac
         }
     };
 
+    public InstancesListFragment() {
+    }
+
     @Override public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 

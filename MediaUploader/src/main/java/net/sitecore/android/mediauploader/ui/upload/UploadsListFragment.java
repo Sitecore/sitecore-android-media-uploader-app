@@ -51,6 +51,9 @@ public class UploadsListFragment extends ListFragment implements LoaderCallbacks
     private String mSelection;
     @Inject Picasso mImageLoader;
 
+    public UploadsListFragment() {
+    }
+
     @Override public void onAttach(Activity activity) {
         super.onAttach(activity);
         mCallbacks = (UploadsListCallbacks) activity;

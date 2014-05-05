@@ -16,6 +16,9 @@ import butterknife.InjectView;
 
 public class FolderSelectionFragment extends ItemsListBrowserFragment {
 
+    public FolderSelectionFragment() {
+    }
+
     @Override protected View onCreateUpButtonView(LayoutInflater inflater) {
         return inflater.inflate(R.layout.layout_up_button, null);
     }

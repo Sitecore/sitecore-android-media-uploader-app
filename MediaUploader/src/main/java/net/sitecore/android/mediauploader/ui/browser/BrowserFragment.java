@@ -29,6 +29,9 @@ public class BrowserFragment extends ItemsGridBrowserFragment {
         return fragment;
     }
 
+    public BrowserFragment() {
+    }
+
     @Override public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setItemsFilter(new MediaBrowserItemsFilter());

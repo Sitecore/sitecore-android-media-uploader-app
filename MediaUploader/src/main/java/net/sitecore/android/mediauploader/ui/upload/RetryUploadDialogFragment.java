@@ -9,7 +9,7 @@ import android.os.Bundle;
 
 import net.sitecore.android.mediauploader.R;
 
-class RetryUploadDialogFragment extends DialogFragment {
+public class RetryUploadDialogFragment extends DialogFragment {
 
     public interface RetryDialogCallbacks {
         public void onRetryUpload(String uploadId);
@@ -19,8 +19,6 @@ class RetryUploadDialogFragment extends DialogFragment {
     private static final String EXTRA_FAIL_MESSAGE = "message";
     private static final String EXTRA_ITEM_NAME = "name";
 
-    private RetryDialogCallbacks mCallbacks;
-
     public static RetryUploadDialogFragment newInstance(String name, String uploadId, String failMessage) {
         RetryUploadDialogFragment fragment = new RetryUploadDialogFragment();
         Bundle args = new Bundle();
@@ -29,6 +27,11 @@ class RetryUploadDialogFragment extends DialogFragment {
         args.putString(EXTRA_ITEM_NAME, name);
         fragment.setArguments(args);
         return fragment;
+    }
+
+    private RetryDialogCallbacks mCallbacks;
+
+    public RetryUploadDialogFragment() {
     }
 
     @Override public void onAttach(Activity activity) {
@@ -46,8 +49,7 @@ class RetryUploadDialogFragment extends DialogFragment {
                 .setIcon(R.drawable.ic_upload_error)
                 .setTitle(name)
                 .setMessage(failMessage)
-                .setPositiveButton(R.string.text_retry,
-                        new DialogInterface.OnClickListener() {
+                .setPositiveButton(R.string.text_retry, new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int whichButton) {
                                 //TODO: dont fire update here, move logic to activity
@@ -56,8 +58,7 @@ class RetryUploadDialogFragment extends DialogFragment {
                             }
                         }
                 )
-                .setNegativeButton(R.string.text_cancel,
-                        new DialogInterface.OnClickListener() {
+                .setNegativeButton(R.string.text_cancel, new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int whichButton) {
                                 dismiss();
