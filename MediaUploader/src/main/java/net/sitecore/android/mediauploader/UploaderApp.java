@@ -3,8 +3,7 @@ package net.sitecore.android.mediauploader;
 import android.app.Application;
 import android.content.Context;
 
-import com.android.volley.VolleyLog;
-
+import com.crashlytics.android.Crashlytics;
 import com.squareup.picasso.Picasso;
 
 import net.sitecore.android.mediauploader.provider.ItemsAsyncHandler;
@@ -28,8 +27,7 @@ public class UploaderApp extends Application {
         mImageLoader = Picasso.with(this);
 
         if (!BuildConfig.DEBUG) {
-            //TODO: add crashlytics
-            // Crashlytics.start(this);
+            Crashlytics.start(this);
         }
 
         setUpLogging(BuildConfig.DEBUG);

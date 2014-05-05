@@ -94,9 +94,14 @@
         <meta-data
             android:name="com.google.android.gms.version"
             android:value="@integer/google_play_services_version" />
+
         <meta-data
             android:name="com.google.android.maps.v2.API_KEY"
             android:value="AIzaSyBQo72bRvtIgBKWJ0QsX7yY5Tyw2S32PjQ" />
+
+        <meta-data
+            android:name="com.crashlytics.ApiKey"
+            android:value="4c24cc2513a38654d20f77a8fcd8b67e09e0bbfa" />
     </application>
 
 </manifest>
