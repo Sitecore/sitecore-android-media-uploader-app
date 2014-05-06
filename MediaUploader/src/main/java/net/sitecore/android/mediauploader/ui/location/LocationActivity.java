@@ -23,7 +23,6 @@ import javax.inject.Inject;
 import java.util.ArrayList;
 
 import com.android.volley.Request;
-import com.android.volley.Request.Method;
 import com.android.volley.Response.ErrorListener;
 import com.android.volley.Response.Listener;
 import com.android.volley.VolleyError;
@@ -37,7 +36,8 @@ import com.google.android.gms.maps.model.LatLng;
 import net.sitecore.android.mediauploader.R;
 import net.sitecore.android.mediauploader.UploaderApp;
 import net.sitecore.android.mediauploader.model.Address;
-import net.sitecore.android.mediauploader.requests.GeocodeRequest;
+import net.sitecore.android.mediauploader.requests.GeocodingRequest;
+import net.sitecore.android.mediauploader.requests.ReverseGeocodeRequest;
 import net.sitecore.android.mediauploader.util.ScUtils;
 import net.sitecore.android.sdk.api.ScRequestQueue;
 
@@ -45,8 +45,6 @@ import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
 import butterknife.OnEditorAction;
-
-import static net.sitecore.android.mediauploader.requests.GeocodeRequest.GEOCODING_BASE_URL;
 
 public class LocationActivity extends Activity implements ErrorListener {
     public final static String EXTRA_ADDRESS = "location";
@@ -59,6 +57,35 @@ public class LocationActivity extends Activity implements ErrorListener {
     private Address mCurrentAddress;
     private MapFragment mMapFragment;
     private View mUseMenuView;
+
+    private Listener<ArrayList<Address>> mGeocodeListener = new Listener<ArrayList<Address>>() {
+        @Override
+        public void onResponse(ArrayList<Address> addresses) {
+            setLoading(false);
+            if (addresses.size() != 0) {
+                mCurrentAddress = addresses.get(0);
+                setTitle(mCurrentAddress.address);
+
+                if (mMapFragment.isDetached() || mMapFragment.getMap() == null) return;
+
+                CameraUpdate center = CameraUpdateFactory.newLatLng(mCurrentAddress.latLng);
+                CameraUpdate zoom = CameraUpdateFactory.zoomTo(15);
+                mMapFragment.getMap().moveCamera(center);
+                mMapFragment.getMap().animateCamera(zoom);
+            }
+        }
+    };
+
+    private Listener<ArrayList<Address>> mReverseGecoodeListener = new Listener<ArrayList<Address>>() {
+        @Override
+        public void onResponse(ArrayList<Address> addresses) {
+            setLoading(false);
+            if (addresses.size() != 0) {
+                mCurrentAddress = addresses.get(0);
+                setTitle(mCurrentAddress.address);
+            }
+        }
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -140,7 +167,7 @@ public class LocationActivity extends Activity implements ErrorListener {
         return intent;
     }
 
-    public static Intent prepateIntent(Context context, Address address) {
+    public static Intent prepareIntent(Context context, Address address) {
         Intent intent = new Intent(context, LocationActivity.class);
         intent.putExtra(EXTRA_ADDRESS, address);
         return intent;
@@ -148,45 +175,13 @@ public class LocationActivity extends Activity implements ErrorListener {
 
     private void performGeocoding(String text) {
         if (TextUtils.isEmpty(text)) return;
-
-        Listener<ArrayList<Address>> listener = new Listener<ArrayList<Address>>() {
-            @Override public void onResponse(ArrayList<Address> addresses) {
-                setLoading(false);
-                if (addresses.size() != 0) {
-                    mCurrentAddress = addresses.get(0);
-                    setTitle(mCurrentAddress.address);
-
-                    if (mMapFragment.isDetached()) return;
-
-                    CameraUpdate center = CameraUpdateFactory.newLatLng(mCurrentAddress.latLng);
-                    CameraUpdate zoom = CameraUpdateFactory.zoomTo(15);
-                    mMapFragment.getMap().moveCamera(center);
-                    mMapFragment.getMap().animateCamera(zoom);
-                }
-            }
-        };
-
-        String url = GEOCODING_BASE_URL + "address=" + text + "&sensor=" + true;
-        Request request = new GeocodeRequest(Method.GET, url, listener, this);
-
+        Request request = new GeocodingRequest(text, mGeocodeListener, this);
         setLoading(true);
         mRequestQueue.add(request);
     }
 
     private void performReverseGeocodingRequest(LatLng latLng) {
-        Listener<ArrayList<Address>> listener = new Listener<ArrayList<Address>>() {
-            @Override public void onResponse(ArrayList<Address> addresses) {
-                setLoading(false);
-                if (addresses.size() != 0) {
-                    mCurrentAddress = addresses.get(0);
-                    setTitle(mCurrentAddress.address);
-                }
-            }
-        };
-
-        String url = GEOCODING_BASE_URL + "latlng=" + latLng.latitude + "," + latLng.longitude + "&sensor=" + true;
-        Request request = new GeocodeRequest(Method.GET, url, listener, this);
-
+        Request request = new ReverseGeocodeRequest(latLng, mReverseGecoodeListener, this);
         setLoading(true);
         mRequestQueue.add(request);
     }

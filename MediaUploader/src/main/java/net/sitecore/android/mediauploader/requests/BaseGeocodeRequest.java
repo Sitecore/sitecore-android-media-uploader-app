@@ -18,12 +18,12 @@ import org.json.JSONObject;
 
 import static net.sitecore.android.sdk.api.internal.LogUtils.LOGE;
 
-public class GeocodeRequest extends Request<ArrayList<Address>> {
-    public final static String GEOCODING_BASE_URL = "http://maps.googleapis.com/maps/api/geocode/json?";
+public class BaseGeocodeRequest extends Request<ArrayList<Address>> {
+    protected final static String GEOCODING_BASE_URL = "http://maps.googleapis.com/maps/api/geocode/json?";
     private Listener<ArrayList<Address>> mSuccessListener;
 
-    public GeocodeRequest(int method, String url, Listener<ArrayList<Address>> listener, ErrorListener errorListener) {
-        super(method, url, errorListener);
+    public BaseGeocodeRequest(String url, Listener<ArrayList<Address>> listener, ErrorListener errorListener) {
+        super(Method.GET, url, errorListener);
         mSuccessListener = listener;
     }
 
@@ -46,9 +46,9 @@ public class GeocodeRequest extends Request<ArrayList<Address>> {
                     JSONArray addressComponents = element.getJSONArray("address_components");
                     for (int j = 0; j < addressComponents.length(); j++) {
                         JSONObject adddressElement = addressComponents.getJSONObject(j);
-                        String type = getTypesString(adddressElement);
-                        if (type.contains("country")) countryCode = adddressElement.getString("short_name");
-                        if (type.contains("postal_code")) zipCode = adddressElement.getString("short_name");
+                        ArrayList<String> types = getTypesList(adddressElement);
+                        if (types.contains("country")) countryCode = adddressElement.getString("short_name");
+                        if (types.contains("postal_code")) zipCode = adddressElement.getString("short_name");
                     }
 
                     receivedAddresses.add(new Address(addressLine, countryCode, zipCode,
@@ -61,17 +61,18 @@ public class GeocodeRequest extends Request<ArrayList<Address>> {
         return Response.success(receivedAddresses, null);
     }
 
-    private String getTypesString(JSONObject component) throws JSONException {
+    private ArrayList<String> getTypesList(JSONObject component) throws JSONException {
+        ArrayList<String> list = new ArrayList<>();
+
         JSONArray typesArray = component.optJSONArray("types");
         if (typesArray != null) {
-            StringBuilder builder = new StringBuilder();
             for (int i = 0; i < typesArray.length(); i++) {
-                builder.append(typesArray.getString(i));
+                list.add(typesArray.getString(i));
             }
-            return builder.toString();
         } else {
-            return component.getString("types");
+            list.add(component.getString("types"));
         }
+        return list;
     }
 
     @Override protected void deliverResponse(ArrayList<Address> addresses) {

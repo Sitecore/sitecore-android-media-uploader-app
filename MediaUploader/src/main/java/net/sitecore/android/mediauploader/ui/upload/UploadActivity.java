@@ -24,7 +24,6 @@ import java.util.ArrayList;
 import java.util.Date;
 
 import com.android.volley.Request;
-import com.android.volley.Request.Method;
 import com.android.volley.Response.ErrorListener;
 import com.android.volley.Response.Listener;
 import com.android.volley.VolleyError;
@@ -44,7 +43,7 @@ import net.sitecore.android.mediauploader.UploaderApp;
 import net.sitecore.android.mediauploader.model.Address;
 import net.sitecore.android.mediauploader.model.Instance;
 import net.sitecore.android.mediauploader.provider.InstancesAsyncHandler;
-import net.sitecore.android.mediauploader.requests.GeocodeRequest;
+import net.sitecore.android.mediauploader.requests.ReverseGeocodeRequest;
 import net.sitecore.android.mediauploader.ui.location.LocationActivity;
 import net.sitecore.android.mediauploader.ui.settings.ImageSize;
 import net.sitecore.android.mediauploader.ui.upload.SelectMediaDialogHelper.SelectMediaListener;
@@ -57,11 +56,11 @@ import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
 
-import static net.sitecore.android.mediauploader.requests.GeocodeRequest.GEOCODING_BASE_URL;
 import static net.sitecore.android.mediauploader.util.Utils.showToast;
 
 public class UploadActivity extends Activity implements SelectMediaListener,
-        GooglePlayServicesClient.ConnectionCallbacks, GooglePlayServicesClient.OnConnectionFailedListener {
+        GooglePlayServicesClient.ConnectionCallbacks, GooglePlayServicesClient.OnConnectionFailedListener,
+        ErrorListener {
     public static final int LOCATION_ACTIVITY_CODE = 10;
 
     private final int MAX_IMAGE_WIDTH = 2000;
@@ -84,6 +83,17 @@ public class UploadActivity extends Activity implements SelectMediaListener,
 
     private SelectMediaDialogHelper mMediaDialogHelper;
     private LocationClient mLocationClient;
+
+    private Listener<ArrayList<Address>> mReverseGeocodelistener = new Listener<ArrayList<Address>>() {
+        @Override
+        public void onResponse(ArrayList<Address> addresses) {
+            setProgressBarIndeterminateVisibility(false);
+            if (addresses.size() != 0) {
+                mImageAddress = addresses.get(0);
+                mLocationText.setText(mImageAddress.address);
+            }
+        }
+    };
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -196,7 +206,7 @@ public class UploadActivity extends Activity implements SelectMediaListener,
 
     @OnClick(R.id.button_location)
     public void onLocation() {
-        Intent intent = LocationActivity.prepateIntent(this, mImageAddress);
+        Intent intent = LocationActivity.prepareIntent(this, mImageAddress);
         startActivityForResult(intent, LOCATION_ACTIVITY_CODE);
     }
 
@@ -261,26 +271,14 @@ public class UploadActivity extends Activity implements SelectMediaListener,
     }
 
     private void performReverseGeocodingRequest(LatLng latLng) {
-        Listener<ArrayList<Address>> listener = new Listener<ArrayList<Address>>() {
-            @Override public void onResponse(ArrayList<Address> addresses) {
-                setProgressBarIndeterminateVisibility(false);
-                if (addresses.size() != 0) {
-                    mImageAddress = addresses.get(0);
-                    mLocationText.setText(mImageAddress.address);
-                }
-            }
-        };
-
-        String url = GEOCODING_BASE_URL + "latlng=" + latLng.latitude + "," + latLng.longitude + "&sensor=" + true;
-        Request request = new GeocodeRequest(Method.GET, url, listener, new ErrorListener() {
-            @Override public void onErrorResponse(VolleyError error) {
-                setProgressBarIndeterminateVisibility(false);
-
-            }
-        });
-
+        Request request = new ReverseGeocodeRequest(latLng, mReverseGeocodelistener, this);
         mRequestQueue.add(request);
         setProgressBarIndeterminateVisibility(true);
+    }
+
+    @Override
+    public void onErrorResponse(VolleyError error) {
+        setProgressBarIndeterminateVisibility(false);
     }
 
     @Override
