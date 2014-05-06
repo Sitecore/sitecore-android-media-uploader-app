@@ -98,8 +98,12 @@ public class InstanceFieldsFragment extends Fragment {
         instance.setPassword(mInstancePassword.getText().toString());
         instance.setSite(mInstanceSite.getText().toString().toLowerCase(Locale.getDefault()));
         instance.setDatabase("master");
-        if (mInstance != null) instance.setRootFolder(mInstance.getRootFolder());
-        else instance.setRootFolder(ScUtils.PATH_MEDIA_LIBRARY);
+        if (mInstance != null) {
+            instance.setRootFolder(mInstance.getRootFolder());
+            instance.setSelected(mInstance.isSelected());
+        } else {
+            instance.setRootFolder(ScUtils.PATH_MEDIA_LIBRARY);
+        }
         return instance;
     }
 

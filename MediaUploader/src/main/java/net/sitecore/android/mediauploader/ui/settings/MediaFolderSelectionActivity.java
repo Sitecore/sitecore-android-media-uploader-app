@@ -74,6 +74,7 @@ public class MediaFolderSelectionActivity extends Activity implements ErrorListe
             onErrorResponse(volleyError);
         }
     };
+    private InstancesAsyncHandler mInstancesAsyncHandler;
 
     @Override protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -84,6 +85,7 @@ public class MediaFolderSelectionActivity extends Activity implements ErrorListe
         UploaderApp.from(this).inject(this);
         ButterKnife.inject(this);
 
+        mInstancesAsyncHandler = new InstancesAsyncHandler(getContentResolver());
         mInstanceUri = getIntent().getData();
         mInstance = getIntent().getParcelableExtra(INSTANCE_KEY);
         if (mInstance == null) {
@@ -136,15 +138,26 @@ public class MediaFolderSelectionActivity extends Activity implements ErrorListe
     private void onDuplicatesLoaded(Cursor data) {
         if (data.moveToFirst()) {
             if (checkIsCurrentInstance(data)) {
-                performSave();
+                mInstancesAsyncHandler.updateInstance(mInstanceUri, mInstance);
+                NavUtils.navigateUpFromSameTask(this);
             } else {
                 Toast.makeText(this, R.string.toast_instance_exists, Toast.LENGTH_LONG).show();
             }
         } else {
+            // Duplicates weren't found
             new InstancesAsyncHandler(getContentResolver()){
                 @Override public void onInstancesLoaded(Cursor cursor) {
-                    if (cursor.getCount() == 0) mInstance.setSelected(true);
-                    performSave();
+                    // If no sites exist - set current as selected one
+                    if (cursor.getCount() == 0) {
+                        mInstance.setSelected(true);
+                    }
+
+                    if (mInstanceUri == null) {
+                        mInstancesAsyncHandler.insertNewInstance(mInstance);
+                    } else {
+                        mInstancesAsyncHandler.updateInstance(mInstanceUri, mInstance);
+                    }
+                    NavUtils.navigateUpFromSameTask(MediaFolderSelectionActivity.this);
                 }
             }.queryInstances();
         }
@@ -163,19 +176,6 @@ public class MediaFolderSelectionActivity extends Activity implements ErrorListe
     @Override
     public void onErrorResponse(VolleyError volleyError) {
         Toast.makeText(this, ScUtils.getMessageFromError(volleyError), Toast.LENGTH_LONG).show();
-    }
-
-
-
-    private void performSave() {
-        InstancesAsyncHandler instancesAsyncHandler = new InstancesAsyncHandler(getContentResolver());
-        if (mInstanceUri == null) {
-            instancesAsyncHandler.insertNewInstance(mInstance);
-        } else {
-            instancesAsyncHandler.updateInstance(mInstanceUri, mInstance);
-        }
-
-        NavUtils.navigateUpFromSameTask(this);
     }
 
 }

@@ -61,7 +61,8 @@ public class InstancesListFragment extends ListFragment implements LoaderCallbac
 
     private void updateSelectedInstanceId(long id) {
         ArrayList<ContentProviderOperation> ops = new ArrayList<>();
-        ops.add(ContentProviderOperation.newUpdate(Instances.CONTENT_URI).withValue(Instances.SELECTED, 0)
+        ops.add(ContentProviderOperation.newUpdate(Instances.CONTENT_URI)
+                .withValue(Instances.SELECTED, 0)
                 .build());
         ops.add(ContentProviderOperation.newUpdate(Instances.buildInstanceUri(String.valueOf(id)))
                 .withValue(Instances.SELECTED, 1)

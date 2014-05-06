@@ -22,8 +22,11 @@ public class InstancesAsyncHandler extends AsyncQueryHandler {
     private static final int TOKEN_QUERY_ALL = 0;
     private static final int TOKEN_QUERY_DUPLICATES = 0;
 
-    private static final String SELECTION_DUPLICATE = Instances.URL + "=? and " + Instances.LOGIN + "=? and " +
-            Instances.PASSWORD + "=? and " + Instances.ROOT_FOLDER + "=? and " + Instances.SITE + "=?";
+    private static final String SELECTION_DUPLICATE = Instances.URL + "=? and "
+            + Instances.LOGIN + "=? and "
+            + Instances.PASSWORD + "=? and "
+            + Instances.ROOT_FOLDER + "=? and "
+            + Instances.SITE + "=?";
 
     public InstancesAsyncHandler(ContentResolver cr) {
         super(cr);
