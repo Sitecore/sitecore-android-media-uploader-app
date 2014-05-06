@@ -62,6 +62,8 @@ public class StartUploadTask extends AsyncTask<String, Void, Void> {
                         ScApiSession session = ScApiSessionFactory.newSession(instance.getUrl(), key,
                                 instance.getLogin(), instance.getPassword());
 
+                        if (!TextUtils.isEmpty(instance.getSite())) session.setDefaultSite(instance.getSite());
+
                         UploadHelper helper = new UploadHelper(mContext);
                         helper.uploadMedia(session, Uploads.buildUploadUri(uploadId), instance, itemName,
                                 fileUri.toString(), imageAddress);
