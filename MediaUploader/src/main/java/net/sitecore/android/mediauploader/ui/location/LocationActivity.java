@@ -31,7 +31,10 @@ import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap.OnMapLongClickListener;
 import com.google.android.gms.maps.MapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
+import com.google.android.gms.maps.model.MarkerOptions;
 
 import net.sitecore.android.mediauploader.R;
 import net.sitecore.android.mediauploader.UploaderApp;
@@ -58,6 +61,8 @@ public class LocationActivity extends Activity implements ErrorListener {
     private MapFragment mMapFragment;
     private View mUseMenuView;
 
+    private Marker mSelectedLocationMarker;
+
     private Listener<ArrayList<Address>> mGeocodeListener = new Listener<ArrayList<Address>>() {
         @Override
         public void onResponse(ArrayList<Address> addresses) {
@@ -75,7 +80,6 @@ public class LocationActivity extends Activity implements ErrorListener {
             }
         }
     };
-
     private Listener<ArrayList<Address>> mReverseGecoodeListener = new Listener<ArrayList<Address>>() {
         @Override
         public void onResponse(ArrayList<Address> addresses) {
@@ -101,6 +105,13 @@ public class LocationActivity extends Activity implements ErrorListener {
         mMapFragment = (MapFragment) getFragmentManager().findFragmentById(R.id.map);
         mMapFragment.getMap().setOnMapLongClickListener(new OnMapLongClickListener() {
             @Override public void onMapLongClick(LatLng latLng) {
+                if (mSelectedLocationMarker != null) {
+                    mSelectedLocationMarker.remove();
+                }
+                mSelectedLocationMarker = mMapFragment.getMap().addMarker(new MarkerOptions()
+                        .position(latLng)
+                        .icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_selected_location)));
+
                 performReverseGeocodingRequest(latLng);
             }
         });
