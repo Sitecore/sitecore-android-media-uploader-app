@@ -45,7 +45,9 @@ public class ImageHelper {
             int imageHeight = options.outHeight;
             int imageWidth = options.outWidth;
             return imageWidth > desiredWidth || imageHeight > desiredHeight;
-        } catch (IOException e) {
+        } catch (IOException | SecurityException e) {
+//          SecurityException due to bug in Android KitKat. After target file of uri was deleted, reading this uri
+//          causes SecurityException.
             LOGE(e);
             return false;
         }
