@@ -17,6 +17,7 @@ import net.sitecore.android.sdk.ui.ItemViewBinder;
 import net.sitecore.android.sdk.ui.ItemsGridBrowserFragment;
 
 public class BrowserFragment extends ItemsGridBrowserFragment {
+
     public static final String INSTANCE_URL = "url";
     public static final String INSTANCE_DATABASE = "database";
 
@@ -36,7 +37,7 @@ public class BrowserFragment extends ItemsGridBrowserFragment {
         super.onCreate(savedInstanceState);
         setItemsFilter(new MediaBrowserItemsFilter());
         setItemsSortOrder(new SortByMediaFolderTemplateComparator());
-        setColumnCount(3);
+        setColumnCount(getResources().getInteger(R.integer.media_browser_row_count));
     }
 
     @Override
