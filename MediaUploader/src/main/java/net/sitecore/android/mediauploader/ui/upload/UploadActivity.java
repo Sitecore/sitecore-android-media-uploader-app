@@ -9,6 +9,7 @@ import android.os.Build.VERSION;
 import android.os.Build.VERSION_CODES;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.ViewTreeObserver.OnGlobalLayoutListener;
 import android.view.Window;
@@ -46,6 +47,7 @@ import net.sitecore.android.mediauploader.provider.InstancesAsyncHandler;
 import net.sitecore.android.mediauploader.requests.ReverseGeocodeRequest;
 import net.sitecore.android.mediauploader.ui.location.LocationActivity;
 import net.sitecore.android.mediauploader.ui.settings.ImageSize;
+import net.sitecore.android.mediauploader.ui.settings.SettingsActivity;
 import net.sitecore.android.mediauploader.ui.upload.SelectMediaDialogHelper.SelectMediaListener;
 import net.sitecore.android.mediauploader.util.ImageHelper;
 import net.sitecore.android.mediauploader.util.Prefs;
@@ -119,6 +121,25 @@ public class UploadActivity extends Activity implements SelectMediaListener,
         proccessImageLocation();
     }
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.main, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                finish();
+                return true;
+            case R.id.action_settings:
+                startActivity(new Intent(this, SettingsActivity.class));
+                return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
     private void proccessImageLocation() {
         if (mImageAddress != null) return;
 
@@ -130,7 +151,6 @@ public class UploadActivity extends Activity implements SelectMediaListener,
             else {
                 mLocationButton.setEnabled(false);
             }
-
         }
     }
 
@@ -165,16 +185,6 @@ public class UploadActivity extends Activity implements SelectMediaListener,
         }
         creator.placeholder(R.drawable.ic_placeholder).error(R.drawable.ic_action_cancel)
                 .into(mPreview);
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        if (item.getItemId() == android.R.id.home) {
-            finish();
-            return true;
-        } else {
-            return super.onOptionsItemSelected(item);
-        }
     }
 
     @OnClick(R.id.button_upload_now)
