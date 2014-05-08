@@ -44,22 +44,22 @@ public class MainActivity extends Activity implements SelectMediaListener {
         getActionBar().setDisplayShowTitleEnabled(false);
 
         ButterKnife.inject(this);
-        UploaderApp.from(this).inject(this);
     }
 
     @Override protected void onResume() {
         super.onResume();
+
+        UploaderApp.from(this).inject(this);
+
         if (mApiSession == null) {
             mNoInstancesView.setVisibility(View.VISIBLE);
 
             mUploadButton.setEnabled(false);
             mBrowseButton.setEnabled(false);
-            mMyUploadsButton.setEnabled(false);
         } else {
             mNoInstancesView.setVisibility(View.GONE);
             mUploadButton.setEnabled(true);
             mBrowseButton.setEnabled(true);
-            mMyUploadsButton.setEnabled(true);
         }
     }
 
