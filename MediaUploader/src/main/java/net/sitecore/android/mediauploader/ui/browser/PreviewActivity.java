@@ -3,6 +3,7 @@ package net.sitecore.android.mediauploader.ui.browser;
 import android.app.ActionBar;
 import android.app.Activity;
 import android.app.LoaderManager.LoaderCallbacks;
+import android.content.Context;
 import android.content.Loader;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
@@ -10,12 +11,14 @@ import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v4.view.ViewPager.OnPageChangeListener;
 import android.text.TextUtils;
+import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewGroup.LayoutParams;
 import android.view.Window;
 import android.widget.ImageView.ScaleType;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import javax.inject.Inject;
@@ -23,6 +26,7 @@ import javax.inject.Inject;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 
 import net.sitecore.android.mediauploader.R;
@@ -127,7 +131,7 @@ public class PreviewActivity extends Activity implements LoaderCallbacks<List<Sc
     }
 
     private void prepareViewPager(final ArrayList<String> names, ArrayList<String> urls, int currentPosition) {
-        mViewPager.setAdapter(new SamplePagerAdapter(urls));
+        mViewPager.setAdapter(new PreviewAdapter(this, urls, mImageLoader));
         mViewPager.setCurrentItem(currentPosition);
         mViewPager.setOnPageChangeListener(new OnPageChangeListener() {
             @Override
@@ -152,11 +156,15 @@ public class PreviewActivity extends Activity implements LoaderCallbacks<List<Sc
     public void onLoaderReset(Loader<List<ScItem>> loader) {
     }
 
-    class SamplePagerAdapter extends PagerAdapter {
+    static class PreviewAdapter extends PagerAdapter {
         private ArrayList<String> mImageUrls = new ArrayList<>();
+        private Picasso mImageLoader;
+        private LayoutInflater mLayoutInflater;
 
-        SamplePagerAdapter(ArrayList<String> imageUrls) {
+        PreviewAdapter(Context context, ArrayList<String> imageUrls, Picasso imageLoader) {
             mImageUrls = imageUrls;
+            mImageLoader = imageLoader;
+            mLayoutInflater = LayoutInflater.from(context);
         }
 
         @Override
@@ -166,16 +174,26 @@ public class PreviewActivity extends Activity implements LoaderCallbacks<List<Sc
 
         @Override
         public View instantiateItem(ViewGroup container, int position) {
-            PhotoView photoView = new PhotoView(container.getContext());
+            View root = mLayoutInflater.inflate(R.layout.pager_item_preview, container, false);
+            final ProgressBar progressBar = (ProgressBar) root.findViewById(R.id.progress_bar);
+
+            final PhotoView photoView = (PhotoView) root.findViewById(R.id.preview);
             photoView.setScaleType(ScaleType.CENTER_INSIDE);
 
             mImageLoader.load(mImageUrls.get(position))
-                    .placeholder(R.drawable.ic_placeholder)
                     .error(R.drawable.ic_action_cancel)
-                    .into(photoView);
+                    .into(photoView, new Callback() {
+                        @Override public void onSuccess() {
+                            progressBar.setVisibility(View.GONE);
+                        }
 
-            container.addView(photoView, LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT);
-            return photoView;
+                        @Override public void onError() {
+                            progressBar.setVisibility(View.GONE);
+                        }
+                    });
+
+            container.addView(root, LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT);
+            return root;
         }
 
         @Override
