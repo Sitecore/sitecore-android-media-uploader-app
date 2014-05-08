@@ -1,13 +1,12 @@
 package net.sitecore.android.mediauploader.ui.settings;
 
 import android.app.Activity;
-import android.app.LoaderManager.LoaderCallbacks;
-import android.content.Loader;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.NavUtils;
 import android.view.MenuItem;
+import android.view.Window;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -65,12 +64,15 @@ public class MediaFolderSelectionActivity extends Activity implements ErrorListe
 
     private final NetworkEventsListener mNetworkEventsListener = new NetworkEventsListener() {
         @Override public void onUpdateRequestStarted() {
+            setProgressBarIndeterminateVisibility(true);
         }
 
         @Override public void onUpdateSuccess(ItemsResponse itemsResponse) {
+            setProgressBarIndeterminateVisibility(false);
         }
 
         @Override public void onUpdateError(VolleyError volleyError) {
+            setProgressBarIndeterminateVisibility(false);
             onErrorResponse(volleyError);
         }
     };
@@ -78,6 +80,8 @@ public class MediaFolderSelectionActivity extends Activity implements ErrorListe
 
     @Override protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
+
         setContentView(R.layout.activity_choose_media_library);
         getActionBar().setDisplayHomeAsUpEnabled(true);
 
