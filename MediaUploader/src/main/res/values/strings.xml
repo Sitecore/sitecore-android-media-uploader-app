@@ -69,9 +69,8 @@
     <string name="text_navigate_up">Up</string>
     <string name="text_retry">Retry</string>
     <string name="text_cancel">Cancel</string>
-
-    <!-- Prefs keys -->
-    <string name="key_current_image_size">key_image_size</string>
+    <string name="text_search">Search</string>
+    <string name="text_site">Site</string>
 
     <string-array name="select_image_source">
         <item>Camera</item>

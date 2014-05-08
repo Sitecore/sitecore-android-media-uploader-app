@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Prefs keys -->
+    <string name="key_current_image_size">key_image_size</string>
+
+</resources>
