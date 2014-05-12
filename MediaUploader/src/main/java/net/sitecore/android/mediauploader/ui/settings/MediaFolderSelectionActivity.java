@@ -1,11 +1,17 @@
 package net.sitecore.android.mediauploader.ui.settings;
 
+import android.app.ActionBar;
+import android.app.ActionBar.LayoutParams;
 import android.app.Activity;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.NavUtils;
+import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.MenuItem;
+import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.Window;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -35,7 +41,6 @@ import net.sitecore.android.sdk.ui.ItemsBrowserFragment.NetworkEventsListener;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
-import butterknife.OnClick;
 
 public class MediaFolderSelectionActivity extends Activity implements ErrorListener {
 
@@ -47,6 +52,9 @@ public class MediaFolderSelectionActivity extends Activity implements ErrorListe
     private Instance mInstance;
     private Uri mInstanceUri;
     private FolderSelectionFragment mFolderSelectionFragment;
+
+    private InstancesAsyncHandler mInstancesAsyncHandler;
+    private View mUseMenuView;
 
     private final ContentTreePositionListener mContentTreePositionListener = new ContentTreePositionListener() {
         @Override public void onGoUp(ScItem item) {
@@ -61,26 +69,29 @@ public class MediaFolderSelectionActivity extends Activity implements ErrorListe
             mInstanceRootFolder.setText(item.getPath());
         }
     };
-
+    
     private final NetworkEventsListener mNetworkEventsListener = new NetworkEventsListener() {
         @Override public void onUpdateRequestStarted() {
+            mUseMenuView.setVisibility(View.GONE);
             setProgressBarIndeterminateVisibility(true);
         }
 
         @Override public void onUpdateSuccess(ItemsResponse itemsResponse) {
+            mUseMenuView.setVisibility(View.VISIBLE);
             setProgressBarIndeterminateVisibility(false);
         }
 
         @Override public void onUpdateError(VolleyError volleyError) {
+            mUseMenuView.setVisibility(View.VISIBLE);
             setProgressBarIndeterminateVisibility(false);
             onErrorResponse(volleyError);
         }
     };
-    private InstancesAsyncHandler mInstancesAsyncHandler;
 
     @Override protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
+        initActionBar();
 
         setContentView(R.layout.activity_choose_media_library);
         getActionBar().setDisplayHomeAsUpEnabled(true);
@@ -115,6 +126,25 @@ public class MediaFolderSelectionActivity extends Activity implements ErrorListe
         }
     };
 
+
+    private void initActionBar() {
+        getActionBar().setDisplayOptions(ActionBar.DISPLAY_SHOW_HOME | ActionBar.DISPLAY_SHOW_TITLE |
+                ActionBar.DISPLAY_SHOW_CUSTOM);
+
+        mUseMenuView = LayoutInflater.from(this).inflate(R.layout.layout_menu_use, null);
+
+        mUseMenuView.setOnClickListener(new OnClickListener() {
+            @Override public void onClick(View v) {
+                saveCurrentFolder();
+            }
+        });
+
+        ActionBar.LayoutParams params = new LayoutParams(Gravity.RIGHT);
+        getActionBar().setCustomView(mUseMenuView, params);
+
+        getActionBar().setDisplayHomeAsUpEnabled(true);
+    }
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
@@ -126,7 +156,6 @@ public class MediaFolderSelectionActivity extends Activity implements ErrorListe
         }
     }
 
-    @OnClick(R.id.button_save)
     public void saveCurrentFolder() {
         if (mFolderSelectionFragment.getCurrentItem() != null) {
             mInstance.setRootFolder(mFolderSelectionFragment.getCurrentItem().getPath());
