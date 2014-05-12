@@ -108,8 +108,7 @@ public class UploadActivity extends Activity implements SelectMediaListener,
         UploaderApp.from(this).inject(this);
 
         mImageUri = getIntent().getData();
-        mCurrentImageSize = ImageSize.valueOf(Prefs.from(this).getString(R.string.key_current_image_size,
-                ImageSize.ACTUAL.name()));
+
         mImageHelper = new ImageHelper(this);
         mLocationClient = new LocationClient(this, this, this);
 
@@ -191,19 +190,23 @@ public class UploadActivity extends Activity implements SelectMediaListener,
     public void onUploadNow() {
         final UploadHelper mUploadHelper = new UploadHelper(getApplicationContext());
         final String itemName = getItemName();
+        ImageSize imageSize = ImageSize.valueOf(Prefs.from(this).getString(R.string.key_current_image_size,
+                ImageSize.ACTUAL.name()));
 
         new InstancesAsyncHandler(getContentResolver()) {
             @Override protected void onInsertComplete(int token, Object cookie, Uri uri) {
                 mUploadHelper.uploadMedia(mApiSession, uri, mInstance, itemName, mImageUri.toString(), mImageAddress);
             }
-        }.insertDelayedUpload(itemName, mImageUri, mInstance, mCurrentImageSize, mImageAddress);
+        }.insertDelayedUpload(itemName, mImageUri, mInstance, imageSize, mImageAddress);
         finish();
     }
 
     @OnClick(R.id.button_upload_later)
     public void onUploadLater() {
+        ImageSize imageSize = ImageSize.valueOf(Prefs.from(this).getString(R.string.key_current_image_size,
+                ImageSize.ACTUAL.name()));
         new InstancesAsyncHandler(getContentResolver()).insertDelayedUpload(getItemName(), mImageUri, mInstance,
-                mCurrentImageSize, mImageAddress);
+                imageSize, mImageAddress);
         showToast(this, R.string.toast_added_to_uploads);
         finish();
     }
