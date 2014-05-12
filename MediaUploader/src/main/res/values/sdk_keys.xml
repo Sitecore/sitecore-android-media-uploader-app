@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="api_maps_key">AIzaSyBQo72bRvtIgBKWJ0QsX7yY5Tyw2S32PjQ</string>
+
+    <string name="api_crashlytics_key">4c24cc2513a38654d20f77a8fcd8b67e09e0bbfa</string>
+
+    <string name="api_analytics_uploader_tracking_id">UA-50047147-1</string>
+
+</resources>
