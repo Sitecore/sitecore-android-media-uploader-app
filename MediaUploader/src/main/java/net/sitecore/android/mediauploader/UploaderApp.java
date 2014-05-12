@@ -4,6 +4,9 @@ import android.app.Application;
 import android.content.Context;
 
 import com.crashlytics.android.Crashlytics;
+import com.google.android.gms.analytics.GoogleAnalytics;
+import com.google.android.gms.analytics.HitBuilders;
+import com.google.android.gms.analytics.Tracker;
 import com.squareup.picasso.Picasso;
 
 import net.sitecore.android.mediauploader.provider.ItemsAsyncHandler;
@@ -16,6 +19,7 @@ public class UploaderApp extends Application {
     private Picasso mImageLoader;
 
     private ObjectGraph mObjectGraph;
+    private Tracker mTracker;
 
     public static UploaderApp from(Context context) {
         return (UploaderApp) context.getApplicationContext();
@@ -28,11 +32,30 @@ public class UploaderApp extends Application {
 
         if (!BuildConfig.DEBUG) {
             Crashlytics.start(this);
+            initAnalytics();
         }
 
         setUpLogging(BuildConfig.DEBUG);
 
         mObjectGraph = ObjectGraph.create(new UploaderAppModule(this));
+    }
+
+    private void initAnalytics() {
+        final GoogleAnalytics analytics = GoogleAnalytics.getInstance(this);
+        mTracker = analytics.newTracker(R.xml.media_uploader_tracker);
+        mTracker.enableAutoActivityTracking(true);
+        analytics.enableAutoActivityReports(this);
+    }
+
+    public void trackEvent(int actionResId) {
+        if (mTracker == null) {
+            initAnalytics();
+        }
+        mTracker.send(new HitBuilders.EventBuilder()
+                .setCategory("event")
+                .setAction(getString(actionResId))
+                .setLabel("android")
+                .build());
     }
 
     private void setUpLogging(boolean isEnabled) {
