@@ -153,6 +153,8 @@ public class CreateEditInstanceActivity extends Activity implements LoaderCallba
                     if (response.getTotalCount() != 0) {
                         showMediaFolderSelectionActivity(enteredInstance);
                     } else {
+                        UploaderApp app = UploaderApp.from(getApplicationContext());
+                        app.trackEvent(R.string.event_add_site_failed, getString(R.string.toast_instance_is_not_valid));
                         showToast(CreateEditInstanceActivity.this, R.string.toast_instance_is_not_valid);
                     }
 
@@ -184,7 +186,11 @@ public class CreateEditInstanceActivity extends Activity implements LoaderCallba
     private final ErrorListener mErrorListener = new ErrorListener() {
         @Override public void onErrorResponse(VolleyError error) {
             setLoading(false);
-            Toast.makeText(CreateEditInstanceActivity.this, ScUtils.getMessageFromError(error), Toast.LENGTH_LONG).show();
+            String message = ScUtils.getMessageFromError(error);
+            Toast.makeText(CreateEditInstanceActivity.this, message, Toast.LENGTH_LONG).show();
+
+            UploaderApp app = UploaderApp.from(getApplicationContext());
+            app.trackEvent(R.string.event_add_site_failed, message);
         }
     };
 

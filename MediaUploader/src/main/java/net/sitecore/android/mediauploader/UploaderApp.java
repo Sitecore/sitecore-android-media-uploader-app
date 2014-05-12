@@ -48,13 +48,17 @@ public class UploaderApp extends Application {
     }
 
     public void trackEvent(int actionResId) {
+        trackEvent(actionResId, "");
+    }
+
+    public void trackEvent(int actionResId, String message) {
         if (mTracker == null) {
             initAnalytics();
         }
         mTracker.send(new HitBuilders.EventBuilder()
                 .setCategory("event")
                 .setAction(getString(actionResId))
-                .setLabel("android")
+                .setLabel(message)
                 .build());
     }
 

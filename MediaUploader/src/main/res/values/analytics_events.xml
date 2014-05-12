@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="event_image_uploaded">Image uploaded</string>
+    <string name="event_image_upload_failed">Upload failed</string>
+
+    <string name="event_add_site_failed">Failed to add site</string>
+    <string name="event_site_added">Site added</string>
+    <string name="event_site_removed">Site removed</string>
+
+</resources>

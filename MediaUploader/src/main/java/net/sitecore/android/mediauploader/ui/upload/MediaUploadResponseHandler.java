@@ -90,6 +90,8 @@ public class MediaUploadResponseHandler implements Listener<ItemsResponse>, Erro
     }
 
     public void onUploadFinished() {
+        UploaderApp.from(mContext).trackEvent(R.string.event_image_uploaded);
+
         final ContentValues values = new ContentValues();
         values.put(Uploads.STATUS, UploadStatus.DONE.name());
         //TODO: change to AsyncQueryHandler when sdk UploadMediaIntentBuilder will be fixed (wrong thread)
@@ -98,6 +100,8 @@ public class MediaUploadResponseHandler implements Listener<ItemsResponse>, Erro
     }
 
     public void onUploadFailed(String errorMessage) {
+        UploaderApp.from(mContext).trackEvent(R.string.event_image_upload_failed, errorMessage);
+
         final ContentValues values = new ContentValues();
         values.put(Uploads.STATUS, UploadStatus.ERROR.name());
         values.put(Uploads.FAIL_MESSAGE, errorMessage);
