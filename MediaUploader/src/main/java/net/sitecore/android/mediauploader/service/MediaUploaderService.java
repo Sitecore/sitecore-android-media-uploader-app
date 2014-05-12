@@ -40,7 +40,7 @@ public class MediaUploaderService extends UploadMediaService {
         String itemName = options.getItemName();
         String fileExtension = getFileExtension(mediaFilePath);
         if (fileExtension != null) {
-            options.setFileName(itemName + fileExtension);
+            options.setFileName(itemName + "." + fileExtension);
         }
 
         changeUploadStatus(uploadItemUri);
@@ -60,7 +60,7 @@ public class MediaUploaderService extends UploadMediaService {
         MimeTypeMap mime = MimeTypeMap.getSingleton();
         String extension = mime.getExtensionFromMimeType(getContentResolver().getType(Uri.parse(filePath)));
         if (extension == null) {
-            extension = filePath.substring(filePath.lastIndexOf("."));
+            extension = filePath.substring(filePath.lastIndexOf(".") + 1);
         }
         return extension;
     }
