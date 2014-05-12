@@ -2,7 +2,6 @@ package net.sitecore.android.mediauploader.ui.settings;
 
 import android.app.Activity;
 import android.os.Bundle;
-import android.support.v4.app.NavUtils;
 import android.view.MenuItem;
 import android.widget.RadioGroup;
 import android.widget.RadioGroup.OnCheckedChangeListener;
@@ -72,9 +71,4 @@ public class SettingsActivity extends Activity {
         }
         return super.onOptionsItemSelected(item);
     }
-
-    @Override public void onBackPressed() {
-        NavUtils.navigateUpFromSameTask(this);
-    }
-
 }

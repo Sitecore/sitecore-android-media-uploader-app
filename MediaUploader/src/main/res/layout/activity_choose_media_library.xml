@@ -19,16 +19,4 @@
         android:layout_height="0dp"
         android:layout_weight="1" />
 
-    <Button
-        android:id="@+id/button_save"
-        style="@style/Button.Blue"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="16dp"
-        android:layout_marginRight="16dp"
-        android:drawableLeft="@drawable/ic_menu_save"
-        android:paddingLeft="48dp"
-        android:text="@string/text_save_upload_folder"
-        android:textAppearance="?android:attr/textAppearanceMedium" />
-
 </LinearLayout>

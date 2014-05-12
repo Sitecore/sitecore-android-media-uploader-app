@@ -5,6 +5,7 @@ import android.content.ContentValues;
 import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
+import android.webkit.MimeTypeMap;
 
 import java.io.IOException;
 
@@ -36,10 +37,16 @@ public class MediaUploaderService extends UploadMediaService {
         String mediaFilePath = resizeIfNeeded(uploadItemUri, options.getMediaFilePath());
         options.setMediaFilePath(mediaFilePath);
 
-        changeUploadStatus(uploadItemUri);
         String itemName = options.getItemName();
+        String fileExtension = getFileExtension(mediaFilePath);
+        if (fileExtension != null) {
+            options.setFileName(itemName + "." + fileExtension);
+        }
+
+        changeUploadStatus(uploadItemUri);
         Notification n = NotificationUtils.showInProgressNotification(getApplicationContext(), itemName, mediaFolder);
         startForeground(itemName.hashCode(), n);
+
         super.onHandleIntent(intent);
     }
 
@@ -47,6 +54,15 @@ public class MediaUploaderService extends UploadMediaService {
         final ContentValues values = new ContentValues();
         values.put(Uploads.STATUS, UploadStatus.IN_PROGRESS.name());
         getContentResolver().update(uploadUri, values, null, null);
+    }
+
+    private String getFileExtension(String filePath) {
+        MimeTypeMap mime = MimeTypeMap.getSingleton();
+        String extension = mime.getExtensionFromMimeType(getContentResolver().getType(Uri.parse(filePath)));
+        if (extension == null) {
+            extension = filePath.substring(filePath.lastIndexOf(".") + 1);
+        }
+        return extension;
     }
 
     private String resizeIfNeeded(Uri uploadItemUri, String mediaFilePath) {

@@ -79,7 +79,6 @@ public class UploadActivity extends Activity implements SelectMediaListener,
 
     @Inject ScApiSession mApiSession;
     private Uri mImageUri;
-    private ImageSize mCurrentImageSize;
     private ImageHelper mImageHelper;
     private Address mImageAddress;
 
@@ -105,7 +104,6 @@ public class UploadActivity extends Activity implements SelectMediaListener,
         setContentView(R.layout.activity_upload);
 
         ButterKnife.inject(this);
-        UploaderApp.from(this).inject(this);
 
         mImageUri = getIntent().getData();
 
@@ -118,6 +116,11 @@ public class UploadActivity extends Activity implements SelectMediaListener,
                 : new LegacyOnGlobalLayoutListener());
 
         proccessImageLocation();
+    }
+
+    @Override protected void onResume() {
+        super.onResume();
+        UploaderApp.from(this).inject(this);
     }
 
     @Override
