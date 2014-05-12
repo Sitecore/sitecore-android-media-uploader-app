@@ -219,12 +219,12 @@ public class BrowserActivity extends Activity implements ContentTreePositionList
         @Override public void bindView(View view, Context context, Cursor cursor) {
             ViewHolder holder = (ViewHolder) view.getTag();
             holder.instanceUrl.setText(cursor.getString(Query.URL));
-            holder.instanceFolder.setText(cursor.getString(Query.ROOT_FOLDER));
+            holder.instanceLogin.setText(cursor.getString(Query.LOGIN));
         }
 
         class ViewHolder {
             @InjectView(R.id.instance_url) TextView instanceUrl;
-            @InjectView(R.id.instance_root_folder) TextView instanceFolder;
+            @InjectView(R.id.instance_login) TextView instanceLogin;
 
             ViewHolder(View parent) {
                 ButterKnife.inject(this, parent);
