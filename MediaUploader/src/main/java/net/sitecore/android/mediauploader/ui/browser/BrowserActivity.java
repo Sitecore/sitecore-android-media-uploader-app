@@ -201,7 +201,7 @@ public class BrowserActivity extends Activity implements ContentTreePositionList
 
     }
 
-    class InstancesSpinnerAdapter extends CursorAdapter {
+    static class InstancesSpinnerAdapter extends CursorAdapter {
 
         InstancesSpinnerAdapter(Context context) {
             super(context, null, false);
@@ -222,7 +222,7 @@ public class BrowserActivity extends Activity implements ContentTreePositionList
             holder.instanceFolder.setText(cursor.getString(Query.ROOT_FOLDER));
         }
 
-        class ViewHolder {
+        static class ViewHolder {
             @InjectView(R.id.instance_url) TextView instanceUrl;
             @InjectView(R.id.instance_root_folder) TextView instanceFolder;
 
