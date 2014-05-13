@@ -7,6 +7,7 @@ import java.net.UnknownHostException;
 
 import com.android.volley.NoConnectionError;
 import com.android.volley.ServerError;
+import com.android.volley.TimeoutError;
 import com.android.volley.VolleyError;
 
 import net.sitecore.android.mediauploader.R;
@@ -42,7 +43,8 @@ public class ScUtils {
             message = error.getMessage();
         } else if (error instanceof ServerError) {
             message = context.getString(R.string.error_server_connection);
-        } else if (error instanceof NoConnectionError || error.getCause() instanceof UnknownHostException) {
+        } else if (error instanceof NoConnectionError || error.getCause() instanceof UnknownHostException
+                || error instanceof TimeoutError) {
             message = context.getString(R.string.error_connection_failed);
         } else {
             message = context.getString(R.string.error);
