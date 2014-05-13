@@ -3,6 +3,7 @@ package net.sitecore.android.mediauploader.util;
 import android.content.Context;
 import android.support.annotation.NonNull;
 
+import java.io.FileNotFoundException;
 import java.net.UnknownHostException;
 
 import com.android.volley.NoConnectionError;
@@ -38,17 +39,17 @@ public class ScUtils {
     }
 
     public static String getMessageFromError(Context context, VolleyError error) {
-        String message;
         if (error instanceof ScError) {
-            message = error.getMessage();
+            return error.getMessage();
         } else if (error instanceof ServerError) {
-            message = context.getString(R.string.error_server_connection);
+            return context.getString(R.string.error_server_connection);
         } else if (error instanceof NoConnectionError || error.getCause() instanceof UnknownHostException
                 || error instanceof TimeoutError) {
-            message = context.getString(R.string.error_connection_failed);
+            return context.getString(R.string.error_connection_failed);
+        } else if (error.getCause() instanceof SecurityException || error.getCause() instanceof FileNotFoundException) {
+            return context.getString(R.string.error_file_missing);
         } else {
-            message = context.getString(R.string.error);
+            return context.getString(R.string.error);
         }
-        return message;
     }
 }

@@ -55,6 +55,7 @@
     <string name="error_upload_failed">Upload failed</string>
     <string name="error_connection_failed">Connection error, please check network settings</string>
     <string name="error_server_connection">Server connection error</string>
+    <string name="error_file_missing">This image file doesn\'t exist</string>
     <string name="error">Error</string>
 
     <!-- toast notifications -->
