@@ -186,7 +186,7 @@ public class CreateEditInstanceActivity extends Activity implements LoaderCallba
     private final ErrorListener mErrorListener = new ErrorListener() {
         @Override public void onErrorResponse(VolleyError error) {
             setLoading(false);
-            String message = ScUtils.getMessageFromError(error);
+            String message = ScUtils.getMessageFromError(getApplicationContext(), error);
             Toast.makeText(CreateEditInstanceActivity.this, message, Toast.LENGTH_LONG).show();
 
             UploaderApp app = UploaderApp.from(getApplicationContext());

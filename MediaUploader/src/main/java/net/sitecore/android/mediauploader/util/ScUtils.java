@@ -1,11 +1,15 @@
 package net.sitecore.android.mediauploader.util;
 
+import android.content.Context;
 import android.support.annotation.NonNull;
+
+import java.net.UnknownHostException;
 
 import com.android.volley.NoConnectionError;
 import com.android.volley.ServerError;
 import com.android.volley.VolleyError;
 
+import net.sitecore.android.mediauploader.R;
 import net.sitecore.android.sdk.api.model.ScError;
 
 public class ScUtils {
@@ -32,22 +36,16 @@ public class ScUtils {
         return TEMPLATE_UNVERSIONED_FILE.equals(template);
     }
 
-    public static String getMessageFromError(VolleyError error) {
+    public static String getMessageFromError(Context context, VolleyError error) {
         String message;
         if (error instanceof ScError) {
-            ScError e = (ScError) error;
-            message = String.format("Operation failed: (%s) %s", e.getStatusCode(), e.getMessage());
+            message = error.getMessage();
         } else if (error instanceof ServerError) {
-            ServerError serverError = (ServerError) error;
-            if (serverError.networkResponse != null) {
-                message = "Server error " + serverError.networkResponse.statusCode;
-            } else {
-                message = "Server error " + serverError.getMessage();
-            }
-        } else if (error instanceof NoConnectionError) {
-            message = "No connection available, please check your internet settings";
+            message = context.getString(R.string.error_server_connection);
+        } else if (error instanceof NoConnectionError || error.getCause() instanceof UnknownHostException) {
+            message = context.getString(R.string.error_connection_failed);
         } else {
-            message = "Unknown error : " + error.toString();
+            message = context.getString(R.string.error);
         }
         return message;
     }

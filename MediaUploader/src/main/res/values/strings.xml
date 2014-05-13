@@ -53,6 +53,9 @@
     <string name="error_wrong_instance_url">%s is not a valid CMS site url</string>
     <string name="error_wrong_instance_password">Password cannot be empty</string>
     <string name="error_upload_failed">Upload failed</string>
+    <string name="error_connection_failed">Connection error, please check network settings</string>
+    <string name="error_server_connection">Server connection error</string>
+    <string name="error">Error</string>
 
     <!-- toast notifications -->
     <string name="toast_instance_is_not_valid">Entered site is not valid</string>

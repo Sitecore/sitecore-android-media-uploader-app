@@ -208,7 +208,8 @@ public class MediaFolderSelectionActivity extends Activity implements ErrorListe
 
     @Override
     public void onErrorResponse(VolleyError volleyError) {
-        Toast.makeText(this, ScUtils.getMessageFromError(volleyError), Toast.LENGTH_LONG).show();
+        Toast.makeText(this, ScUtils.getMessageFromError(getApplicationContext(), volleyError), Toast.LENGTH_LONG)
+                .show();
     }
 
 }

@@ -86,7 +86,7 @@ public class MediaUploadResponseHandler implements Listener<ItemsResponse>, Erro
     }
 
     @Override public void onErrorResponse(VolleyError volleyError) {
-        onUploadFailed(ScUtils.getMessageFromError(volleyError));
+        onUploadFailed(ScUtils.getMessageFromError(mContext, volleyError));
     }
 
     public void onUploadFinished() {

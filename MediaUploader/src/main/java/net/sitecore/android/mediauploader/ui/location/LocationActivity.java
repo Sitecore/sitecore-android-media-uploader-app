@@ -199,7 +199,7 @@ public class LocationActivity extends Activity implements ErrorListener {
 
     @Override public void onErrorResponse(VolleyError error) {
         setLoading(false);
-        Toast.makeText(LocationActivity.this, ScUtils.getMessageFromError(error), Toast.LENGTH_LONG)
-                .show();
+        Toast.makeText(getApplicationContext(), ScUtils.getMessageFromError(getApplicationContext(), error),
+                Toast.LENGTH_LONG).show();
     }
 }
