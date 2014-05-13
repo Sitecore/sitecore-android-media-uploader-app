@@ -121,6 +121,7 @@ public class UploadActivity extends Activity implements SelectMediaListener,
     @Override protected void onResume() {
         super.onResume();
         UploaderApp.from(this).inject(this);
+        if (mInstance == null) finish();
     }
 
     @Override
