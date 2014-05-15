@@ -43,22 +43,20 @@ public class SettingsActivity extends Activity {
                 break;
         }
 
-        mImageSizeRadioButton.setOnCheckedChangeListener(new OnCheckedChangeListener() {
-            @Override public void onCheckedChanged(RadioGroup group, int checkedId) {
-                ImageSize size = ImageSize.ACTUAL;
-                switch (checkedId) {
-                    case R.id.radio_image_small:
-                        size = ImageSize.SMALL;
-                        break;
-                    case R.id.radio_image_medium:
-                        size = ImageSize.MEDIUM;
-                        break;
-                    case R.id.radio_image_actual:
-                        size = ImageSize.ACTUAL;
-                        break;
-                }
-                mPrefs.put(R.string.key_current_image_size, size.name());
+        mImageSizeRadioButton.setOnCheckedChangeListener((group, checkedId) -> {
+            ImageSize size = ImageSize.ACTUAL;
+            switch (checkedId) {
+                case R.id.radio_image_small:
+                    size = ImageSize.SMALL;
+                    break;
+                case R.id.radio_image_medium:
+                    size = ImageSize.MEDIUM;
+                    break;
+                case R.id.radio_image_actual:
+                    size = ImageSize.ACTUAL;
+                    break;
             }
+            mPrefs.put(R.string.key_current_image_size, size.name());
         });
     }
 

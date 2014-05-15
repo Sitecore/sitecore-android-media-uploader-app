@@ -80,6 +80,7 @@ public class LocationActivity extends Activity implements ErrorListener {
             }
         }
     };
+
     private Listener<ArrayList<Address>> mReverseGecoodeListener = new Listener<ArrayList<Address>>() {
         @Override
         public void onResponse(ArrayList<Address> addresses) {
@@ -103,17 +104,15 @@ public class LocationActivity extends Activity implements ErrorListener {
         ButterKnife.inject(this);
 
         mMapFragment = (MapFragment) getFragmentManager().findFragmentById(R.id.map);
-        mMapFragment.getMap().setOnMapLongClickListener(new OnMapLongClickListener() {
-            @Override public void onMapLongClick(LatLng latLng) {
-                if (mSelectedLocationMarker != null) {
-                    mSelectedLocationMarker.remove();
-                }
-                mSelectedLocationMarker = mMapFragment.getMap().addMarker(new MarkerOptions()
-                        .position(latLng)
-                        .icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_selected_location)));
-
-                performReverseGeocodingRequest(latLng);
+        mMapFragment.getMap().setOnMapLongClickListener(latLng -> {
+            if (mSelectedLocationMarker != null) {
+                mSelectedLocationMarker.remove();
             }
+            mSelectedLocationMarker = mMapFragment.getMap().addMarker(new MarkerOptions()
+                    .position(latLng)
+                    .icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_selected_location)));
+
+            performReverseGeocodingRequest(latLng);
         });
         mMapFragment.getMap().setMyLocationEnabled(true);
 
@@ -127,13 +126,11 @@ public class LocationActivity extends Activity implements ErrorListener {
 
         mUseMenuView = LayoutInflater.from(this).inflate(R.layout.layout_menu_use, null);
 
-        mUseMenuView.setOnClickListener(new OnClickListener() {
-            @Override public void onClick(View v) {
-                if (mCurrentAddress != null) {
-                    setResult(RESULT_OK, prepareData());
-                }
-                finish();
+        mUseMenuView.setOnClickListener(v -> {
+            if (mCurrentAddress != null) {
+                setResult(RESULT_OK, prepareData());
             }
+            finish();
         });
 
         ActionBar.LayoutParams params = new LayoutParams(Gravity.RIGHT);

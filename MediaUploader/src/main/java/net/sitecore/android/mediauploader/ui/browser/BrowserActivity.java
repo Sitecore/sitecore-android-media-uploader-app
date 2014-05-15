@@ -120,12 +120,10 @@ public class BrowserActivity extends Activity implements ContentTreePositionList
 
         getFragmentManager().beginTransaction().replace(R.id.fragment_container, mFragment).commitAllowingStateLoss();
 
-        Listener<ScApiSession> successListener = new Listener<ScApiSession>() {
-            @Override public void onResponse(final ScApiSession session) {
-                if (!TextUtils.isEmpty(instance.getSite())) session.setDefaultSite(instance.getSite());
-                session.setDefaultDatabase(instance.getDatabase());
-                mFragment.loadContent(session);
-            }
+        Listener<ScApiSession> successListener = session -> {
+            if (!TextUtils.isEmpty(instance.getSite())) session.setDefaultSite(instance.getSite());
+            session.setDefaultDatabase(instance.getDatabase());
+            mFragment.loadContent(session);
         };
 
         ScApiSessionFactory.getSession(mRequestQueue, instance.getUrl(), instance.getLogin(), instance.getPassword(),
