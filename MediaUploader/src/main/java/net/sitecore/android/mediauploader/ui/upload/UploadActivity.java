@@ -63,21 +63,21 @@ import static net.sitecore.android.mediauploader.util.Utils.showToast;
 public class UploadActivity extends Activity implements SelectMediaListener,
         GooglePlayServicesClient.ConnectionCallbacks, GooglePlayServicesClient.OnConnectionFailedListener,
         ErrorListener {
+
     public static final int LOCATION_ACTIVITY_CODE = 10;
-
     private final int MAX_IMAGE_WIDTH = 2000;
-
     private final int MAX_IMAGE_HEIGHT = 2000;
+
     @InjectView(R.id.edit_name) EditText mEditName;
     @InjectView(R.id.image_preview) ImageView mPreview;
     @InjectView(R.id.button_location) ImageButton mLocationButton;
-
     @InjectView(R.id.textview_location) TextView mLocationText;
+
     @Inject Picasso mImageLoader;
     @Inject Instance mInstance;
     @Inject ScRequestQueue mRequestQueue;
-
     @Inject ScApiSession mApiSession;
+
     private Uri mImageUri;
     private ImageHelper mImageHelper;
     private Address mImageAddress;
@@ -159,7 +159,6 @@ public class UploadActivity extends Activity implements SelectMediaListener,
 
     @TargetApi(VERSION_CODES.JELLY_BEAN)
     private class V16OnGlobalLayoutListener implements OnGlobalLayoutListener {
-
         @Override public void onGlobalLayout() {
             mPreview.getViewTreeObserver().removeOnGlobalLayoutListener(this);
             loadImageIntoPreview();
@@ -167,7 +166,6 @@ public class UploadActivity extends Activity implements SelectMediaListener,
     }
 
     private class LegacyOnGlobalLayoutListener implements OnGlobalLayoutListener {
-
         @Override public void onGlobalLayout() {
             mPreview.getViewTreeObserver().removeGlobalOnLayoutListener(this);
             loadImageIntoPreview();

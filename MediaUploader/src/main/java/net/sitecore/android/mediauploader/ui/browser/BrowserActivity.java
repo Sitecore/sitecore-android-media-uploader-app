@@ -34,6 +34,7 @@ import net.sitecore.android.mediauploader.model.Instance;
 import net.sitecore.android.mediauploader.provider.ItemsAsyncHandler;
 import net.sitecore.android.mediauploader.provider.UploadMediaContract.Instances;
 import net.sitecore.android.mediauploader.provider.UploadMediaContract.Instances.Query;
+import net.sitecore.android.mediauploader.ui.InjectingActivity;
 import net.sitecore.android.mediauploader.util.ScUtils;
 import net.sitecore.android.sdk.api.ScApiSession;
 import net.sitecore.android.sdk.api.ScApiSessionFactory;
@@ -46,7 +47,7 @@ import net.sitecore.android.sdk.ui.ItemsBrowserFragment.NetworkEventsListener;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 
-public class BrowserActivity extends Activity implements ContentTreePositionListener, NetworkEventsListener,
+public class BrowserActivity extends InjectingActivity implements ContentTreePositionListener, NetworkEventsListener,
         LoaderCallbacks<Cursor>, ErrorListener {
 
     @Inject ScRequestQueue mRequestQueue;
@@ -65,11 +66,8 @@ public class BrowserActivity extends Activity implements ContentTreePositionList
         getActionBar().setDisplayHomeAsUpEnabled(true);
 
         setContentView(R.layout.activity_browser);
-        UploaderApp.from(this).inject(this);
-        ButterKnife.inject(this);
 
         mHeaderText = (TextView) findViewById(R.id.text_title);
-
         mInstancesSpinner.setOnItemSelectedListener(new OnItemSelectedListener() {
             @Override public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 Cursor cursor = mAdapter.getCursor();

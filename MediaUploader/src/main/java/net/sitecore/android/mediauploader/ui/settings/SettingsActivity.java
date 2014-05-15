@@ -1,33 +1,29 @@
 package net.sitecore.android.mediauploader.ui.settings;
 
-import android.app.Activity;
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.widget.RadioGroup;
-import android.widget.RadioGroup.OnCheckedChangeListener;
+
+import javax.inject.Inject;
 
 import net.sitecore.android.mediauploader.R;
-import net.sitecore.android.mediauploader.UploaderApp;
+import net.sitecore.android.mediauploader.ui.InjectingActivity;
 import net.sitecore.android.mediauploader.util.Prefs;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 
-public class SettingsActivity extends Activity {
+public class SettingsActivity extends InjectingActivity {
 
     @InjectView(R.id.radio_image_size) RadioGroup mImageSizeRadioButton;
-    private Prefs mPrefs;
+    @Inject Prefs mPrefs;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        UploaderApp.from(this).inject(this);
         getActionBar().setDisplayHomeAsUpEnabled(true);
 
         setContentView(R.layout.activity_settings);
-        ButterKnife.inject(this);
-
-        mPrefs = Prefs.from(this);
 
         ImageSize imageSize = ImageSize.valueOf(mPrefs.getString(R.string.key_current_image_size,
                 ImageSize.ACTUAL.name()));

@@ -27,6 +27,7 @@ import net.sitecore.android.mediauploader.ui.upload.MediaUploadResponseHandler;
 import net.sitecore.android.mediauploader.ui.upload.UploadActivity;
 import net.sitecore.android.mediauploader.ui.upload.UploadsListFragment;
 import net.sitecore.android.mediauploader.ui.upload.UploadHelper;
+import net.sitecore.android.mediauploader.util.Prefs;
 import net.sitecore.android.sdk.api.ScApiSession;
 import net.sitecore.android.sdk.api.ScApiSessionFactory;
 import net.sitecore.android.sdk.api.ScPublicKey;
@@ -65,6 +66,10 @@ public final class UploaderAppModule {
     @Provides @Singleton Picasso providePicasso() {
         return new Picasso.Builder(mApp)
                 .build();
+    }
+
+    @Provides @Singleton Prefs providePrefs() {
+        return Prefs.from(mApp);
     }
 
     @Provides @Singleton ScRequestQueue provideRequestQueue() {

@@ -42,6 +42,8 @@ import net.sitecore.android.sdk.ui.ItemsBrowserFragment.NetworkEventsListener;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 
+import static net.sitecore.android.mediauploader.util.Utils.showToast;
+
 public class MediaFolderSelectionActivity extends Activity implements ErrorListener {
 
     public static final String INSTANCE_KEY = "instance";
@@ -208,8 +210,8 @@ public class MediaFolderSelectionActivity extends Activity implements ErrorListe
 
     @Override
     public void onErrorResponse(VolleyError volleyError) {
-        Toast.makeText(this, ScUtils.getMessageFromError(getApplicationContext(), volleyError), Toast.LENGTH_LONG)
-                .show();
+        String message = ScUtils.getMessageFromError(getApplicationContext(), volleyError);
+        showToast(this, message);
     }
 
 }
