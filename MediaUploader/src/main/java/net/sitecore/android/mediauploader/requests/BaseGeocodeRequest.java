@@ -19,7 +19,9 @@ import org.json.JSONObject;
 import static net.sitecore.android.sdk.api.internal.LogUtils.LOGE;
 
 public class BaseGeocodeRequest extends Request<ArrayList<Address>> {
+
     protected final static String GEOCODING_BASE_URL = "http://maps.googleapis.com/maps/api/geocode/json?";
+
     private Listener<ArrayList<Address>> mSuccessListener;
 
     public BaseGeocodeRequest(String url, Listener<ArrayList<Address>> listener, ErrorListener errorListener) {

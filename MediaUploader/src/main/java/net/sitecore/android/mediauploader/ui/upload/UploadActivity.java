@@ -77,6 +77,7 @@ public class UploadActivity extends Activity implements SelectMediaListener,
     @Inject Instance mInstance;
     @Inject ScRequestQueue mRequestQueue;
     @Inject ScApiSession mApiSession;
+    @Inject Prefs mPrefs;
 
     private Uri mImageUri;
     private ImageHelper mImageHelper;
@@ -192,7 +193,7 @@ public class UploadActivity extends Activity implements SelectMediaListener,
     public void onUploadNow() {
         final UploadHelper mUploadHelper = new UploadHelper(getApplicationContext());
         final String itemName = getItemName();
-        ImageSize imageSize = ImageSize.valueOf(Prefs.from(this).getString(R.string.key_current_image_size,
+        ImageSize imageSize = ImageSize.valueOf(mPrefs.getString(R.string.key_current_image_size,
                 ImageSize.ACTUAL.name()));
 
         new InstancesAsyncHandler(getContentResolver()) {
@@ -205,7 +206,7 @@ public class UploadActivity extends Activity implements SelectMediaListener,
 
     @OnClick(R.id.button_upload_later)
     public void onUploadLater() {
-        ImageSize imageSize = ImageSize.valueOf(Prefs.from(this).getString(R.string.key_current_image_size,
+        ImageSize imageSize = ImageSize.valueOf(mPrefs.getString(R.string.key_current_image_size,
                 ImageSize.ACTUAL.name()));
         new InstancesAsyncHandler(getContentResolver()).insertDelayedUpload(getItemName(), mImageUri, mInstance,
                 imageSize, mImageAddress);

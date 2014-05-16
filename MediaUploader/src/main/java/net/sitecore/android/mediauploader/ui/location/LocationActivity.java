@@ -11,12 +11,10 @@ import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.View.OnClickListener;
 import android.view.Window;
 import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.Toast;
 
 import javax.inject.Inject;
 
@@ -29,12 +27,9 @@ import com.android.volley.VolleyError;
 
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
-import com.google.android.gms.maps.GoogleMap.OnMapLongClickListener;
 import com.google.android.gms.maps.MapFragment;
-import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
-import com.google.android.gms.maps.model.MarkerOptions;
 
 import net.sitecore.android.mediauploader.R;
 import net.sitecore.android.mediauploader.UploaderApp;
@@ -49,7 +44,10 @@ import butterknife.InjectView;
 import butterknife.OnClick;
 import butterknife.OnEditorAction;
 
+import static net.sitecore.android.mediauploader.util.Utils.showToast;
+
 public class LocationActivity extends Activity implements ErrorListener {
+
     public final static String EXTRA_ADDRESS = "location";
 
     @InjectView(R.id.edit_location) EditText mLocationField;
@@ -108,10 +106,7 @@ public class LocationActivity extends Activity implements ErrorListener {
             if (mSelectedLocationMarker != null) {
                 mSelectedLocationMarker.remove();
             }
-            mSelectedLocationMarker = mMapFragment.getMap().addMarker(new MarkerOptions()
-                    .position(latLng)
-                    .icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_selected_location)));
-
+            mSelectedLocationMarker = mMapFragment.getMap().addMarker(LocationMarker.newOptions(latLng));
             performReverseGeocodingRequest(latLng);
         });
         mMapFragment.getMap().setMyLocationEnabled(true);
@@ -128,7 +123,9 @@ public class LocationActivity extends Activity implements ErrorListener {
 
         mUseMenuView.setOnClickListener(v -> {
             if (mCurrentAddress != null) {
-                setResult(RESULT_OK, prepareData());
+                final Intent intent = new Intent();
+                intent.putExtra(EXTRA_ADDRESS, mCurrentAddress);
+                setResult(RESULT_OK, intent);
             }
             finish();
         });
@@ -169,12 +166,6 @@ public class LocationActivity extends Activity implements ErrorListener {
         setProgressBarIndeterminateVisibility(isLoading);
     }
 
-    private Intent prepareData() {
-        Intent intent = new Intent();
-        intent.putExtra(EXTRA_ADDRESS, mCurrentAddress);
-        return intent;
-    }
-
     public static Intent prepareIntent(Context context, Address address) {
         Intent intent = new Intent(context, LocationActivity.class);
         intent.putExtra(EXTRA_ADDRESS, address);
@@ -196,7 +187,7 @@ public class LocationActivity extends Activity implements ErrorListener {
 
     @Override public void onErrorResponse(VolleyError error) {
         setLoading(false);
-        Toast.makeText(getApplicationContext(), ScUtils.getMessageFromError(getApplicationContext(), error),
-                Toast.LENGTH_LONG).show();
+        String message = ScUtils.getMessageFromError(getApplicationContext(), error);
+        showToast(this, message);
     }
 }

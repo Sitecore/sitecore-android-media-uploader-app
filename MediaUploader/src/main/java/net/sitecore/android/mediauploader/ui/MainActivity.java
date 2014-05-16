@@ -34,6 +34,7 @@ public class MainActivity extends Activity implements SelectMediaListener {
     @InjectView(R.id.button_browse) Button mBrowseButton;
     @InjectView(R.id.button_my_uploads) Button mMyUploadsButton;
     @InjectView(R.id.text_no_sites) TextView mNoInstancesView;
+
     private SelectMediaDialogHelper mMediaDialogHelper;
 
     @Override
