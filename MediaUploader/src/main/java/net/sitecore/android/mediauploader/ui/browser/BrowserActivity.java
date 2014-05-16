@@ -67,7 +67,6 @@ public class BrowserActivity extends InjectingActivity implements ContentTreePos
 
         setContentView(R.layout.activity_browser);
 
-        mHeaderText = (TextView) findViewById(R.id.text_title);
         mInstancesSpinner.setOnItemSelectedListener(new OnItemSelectedListener() {
             @Override public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 Cursor cursor = mAdapter.getCursor();

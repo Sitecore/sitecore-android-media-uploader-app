@@ -10,6 +10,7 @@ import android.os.Bundle;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v4.view.ViewPager.OnPageChangeListener;
+import android.support.v4.view.ViewPager.SimpleOnPageChangeListener;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
@@ -133,20 +134,11 @@ public class PreviewActivity extends Activity implements LoaderCallbacks<List<Sc
     private void prepareViewPager(final ArrayList<String> names, ArrayList<String> urls, int currentPosition) {
         mViewPager.setAdapter(new PreviewAdapter(this, urls, mImageLoader));
         mViewPager.setCurrentItem(currentPosition);
-        mViewPager.setOnPageChangeListener(new OnPageChangeListener() {
-            @Override
-            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-
-            }
+        mViewPager.setOnPageChangeListener(new SimpleOnPageChangeListener() {
 
             @Override
             public void onPageSelected(int position) {
                 setTitle(names.get(position));
-            }
-
-            @Override
-            public void onPageScrollStateChanged(int state) {
-
             }
         });
         setTitle(names.get(currentPosition));
@@ -157,9 +149,9 @@ public class PreviewActivity extends Activity implements LoaderCallbacks<List<Sc
     }
 
     static class PreviewAdapter extends PagerAdapter {
-        private ArrayList<String> mImageUrls = new ArrayList<>();
-        private Picasso mImageLoader;
-        private LayoutInflater mLayoutInflater;
+        private final ArrayList<String> mImageUrls;
+        private final Picasso mImageLoader;
+        private final LayoutInflater mLayoutInflater;
 
         PreviewAdapter(Context context, ArrayList<String> imageUrls, Picasso imageLoader) {
             mImageUrls = imageUrls;

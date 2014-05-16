@@ -75,6 +75,7 @@
     <string name="text_cancel">Cancel</string>
     <string name="text_search">Search</string>
     <string name="text_site">Site</string>
+    <string name="text_user">User</string>
 
     <string-array name="select_image_source">
         <item>Camera</item>

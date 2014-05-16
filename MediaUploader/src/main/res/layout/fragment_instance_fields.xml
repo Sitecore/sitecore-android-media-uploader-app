@@ -86,7 +86,7 @@
         android:layout_height="wrap_content"
         android:layout_marginLeft="16dp"
         android:layout_marginTop="16dp"
-        android:text="User"
+        android:text="@string/text_user"
         android:textAllCaps="true"
         android:textAppearance="?android:attr/textAppearanceMedium" />
 

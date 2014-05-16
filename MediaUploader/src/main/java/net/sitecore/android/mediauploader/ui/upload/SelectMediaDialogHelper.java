@@ -4,8 +4,6 @@ import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.AlertDialog.Builder;
-import android.content.DialogInterface;
-import android.content.DialogInterface.OnClickListener;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Build;
@@ -42,13 +40,11 @@ public class SelectMediaDialogHelper {
 
     public void showDialog() {
         AlertDialog.Builder builder = new Builder(mActivity)
-                .setItems(R.array.select_image_source, new OnClickListener() {
-                    @Override public void onClick(DialogInterface dialog, int which) {
-                        if (which == 0) {
-                            onCameraSelected();
-                        } else {
-                            onGallerySelected();
-                        }
+                .setItems(R.array.select_image_source, (dialog, which) -> {
+                    if (which == 0) {
+                        onCameraSelected();
+                    } else {
+                        onGallerySelected();
                     }
                 })
                 .setTitle(R.string.dialog_select_image);
