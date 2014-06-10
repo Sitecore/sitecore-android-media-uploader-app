@@ -65,7 +65,7 @@
     <string name="toast_added_to_uploads">Added to My Uploads</string>
 
     <!-- Other texts -->
-    <string name="dialog_select_image">Select image</string>
+    <string name="dialog_select_image">Select Media</string>
     <string name="text_no_instances">Please set up at least one\n upload site</string>
     <string name="text_image_size">Upload image Size</string>
     <string name="text_sites">Sites</string>
@@ -78,8 +78,15 @@
     <string name="text_user">User</string>
 
     <string-array name="select_image_source">
-        <item>Camera</item>
-        <item>Gallery</item>
+        <item>Use Camera</item>
+        <item>Image</item>
+        <item>Video</item>
     </string-array>
+
+    <integer-array name="select_image_source_icons">
+        <item>@drawable/ic_menu_camera</item>
+        <item>@drawable/ic_menu_gallery</item>
+        <item>@drawable/ic_menu_video</item>
+    </integer-array>
 
 </resources>
