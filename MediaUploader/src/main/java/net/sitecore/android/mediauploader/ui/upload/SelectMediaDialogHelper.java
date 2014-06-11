@@ -28,13 +28,17 @@ import static net.sitecore.android.sdk.api.internal.LogUtils.LOGD;
 
 public class SelectMediaDialogHelper {
 
+    private static final SimpleDateFormat MEDIA_FILE_FORMAT = new SimpleDateFormat("yyyyMMddhhmmss");
+
     public interface SelectMediaListener {
         public void onImageSelected(Uri imageUri);
+        public void onVideoSelected(Uri videoUri);
     }
 
-    private static final int SOURCE_TYPE_GALLERY = 5;
-    private static final int SOURCE_TYPE_CAMERA = 6;
-    private static final int SOURCE_TYPE_VIDEO = 7;
+    private static final int SOURCE_TYPE_CAMERA_PHOTO = 5;
+    private static final int SOURCE_TYPE_CAMERA_VIDEO = 6;
+    private static final int SOURCE_TYPE_GALLERY_IMAGE = 7;
+    private static final int SOURCE_TYPE_GALLERY_VIDEO = 8;
 
     private final Activity mActivity;
     private final SelectMediaListener mMediaSourceListener;
@@ -52,9 +56,10 @@ public class SelectMediaDialogHelper {
         final TypedArray icons = res.obtainTypedArray(R.array.select_image_source_icons);
 
         final OnClickListener onMediaSourceSelected = (dialog, which) -> {
-            if (which == 0) onCameraSelected();
-            else if (which == 1) onGallerySelected();
-            else onVideoSelected();
+            if (which == 0) onCameraPhotoSelected();
+            else if (which == 1) onCameraVideoSelected();
+            else if (which == 2) onGalleryPhotoSelected();
+            else onGalleryVideoSelected();
         };
 
         new Builder(mActivity)
@@ -64,7 +69,27 @@ public class SelectMediaDialogHelper {
                 .show();
     }
 
-    private void onVideoSelected() {
+    private void onCameraPhotoSelected() {
+        final File photo = getOutputMediaFile();
+        mMediaUri = Uri.fromFile(photo);
+
+        Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        intent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(photo));
+
+        mActivity.startActivityForResult(intent, SOURCE_TYPE_CAMERA_PHOTO);
+    }
+
+    private void onCameraVideoSelected() {
+        final File photo = getOutputMediaFile();
+        mMediaUri = Uri.fromFile(photo);
+
+        Intent intent = new Intent(MediaStore.ACTION_VIDEO_CAPTURE);
+        intent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(photo));
+
+        mActivity.startActivityForResult(intent, SOURCE_TYPE_CAMERA_VIDEO);
+    }
+
+    private void onGalleryVideoSelected() {
         Intent intent = new Intent();
         intent.setType("video/*");
         if (Build.VERSION.SDK_INT >= VERSION_CODES.KITKAT) {
@@ -73,10 +98,10 @@ public class SelectMediaDialogHelper {
             intent.setAction(Intent.ACTION_GET_CONTENT);
             intent.addCategory(Intent.CATEGORY_OPENABLE);
         }
-        mActivity.startActivityForResult(intent, SOURCE_TYPE_VIDEO);
+        mActivity.startActivityForResult(intent, SOURCE_TYPE_CAMERA_VIDEO);
     }
 
-    private void onGallerySelected() {
+    private void onGalleryPhotoSelected() {
         Intent intent = new Intent();
         intent.setType("image/*");
         if (Build.VERSION.SDK_INT >= VERSION_CODES.KITKAT) {
@@ -85,7 +110,7 @@ public class SelectMediaDialogHelper {
             intent.setAction(Intent.ACTION_GET_CONTENT);
             intent.addCategory(Intent.CATEGORY_OPENABLE);
         }
-        mActivity.startActivityForResult(intent, SOURCE_TYPE_GALLERY);
+        mActivity.startActivityForResult(intent, SOURCE_TYPE_GALLERY_IMAGE);
     }
 
     @TargetApi(VERSION_CODES.KITKAT)
@@ -93,18 +118,8 @@ public class SelectMediaDialogHelper {
         intent.setAction(Intent.ACTION_OPEN_DOCUMENT);
     }
 
-    private void onCameraSelected() {
-        final File photo = getOutputMediaFile();
-        mMediaUri = Uri.fromFile(photo);
-
-        Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-        intent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(photo));
-
-        mActivity.startActivityForResult(intent, SOURCE_TYPE_CAMERA);
-    }
-
     private File getOutputMediaFile() {
-        String dateString = new SimpleDateFormat("yyyyMMddhhmmss").format(new Date(System.currentTimeMillis()));
+        String dateString = MEDIA_FILE_FORMAT.format(new Date(System.currentTimeMillis()));
         String imageName = "Image_" + dateString + ".png";
         File mediaStorageDir = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES),
                 "ScMobile");
@@ -118,17 +133,21 @@ public class SelectMediaDialogHelper {
     }
 
     public void onActivityResult(int requestCode, Intent data) {
-        if (requestCode == SOURCE_TYPE_CAMERA) {
+        if (requestCode == SOURCE_TYPE_CAMERA_PHOTO) {
             LOGD("Selected image from camera: " + mMediaUri.toString());
-        } else if (requestCode == SOURCE_TYPE_GALLERY) {
+            mMediaSourceListener.onImageSelected(mMediaUri);
+        } else if (requestCode == SOURCE_TYPE_CAMERA_VIDEO) {
+            LOGD("Selected video from camera: " + mMediaUri.toString());
+            mMediaSourceListener.onVideoSelected(mMediaUri);
+        } else if (requestCode == SOURCE_TYPE_GALLERY_IMAGE) {
             LOGD("Selected image from gallery: " + data.getDataString());
             mMediaUri = Uri.parse(data.getDataString());
-        }  else if (requestCode == SOURCE_TYPE_VIDEO) {
+            mMediaSourceListener.onImageSelected(mMediaUri);
+        }  else if (requestCode == SOURCE_TYPE_GALLERY_VIDEO) {
             LOGD("Selected video from gallery: " + data.getDataString());
             mMediaUri = Uri.parse(data.getDataString());
+            mMediaSourceListener.onVideoSelected(mMediaUri);
         }
-
-        mMediaSourceListener.onImageSelected(mMediaUri);
     }
 
     private static class MediaSourcesArrayAdapter extends ArrayAdapter<String> {

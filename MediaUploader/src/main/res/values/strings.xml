@@ -78,13 +78,15 @@
     <string name="text_user">User</string>
 
     <string-array name="select_image_source">
-        <item>Use Camera</item>
-        <item>Image</item>
-        <item>Video</item>
+        <item>Take a picture</item>
+        <item>Record video</item>
+        <item>Image from gallery</item>
+        <item>Video from gallery</item>
     </string-array>
 
     <integer-array name="select_image_source_icons">
         <item>@drawable/ic_menu_camera</item>
+        <item>@drawable/ic_action_video</item>
         <item>@drawable/ic_menu_gallery</item>
         <item>@drawable/ic_menu_video</item>
     </integer-array>

@@ -2,7 +2,6 @@ package net.sitecore.android.mediauploader.ui;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -18,7 +17,6 @@ import net.sitecore.android.mediauploader.ui.browser.BrowserActivity;
 import net.sitecore.android.mediauploader.ui.settings.SettingsActivity;
 import net.sitecore.android.mediauploader.ui.upload.SelectMediaDialogHelper;
 import net.sitecore.android.mediauploader.ui.upload.SelectMediaDialogHelper.SelectMediaListener;
-import net.sitecore.android.mediauploader.ui.upload.UploadActivity;
 import net.sitecore.android.mediauploader.ui.upload.UploadsListActivity;
 import net.sitecore.android.sdk.api.ScApiSession;
 
@@ -26,7 +24,7 @@ import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
 
-public class MainActivity extends Activity implements SelectMediaListener {
+public class MainActivity extends Activity {
 
     @Inject ScApiSession mApiSession;
 
@@ -36,6 +34,7 @@ public class MainActivity extends Activity implements SelectMediaListener {
     @InjectView(R.id.text_no_sites) TextView mNoInstancesView;
 
     private SelectMediaDialogHelper mMediaDialogHelper;
+    private SelectMediaListener mSelectMediaListener;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,6 +44,9 @@ public class MainActivity extends Activity implements SelectMediaListener {
         getActionBar().setDisplayShowTitleEnabled(false);
 
         ButterKnife.inject(this);
+
+        mMediaDialogHelper = new SelectMediaDialogHelper(this, mSelectMediaListener);
+        mSelectMediaListener = new MainActivitySelectMediaListener(this);
     }
 
     @Override protected void onResume() {
@@ -66,14 +68,7 @@ public class MainActivity extends Activity implements SelectMediaListener {
 
     @OnClick(R.id.button_upload)
     public void onUploadClick() {
-        mMediaDialogHelper = new SelectMediaDialogHelper(this, this);
         mMediaDialogHelper.showDialog();
-    }
-
-    @Override public void onImageSelected(Uri imageUri) {
-        final Intent intent = new Intent(MainActivity.this, UploadActivity.class);
-        intent.setData(imageUri);
-        startActivity(intent);
     }
 
     @OnClick(R.id.button_browse)

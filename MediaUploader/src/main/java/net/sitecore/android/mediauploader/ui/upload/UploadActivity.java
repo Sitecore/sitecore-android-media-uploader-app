@@ -25,7 +25,7 @@ import java.util.ArrayList;
 import java.util.Date;
 
 import com.android.volley.Request;
-import com.android.volley.Response.ErrorListener;
+import com.android.volley.Response;
 import com.android.volley.Response.Listener;
 import com.android.volley.VolleyError;
 
@@ -33,7 +33,6 @@ import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesClient;
 import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.location.LocationClient;
-import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.maps.model.LatLng;
 import com.squareup.picasso.Picasso;
@@ -60,11 +59,12 @@ import butterknife.OnClick;
 
 import static net.sitecore.android.mediauploader.util.Utils.showToast;
 
-public class UploadActivity extends Activity implements SelectMediaListener,
-        GooglePlayServicesClient.ConnectionCallbacks, GooglePlayServicesClient.OnConnectionFailedListener,
-        ErrorListener {
+public class UploadActivity extends Activity implements GooglePlayServicesClient.ConnectionCallbacks,
+        GooglePlayServicesClient.OnConnectionFailedListener,
+        Response.ErrorListener {
 
     public static final int LOCATION_ACTIVITY_CODE = 10;
+
     private final int MAX_IMAGE_WIDTH = 2000;
     private final int MAX_IMAGE_HEIGHT = 2000;
 
@@ -86,14 +86,26 @@ public class UploadActivity extends Activity implements SelectMediaListener,
     private SelectMediaDialogHelper mMediaDialogHelper;
     private LocationClient mLocationClient;
 
-    private Listener<ArrayList<Address>> mReverseGeocodelistener = new Listener<ArrayList<Address>>() {
-        @Override
-        public void onResponse(ArrayList<Address> addresses) {
-            setProgressBarIndeterminateVisibility(false);
-            if (addresses.size() != 0) {
-                mImageAddress = addresses.get(0);
-                mLocationText.setText(mImageAddress.address);
-            }
+    private final Listener<ArrayList<Address>> mReverseGeocodeListener = addresses -> {
+        setProgressBarIndeterminateVisibility(false);
+        if (addresses.size() != 0) {
+            mImageAddress = addresses.get(0);
+            mLocationText.setText(mImageAddress.address);
+        }
+    };
+
+    private final SelectMediaListener mSelectMediaListener = new SelectMediaListener() {
+        @Override public void onImageSelected(Uri imageUri) {
+            mImageUri = imageUri;
+            loadImageIntoPreview();
+
+            mImageAddress = null;
+            mLocationText.setText("");
+            processImageLocation();
+        }
+
+        @Override public void onVideoSelected(Uri videoUri) {
+            showToast(getBaseContext(), "TODO");
         }
     };
 
@@ -116,7 +128,7 @@ public class UploadActivity extends Activity implements SelectMediaListener,
                 ? new V16OnGlobalLayoutListener()
                 : new LegacyOnGlobalLayoutListener());
 
-        proccessImageLocation();
+        processImageLocation();
     }
 
     @Override protected void onResume() {
@@ -144,7 +156,7 @@ public class UploadActivity extends Activity implements SelectMediaListener,
         return super.onOptionsItemSelected(item);
     }
 
-    private void proccessImageLocation() {
+    private void processImageLocation() {
         if (mImageAddress != null) return;
 
         LatLng latLng = ImageHelper.getLatLngFromImage(mImageUri.toString());
@@ -185,7 +197,8 @@ public class UploadActivity extends Activity implements SelectMediaListener,
             creator.resize(mPreview.getWidth(), mPreview.getHeight())
                     .centerInside();
         }
-        creator.placeholder(R.drawable.ic_placeholder).error(R.drawable.ic_action_cancel)
+        creator.placeholder(R.drawable.ic_placeholder)
+                .error(R.drawable.ic_action_cancel)
                 .into(mPreview);
     }
 
@@ -216,7 +229,7 @@ public class UploadActivity extends Activity implements SelectMediaListener,
 
     @OnClick(R.id.image_preview)
     public void onPreviewClick() {
-        mMediaDialogHelper = new SelectMediaDialogHelper(this, this);
+        mMediaDialogHelper = new SelectMediaDialogHelper(this, mSelectMediaListener);
         mMediaDialogHelper.showDialog();
     }
 
@@ -248,14 +261,7 @@ public class UploadActivity extends Activity implements SelectMediaListener,
         return itemName;
     }
 
-    @Override public void onImageSelected(Uri imageUri) {
-        mImageUri = imageUri;
-        loadImageIntoPreview();
 
-        mImageAddress = null;
-        mLocationText.setText("");
-        proccessImageLocation();
-    }
 
     private boolean servicesConnected() {
         int resultCode = GooglePlayServicesUtil.isGooglePlayServicesAvailable(this);
@@ -279,15 +285,14 @@ public class UploadActivity extends Activity implements SelectMediaListener,
         locationRequest.setNumUpdates(1);
         locationRequest.setFastestInterval(100);
 
-        mLocationClient.requestLocationUpdates(locationRequest, new LocationListener() {
-            @Override public void onLocationChanged(Location location) {
-                performReverseGeocodingRequest(new LatLng(location.getLatitude(), location.getLongitude()));
-            }
-        });
+        mLocationClient.requestLocationUpdates(
+                locationRequest,
+                location -> performReverseGeocodingRequest(new LatLng(location.getLatitude(), location.getLongitude()))
+        );
     }
 
     private void performReverseGeocodingRequest(LatLng latLng) {
-        Request request = new ReverseGeocodeRequest(latLng, mReverseGeocodelistener, this);
+        Request request = new ReverseGeocodeRequest(latLng, mReverseGeocodeListener, this);
         mRequestQueue.add(request);
         setProgressBarIndeterminateVisibility(true);
     }
