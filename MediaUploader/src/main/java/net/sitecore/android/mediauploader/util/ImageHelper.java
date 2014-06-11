@@ -23,9 +23,10 @@ import net.sitecore.android.mediauploader.ui.settings.ImageSize;
 import static net.sitecore.android.sdk.api.internal.LogUtils.LOGE;
 
 public class ImageHelper {
+
     private static final String IMAGE_FILE_NAME_TEMPLATE = "temp_image_";
 
-    private Context mContext;
+    private final Context mContext;
 
     public ImageHelper(Context context) {
         mContext = context;
@@ -46,8 +47,8 @@ public class ImageHelper {
             int imageWidth = options.outWidth;
             return imageWidth > desiredWidth || imageHeight > desiredHeight;
         } catch (IOException | SecurityException e) {
-//          SecurityException due to bug in Android KitKat. After target file of uri was deleted, reading this uri
-//          causes SecurityException.
+            //  SecurityException due to bug in Android KitKat. After target file of uri was deleted, reading this uri
+            // causes SecurityException.
             LOGE(e);
             return false;
         }
@@ -127,12 +128,12 @@ public class ImageHelper {
         try {
             ExifInterface exif = new ExifInterface(uri);
             String latitudeString = exif.getAttribute(ExifInterface.TAG_GPS_LATITUDE);
-            String longtitudeString = exif.getAttribute(ExifInterface.TAG_GPS_LONGITUDE);
+            String longitudeString = exif.getAttribute(ExifInterface.TAG_GPS_LONGITUDE);
 
-            if (latitudeString != null && longtitudeString != null) {
+            if (latitudeString != null && longitudeString != null) {
                 double latitude = Double.parseDouble(latitudeString);
-                double longtitude = Double.parseDouble(longtitudeString);
-                latLng = new LatLng(latitude, longtitude);
+                double longitude = Double.parseDouble(longitudeString);
+                latLng = new LatLng(latitude, longitude);
             }
         } catch (IOException | NumberFormatException e) {
             LOGE(e);

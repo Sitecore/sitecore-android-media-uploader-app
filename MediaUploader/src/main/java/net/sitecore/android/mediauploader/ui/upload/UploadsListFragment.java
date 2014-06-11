@@ -116,17 +116,15 @@ public class UploadsListFragment extends ListFragment implements LoaderCallbacks
         @Override public View newView(final Context context, Cursor cursor, ViewGroup parent) {
             View v = LayoutInflater.from(context).inflate(R.layout.list_item_upload, parent, false);
             final ViewHolder holder = new ViewHolder(v);
-            holder.statusButton.setOnClickListener(new OnClickListener() {
-                @Override public void onClick(View v) {
-                    switch (holder.status) {
-                        case UPLOAD_LATER:
-                            mCallbacks.onStartPendingUpload(holder.uploadId);
-                            break;
+            holder.statusButton.setOnClickListener(v1 -> {
+                switch (holder.status) {
+                    case UPLOAD_LATER:
+                        mCallbacks.onStartPendingUpload(holder.uploadId);
+                        break;
 
-                        case ERROR:
-                            mCallbacks.onErrorUploadClicked(holder.uploadId, holder.itemName, holder.failMessage);
-                            break;
-                    }
+                    case ERROR:
+                        mCallbacks.onErrorUploadClicked(holder.uploadId, holder.itemName, holder.failMessage);
+                        break;
                 }
             });
             v.setTag(holder);
