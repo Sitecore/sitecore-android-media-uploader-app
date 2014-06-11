@@ -45,8 +45,8 @@ public class MainActivity extends Activity {
 
         ButterKnife.inject(this);
 
-        mMediaDialogHelper = new SelectMediaDialogHelper(this, mSelectMediaListener);
         mSelectMediaListener = new MainActivitySelectMediaListener(this);
+        mMediaDialogHelper = new SelectMediaDialogHelper(this, mSelectMediaListener);
     }
 
     @Override protected void onResume() {

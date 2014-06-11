@@ -1,21 +1,16 @@
 package net.sitecore.android.mediauploader.ui.upload;
 
-import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.Intent;
 import android.location.Location;
 import android.net.Uri;
-import android.os.Build.VERSION;
-import android.os.Build.VERSION_CODES;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.ViewTreeObserver.OnGlobalLayoutListener;
 import android.view.Window;
 import android.widget.EditText;
 import android.widget.ImageButton;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import javax.inject.Inject;
@@ -48,6 +43,7 @@ import net.sitecore.android.mediauploader.ui.location.LocationActivity;
 import net.sitecore.android.mediauploader.ui.settings.ImageSize;
 import net.sitecore.android.mediauploader.ui.settings.SettingsActivity;
 import net.sitecore.android.mediauploader.ui.upload.SelectMediaDialogHelper.SelectMediaListener;
+import net.sitecore.android.mediauploader.ui.widget.NotifyingLayoutFinishedImageView;
 import net.sitecore.android.mediauploader.util.ImageHelper;
 import net.sitecore.android.mediauploader.util.Prefs;
 import net.sitecore.android.sdk.api.ScApiSession;
@@ -69,7 +65,7 @@ public class UploadActivity extends Activity implements GooglePlayServicesClient
     private final int MAX_IMAGE_HEIGHT = 2000;
 
     @InjectView(R.id.edit_name) EditText mEditName;
-    @InjectView(R.id.image_preview) ImageView mPreview;
+    @InjectView(R.id.image_preview) NotifyingLayoutFinishedImageView mPreview;
     @InjectView(R.id.button_location) ImageButton mLocationButton;
     @InjectView(R.id.textview_location) TextView mLocationText;
 
@@ -123,10 +119,7 @@ public class UploadActivity extends Activity implements GooglePlayServicesClient
         mImageHelper = new ImageHelper(this);
         mLocationClient = new LocationClient(this, this, this);
 
-        // This adds ability to get real mPreview width and height.
-        mPreview.getViewTreeObserver().addOnGlobalLayoutListener(VERSION.SDK_INT >= VERSION_CODES.JELLY_BEAN
-                ? new V16OnGlobalLayoutListener()
-                : new LegacyOnGlobalLayoutListener());
+        mPreview.setOnLayoutFinishedListener(this::loadImageIntoPreview);
 
         processImageLocation();
     }
@@ -170,28 +163,13 @@ public class UploadActivity extends Activity implements GooglePlayServicesClient
         }
     }
 
-    @TargetApi(VERSION_CODES.JELLY_BEAN)
-    private class V16OnGlobalLayoutListener implements OnGlobalLayoutListener {
-        @Override public void onGlobalLayout() {
-            mPreview.getViewTreeObserver().removeOnGlobalLayoutListener(this);
-            loadImageIntoPreview();
-        }
-    }
-
-    private class LegacyOnGlobalLayoutListener implements OnGlobalLayoutListener {
-        @Override public void onGlobalLayout() {
-            mPreview.getViewTreeObserver().removeGlobalOnLayoutListener(this);
-            loadImageIntoPreview();
-        }
-    }
-
     @Override
     protected void onStop() {
         mLocationClient.disconnect();
         super.onStop();
     }
 
-    private void loadImageIntoPreview() {
+    public void loadImageIntoPreview() {
         RequestCreator creator = mImageLoader.load(mImageUri);
         if (mImageHelper.isResizeNeeded(mImageUri.toString(), MAX_IMAGE_WIDTH, MAX_IMAGE_HEIGHT)) {
             creator.resize(mPreview.getWidth(), mPreview.getHeight())
@@ -260,8 +238,6 @@ public class UploadActivity extends Activity implements GooglePlayServicesClient
         }
         return itemName;
     }
-
-
 
     private boolean servicesConnected() {
         int resultCode = GooglePlayServicesUtil.isGooglePlayServicesAvailable(this);
