@@ -1,4 +1,4 @@
-package net.sitecore.android.mediauploader.ui.widget;
+package net.sitecore.android.mediauploader.widget;
 
 import android.annotation.TargetApi;
 import android.content.Context;

@@ -9,7 +9,7 @@
         android:layout_height="wrap_content"
         android:orientation="vertical">
 
-        <net.sitecore.android.mediauploader.ui.widget.NotifyingLayoutFinishedImageView
+        <net.sitecore.android.mediauploader.widget.NotifyingLayoutFinishedImageView
             android:id="@+id/image_preview"
             android:layout_width="match_parent"
             android:layout_height="300dp"

@@ -43,7 +43,7 @@ import net.sitecore.android.mediauploader.ui.location.LocationActivity;
 import net.sitecore.android.mediauploader.ui.settings.ImageSize;
 import net.sitecore.android.mediauploader.ui.settings.SettingsActivity;
 import net.sitecore.android.mediauploader.ui.upload.SelectMediaDialogHelper.SelectMediaListener;
-import net.sitecore.android.mediauploader.ui.widget.NotifyingLayoutFinishedImageView;
+import net.sitecore.android.mediauploader.widget.NotifyingLayoutFinishedImageView;
 import net.sitecore.android.mediauploader.util.ImageHelper;
 import net.sitecore.android.mediauploader.util.Prefs;
 import net.sitecore.android.sdk.api.ScApiSession;
@@ -212,7 +212,7 @@ public class UploadActivity extends Activity implements GooglePlayServicesClient
     }
 
     @OnClick(R.id.button_location)
-    public void onLocation() {
+    public void onPickLocationClick() {
         Intent intent = LocationActivity.prepareIntent(this, mImageAddress);
         startActivityForResult(intent, LOCATION_ACTIVITY_CODE);
     }

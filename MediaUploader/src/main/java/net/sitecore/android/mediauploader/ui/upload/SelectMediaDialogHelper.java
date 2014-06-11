@@ -79,6 +79,18 @@ public class SelectMediaDialogHelper {
         mActivity.startActivityForResult(intent, SOURCE_TYPE_CAMERA_PHOTO);
     }
 
+    private void onGalleryPhotoSelected() {
+        Intent intent = new Intent();
+        intent.setType("image/*");
+        if (Build.VERSION.SDK_INT >= VERSION_CODES.KITKAT) {
+            setDocumentAction(intent);
+        } else {
+            intent.setAction(Intent.ACTION_GET_CONTENT);
+            intent.addCategory(Intent.CATEGORY_OPENABLE);
+        }
+        mActivity.startActivityForResult(intent, SOURCE_TYPE_GALLERY_IMAGE);
+    }
+
     private void onCameraVideoSelected() {
         final File photo = getOutputMediaFile();
         mMediaUri = Uri.fromFile(photo);
@@ -98,19 +110,7 @@ public class SelectMediaDialogHelper {
             intent.setAction(Intent.ACTION_GET_CONTENT);
             intent.addCategory(Intent.CATEGORY_OPENABLE);
         }
-        mActivity.startActivityForResult(intent, SOURCE_TYPE_CAMERA_VIDEO);
-    }
-
-    private void onGalleryPhotoSelected() {
-        Intent intent = new Intent();
-        intent.setType("image/*");
-        if (Build.VERSION.SDK_INT >= VERSION_CODES.KITKAT) {
-            setDocumentAction(intent);
-        } else {
-            intent.setAction(Intent.ACTION_GET_CONTENT);
-            intent.addCategory(Intent.CATEGORY_OPENABLE);
-        }
-        mActivity.startActivityForResult(intent, SOURCE_TYPE_GALLERY_IMAGE);
+        mActivity.startActivityForResult(intent, SOURCE_TYPE_GALLERY_VIDEO);
     }
 
     @TargetApi(VERSION_CODES.KITKAT)
