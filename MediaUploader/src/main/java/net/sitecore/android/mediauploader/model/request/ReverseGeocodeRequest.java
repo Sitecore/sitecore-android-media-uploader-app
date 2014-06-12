@@ -1,4 +1,4 @@
-package net.sitecore.android.mediauploader.requests;
+package net.sitecore.android.mediauploader.model.request;
 
 import java.util.ArrayList;
 

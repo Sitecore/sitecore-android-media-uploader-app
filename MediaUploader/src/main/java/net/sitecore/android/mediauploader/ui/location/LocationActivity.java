@@ -34,8 +34,8 @@ import com.google.android.gms.maps.model.Marker;
 import net.sitecore.android.mediauploader.R;
 import net.sitecore.android.mediauploader.UploaderApp;
 import net.sitecore.android.mediauploader.model.Address;
-import net.sitecore.android.mediauploader.requests.GeocodingRequest;
-import net.sitecore.android.mediauploader.requests.ReverseGeocodeRequest;
+import net.sitecore.android.mediauploader.model.request.GeocodingRequest;
+import net.sitecore.android.mediauploader.model.request.ReverseGeocodeRequest;
 import net.sitecore.android.mediauploader.util.ScUtils;
 import net.sitecore.android.sdk.api.ScRequestQueue;
 
