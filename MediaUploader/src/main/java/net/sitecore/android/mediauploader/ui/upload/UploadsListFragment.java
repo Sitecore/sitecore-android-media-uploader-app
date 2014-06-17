@@ -36,8 +36,8 @@ import butterknife.InjectView;
 
 public class UploadsListFragment extends ListFragment implements LoaderCallbacks<Cursor> {
 
-    private static final int IMAGE_PREVIEW_WIDTH = 150;
-    private static final int IMAGE_PREVIEW_HEIGHT = 150;
+    private static final int IMAGE_PREVIEW_WIDTH = 200;
+    private static final int IMAGE_PREVIEW_HEIGHT = 200;
 
     public interface UploadsListCallbacks {
         public void onStartPendingUpload(String uploadId);
@@ -141,9 +141,11 @@ public class UploadsListFragment extends ListFragment implements LoaderCallbacks
 
             RequestCreator requestCreator = mImageLoader.load(holder.imageUri);
             if (mImageHelper.isResizeNeeded(holder.imageUri, IMAGE_PREVIEW_WIDTH, IMAGE_PREVIEW_HEIGHT)) {
-                requestCreator.resize(IMAGE_PREVIEW_WIDTH, IMAGE_PREVIEW_HEIGHT).centerInside();
+                requestCreator.resize(IMAGE_PREVIEW_WIDTH, IMAGE_PREVIEW_HEIGHT)
+                        .centerInside();
             }
-            requestCreator.placeholder(R.drawable.ic_placeholder).error(R.drawable.ic_action_cancel)
+            requestCreator.placeholder(R.drawable.ic_placeholder)
+                    .error(R.drawable.ic_action_cancel)
                     .into(holder.preview);
 
             holder.name.setText(holder.itemName);

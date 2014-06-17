@@ -22,8 +22,10 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import net.sitecore.android.mediauploader.R;
+import net.sitecore.android.mediauploader.util.Utils;
 
 import static android.os.Build.VERSION_CODES;
+import static net.sitecore.android.mediauploader.util.Utils.getCurrentDate;
 import static net.sitecore.android.sdk.api.internal.LogUtils.LOGD;
 
 public class SelectMediaDialogHelper {
@@ -70,7 +72,9 @@ public class SelectMediaDialogHelper {
     }
 
     private void onCameraPhotoSelected() {
-        final File photo = getOutputMediaFile();
+        String dateString = MEDIA_FILE_FORMAT.format(new Date(System.currentTimeMillis()));
+        String imageName = "Image_" + dateString + ".png";
+        final File photo = getOutputMediaFile(imageName);
         mMediaUri = Uri.fromFile(photo);
 
         Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
@@ -92,11 +96,12 @@ public class SelectMediaDialogHelper {
     }
 
     private void onCameraVideoSelected() {
-        final File photo = getOutputMediaFile();
-        mMediaUri = Uri.fromFile(photo);
+        String videoName = "Video_" + getCurrentDate() + ".mp4";
+        final File video = getOutputMediaFile(videoName);
+        mMediaUri = Uri.fromFile(video);
 
         Intent intent = new Intent(MediaStore.ACTION_VIDEO_CAPTURE);
-        intent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(photo));
+        intent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(video));
 
         mActivity.startActivityForResult(intent, SOURCE_TYPE_CAMERA_VIDEO);
     }
@@ -118,18 +123,16 @@ public class SelectMediaDialogHelper {
         intent.setAction(Intent.ACTION_OPEN_DOCUMENT);
     }
 
-    private File getOutputMediaFile() {
-        String dateString = MEDIA_FILE_FORMAT.format(new Date(System.currentTimeMillis()));
-        String imageName = "Image_" + dateString + ".png";
+    private File getOutputMediaFile(String fileName) {
         File mediaStorageDir = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES),
                 "ScMobile");
         if (!mediaStorageDir.exists()) {
             if (!mediaStorageDir.mkdirs()) {
-                return new File(mActivity.getExternalFilesDir(Environment.DIRECTORY_PICTURES), imageName);
+                return new File(mActivity.getExternalFilesDir(Environment.DIRECTORY_PICTURES), fileName);
             }
         }
 
-        return new File(mediaStorageDir.getPath() + File.separator + imageName);
+        return new File(mediaStorageDir.getPath() + File.separator + fileName);
     }
 
     public void onActivityResult(int requestCode, Intent data) {
@@ -138,6 +141,7 @@ public class SelectMediaDialogHelper {
             mMediaSourceListener.onImageSelected(mMediaUri);
         } else if (requestCode == SOURCE_TYPE_CAMERA_VIDEO) {
             LOGD("Selected video from camera: " + mMediaUri.toString());
+            mMediaUri = Uri.parse(data.getDataString());
             mMediaSourceListener.onVideoSelected(mMediaUri);
         } else if (requestCode == SOURCE_TYPE_GALLERY_IMAGE) {
             LOGD("Selected image from gallery: " + data.getDataString());

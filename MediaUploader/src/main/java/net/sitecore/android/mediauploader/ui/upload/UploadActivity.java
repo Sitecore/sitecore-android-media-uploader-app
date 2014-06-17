@@ -2,9 +2,11 @@ package net.sitecore.android.mediauploader.ui.upload;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.location.Location;
 import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore.Images;
 import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -15,9 +17,7 @@ import android.widget.TextView;
 
 import javax.inject.Inject;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 
 import com.android.volley.Request;
 import com.android.volley.Response;
@@ -37,15 +37,17 @@ import net.sitecore.android.mediauploader.R;
 import net.sitecore.android.mediauploader.UploaderApp;
 import net.sitecore.android.mediauploader.model.Address;
 import net.sitecore.android.mediauploader.model.Instance;
-import net.sitecore.android.mediauploader.provider.InstancesAsyncHandler;
 import net.sitecore.android.mediauploader.model.request.ReverseGeocodeRequest;
+import net.sitecore.android.mediauploader.provider.InstancesAsyncHandler;
 import net.sitecore.android.mediauploader.ui.location.LocationActivity;
 import net.sitecore.android.mediauploader.ui.settings.ImageSize;
 import net.sitecore.android.mediauploader.ui.settings.SettingsActivity;
 import net.sitecore.android.mediauploader.ui.upload.SelectMediaDialogHelper.SelectMediaListener;
-import net.sitecore.android.mediauploader.widget.NotifyingLayoutFinishedImageView;
 import net.sitecore.android.mediauploader.util.ImageHelper;
 import net.sitecore.android.mediauploader.util.Prefs;
+import net.sitecore.android.mediauploader.util.ThumbnailUtils;
+import net.sitecore.android.mediauploader.util.Utils;
+import net.sitecore.android.mediauploader.widget.NotifyingLayoutFinishedImageView;
 import net.sitecore.android.sdk.api.ScApiSession;
 import net.sitecore.android.sdk.api.ScRequestQueue;
 
@@ -59,10 +61,25 @@ public class UploadActivity extends Activity implements GooglePlayServicesClient
         GooglePlayServicesClient.OnConnectionFailedListener,
         Response.ErrorListener {
 
+    private static final int MAX_IMAGE_WIDTH = 2000;
+    private static final int MAX_IMAGE_HEIGHT = 2000;
+    private static final String EXTRA_IS_IMAGE = "extra_is_image";
+
     public static final int LOCATION_ACTIVITY_CODE = 10;
 
-    private final int MAX_IMAGE_WIDTH = 2000;
-    private final int MAX_IMAGE_HEIGHT = 2000;
+    public static void uploadImage(Activity parent, Uri imageUri) {
+        final Intent intent = new Intent(parent, UploadActivity.class);
+        intent.setData(imageUri);
+        intent.putExtra(EXTRA_IS_IMAGE, true);
+        parent.startActivity(intent);
+    }
+
+    public static void uploadVideo(Activity parent, Uri videoUri) {
+        final Intent intent = new Intent(parent, UploadActivity.class);
+        intent.setData(videoUri);
+        intent.putExtra(EXTRA_IS_IMAGE, false);
+        parent.startActivity(intent);
+    }
 
     @InjectView(R.id.edit_name) EditText mEditName;
     @InjectView(R.id.image_preview) NotifyingLayoutFinishedImageView mPreview;
@@ -75,7 +92,8 @@ public class UploadActivity extends Activity implements GooglePlayServicesClient
     @Inject ScApiSession mApiSession;
     @Inject Prefs mPrefs;
 
-    private Uri mImageUri;
+    private boolean mIsImageSelected;
+    private Uri mMediaUri;
     private ImageHelper mImageHelper;
     private Address mImageAddress;
 
@@ -92,7 +110,7 @@ public class UploadActivity extends Activity implements GooglePlayServicesClient
 
     private final SelectMediaListener mSelectMediaListener = new SelectMediaListener() {
         @Override public void onImageSelected(Uri imageUri) {
-            mImageUri = imageUri;
+            mMediaUri = imageUri;
             loadImageIntoPreview();
 
             mImageAddress = null;
@@ -101,7 +119,7 @@ public class UploadActivity extends Activity implements GooglePlayServicesClient
         }
 
         @Override public void onVideoSelected(Uri videoUri) {
-            showToast(getBaseContext(), "TODO");
+            showToast(getBaseContext(), "video1");
         }
     };
 
@@ -114,12 +132,26 @@ public class UploadActivity extends Activity implements GooglePlayServicesClient
 
         ButterKnife.inject(this);
 
-        mImageUri = getIntent().getData();
+        mIsImageSelected = getIntent().getBooleanExtra(EXTRA_IS_IMAGE, true);
+        mMediaUri = getIntent().getData();
 
         mImageHelper = new ImageHelper(this);
         mLocationClient = new LocationClient(this, this, this);
 
-        mPreview.setOnLayoutFinishedListener(this::loadImageIntoPreview);
+        mPreview.setOnLayoutFinishedListener(() -> {
+            if (mIsImageSelected) {
+                loadImageIntoPreview();
+            } else {
+                showToast(getBaseContext(), "video preview");
+            }
+        });
+
+        if (!mIsImageSelected) {
+            //mPreview.setImageResource(R.drawable.ic_action_video);
+            //String filePath = mMediaUri.toString();
+            //Bitmap preview = ThumbnailUtils.createVideoThumbnail(filePath, Images.Thumbnails.MINI_KIND);
+            //mPreview.setImageBitmap(preview);
+        }
 
         processImageLocation();
     }
@@ -152,7 +184,7 @@ public class UploadActivity extends Activity implements GooglePlayServicesClient
     private void processImageLocation() {
         if (mImageAddress != null) return;
 
-        LatLng latLng = ImageHelper.getLatLngFromImage(mImageUri.toString());
+        LatLng latLng = ImageHelper.getLatLngFromImage(mMediaUri.toString());
         if (latLng != null) {
             performReverseGeocodingRequest(latLng);
         } else {
@@ -170,8 +202,8 @@ public class UploadActivity extends Activity implements GooglePlayServicesClient
     }
 
     public void loadImageIntoPreview() {
-        RequestCreator creator = mImageLoader.load(mImageUri);
-        if (mImageHelper.isResizeNeeded(mImageUri.toString(), MAX_IMAGE_WIDTH, MAX_IMAGE_HEIGHT)) {
+        RequestCreator creator = mImageLoader.load(mMediaUri);
+        if (mImageHelper.isResizeNeeded(mMediaUri.toString(), MAX_IMAGE_WIDTH, MAX_IMAGE_HEIGHT)) {
             creator.resize(mPreview.getWidth(), mPreview.getHeight())
                     .centerInside();
         }
@@ -189,9 +221,9 @@ public class UploadActivity extends Activity implements GooglePlayServicesClient
 
         new InstancesAsyncHandler(getContentResolver()) {
             @Override protected void onInsertComplete(int token, Object cookie, Uri uri) {
-                mUploadHelper.uploadMedia(mApiSession, uri, mInstance, itemName, mImageUri.toString(), mImageAddress);
+                mUploadHelper.uploadMedia(mApiSession, uri, mInstance, itemName, mMediaUri.toString(), mImageAddress);
             }
-        }.insertDelayedUpload(itemName, mImageUri, mInstance, imageSize, mImageAddress);
+        }.insertDelayedUpload(itemName, mMediaUri, mInstance, imageSize, mImageAddress);
         finish();
     }
 
@@ -199,7 +231,7 @@ public class UploadActivity extends Activity implements GooglePlayServicesClient
     public void onUploadLater() {
         ImageSize imageSize = ImageSize.valueOf(mPrefs.getString(R.string.key_current_image_size,
                 ImageSize.ACTUAL.name()));
-        new InstancesAsyncHandler(getContentResolver()).insertDelayedUpload(getItemName(), mImageUri, mInstance,
+        new InstancesAsyncHandler(getContentResolver()).insertDelayedUpload(getItemName(), mMediaUri, mInstance,
                 imageSize, mImageAddress);
         showToast(this, R.string.toast_added_to_uploads);
         finish();
@@ -233,8 +265,7 @@ public class UploadActivity extends Activity implements GooglePlayServicesClient
     private String getItemName() {
         String itemName = mEditName.getText().toString();
         if (TextUtils.isEmpty(itemName)) {
-            String dateString = new SimpleDateFormat("yyyyMMddhhmmss").format(new Date(System.currentTimeMillis()));
-            itemName = "Image_" + dateString;
+            itemName = "Image_" + Utils.getCurrentDate();
         }
         return itemName;
     }

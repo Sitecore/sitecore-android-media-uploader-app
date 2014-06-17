@@ -1,6 +1,5 @@
 package net.sitecore.android.mediauploader.ui;
 
-import android.content.Intent;
 import android.net.Uri;
 
 import net.sitecore.android.mediauploader.ui.upload.SelectMediaDialogHelper.SelectMediaListener;
@@ -15,14 +14,10 @@ class MainActivitySelectMediaListener implements SelectMediaListener {
     }
 
     @Override public void onImageSelected(Uri imageUri) {
-        final Intent intent = new Intent(mActivity, UploadActivity.class);
-        intent.setData(imageUri);
-        mActivity.startActivity(intent);
+        UploadActivity.uploadImage(mActivity, imageUri);
     }
 
     @Override public void onVideoSelected(Uri videoUri) {
-        final Intent intent = new Intent(mActivity, UploadActivity.class);
-        intent.setData(videoUri);
-        mActivity.startActivity(intent);
+        UploadActivity.uploadVideo(mActivity, videoUri);
     }
 }
