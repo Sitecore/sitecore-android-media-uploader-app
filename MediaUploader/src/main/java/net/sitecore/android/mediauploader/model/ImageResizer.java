@@ -1,4 +1,4 @@
-package net.sitecore.android.mediauploader.util;
+package net.sitecore.android.mediauploader.model;
 
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -22,13 +22,13 @@ import net.sitecore.android.mediauploader.ui.settings.ImageSize;
 
 import static net.sitecore.android.sdk.api.internal.LogUtils.LOGE;
 
-public class ImageHelper {
+public class ImageResizer {
 
     private static final String IMAGE_FILE_NAME_TEMPLATE = "temp_image_";
 
     private final Context mContext;
 
-    public ImageHelper(Context context) {
+    public ImageResizer(Context context) {
         mContext = context;
     }
 
@@ -110,7 +110,7 @@ public class ImageHelper {
         return inSampleSize;
     }
 
-    public InputStream getInputStreamFromUri(String path) throws IOException {
+    private InputStream getInputStreamFromUri(String path) throws IOException {
         if (path.startsWith("content:")) {
             Uri uri = Uri.parse(path);
             return mContext.getContentResolver().openInputStream(uri);
@@ -123,21 +123,4 @@ public class ImageHelper {
         }
     }
 
-    public static LatLng getLatLngFromImage(String uri) {
-        LatLng latLng = null;
-        try {
-            ExifInterface exif = new ExifInterface(uri);
-            String latitudeString = exif.getAttribute(ExifInterface.TAG_GPS_LATITUDE);
-            String longitudeString = exif.getAttribute(ExifInterface.TAG_GPS_LONGITUDE);
-
-            if (latitudeString != null && longitudeString != null) {
-                double latitude = Double.parseDouble(latitudeString);
-                double longitude = Double.parseDouble(longitudeString);
-                latLng = new LatLng(latitude, longitude);
-            }
-        } catch (IOException | NumberFormatException e) {
-            LOGE(e);
-        }
-        return latLng;
-    }
 }

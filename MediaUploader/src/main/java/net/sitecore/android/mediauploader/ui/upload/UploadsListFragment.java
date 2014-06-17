@@ -10,7 +10,6 @@ import android.database.Cursor;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.CursorAdapter;
 import android.widget.ImageButton;
@@ -29,7 +28,7 @@ import net.sitecore.android.mediauploader.model.UploadStatus;
 import net.sitecore.android.mediauploader.provider.UploadMediaContract.Uploads;
 import net.sitecore.android.mediauploader.provider.UploadMediaContract.Uploads.Query;
 import net.sitecore.android.mediauploader.provider.UploadMediaContract.Uploads.UploadWithInstanceQuery;
-import net.sitecore.android.mediauploader.util.ImageHelper;
+import net.sitecore.android.mediauploader.model.ImageResizer;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
@@ -104,13 +103,13 @@ public class UploadsListFragment extends ListFragment implements LoaderCallbacks
 
         private final UploadsListCallbacks mCallbacks;
         private final Picasso mImageLoader;
-        private final ImageHelper mImageHelper;
+        private final ImageResizer mImageResizer;
 
         public UploadsCursorAdapter(Context context, UploadsListCallbacks callbacks, Picasso imageLoader) {
             super(context, null, false);
             mCallbacks = callbacks;
             mImageLoader = imageLoader;
-            mImageHelper = new ImageHelper(context);
+            mImageResizer = new ImageResizer(context);
         }
 
         @Override public View newView(final Context context, Cursor cursor, ViewGroup parent) {
@@ -140,7 +139,7 @@ public class UploadsListFragment extends ListFragment implements LoaderCallbacks
             holder.failMessage = cursor.getString(Query.FAIL_MESSAGE);
 
             RequestCreator requestCreator = mImageLoader.load(holder.imageUri);
-            if (mImageHelper.isResizeNeeded(holder.imageUri, IMAGE_PREVIEW_WIDTH, IMAGE_PREVIEW_HEIGHT)) {
+            if (mImageResizer.isResizeNeeded(holder.imageUri, IMAGE_PREVIEW_WIDTH, IMAGE_PREVIEW_HEIGHT)) {
                 requestCreator.resize(IMAGE_PREVIEW_WIDTH, IMAGE_PREVIEW_HEIGHT)
                         .centerInside();
             }

@@ -13,7 +13,7 @@ import net.sitecore.android.mediauploader.model.UploadStatus;
 import net.sitecore.android.mediauploader.provider.UploadMediaContract.Uploads;
 import net.sitecore.android.mediauploader.provider.UploadMediaContract.Uploads.Query;
 import net.sitecore.android.mediauploader.ui.settings.ImageSize;
-import net.sitecore.android.mediauploader.util.ImageHelper;
+import net.sitecore.android.mediauploader.model.ImageResizer;
 import net.sitecore.android.mediauploader.util.NotificationUtils;
 import net.sitecore.android.sdk.api.UploadMediaRequestOptions;
 import net.sitecore.android.sdk.api.UploadMediaService;
@@ -77,11 +77,11 @@ public class MediaUploaderService extends UploadMediaService {
 
         if (imageSize == ImageSize.ACTUAL) return newMediaFilePath;
 
-        ImageHelper imageHelper = new ImageHelper(this);
-        boolean isResizeNeeded = imageHelper.isResizeNeeded(mediaFilePath, imageSize);
+        ImageResizer imageResizer = new ImageResizer(this);
+        boolean isResizeNeeded = imageResizer.isResizeNeeded(mediaFilePath, imageSize);
         if (isResizeNeeded) {
             try {
-                newMediaFilePath = imageHelper.resize(mediaFilePath, imageSize);
+                newMediaFilePath = imageResizer.resize(mediaFilePath, imageSize);
             } catch (IOException e) {
                 LOGE(e);
             }

@@ -30,8 +30,6 @@ import static net.sitecore.android.sdk.api.internal.LogUtils.LOGD;
 
 public class SelectMediaDialogHelper {
 
-    private static final SimpleDateFormat MEDIA_FILE_FORMAT = new SimpleDateFormat("yyyyMMddhhmmss");
-
     public interface SelectMediaListener {
         public void onImageSelected(Uri imageUri);
         public void onVideoSelected(Uri videoUri);
@@ -72,8 +70,7 @@ public class SelectMediaDialogHelper {
     }
 
     private void onCameraPhotoSelected() {
-        String dateString = MEDIA_FILE_FORMAT.format(new Date(System.currentTimeMillis()));
-        String imageName = "Image_" + dateString + ".png";
+        final String imageName = "Image_" + getCurrentDate() + ".png";
         final File photo = getOutputMediaFile(imageName);
         mMediaUri = Uri.fromFile(photo);
 

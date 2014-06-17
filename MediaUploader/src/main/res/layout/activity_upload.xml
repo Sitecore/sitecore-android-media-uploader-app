@@ -30,7 +30,7 @@
             android:layout_margin="4dp">
 
             <TextView
-                android:id="@+id/textview_location"
+                android:id="@+id/text_location"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"

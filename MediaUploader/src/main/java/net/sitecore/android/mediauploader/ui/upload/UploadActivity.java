@@ -2,11 +2,9 @@ package net.sitecore.android.mediauploader.ui.upload;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.graphics.Bitmap;
 import android.location.Location;
 import android.net.Uri;
 import android.os.Bundle;
-import android.provider.MediaStore.Images;
 import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -43,9 +41,8 @@ import net.sitecore.android.mediauploader.ui.location.LocationActivity;
 import net.sitecore.android.mediauploader.ui.settings.ImageSize;
 import net.sitecore.android.mediauploader.ui.settings.SettingsActivity;
 import net.sitecore.android.mediauploader.ui.upload.SelectMediaDialogHelper.SelectMediaListener;
-import net.sitecore.android.mediauploader.util.ImageHelper;
+import net.sitecore.android.mediauploader.model.ImageResizer;
 import net.sitecore.android.mediauploader.util.Prefs;
-import net.sitecore.android.mediauploader.util.ThumbnailUtils;
 import net.sitecore.android.mediauploader.util.Utils;
 import net.sitecore.android.mediauploader.widget.NotifyingLayoutFinishedImageView;
 import net.sitecore.android.sdk.api.ScApiSession;
@@ -55,6 +52,7 @@ import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
 
+import static net.sitecore.android.mediauploader.util.Utils.getLatLngFromImage;
 import static net.sitecore.android.mediauploader.util.Utils.showToast;
 
 public class UploadActivity extends Activity implements GooglePlayServicesClient.ConnectionCallbacks,
@@ -84,7 +82,7 @@ public class UploadActivity extends Activity implements GooglePlayServicesClient
     @InjectView(R.id.edit_name) EditText mEditName;
     @InjectView(R.id.image_preview) NotifyingLayoutFinishedImageView mPreview;
     @InjectView(R.id.button_location) ImageButton mLocationButton;
-    @InjectView(R.id.textview_location) TextView mLocationText;
+    @InjectView(R.id.text_location) TextView mLocationText;
 
     @Inject Picasso mImageLoader;
     @Inject Instance mInstance;
@@ -94,7 +92,7 @@ public class UploadActivity extends Activity implements GooglePlayServicesClient
 
     private boolean mIsImageSelected;
     private Uri mMediaUri;
-    private ImageHelper mImageHelper;
+    private ImageResizer mImageResizer;
     private Address mImageAddress;
 
     private SelectMediaDialogHelper mMediaDialogHelper;
@@ -119,6 +117,9 @@ public class UploadActivity extends Activity implements GooglePlayServicesClient
         }
 
         @Override public void onVideoSelected(Uri videoUri) {
+            //TODO: hide location selection
+            //TODO: show video preview
+            //TODO: dont set address to upload
             showToast(getBaseContext(), "video1");
         }
     };
@@ -135,7 +136,7 @@ public class UploadActivity extends Activity implements GooglePlayServicesClient
         mIsImageSelected = getIntent().getBooleanExtra(EXTRA_IS_IMAGE, true);
         mMediaUri = getIntent().getData();
 
-        mImageHelper = new ImageHelper(this);
+        mImageResizer = new ImageResizer(this);
         mLocationClient = new LocationClient(this, this, this);
 
         mPreview.setOnLayoutFinishedListener(() -> {
@@ -184,11 +185,11 @@ public class UploadActivity extends Activity implements GooglePlayServicesClient
     private void processImageLocation() {
         if (mImageAddress != null) return;
 
-        LatLng latLng = ImageHelper.getLatLngFromImage(mMediaUri.toString());
+        LatLng latLng = getLatLngFromImage(mMediaUri);
         if (latLng != null) {
             performReverseGeocodingRequest(latLng);
         } else {
-            if (servicesConnected()) mLocationClient.connect();
+            if (isPlayServicesConnected()) mLocationClient.connect();
             else {
                 mLocationButton.setEnabled(false);
             }
@@ -203,7 +204,7 @@ public class UploadActivity extends Activity implements GooglePlayServicesClient
 
     public void loadImageIntoPreview() {
         RequestCreator creator = mImageLoader.load(mMediaUri);
-        if (mImageHelper.isResizeNeeded(mMediaUri.toString(), MAX_IMAGE_WIDTH, MAX_IMAGE_HEIGHT)) {
+        if (mImageResizer.isResizeNeeded(mMediaUri.toString(), MAX_IMAGE_WIDTH, MAX_IMAGE_HEIGHT)) {
             creator.resize(mPreview.getWidth(), mPreview.getHeight())
                     .centerInside();
         }
@@ -270,8 +271,8 @@ public class UploadActivity extends Activity implements GooglePlayServicesClient
         return itemName;
     }
 
-    private boolean servicesConnected() {
-        int resultCode = GooglePlayServicesUtil.isGooglePlayServicesAvailable(this);
+    private boolean isPlayServicesConnected() {
+        final int resultCode = GooglePlayServicesUtil.isGooglePlayServicesAvailable(this);
         return ConnectionResult.SUCCESS == resultCode;
     }
 
