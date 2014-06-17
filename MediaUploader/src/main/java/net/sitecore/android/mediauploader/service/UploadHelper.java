@@ -1,4 +1,4 @@
-package net.sitecore.android.mediauploader.ui.upload;
+package net.sitecore.android.mediauploader.service;
 
 import android.content.Context;
 import android.content.Intent;
@@ -7,7 +7,6 @@ import android.text.TextUtils;
 
 import net.sitecore.android.mediauploader.model.Address;
 import net.sitecore.android.mediauploader.model.Instance;
-import net.sitecore.android.mediauploader.service.MediaUploaderService;
 import net.sitecore.android.sdk.api.ScApiSession;
 import net.sitecore.android.sdk.api.UploadMediaIntentBuilder;
 
@@ -19,8 +18,12 @@ public class UploadHelper {
         mContext = context;
     }
 
-    public void uploadMedia(ScApiSession session, final Uri uploadUri, final Instance instance, final String name,
-            final String fileUri, Address address) {
+    public void startUploadService(ScApiSession session,
+            final Uri uploadUri,
+            final Instance instance,
+            final String name,
+            final String fileUri,
+            final Address address) {
         session.setMediaLibraryPath("/");
 
         MediaUploadResponseHandler responseListener = new MediaUploadResponseHandler(mContext, session, uploadUri, instance.getRootFolder(),

@@ -19,6 +19,7 @@ import net.sitecore.android.mediauploader.model.UploadStatus;
 import net.sitecore.android.mediauploader.provider.UploadMediaContract.Instances;
 import net.sitecore.android.mediauploader.provider.UploadMediaContract.Uploads;
 import net.sitecore.android.mediauploader.provider.UploadMediaContract.Uploads.Query;
+import net.sitecore.android.mediauploader.service.UploadHelper;
 import net.sitecore.android.sdk.api.ScApiSession;
 import net.sitecore.android.sdk.api.ScApiSessionFactory;
 import net.sitecore.android.sdk.api.ScPublicKey;
@@ -65,13 +66,13 @@ public class StartUploadTask extends AsyncTask<String, Void, Void> {
                         if (!TextUtils.isEmpty(instance.getSite())) session.setDefaultSite(instance.getSite());
 
                         UploadHelper helper = new UploadHelper(mContext);
-                        helper.uploadMedia(session, Uploads.buildUploadUri(uploadId), instance, itemName,
+                        helper.startUploadService(session, Uploads.buildUploadUri(uploadId), instance, itemName,
                                 fileUri.toString(), imageAddress);
                     } else {
                         // instance deleted -> set error
                         ContentValues values = new ContentValues();
                         values.put(Uploads.STATUS, UploadStatus.ERROR.name());
-                        values.put(Uploads.FAIL_MESSAGE, "Instance has been deleted");
+                        values.put(Uploads.FAIL_MESSAGE, "Site has been deleted");
                         contentResolver.update(Uploads.buildUploadUri(uploadId), values, null, null);
                     }
                 } finally {

@@ -37,6 +37,7 @@ import net.sitecore.android.mediauploader.model.Address;
 import net.sitecore.android.mediauploader.model.Instance;
 import net.sitecore.android.mediauploader.model.request.ReverseGeocodeRequest;
 import net.sitecore.android.mediauploader.provider.InstancesAsyncHandler;
+import net.sitecore.android.mediauploader.service.UploadHelper;
 import net.sitecore.android.mediauploader.ui.location.LocationActivity;
 import net.sitecore.android.mediauploader.ui.settings.ImageSize;
 import net.sitecore.android.mediauploader.ui.settings.SettingsActivity;
@@ -222,7 +223,7 @@ public class UploadActivity extends Activity implements GooglePlayServicesClient
 
         new InstancesAsyncHandler(getContentResolver()) {
             @Override protected void onInsertComplete(int token, Object cookie, Uri uri) {
-                mUploadHelper.uploadMedia(mApiSession, uri, mInstance, itemName, mMediaUri.toString(), mImageAddress);
+                mUploadHelper.startUploadService(mApiSession, uri, mInstance, itemName, mMediaUri.toString(), mImageAddress);
             }
         }.insertDelayedUpload(itemName, mMediaUri, mInstance, imageSize, mImageAddress);
         finish();
