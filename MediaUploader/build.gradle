@@ -67,8 +67,8 @@ dependencies {
     provided 'com.squareup.dagger:dagger-compiler:1.2.1'
 
     compile project (':SegmentedControl')
-    compile 'com.github.chrisbanes.photoview:library:1.2.2'
-    compile 'com.squareup.picasso:picasso:2.3.2'
-    compile 'com.jakewharton:butterknife:5.1.0'
+    compile 'com.github.chrisbanes.photoview:library:1.2.+'
+    compile 'com.squareup.picasso:picasso:2.3.+'
+    compile 'com.jakewharton:butterknife:5.1.+'
     compile 'com.crashlytics.android:crashlytics:1.+'
 }
