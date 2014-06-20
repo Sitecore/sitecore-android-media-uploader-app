@@ -8,9 +8,11 @@ import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.view.Window;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import javax.inject.Inject;
@@ -19,12 +21,15 @@ import java.util.ArrayList;
 
 import com.android.volley.Request;
 import com.android.volley.Response;
+import com.android.volley.Response.ErrorListener;
 import com.android.volley.Response.Listener;
 import com.android.volley.VolleyError;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesClient;
+import com.google.android.gms.common.GooglePlayServicesClient.ConnectionCallbacks;
 import com.google.android.gms.common.GooglePlayServicesUtil;
+import com.google.android.gms.common.api.GoogleApiClient.OnConnectionFailedListener;
 import com.google.android.gms.location.LocationClient;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.maps.model.LatLng;
@@ -55,10 +60,9 @@ import butterknife.OnClick;
 
 import static net.sitecore.android.mediauploader.util.Utils.getLatLngFromImage;
 import static net.sitecore.android.mediauploader.util.Utils.showToast;
+import static net.sitecore.android.sdk.api.internal.LogUtils.LOGE;
 
-public class UploadActivity extends Activity implements GooglePlayServicesClient.ConnectionCallbacks,
-        GooglePlayServicesClient.OnConnectionFailedListener,
-        Response.ErrorListener {
+public class UploadActivity extends Activity {
 
     private static final int MAX_IMAGE_WIDTH = 2000;
     private static final int MAX_IMAGE_HEIGHT = 2000;
@@ -83,6 +87,7 @@ public class UploadActivity extends Activity implements GooglePlayServicesClient
     @InjectView(R.id.edit_name) EditText mEditName;
     @InjectView(R.id.image_preview) NotifyingLayoutFinishedImageView mPreview;
     @InjectView(R.id.button_location) ImageButton mLocationButton;
+    @InjectView(R.id.layout_location) LinearLayout mLocationViewsGroup;
     @InjectView(R.id.text_location) TextView mLocationText;
 
     @Inject Picasso mImageLoader;
@@ -94,7 +99,7 @@ public class UploadActivity extends Activity implements GooglePlayServicesClient
     private boolean mIsImageSelected;
     private Uri mMediaUri;
     private ImageResizer mImageResizer;
-    private Address mImageAddress;
+    private Address mAddress;
 
     private SelectMediaDialogHelper mMediaDialogHelper;
     private LocationClient mLocationClient;
@@ -102,28 +107,62 @@ public class UploadActivity extends Activity implements GooglePlayServicesClient
     private final Listener<ArrayList<Address>> mReverseGeocodeListener = addresses -> {
         setProgressBarIndeterminateVisibility(false);
         if (addresses.size() != 0) {
-            mImageAddress = addresses.get(0);
-            mLocationText.setText(mImageAddress.address);
+            mAddress = addresses.get(0);
+            mLocationText.setText(mAddress.address);
         }
     };
 
     private final SelectMediaListener mSelectMediaListener = new SelectMediaListener() {
         @Override public void onImageSelected(Uri imageUri) {
-            mMediaUri = imageUri;
-            loadImageIntoPreview();
+            mLocationViewsGroup.setVisibility(View.VISIBLE);
 
-            mImageAddress = null;
+            mMediaUri = imageUri;
+
+            mAddress = null;
             mLocationText.setText("");
+            loadImageIntoPreview();
             processImageLocation();
         }
 
         @Override public void onVideoSelected(Uri videoUri) {
-            //TODO: hide location selection
-            //TODO: show video preview
-            //TODO: dont set address to upload
-            showToast(getBaseContext(), "video1");
+            mLocationViewsGroup.setVisibility(View.INVISIBLE);
+
+            mMediaUri = videoUri;
+
+            mAddress = null; // don't assign location to videos
+            showVideoPreview();
         }
     };
+
+    private final ConnectionCallbacks mConnectionCallbacks = new ConnectionCallbacks() {
+        @Override
+        public void onConnected(Bundle dataBundle) {
+            Location location = mLocationClient.getLastLocation();
+            if (location == null) {
+                startLocationUpdate();
+            } else {
+                performReverseGeocodingRequest(new LatLng(location.getLatitude(), location.getLongitude()));
+            }
+        }
+
+        @Override
+        public void onDisconnected() {
+        }
+    };
+
+
+    private final ErrorListener mErrorListener = error -> {
+        setProgressBarIndeterminateVisibility(false);
+        LOGE(error);
+    };
+
+    private final OnConnectionFailedListener mConnectionFailedListener = connectionResult -> {
+
+    };
+
+    private void showVideoPreview() {
+        showToast(getBaseContext(), "set video img");
+    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -138,24 +177,16 @@ public class UploadActivity extends Activity implements GooglePlayServicesClient
         mMediaUri = getIntent().getData();
 
         mImageResizer = new ImageResizer(this);
-        mLocationClient = new LocationClient(this, this, this);
+        mLocationClient = new LocationClient(this, mConnectionCallbacks, mConnectionFailedListener);
 
         mPreview.setOnLayoutFinishedListener(() -> {
             if (mIsImageSelected) {
                 loadImageIntoPreview();
+                processImageLocation();
             } else {
-                showToast(getBaseContext(), "video preview");
+                showVideoPreview();
             }
         });
-
-        if (!mIsImageSelected) {
-            //mPreview.setImageResource(R.drawable.ic_action_video);
-            //String filePath = mMediaUri.toString();
-            //Bitmap preview = ThumbnailUtils.createVideoThumbnail(filePath, Images.Thumbnails.MINI_KIND);
-            //mPreview.setImageBitmap(preview);
-        }
-
-        processImageLocation();
     }
 
     @Override protected void onResume() {
@@ -176,15 +207,18 @@ public class UploadActivity extends Activity implements GooglePlayServicesClient
             case android.R.id.home:
                 finish();
                 return true;
+
             case R.id.action_settings:
                 startActivity(new Intent(this, SettingsActivity.class));
                 return true;
+
+            default:
+                return super.onOptionsItemSelected(item);
         }
-        return super.onOptionsItemSelected(item);
     }
 
     private void processImageLocation() {
-        if (mImageAddress != null) return;
+        if (mAddress != null) return;
 
         LatLng latLng = getLatLngFromImage(mMediaUri);
         if (latLng != null) {
@@ -223,9 +257,9 @@ public class UploadActivity extends Activity implements GooglePlayServicesClient
 
         new InstancesAsyncHandler(getContentResolver()) {
             @Override protected void onInsertComplete(int token, Object cookie, Uri uri) {
-                mUploadHelper.startUploadService(mApiSession, uri, mInstance, itemName, mMediaUri.toString(), mImageAddress);
+                mUploadHelper.startUploadService(mApiSession, uri, mInstance, itemName, mMediaUri.toString(), mAddress);
             }
-        }.insertDelayedUpload(itemName, mMediaUri, mInstance, imageSize, mImageAddress);
+        }.insertDelayedUpload(itemName, mMediaUri, mInstance, imageSize, mAddress);
         finish();
     }
 
@@ -234,7 +268,7 @@ public class UploadActivity extends Activity implements GooglePlayServicesClient
         ImageSize imageSize = ImageSize.valueOf(mPrefs.getString(R.string.key_current_image_size,
                 ImageSize.ACTUAL.name()));
         new InstancesAsyncHandler(getContentResolver()).insertDelayedUpload(getItemName(), mMediaUri, mInstance,
-                imageSize, mImageAddress);
+                imageSize, mAddress);
         showToast(this, R.string.toast_added_to_uploads);
         finish();
     }
@@ -247,15 +281,15 @@ public class UploadActivity extends Activity implements GooglePlayServicesClient
 
     @OnClick(R.id.button_location)
     public void onPickLocationClick() {
-        Intent intent = LocationActivity.prepareIntent(this, mImageAddress);
+        Intent intent = LocationActivity.prepareIntent(this, mAddress);
         startActivityForResult(intent, LOCATION_ACTIVITY_CODE);
     }
 
     @Override public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (resultCode == Activity.RESULT_OK) {
             if (requestCode == LOCATION_ACTIVITY_CODE) {
-                mImageAddress = data.getParcelableExtra(LocationActivity.EXTRA_ADDRESS);
-                if (mImageAddress != null) mLocationText.setText(mImageAddress.address);
+                mAddress = data.getParcelableExtra(LocationActivity.EXTRA_ADDRESS);
+                if (mAddress != null) mLocationText.setText(mAddress.address);
             } else {
                 mMediaDialogHelper.onActivityResult(requestCode, data);
             }
@@ -277,15 +311,8 @@ public class UploadActivity extends Activity implements GooglePlayServicesClient
         return ConnectionResult.SUCCESS == resultCode;
     }
 
-    @Override
-    public void onConnected(Bundle dataBundle) {
-        Location location = mLocationClient.getLastLocation();
-        if (location == null) {
-            startLocationUpdate();
-        } else {
-            performReverseGeocodingRequest(new LatLng(location.getLatitude(), location.getLongitude()));
-        }
-    }
+
+
 
     private void startLocationUpdate() {
         LocationRequest locationRequest = LocationRequest.create();
@@ -301,21 +328,9 @@ public class UploadActivity extends Activity implements GooglePlayServicesClient
     }
 
     private void performReverseGeocodingRequest(LatLng latLng) {
-        Request request = new ReverseGeocodeRequest(latLng, mReverseGeocodeListener, this);
+        Request request = new ReverseGeocodeRequest(latLng, mReverseGeocodeListener, mErrorListener);
         mRequestQueue.add(request);
         setProgressBarIndeterminateVisibility(true);
     }
 
-    @Override
-    public void onErrorResponse(VolleyError error) {
-        setProgressBarIndeterminateVisibility(false);
-    }
-
-    @Override
-    public void onDisconnected() {
-    }
-
-    @Override
-    public void onConnectionFailed(ConnectionResult connectionResult) {
-    }
 }
