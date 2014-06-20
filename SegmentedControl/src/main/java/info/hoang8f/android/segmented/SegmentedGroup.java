@@ -73,6 +73,7 @@ public class SegmentedGroup extends RadioGroup {
         }
     }
 
+    @SuppressWarnings("deprecation")
     private void updateBackground(View view, int checked, int unchecked) {
         //Set text color
         ColorStateList colorStateList = new ColorStateList(new int[][]{
