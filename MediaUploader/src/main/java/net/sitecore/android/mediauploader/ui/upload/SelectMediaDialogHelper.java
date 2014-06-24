@@ -138,7 +138,6 @@ public class SelectMediaDialogHelper {
             mMediaSourceListener.onImageSelected(mMediaUri);
         } else if (requestCode == SOURCE_TYPE_CAMERA_VIDEO) {
             LOGD("Selected video from camera: " + mMediaUri.toString());
-            mMediaUri = Uri.parse(data.getDataString());
             mMediaSourceListener.onVideoSelected(mMediaUri);
         } else if (requestCode == SOURCE_TYPE_GALLERY_IMAGE) {
             LOGD("Selected image from gallery: " + data.getDataString());
