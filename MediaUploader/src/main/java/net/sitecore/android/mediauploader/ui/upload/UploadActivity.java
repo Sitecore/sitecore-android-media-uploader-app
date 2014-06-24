@@ -114,25 +114,34 @@ public class UploadActivity extends Activity {
 
     private final SelectMediaListener mSelectMediaListener = new SelectMediaListener() {
         @Override public void onImageSelected(Uri imageUri) {
-            mLocationViewsGroup.setVisibility(View.VISIBLE);
-
             mMediaUri = imageUri;
-
-            mAddress = null;
-            mLocationText.setText("");
-            loadImageIntoPreview();
-            processImageLocation();
+            updateImageUi();
         }
 
         @Override public void onVideoSelected(Uri videoUri) {
-            mLocationViewsGroup.setVisibility(View.INVISIBLE);
-
             mMediaUri = videoUri;
-
-            mAddress = null; // don't assign location to videos
-            showVideoPreview();
+            updateVideoUi();
         }
     };
+
+    private void updateImageUi() {
+        mLocationViewsGroup.setVisibility(View.VISIBLE);
+        mEditName.setText(mMediaUri.getLastPathSegment());
+
+        mAddress = null;
+        mLocationText.setText("");
+        loadImageIntoPreview();
+        processImageLocation();
+    }
+
+    private void updateVideoUi() {
+        mLocationViewsGroup.setVisibility(View.INVISIBLE);
+
+        mEditName.setText(mMediaUri.getLastPathSegment());
+
+        mAddress = null; // don't assign location to videos
+        showVideoPreview();
+    }
 
     private final ConnectionCallbacks mConnectionCallbacks = new ConnectionCallbacks() {
         @Override
@@ -157,11 +166,10 @@ public class UploadActivity extends Activity {
     };
 
     private final OnConnectionFailedListener mConnectionFailedListener = connectionResult -> {
-
     };
 
     private void showVideoPreview() {
-        showToast(getBaseContext(), "set video img");
+        mPreview.setImageResource(R.drawable.ic_video_preview);
     }
 
     @Override
@@ -181,10 +189,9 @@ public class UploadActivity extends Activity {
 
         mPreview.setOnLayoutFinishedListener(() -> {
             if (mIsImageSelected) {
-                loadImageIntoPreview();
-                processImageLocation();
+                updateImageUi();
             } else {
-                showVideoPreview();
+                updateVideoUi();
             }
         });
     }
