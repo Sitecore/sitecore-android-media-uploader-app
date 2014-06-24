@@ -6,6 +6,7 @@ import android.net.Uri;
 
 import net.sitecore.android.mediauploader.model.UploadStatus;
 import net.sitecore.android.mediauploader.provider.UploadMediaContract.Uploads;
+import net.sitecore.android.mediauploader.ui.settings.ImageSize;
 
 public class UploadMediaProviderUploadsTest extends BaseUploadMediaProviderTest {
 
@@ -14,6 +15,7 @@ public class UploadMediaProviderUploadsTest extends BaseUploadMediaProviderTest 
         values.put(Uploads.ITEM_NAME, itemName);
         values.put(Uploads.FILE_URI, "http://test.com/image.png");
         values.put(Uploads.STATUS, UploadStatus.IN_PROGRESS.name());
+        values.put(Uploads.IMAGE_SIZE, ImageSize.ACTUAL.name());
 
         return values;
     }

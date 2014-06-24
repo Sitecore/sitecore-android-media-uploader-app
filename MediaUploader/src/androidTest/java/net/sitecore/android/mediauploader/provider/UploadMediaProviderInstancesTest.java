@@ -9,24 +9,33 @@ import net.sitecore.android.mediauploader.provider.UploadMediaContract.Instances
 
 public class UploadMediaProviderInstancesTest extends BaseUploadMediaProviderTest {
 
-    private final String NAME_SAMPLE = "name";
-    private final String URL_SAMPLE = "http://test.url";
-    private final String LOGIN_SAMPLE = "test_login";
-    private final String PASSWORD_SAMPLE = "test_password";
-    private final String DEFAULT_FOLDER_SAMPLE = "/sitecore/media library";
+    interface TestItem {
+        String URL = "http://test.url";
+        String LOGIN = "test_login";
+        String PASSWORD = "test_password";
+        String DEFAULT_FOLDER = "/sitecore/media library";
+        String DATABASE = "web";
+        String SITE = "/sitecore/shell";
+    }
 
-    private final String UPDATED_NAME_SAMPLE = "updated_name";
-    private final String UPDATED_URL_SAMPLE = "updated_url";
-    private final String UPDATED_LOGIN_SAMPLE = "updated_login";
-    private final String UPDATED_PASSWORD_SAMPLE = "updated_password";
-    private final String UPDATED_DEFAULT_FOLDER_SAMPLE = "updated_folder";
+    interface UpdatedTestItem {
+
+        String UPDATED_NAME = "updated_name";
+        String UPDATED_URL = "updated_url";
+        String UPDATED_LOGIN = "updated_login";
+        String UPDATED_PASSWORD = "updated_password";
+        String UPDATED_DEFAULT_FOLDER = "updated_folder";
+    }
 
     public ContentValues getSampleValue() {
         ContentValues value = new ContentValues();
-        value.put(Instances.URL, URL_SAMPLE);
-        value.put(Instances.LOGIN, LOGIN_SAMPLE);
-        value.put(Instances.PASSWORD, PASSWORD_SAMPLE);
-        value.put(Instances.ROOT_FOLDER, DEFAULT_FOLDER_SAMPLE);
+        value.put(Instances.URL, TestItem.URL);
+        value.put(Instances.LOGIN, TestItem.LOGIN);
+        value.put(Instances.PASSWORD, TestItem.PASSWORD);
+        value.put(Instances.ROOT_FOLDER, TestItem.DEFAULT_FOLDER);
+        value.put(Instances.DATABASE, TestItem.DATABASE);
+        value.put(Instances.SITE, TestItem.SITE);
+        value.put(Instances.PUBLIC_KEY, "pub key goes here");
 
         return value;
     }
@@ -71,10 +80,10 @@ public class UploadMediaProviderInstancesTest extends BaseUploadMediaProviderTes
         checkCursor(c, 1);
         if (!c.moveToFirst()) fail("Trying to read cursor but it is empty");
 
-        assertEquals(URL_SAMPLE, c.getString(Query.URL));
-        assertEquals(LOGIN_SAMPLE, c.getString(Query.LOGIN));
-        assertEquals(PASSWORD_SAMPLE, c.getString(Query.PASSWORD));
-        assertEquals(DEFAULT_FOLDER_SAMPLE, c.getString(Query.ROOT_FOLDER));
+        assertEquals(TestItem.URL, c.getString(Query.URL));
+        assertEquals(TestItem.LOGIN, c.getString(Query.LOGIN));
+        assertEquals(TestItem.PASSWORD, c.getString(Query.PASSWORD));
+        assertEquals(TestItem.DEFAULT_FOLDER, c.getString(Query.ROOT_FOLDER));
     }
 
     public void testUpdate() {
@@ -84,22 +93,22 @@ public class UploadMediaProviderInstancesTest extends BaseUploadMediaProviderTes
         checkCursor(c, 1);
 
         ContentValues newValue = new ContentValues();
-        newValue.put(Instances.URL, UPDATED_URL_SAMPLE);
-        newValue.put(Instances.LOGIN, UPDATED_LOGIN_SAMPLE);
-        newValue.put(Instances.PASSWORD, UPDATED_PASSWORD_SAMPLE);
-        newValue.put(Instances.ROOT_FOLDER, UPDATED_DEFAULT_FOLDER_SAMPLE);
+        newValue.put(Instances.URL, UpdatedTestItem.UPDATED_URL);
+        newValue.put(Instances.LOGIN, UpdatedTestItem.UPDATED_LOGIN);
+        newValue.put(Instances.PASSWORD, UpdatedTestItem.UPDATED_PASSWORD);
+        newValue.put(Instances.ROOT_FOLDER, UpdatedTestItem.UPDATED_DEFAULT_FOLDER);
 
-        String selection = Instances.LOGIN + "='" + UPDATED_LOGIN_SAMPLE + "'";
+        String selection = Instances.LOGIN + "='" + TestItem.LOGIN + "'";
         assertEquals(1, mResolver.update(Instances.CONTENT_URI, newValue, selection, null));
 
         c = mResolver.query(Instances.CONTENT_URI, Query.PROJECTION, null, null, null);
         checkCursor(c, 1);
         if (!c.moveToFirst()) fail("Trying to read cursor but it is empty");
 
-        assertEquals(UPDATED_URL_SAMPLE, c.getString(Query.URL));
-        assertEquals(UPDATED_LOGIN_SAMPLE, c.getString(Query.LOGIN));
-        assertEquals(UPDATED_PASSWORD_SAMPLE, c.getString(Query.PASSWORD));
-        assertEquals(UPDATED_DEFAULT_FOLDER_SAMPLE, c.getString(Query.ROOT_FOLDER));
+        assertEquals(UpdatedTestItem.UPDATED_URL, c.getString(Query.URL));
+        assertEquals(UpdatedTestItem.UPDATED_LOGIN, c.getString(Query.LOGIN));
+        assertEquals(UpdatedTestItem.UPDATED_PASSWORD, c.getString(Query.PASSWORD));
+        assertEquals(UpdatedTestItem.UPDATED_DEFAULT_FOLDER, c.getString(Query.ROOT_FOLDER));
     }
 
     public void testGetInstanceById() {
@@ -124,10 +133,10 @@ public class UploadMediaProviderInstancesTest extends BaseUploadMediaProviderTes
         assertNotNull(resultUri);
 
         ContentValues values = new ContentValues();
-        values.put(Instances.URL, UPDATED_URL_SAMPLE);
-        values.put(Instances.LOGIN, UPDATED_LOGIN_SAMPLE);
-        values.put(Instances.PASSWORD, UPDATED_PASSWORD_SAMPLE);
-        values.put(Instances.ROOT_FOLDER, UPDATED_DEFAULT_FOLDER_SAMPLE);
+        values.put(Instances.URL, UpdatedTestItem.UPDATED_URL);
+        values.put(Instances.LOGIN, UpdatedTestItem.UPDATED_LOGIN);
+        values.put(Instances.PASSWORD, UpdatedTestItem.UPDATED_PASSWORD);
+        values.put(Instances.ROOT_FOLDER, UpdatedTestItem.UPDATED_DEFAULT_FOLDER);
 
         int count = mResolver.update(resultUri, values, null, null);
         assertEquals(1, count);
@@ -137,10 +146,10 @@ public class UploadMediaProviderInstancesTest extends BaseUploadMediaProviderTes
         checkCursor(cursor, 1);
         if (!cursor.moveToFirst()) fail("Trying to read cursor but it is empty");
 
-        assertEquals(UPDATED_URL_SAMPLE, cursor.getString(Query.URL));
-        assertEquals(UPDATED_LOGIN_SAMPLE, cursor.getString(Query.LOGIN));
-        assertEquals(UPDATED_PASSWORD_SAMPLE, cursor.getString(Query.PASSWORD));
-        assertEquals(UPDATED_DEFAULT_FOLDER_SAMPLE, cursor.getString(Query.ROOT_FOLDER));
+        assertEquals(UpdatedTestItem.UPDATED_URL, cursor.getString(Query.URL));
+        assertEquals(UpdatedTestItem.UPDATED_LOGIN, cursor.getString(Query.LOGIN));
+        assertEquals(UpdatedTestItem.UPDATED_PASSWORD, cursor.getString(Query.PASSWORD));
+        assertEquals(UpdatedTestItem.UPDATED_DEFAULT_FOLDER, cursor.getString(Query.ROOT_FOLDER));
     }
 
     public void testUnsupportedOperation() {

@@ -4,10 +4,12 @@ import android.content.ContentValues;
 import android.database.Cursor;
 import android.net.Uri;
 
+import net.sitecore.android.mediauploader.model.ImageResizer;
 import net.sitecore.android.mediauploader.model.UploadStatus;
 import net.sitecore.android.mediauploader.provider.UploadMediaContract.Instances;
 import net.sitecore.android.mediauploader.provider.UploadMediaContract.Uploads;
 import net.sitecore.android.mediauploader.provider.UploadMediaContract.Uploads.UploadWithInstanceQuery;
+import net.sitecore.android.mediauploader.ui.settings.ImageSize;
 
 public class UploadsJoinInstancesTest extends BaseUploadMediaProviderTest {
 
@@ -34,6 +36,8 @@ public class UploadsJoinInstancesTest extends BaseUploadMediaProviderTest {
         upload.put(Uploads.FILE_URI, "http://test.com/image.png");
         upload.put(Uploads.STATUS, UploadStatus.IN_PROGRESS.name());
         upload.put(Uploads.INSTANCE_ID, id);
+        upload.put(Uploads.IMAGE_SIZE, ImageSize.ACTUAL.name());
+
         Uri uploadUri = mResolver.insert(Uploads.CONTENT_URI, upload);
         mUploadId = Uploads.getUploadId(uploadUri);
     }
