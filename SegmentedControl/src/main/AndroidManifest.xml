@@ -2,6 +2,6 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="info.hoang8f.android.segmented">
 
-    <application android:allowBackup="false" />
+    <application />
 
 </manifest>
