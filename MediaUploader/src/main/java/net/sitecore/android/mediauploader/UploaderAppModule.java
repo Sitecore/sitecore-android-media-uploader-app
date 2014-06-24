@@ -10,6 +10,8 @@ import javax.inject.Singleton;
 import java.security.NoSuchAlgorithmException;
 import java.security.spec.InvalidKeySpecException;
 
+import com.squareup.okhttp.OkHttpClient;
+import com.squareup.picasso.OkHttpDownloader;
 import com.squareup.picasso.Picasso;
 
 import net.sitecore.android.mediauploader.model.Instance;
@@ -64,7 +66,9 @@ public final class UploaderAppModule {
     }
 
     @Provides @Singleton Picasso providePicasso() {
+        OkHttpDownloader downloader = new OkHttpDownloader(mApp, 10*1024*1024);
         return new Picasso.Builder(mApp)
+                .downloader(downloader)
                 .build();
     }
 

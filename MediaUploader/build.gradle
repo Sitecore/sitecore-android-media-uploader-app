@@ -69,6 +69,8 @@ dependencies {
     compile project (':SegmentedControl')
     compile 'com.github.chrisbanes.photoview:library:1.2.+'
     compile 'com.squareup.picasso:picasso:2.3.+'
+    compile 'com.squareup.okhttp:okhttp:2.0.+'
+    compile 'com.squareup.okhttp:okhttp-urlconnection:2.0.+'
     compile 'com.jakewharton:butterknife:5.1.+'
     compile 'com.crashlytics.android:crashlytics:1.+'
 }
