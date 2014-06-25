@@ -88,7 +88,8 @@ public class UploadMediaContract {
                     Uploads.COUNTRY_CODE,
                     Uploads.ZIP_CODE,
                     Uploads.LATITUDE,
-                    Uploads.LONGITUDE
+                    Uploads.LONGITUDE,
+                    Uploads.IS_IMAGE
             };
 
             int _ID = 0;
@@ -103,6 +104,7 @@ public class UploadMediaContract {
             int ZIP_CODE = 9;
             int LATITUDE = 10;
             int LONGITUDE = 11;
+            int IS_IMAGE = 12;
 
             public String SELECTION_COMPLETED_UPLOADS = Uploads.STATUS + "='" + UploadStatus.DONE + "'";
             public String SELECTION_NOT_COMPLETED_UPLOADS = Uploads.STATUS + "!='" + UploadStatus.DONE + "'";
@@ -118,6 +120,7 @@ public class UploadMediaContract {
                     Uploads.INSTANCE_ID,
                     Uploads.ITEM_NAME,
                     Uploads.FILE_URI,
+                    Uploads.IS_IMAGE,
                     Uploads.STATUS,
                     Uploads.IMAGE_SIZE,
                     Uploads.FAIL_MESSAGE,
@@ -140,22 +143,23 @@ public class UploadMediaContract {
             int INSTANCE_ID = 1;
             int ITEM_NAME = 2;
             int FILE_URI = 3;
-            int IMAGE_SIZE = 4;
+            int IS_IMAGE = 4;
             int STATUS = 5;
-            int FAIL_MESSAGE = 6;
-            int ADDRESS_NAME = 7;
-            int COUNTRY_CODE = 8;
-            int ZIP_CODE = 9;
-            int LATITUDE = 10;
-            int LONGITUDE = 11;
+            int IMAGE_SIZE = 6;
+            int FAIL_MESSAGE = 7;
+            int ADDRESS_NAME = 8;
+            int COUNTRY_CODE = 9;
+            int ZIP_CODE = 10;
+            int LATITUDE = 11;
+            int LONGITUDE = 12;
 
-            int URL = 12;
-            int LOGIN = 13;
-            int PASSWORD = 14;
-            int ROOT_FOLDER = 15;
-            int DATABASE = 16;
-            int SITE = 17;
-            int PUBLIC_KEY = 18;
+            int URL = 13;
+            int LOGIN = 14;
+            int PASSWORD = 15;
+            int ROOT_FOLDER = 16;
+            int DATABASE = 17;
+            int SITE = 18;
+            int PUBLIC_KEY = 19;
         }
 
     }
@@ -175,6 +179,7 @@ public class UploadMediaContract {
         String INSTANCE_ID = "instance_id";
         String ITEM_NAME = "item_name";
         String FILE_URI = "file_uri";
+        String IS_IMAGE = "is_image";
         String STATUS = "status";
         String IMAGE_SIZE = "image_size";
         String FAIL_MESSAGE = "message";

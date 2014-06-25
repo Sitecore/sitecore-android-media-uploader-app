@@ -70,8 +70,8 @@ public class MediaUploadResponseHandler implements Listener<ItemsResponse>, Erro
         fields.put("Latitude", String.valueOf(mAddress.latLng.latitude));
         fields.put("Longitude", String.valueOf(mAddress.latLng.longitude));
 
-        Listener<ItemsResponse> updateListener = itemsResponse -> onUploadFinished();
-        ErrorListener errorListener = error -> onUploadFinished();
+        final Listener<ItemsResponse> updateListener = itemsResponse -> onUploadFinished();
+        final ErrorListener errorListener = error -> onUploadFinished();
 
         mScRequestQueue.add(mSession.editItemFields(item, fields, updateListener, errorListener));
     }

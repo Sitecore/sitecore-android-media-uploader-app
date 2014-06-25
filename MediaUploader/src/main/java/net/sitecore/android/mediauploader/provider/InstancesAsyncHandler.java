@@ -19,8 +19,8 @@ public class InstancesAsyncHandler extends AsyncQueryHandler {
     private static final int TOKEN_INSERT_PENDING = 0;
     private static final int TOKEN_UPDATE_SELECTED = 1;
 
-    private static final int TOKEN_QUERY_ALL = 0;
-    private static final int TOKEN_QUERY_DUPLICATES = 0;
+    private static final int TOKEN_QUERY_ALL = 3;
+    private static final int TOKEN_QUERY_DUPLICATES = 4;
 
     private static final String SELECTION_DUPLICATE = Instances.URL + "=? and "
             + Instances.LOGIN + "=? and "
@@ -59,11 +59,12 @@ public class InstancesAsyncHandler extends AsyncQueryHandler {
     public void onInstancesLoaded(Cursor cursor) {
     }
 
-    public void insertDelayedUpload(final String itemName, final Uri fileUri, final Instance instance,
-            ImageSize imageSize, Address imageAddress) {
+    public void insertDelayedImageUpload(final String itemName, final Uri fileUri,
+            final Instance instance, ImageSize imageSize, Address imageAddress, boolean isImage) {
         final ContentValues values = new ContentValues();
         values.put(Uploads.ITEM_NAME, itemName);
         values.put(Uploads.FILE_URI, fileUri.toString());
+        values.put(Uploads.IS_IMAGE, isImage ? 1 : 0);
         values.put(Uploads.STATUS, UploadStatus.UPLOAD_LATER.name());
         values.put(Uploads.IMAGE_SIZE, imageSize.name());
         values.put(Uploads.INSTANCE_ID, instance.getId());
@@ -78,6 +79,7 @@ public class InstancesAsyncHandler extends AsyncQueryHandler {
 
         startInsert(TOKEN_INSERT_PENDING, null, Uploads.CONTENT_URI, values);
     }
+
 
     public void updateInstanceSelected(String instanceId) {
         ContentValues values = new ContentValues();

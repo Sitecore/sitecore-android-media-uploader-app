@@ -20,13 +20,10 @@ import javax.inject.Inject;
 import java.util.ArrayList;
 
 import com.android.volley.Request;
-import com.android.volley.Response;
 import com.android.volley.Response.ErrorListener;
 import com.android.volley.Response.Listener;
-import com.android.volley.VolleyError;
 
 import com.google.android.gms.common.ConnectionResult;
-import com.google.android.gms.common.GooglePlayServicesClient;
 import com.google.android.gms.common.GooglePlayServicesClient.ConnectionCallbacks;
 import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.common.api.GoogleApiClient.OnConnectionFailedListener;
@@ -114,11 +111,13 @@ public class UploadActivity extends Activity {
 
     private final SelectMediaListener mSelectMediaListener = new SelectMediaListener() {
         @Override public void onImageSelected(Uri imageUri) {
+            mIsImageSelected = true;
             mMediaUri = imageUri;
             updateImageUi();
         }
 
         @Override public void onVideoSelected(Uri videoUri) {
+            mIsImageSelected = false;
             mMediaUri = videoUri;
             updateVideoUi();
         }
@@ -266,7 +265,7 @@ public class UploadActivity extends Activity {
             @Override protected void onInsertComplete(int token, Object cookie, Uri uri) {
                 mUploadHelper.startUploadService(mApiSession, uri, mInstance, itemName, mMediaUri.toString(), mAddress);
             }
-        }.insertDelayedUpload(itemName, mMediaUri, mInstance, imageSize, mAddress);
+        }.insertDelayedImageUpload(itemName, mMediaUri, mInstance, imageSize, mAddress, mIsImageSelected);
         finish();
     }
 
@@ -274,8 +273,8 @@ public class UploadActivity extends Activity {
     public void onUploadLater() {
         ImageSize imageSize = ImageSize.valueOf(mPrefs.getString(R.string.key_current_image_size,
                 ImageSize.ACTUAL.name()));
-        new InstancesAsyncHandler(getContentResolver()).insertDelayedUpload(getItemName(), mMediaUri, mInstance,
-                imageSize, mAddress);
+        new InstancesAsyncHandler(getContentResolver()).insertDelayedImageUpload(getItemName(), mMediaUri, mInstance,
+                imageSize, mAddress, mIsImageSelected);
         showToast(this, R.string.toast_added_to_uploads);
         finish();
     }

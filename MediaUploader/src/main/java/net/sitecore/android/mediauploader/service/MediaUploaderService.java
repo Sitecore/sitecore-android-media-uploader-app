@@ -34,19 +34,27 @@ public class MediaUploaderService extends UploadMediaService {
         Uri uploadItemUri = intent.getParcelableExtra(EXTRA_UPLOAD_URI);
         String mediaFolder = intent.getStringExtra(EXTRA_MEDIA_FOLDER);
 
+        LOGD("Original media options: " + options);
         String mediaFilePath = resizeIfNeeded(uploadItemUri, options.getMediaFilePath());
+
         options.setMediaFilePath(mediaFilePath);
 
         String itemName = options.getItemName();
+
         String fileExtension = getFileExtension(mediaFilePath);
         if (fileExtension != null) {
-            options.setFileName(itemName + "." + fileExtension);
+            if (itemName.contains(".")) {
+                options.setFileName(itemName);
+            } else {
+                options.setFileName(itemName + "." + fileExtension);
+            }
         }
 
         changeUploadStatus(uploadItemUri);
         Notification n = NotificationUtils.showInProgressNotification(getApplicationContext(), itemName, mediaFolder);
         startForeground(itemName.hashCode(), n);
 
+        LOGD("Updated media options: " + options);
         super.onHandleIntent(intent);
     }
 
@@ -59,6 +67,7 @@ public class MediaUploaderService extends UploadMediaService {
     private String getFileExtension(String filePath) {
         MimeTypeMap mime = MimeTypeMap.getSingleton();
         String extension = mime.getExtensionFromMimeType(getContentResolver().getType(Uri.parse(filePath)));
+
         if (extension == null) {
             extension = filePath.substring(filePath.lastIndexOf(".") + 1);
         }

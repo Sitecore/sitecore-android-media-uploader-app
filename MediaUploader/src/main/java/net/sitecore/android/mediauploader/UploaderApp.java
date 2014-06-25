@@ -3,6 +3,7 @@ package net.sitecore.android.mediauploader;
 import android.app.Application;
 import android.content.Context;
 
+import com.android.volley.VolleyLog;
 import com.crashlytics.android.Crashlytics;
 import com.google.android.gms.analytics.GoogleAnalytics;
 import com.google.android.gms.analytics.HitBuilders;
@@ -63,7 +64,7 @@ public class UploaderApp extends Application {
     }
 
     private void setUpLogging(boolean isEnabled) {
-        mImageLoader.setDebugging(isEnabled);
+        mImageLoader.setIndicatorsEnabled(isEnabled);
         LogUtils.setLogEnabled(isEnabled);
         //VolleyLog.DEBUG = isEnabled;
     }

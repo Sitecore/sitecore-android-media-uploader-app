@@ -20,6 +20,7 @@ import com.google.android.gms.maps.model.LatLng;
 
 import net.sitecore.android.mediauploader.ui.settings.ImageSize;
 
+import static net.sitecore.android.sdk.api.internal.LogUtils.LOGD;
 import static net.sitecore.android.sdk.api.internal.LogUtils.LOGE;
 
 public class ImageResizer {
@@ -47,8 +48,8 @@ public class ImageResizer {
             int imageWidth = options.outWidth;
             return imageWidth > desiredWidth || imageHeight > desiredHeight;
         } catch (IOException | SecurityException e) {
-            //  SecurityException due to bug in Android KitKat. After target file of uri was deleted, reading this uri
-            // causes SecurityException.
+            // SecurityException due to bug in Android KitKat. After target file of uri
+            // was deleted, reading this uri causes SecurityException.
             LOGE(e);
             return false;
         }
@@ -60,6 +61,7 @@ public class ImageResizer {
 
         BitmapFactory.decodeStream(getInputStreamFromUri(imageUri), null, options);
         options.inSampleSize = calculateSampleSize(options, imageSize.getWidth(), imageSize.getHeight());
+        LOGD("Using resize options.inSampleSize = " + options.inSampleSize);
 
         options.inJustDecodeBounds = false;
         File targetFile = getTemporaryImageFile();

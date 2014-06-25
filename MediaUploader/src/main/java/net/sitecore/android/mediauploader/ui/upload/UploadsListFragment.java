@@ -26,12 +26,13 @@ import net.sitecore.android.mediauploader.R;
 import net.sitecore.android.mediauploader.UploaderApp;
 import net.sitecore.android.mediauploader.model.UploadStatus;
 import net.sitecore.android.mediauploader.provider.UploadMediaContract.Uploads;
-import net.sitecore.android.mediauploader.provider.UploadMediaContract.Uploads.Query;
 import net.sitecore.android.mediauploader.provider.UploadMediaContract.Uploads.UploadWithInstanceQuery;
 import net.sitecore.android.mediauploader.model.ImageResizer;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
+
+import static net.sitecore.android.mediauploader.provider.UploadMediaContract.Uploads.Query;
 
 public class UploadsListFragment extends ListFragment implements LoaderCallbacks<Cursor> {
 
@@ -132,20 +133,18 @@ public class UploadsListFragment extends ListFragment implements LoaderCallbacks
 
         @Override public void bindView(View view, Context context, Cursor cursor) {
             final ViewHolder holder = (ViewHolder) view.getTag();
-            holder.imageUri = cursor.getString(Query.FILE_URI);
-            holder.itemName = cursor.getString(Query.ITEM_NAME);
-            holder.uploadId = cursor.getString(Query._ID);
-            holder.status = UploadStatus.valueOf(cursor.getString(Query.STATUS));
-            holder.failMessage = cursor.getString(Query.FAIL_MESSAGE);
+            holder.imageUri = cursor.getString(UploadWithInstanceQuery.FILE_URI);
+            holder.itemName = cursor.getString(UploadWithInstanceQuery.ITEM_NAME);
+            holder.uploadId = cursor.getString(UploadWithInstanceQuery._ID);
+            holder.status = UploadStatus.valueOf(cursor.getString(UploadWithInstanceQuery.STATUS));
+            holder.failMessage = cursor.getString(UploadWithInstanceQuery.FAIL_MESSAGE);
 
-            RequestCreator requestCreator = mImageLoader.load(holder.imageUri);
-            if (mImageResizer.isResizeNeeded(holder.imageUri, IMAGE_PREVIEW_WIDTH, IMAGE_PREVIEW_HEIGHT)) {
-                requestCreator.resize(IMAGE_PREVIEW_WIDTH, IMAGE_PREVIEW_HEIGHT)
-                        .centerInside();
+            final boolean isImage = cursor.getInt(UploadWithInstanceQuery.IS_IMAGE) == 1;
+            if (isImage) {
+                loadImageThumbnail(holder);
+            } else {
+                holder.preview.setImageResource(R.drawable.ic_video_preview);
             }
-            requestCreator.placeholder(R.drawable.ic_placeholder)
-                    .error(R.drawable.ic_action_cancel)
-                    .into(holder.preview);
 
             holder.name.setText(holder.itemName);
             holder.url.setText(cursor.getString(UploadWithInstanceQuery.URL));
@@ -176,6 +175,17 @@ public class UploadsListFragment extends ListFragment implements LoaderCallbacks
                     holder.inProgress.setVisibility(View.VISIBLE);
                     break;
             }
+        }
+
+        private void loadImageThumbnail(ViewHolder holder) {
+            RequestCreator requestCreator = mImageLoader.load(holder.imageUri);
+            if (mImageResizer.isResizeNeeded(holder.imageUri, IMAGE_PREVIEW_WIDTH, IMAGE_PREVIEW_HEIGHT)) {
+                requestCreator.resize(IMAGE_PREVIEW_WIDTH, IMAGE_PREVIEW_HEIGHT)
+                        .centerInside();
+            }
+            requestCreator.placeholder(R.drawable.ic_placeholder)
+                    .error(R.drawable.ic_action_cancel)
+                    .into(holder.preview);
         }
     }
 
