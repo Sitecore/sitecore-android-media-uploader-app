@@ -80,7 +80,7 @@ public class CreateEditInstanceActivity extends Activity implements LoaderCallba
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
         if (!data.moveToFirst()) return;
-        Instance instance = new Instance(data);
+        Instance instance = Instance.fromInstanceCursor(data);
         mIsInstanceSelected = instance.isSelected();
         mInstanceFieldsFragment.setSourceInstance(instance);
     }

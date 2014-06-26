@@ -71,7 +71,7 @@ public class BrowserActivity extends InjectingActivity implements ContentTreePos
             @Override public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 Cursor cursor = mAdapter.getCursor();
                 cursor.moveToPosition(position);
-                initFragment(new Instance(cursor));
+                initFragment(Instance.fromInstanceCursor(cursor));
             }
 
             @Override public void onNothingSelected(AdapterView<?> parent) {
@@ -174,7 +174,7 @@ public class BrowserActivity extends InjectingActivity implements ContentTreePos
         int selectedInstancePos = 0;
         while (data.moveToNext()) {
             if (data.getInt(Query.SELECTED) == 1) {
-                instance = new Instance(data);
+                instance = Instance.fromInstanceCursor(data);
                 selectedInstancePos = data.getPosition();
                 break;
             }
@@ -194,7 +194,6 @@ public class BrowserActivity extends InjectingActivity implements ContentTreePos
     }
 
     @Override public void onLoaderReset(Loader loader) {
-
     }
 
     static class InstancesSpinnerAdapter extends CursorAdapter {

@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.widget.RadioGroup;
-import android.widget.RadioGroup.OnCheckedChangeListener;
 
 import net.sitecore.android.mediauploader.R;
 import net.sitecore.android.mediauploader.model.UploadStatus;
@@ -66,8 +65,10 @@ public class UploadsListActivity extends Activity implements UploadsListCallback
     private void startUpload(final String uploadId) {
         new UploadsAsyncHandler(getContentResolver()) {
             @Override protected void onUpdateComplete(int token, Object cookie, int result) {
-                new StartUploadTask(getApplicationContext()).execute(uploadId);
+                //new StartUploadTask(getApplicationContext()).execute(uploadId);
+                getLoaderManager().restartLoader(0, null, new StartUploadMediaLoader(UploadsListActivity.this, uploadId));
             }
         }.updateUploadStatus(uploadId, UploadStatus.PENDING);
     }
+
 }

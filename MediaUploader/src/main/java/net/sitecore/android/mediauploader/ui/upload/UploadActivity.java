@@ -317,9 +317,6 @@ public class UploadActivity extends Activity {
         return ConnectionResult.SUCCESS == resultCode;
     }
 
-
-
-
     private void startLocationUpdate() {
         LocationRequest locationRequest = LocationRequest.create();
         locationRequest.setPriority(LocationRequest.PRIORITY_BALANCED_POWER_ACCURACY);

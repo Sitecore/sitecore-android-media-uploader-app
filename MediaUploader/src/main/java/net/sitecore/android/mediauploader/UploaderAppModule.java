@@ -89,7 +89,7 @@ public final class UploaderAppModule {
                 null, null);
         Instance currentInstance;
         if (c.moveToFirst()) {
-            currentInstance = new Instance(c);
+            currentInstance = Instance.fromInstanceCursor(c);
         } else {
             currentInstance = null;
         }

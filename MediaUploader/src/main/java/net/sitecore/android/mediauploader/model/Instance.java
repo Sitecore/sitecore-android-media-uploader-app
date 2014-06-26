@@ -5,9 +5,11 @@ import android.database.Cursor;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import net.sitecore.android.mediauploader.provider.UploadMediaContract;
 import net.sitecore.android.mediauploader.provider.UploadMediaContract.Instances;
 
 import static net.sitecore.android.mediauploader.provider.UploadMediaContract.Instances.Query;
+import static net.sitecore.android.mediauploader.provider.UploadMediaContract.Uploads.UploadWithInstanceQuery;
 
 public class Instance implements Parcelable {
 
@@ -105,16 +107,36 @@ public class Instance implements Parcelable {
         return values;
     }
 
-    public Instance(Cursor cursor) {
-        this.id = cursor.getString(Query._ID);
-        this.url = cursor.getString(Query.URL);
-        this.login = cursor.getString(Query.LOGIN);
-        this.password = cursor.getString(Query.PASSWORD);
-        this.rootFolder = cursor.getString(Query.ROOT_FOLDER);
-        this.database = cursor.getString(Query.DATABASE);
-        this.site = cursor.getString(Query.SITE);
-        this.publicKey = cursor.getString(Query.PUBLIC_KEY);
-        this.isSelected = (cursor.getInt(Query.SELECTED) != 0);
+    public static Instance fromInstanceCursor(Cursor data) {
+        final Instance instance = new Instance();
+
+        instance.id = data.getString(Query._ID);
+        instance.url = data.getString(Query.URL);
+        instance.login = data.getString(Query.LOGIN);
+        instance.password = data.getString(Query.PASSWORD);
+        instance.rootFolder = data.getString(Query.ROOT_FOLDER);
+        instance.database = data.getString(Query.DATABASE);
+        instance.site = data.getString(Query.SITE);
+        instance.publicKey = data.getString(Query.PUBLIC_KEY);
+        instance.isSelected = (data.getInt(Query.SELECTED) != 0);
+
+        return instance;
+    }
+
+    public static Instance fromUploadsJoinInstanceCursor(Cursor data) {
+        final Instance instance = new Instance();
+
+        instance.id = data.getString(UploadWithInstanceQuery._ID);
+        instance.url = data.getString(UploadWithInstanceQuery.URL);
+        instance.login = data.getString(UploadWithInstanceQuery.LOGIN);
+        instance.password = data.getString(UploadWithInstanceQuery.PASSWORD);
+        instance.rootFolder = data.getString(UploadWithInstanceQuery.ROOT_FOLDER);
+        instance.database = data.getString(UploadWithInstanceQuery.DATABASE);
+        instance.site = data.getString(UploadWithInstanceQuery.SITE);
+        instance.publicKey = data.getString(UploadWithInstanceQuery.PUBLIC_KEY);
+        instance.isSelected = (data.getInt(UploadWithInstanceQuery.SELECTED) != 0);
+
+        return instance;
     }
 
     @Override public int describeContents() {

@@ -12,7 +12,7 @@ public class UploaderMediaDatabase extends SQLiteOpenHelper {
 
     private static final int VERSION = 6;
 
-    interface Tables {
+    public interface Tables {
         String INSTANCES = "instances";
         String UPLOADS = "uploads";
 

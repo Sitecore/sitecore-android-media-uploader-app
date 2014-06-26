@@ -135,7 +135,8 @@ public class UploadMediaContract {
                     Instances.ROOT_FOLDER,
                     Instances.DATABASE,
                     Instances.SITE,
-                    Instances.PUBLIC_KEY
+                    Instances.PUBLIC_KEY,
+                    Instances.SELECTED
 
             };
 
@@ -160,6 +161,7 @@ public class UploadMediaContract {
             int DATABASE = 17;
             int SITE = 18;
             int PUBLIC_KEY = 19;
+            int SELECTED = 20;
         }
 
     }

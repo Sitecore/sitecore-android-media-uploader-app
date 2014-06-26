@@ -26,8 +26,8 @@ public class UploadHelper {
             final Address address) {
         session.setMediaLibraryPath("/");
 
-        MediaUploadResponseHandler responseListener = new MediaUploadResponseHandler(mContext, session, uploadUri, instance.getRootFolder(),
-                name, address);
+        MediaUploadResponseHandler responseListener = new MediaUploadResponseHandler(mContext,
+                session, uploadUri, instance.getRootFolder(), name, address);
 
         UploadMediaIntentBuilder builder = session.uploadMediaIntent(instance.getRootFolder(), name, fileUri)
                 .setDatabase(instance.getDatabase())
