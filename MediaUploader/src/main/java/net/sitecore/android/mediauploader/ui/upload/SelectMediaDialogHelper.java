@@ -34,7 +34,7 @@ public class SelectMediaDialogHelper {
     }
 
     private static final int SOURCE_TYPE_CAMERA_PHOTO = 5;
-    //private static final int SOURCE_TYPE_CAMERA_VIDEO = 6;
+    private static final int SOURCE_TYPE_CAMERA_VIDEO = 6;
     private static final int SOURCE_TYPE_GALLERY_IMAGE = 7;
     private static final int SOURCE_TYPE_GALLERY_VIDEO = 8;
 
@@ -55,7 +55,7 @@ public class SelectMediaDialogHelper {
 
         final OnClickListener onMediaSourceSelected = (dialog, which) -> {
             if (which == 0) onCameraPhotoSelected();
-            //else if (which == 1) onCameraVideoSelected();
+            else if (which == 1) onCameraVideoSelected();
             else if (which == 1) onGalleryPhotoSelected();
             else onGalleryVideoSelected();
         };
@@ -90,7 +90,6 @@ public class SelectMediaDialogHelper {
         mActivity.startActivityForResult(intent, SOURCE_TYPE_GALLERY_IMAGE);
     }
 
-    /*
     private void onCameraVideoSelected() {
         String videoName = "Video_" + getCurrentDate() + ".mp4";
         final File video = getOutputMediaFile(videoName);
@@ -100,7 +99,7 @@ public class SelectMediaDialogHelper {
         intent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(video));
 
         mActivity.startActivityForResult(intent, SOURCE_TYPE_CAMERA_VIDEO);
-    }*/
+    }
 
     private void onGalleryVideoSelected() {
         Intent intent = new Intent();
@@ -135,11 +134,9 @@ public class SelectMediaDialogHelper {
         if (requestCode == SOURCE_TYPE_CAMERA_PHOTO) {
             LOGD("Selected image from camera: " + mMediaUri.toString());
             mMediaSourceListener.onImageSelected(mMediaUri);
-            /*
         } else if (requestCode == SOURCE_TYPE_CAMERA_VIDEO) {
             LOGD("Selected video from camera: " + mMediaUri.toString());
             mMediaSourceListener.onVideoSelected(mMediaUri);
-            */
         } else if (requestCode == SOURCE_TYPE_GALLERY_IMAGE) {
             LOGD("Selected image from gallery: " + data.getDataString());
             mMediaUri = Uri.parse(data.getDataString());
