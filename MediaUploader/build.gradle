@@ -1,5 +1,5 @@
 //apply plugin: 'android-sdk-manager'
-apply plugin: 'android'
+apply plugin: 'com.android.application'
 apply plugin: 'retrolambda'
 apply plugin: 'crashlytics'
 
@@ -56,7 +56,7 @@ android {
 }
 
 dependencies {
-    compile 'com.android.support:support-v13:+'
+    compile 'com.android.support:support-v13:19.1.0'
     compile 'com.android.support:support-annotations:+'
     compile 'com.google.android.gms:play-services:4.4.+'
 
