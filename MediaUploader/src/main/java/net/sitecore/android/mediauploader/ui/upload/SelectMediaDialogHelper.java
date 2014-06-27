@@ -56,7 +56,7 @@ public class SelectMediaDialogHelper {
         final OnClickListener onMediaSourceSelected = (dialog, which) -> {
             if (which == 0) onCameraPhotoSelected();
             else if (which == 1) onCameraVideoSelected();
-            else if (which == 1) onGalleryPhotoSelected();
+            else if (which == 2) onGalleryPhotoSelected();
             else onGalleryVideoSelected();
         };
 
