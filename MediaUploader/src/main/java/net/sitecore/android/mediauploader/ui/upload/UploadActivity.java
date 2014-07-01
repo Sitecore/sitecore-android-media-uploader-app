@@ -307,7 +307,9 @@ public class UploadActivity extends Activity {
     private String getItemName() {
         String itemName = mEditName.getText().toString();
         if (TextUtils.isEmpty(itemName)) {
-            itemName = "Image_" + Utils.getCurrentDate();
+            itemName = mIsImageSelected
+                    ? "Image_" + Utils.getCurrentDate()
+                    : "Video_" + Utils.getCurrentDate();
         }
         return itemName;
     }

@@ -30,7 +30,7 @@ public class UploadHelper {
                 session, uploadUri, instance.getRootFolder(), name, address);
 
         // ItemsWebAPI doesn't understand non-alphanumeric chars
-        final String cleanName = name.replaceAll("[^A-Za-z0-9]", "");
+        final String cleanName = name.replaceAll("[^A-Za-z0-9_]", "_");
         UploadMediaIntentBuilder builder = session.uploadMediaIntent(instance.getRootFolder(), cleanName, fileUri)
                 .setDatabase(instance.getDatabase())
                 .setSuccessListener(responseListener)
