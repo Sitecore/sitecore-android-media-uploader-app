@@ -17,8 +17,6 @@ import dagger.ObjectGraph;
 
 public class UploaderApp extends Application {
 
-    private Picasso mImageLoader;
-
     private ObjectGraph mObjectGraph;
     private Tracker mTracker;
 
@@ -29,7 +27,6 @@ public class UploaderApp extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
-        mImageLoader = Picasso.with(this);
 
         if (!BuildConfig.DEBUG) {
             Crashlytics.start(this);
@@ -64,7 +61,6 @@ public class UploaderApp extends Application {
     }
 
     private void setUpLogging(boolean isEnabled) {
-        mImageLoader.setIndicatorsEnabled(isEnabled);
         LogUtils.setLogEnabled(isEnabled);
         //VolleyLog.DEBUG = isEnabled;
     }

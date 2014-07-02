@@ -178,12 +178,9 @@ public class UploadsListFragment extends ListFragment implements LoaderCallbacks
         }
 
         private void loadImageThumbnail(ViewHolder holder) {
-            RequestCreator requestCreator = mImageLoader.load(holder.imageUri);
-            if (mImageResizer.isResizeNeeded(holder.imageUri, IMAGE_PREVIEW_WIDTH, IMAGE_PREVIEW_HEIGHT)) {
-                requestCreator.resize(IMAGE_PREVIEW_WIDTH, IMAGE_PREVIEW_HEIGHT)
-                        .centerInside();
-            }
-            requestCreator.placeholder(R.drawable.ic_placeholder)
+            mImageLoader.load(holder.imageUri)
+                    .fit().centerInside()
+                    .placeholder(R.drawable.ic_placeholder)
                     .error(R.drawable.ic_action_cancel)
                     .into(holder.preview);
         }

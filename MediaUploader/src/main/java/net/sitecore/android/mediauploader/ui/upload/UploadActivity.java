@@ -129,7 +129,13 @@ public class UploadActivity extends Activity {
 
         mAddress = null;
         mLocationText.setText("");
-        loadImageIntoPreview();
+
+        mImageLoader.load(mMediaUri)
+                .fit().centerInside()
+                .placeholder(R.drawable.ic_placeholder)
+                .error(R.drawable.ic_action_cancel)
+                .into(mPreview);
+
         processImageLocation();
     }
 
@@ -139,7 +145,7 @@ public class UploadActivity extends Activity {
         mEditName.setText(mMediaUri.getLastPathSegment());
 
         mAddress = null; // don't assign location to videos
-        showVideoPreview();
+        mPreview.setImageResource(R.drawable.ic_video_preview);
     }
 
     private final ConnectionCallbacks mConnectionCallbacks = new ConnectionCallbacks() {
@@ -166,10 +172,6 @@ public class UploadActivity extends Activity {
 
     private final OnConnectionFailedListener mConnectionFailedListener = connectionResult -> {
     };
-
-    private void showVideoPreview() {
-        mPreview.setImageResource(R.drawable.ic_video_preview);
-    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -241,17 +243,6 @@ public class UploadActivity extends Activity {
     protected void onStop() {
         mLocationClient.disconnect();
         super.onStop();
-    }
-
-    public void loadImageIntoPreview() {
-        RequestCreator creator = mImageLoader.load(mMediaUri);
-        if (mImageResizer.isResizeNeeded(mMediaUri.toString(), MAX_IMAGE_WIDTH, MAX_IMAGE_HEIGHT)) {
-            creator.resize(mPreview.getWidth(), mPreview.getHeight())
-                    .centerInside();
-        }
-        creator.placeholder(R.drawable.ic_placeholder)
-                .error(R.drawable.ic_action_cancel)
-                .into(mPreview);
     }
 
     @OnClick(R.id.button_upload_now)

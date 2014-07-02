@@ -10,7 +10,6 @@ import javax.inject.Singleton;
 import java.security.NoSuchAlgorithmException;
 import java.security.spec.InvalidKeySpecException;
 
-import com.squareup.okhttp.OkHttpClient;
 import com.squareup.picasso.OkHttpDownloader;
 import com.squareup.picasso.Picasso;
 
@@ -69,7 +68,10 @@ public final class UploaderAppModule {
         OkHttpDownloader downloader = new OkHttpDownloader(mApp, 10*1024*1024);
         return new Picasso.Builder(mApp)
                 .downloader(downloader)
+                //.indicatorsEnabled(BuildConfig.DEBUG)
+                //.loggingEnabled(BuildConfig.DEBUG)
                 .build();
+
     }
 
     @Provides @Singleton Prefs providePrefs() {
