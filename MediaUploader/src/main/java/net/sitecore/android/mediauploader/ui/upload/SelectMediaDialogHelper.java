@@ -91,13 +91,7 @@ public class SelectMediaDialogHelper {
     }
 
     private void onCameraVideoSelected() {
-        String videoName = "Video_" + getCurrentDate() + ".mp4";
-        final File video = getOutputMediaFile(videoName);
-        mMediaUri = Uri.fromFile(video);
-
         Intent intent = new Intent(MediaStore.ACTION_VIDEO_CAPTURE);
-        intent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(video));
-
         mActivity.startActivityForResult(intent, SOURCE_TYPE_CAMERA_VIDEO);
     }
 
@@ -132,19 +126,20 @@ public class SelectMediaDialogHelper {
 
     public void onActivityResult(int requestCode, Intent data) {
         if (requestCode == SOURCE_TYPE_CAMERA_PHOTO) {
+            mMediaSourceListener.onImageSelected(mMediaUri);
             LOGD("Selected image from camera: " + mMediaUri.toString());
-            mMediaSourceListener.onImageSelected(mMediaUri);
         } else if (requestCode == SOURCE_TYPE_CAMERA_VIDEO) {
+            mMediaUri = data.getData();
+            mMediaSourceListener.onVideoSelected(mMediaUri);
             LOGD("Selected video from camera: " + mMediaUri.toString());
-            mMediaSourceListener.onVideoSelected(mMediaUri);
         } else if (requestCode == SOURCE_TYPE_GALLERY_IMAGE) {
-            LOGD("Selected image from gallery: " + data.getDataString());
-            mMediaUri = Uri.parse(data.getDataString());
+            mMediaUri = data.getData();
             mMediaSourceListener.onImageSelected(mMediaUri);
+            LOGD("Selected image from gallery: " + mMediaUri);
         } else if (requestCode == SOURCE_TYPE_GALLERY_VIDEO) {
-            LOGD("Selected video from gallery: " + data.getDataString());
-            mMediaUri = Uri.parse(data.getDataString());
+            mMediaUri = data.getData();
             mMediaSourceListener.onVideoSelected(mMediaUri);
+            LOGD("Selected video from gallery: " + mMediaUri);
         }
     }
 
