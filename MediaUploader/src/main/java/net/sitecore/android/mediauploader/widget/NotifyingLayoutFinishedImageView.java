@@ -50,6 +50,7 @@ public class NotifyingLayoutFinishedImageView extends ImageView {
         }
     }
 
+    @SuppressWarnings("deprecation")
     private class LegacyOnGlobalLayoutListener implements OnGlobalLayoutListener {
         @Override public void onGlobalLayout() {
             getViewTreeObserver().removeGlobalOnLayoutListener(this);
