@@ -76,6 +76,7 @@
     <string name="text_search">Search</string>
     <string name="text_site">Site</string>
     <string name="text_user">User</string>
+    <string name="title_my_uploads">My Uploads</string>
 
     <string-array name="select_image_source">
         <item>Take a picture</item>

@@ -40,7 +40,8 @@
 
         <activity
             android:name=".ui.upload.UploadsListActivity"
-            android:label="My Uploads"
+            android:label="@string/title_my_uploads"
+            android:launchMode="singleInstance"
             android:screenOrientation="portrait" />
 
         <activity
