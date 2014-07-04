@@ -43,7 +43,6 @@ import net.sitecore.android.mediauploader.ui.location.LocationActivity;
 import net.sitecore.android.mediauploader.ui.settings.ImageSize;
 import net.sitecore.android.mediauploader.ui.settings.SettingsActivity;
 import net.sitecore.android.mediauploader.ui.upload.SelectMediaDialogHelper.SelectMediaListener;
-import net.sitecore.android.mediauploader.model.ImageResizer;
 import net.sitecore.android.mediauploader.util.Prefs;
 import net.sitecore.android.mediauploader.util.ScUtils;
 import net.sitecore.android.mediauploader.util.Utils;
@@ -95,7 +94,6 @@ public class UploadActivity extends Activity {
 
     private boolean mIsImageSelected;
     private Uri mMediaUri;
-    private ImageResizer mImageResizer;
     private Address mAddress;
 
     private SelectMediaDialogHelper mMediaDialogHelper;
@@ -125,7 +123,7 @@ public class UploadActivity extends Activity {
 
     private void updateImageUi() {
         mLocationViewsGroup.setVisibility(View.VISIBLE);
-        mEditName.setText(mMediaUri.getLastPathSegment());
+        mEditName.setText(generateMediaItemName());
 
         mAddress = null;
         mLocationText.setText("");
@@ -142,7 +140,7 @@ public class UploadActivity extends Activity {
     private void updateVideoUi() {
         mLocationViewsGroup.setVisibility(View.INVISIBLE);
 
-        mEditName.setText(mMediaUri.getLastPathSegment());
+        mEditName.setText(generateMediaItemName());
 
         mAddress = null; // don't assign location to videos
         mPreview.setImageResource(R.drawable.ic_video_preview);
@@ -185,7 +183,6 @@ public class UploadActivity extends Activity {
         mIsImageSelected = getIntent().getBooleanExtra(EXTRA_IS_IMAGE, true);
         mMediaUri = getIntent().getData();
 
-        mImageResizer = new ImageResizer(this);
         mLocationClient = new LocationClient(this, mConnectionCallbacks, mConnectionFailedListener);
 
         mPreview.setOnLayoutFinishedListener(() -> {
@@ -248,7 +245,7 @@ public class UploadActivity extends Activity {
     @OnClick(R.id.button_upload_now)
     public void onUploadNow() {
         final UploadHelper mUploadHelper = new UploadHelper(getApplicationContext());
-        final String itemName = getItemName();
+        final String itemName = getValidMediaItemName();
         ImageSize imageSize = ImageSize.valueOf(mPrefs.getString(R.string.key_current_image_size,
                 ImageSize.ACTUAL.name()));
 
@@ -264,7 +261,7 @@ public class UploadActivity extends Activity {
     public void onUploadLater() {
         ImageSize imageSize = ImageSize.valueOf(mPrefs.getString(R.string.key_current_image_size,
                 ImageSize.ACTUAL.name()));
-        new InstancesAsyncHandler(getContentResolver()).insertDelayedImageUpload(getItemName(), mMediaUri, mInstance,
+        new InstancesAsyncHandler(getContentResolver()).insertDelayedImageUpload(getValidMediaItemName(), mMediaUri, mInstance,
                 imageSize, mAddress, mIsImageSelected);
         showToast(this, R.string.toast_added_to_uploads);
         finish();
@@ -295,16 +292,20 @@ public class UploadActivity extends Activity {
         }
     }
 
-    private String getItemName() {
+    private String getValidMediaItemName() {
         String itemName = mEditName.getText().toString();
         if (TextUtils.isEmpty(itemName)) {
-            itemName = mIsImageSelected
-                    ? "Image_" + Utils.getCurrentDate()
-                    : "Video_" + Utils.getCurrentDate();
+            itemName = generateMediaItemName();
         }
 
         // ItemsWebAPI doesn't understand non-alphanumeric chars
         return ScUtils.cleanupMediaItemName(itemName);
+    }
+
+    private String generateMediaItemName() {
+        return mIsImageSelected
+                ? "Image_" + Utils.getCurrentDate()
+                : "Video_" + Utils.getCurrentDate();
     }
 
     private boolean isPlayServicesConnected() {

@@ -15,7 +15,7 @@ import static net.sitecore.android.sdk.api.internal.LogUtils.LOGE;
 
 public class Utils {
 
-    private static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("yyyy_MM_dd_hh_mm");
+    private static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("yyyyMMddhhmmss");
 
     public static void showToast(Context context, int stringResourceId) {
         Toast.makeText(context, stringResourceId, Toast.LENGTH_LONG).show();
