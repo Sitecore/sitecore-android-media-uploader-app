@@ -49,22 +49,10 @@ public class RetryUploadDialogFragment extends DialogFragment {
                 .setIcon(R.drawable.ic_upload_error)
                 .setTitle(name)
                 .setMessage(failMessage)
-                .setPositiveButton(R.string.text_retry, new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int whichButton) {
-                                //TODO: dont fire update here, move logic to activity
-                                //startUpload(getActivity(), uploadId);
-                                mCallbacks.onRetryUpload(uploadId);
-                            }
-                        }
-                )
-                .setNegativeButton(R.string.text_cancel, new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int whichButton) {
-                                dismiss();
-                            }
-                        }
-                )
+                .setPositiveButton(
+                        R.string.text_retry,
+                        (dialog, whichButton) -> mCallbacks.onRetryUpload(uploadId))
+                .setNegativeButton(R.string.text_cancel, (dialog, whichButton) -> dismiss())
                 .create();
     }
 
