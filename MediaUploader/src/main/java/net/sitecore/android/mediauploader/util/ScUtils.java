@@ -52,4 +52,9 @@ public class ScUtils {
             return context.getString(R.string.error);
         }
     }
+
+    public static final String cleanupMediaItemName(String originalName) {
+        return originalName.replaceAll("[^A-Za-z0-9_]", "_");
+    }
+
 }

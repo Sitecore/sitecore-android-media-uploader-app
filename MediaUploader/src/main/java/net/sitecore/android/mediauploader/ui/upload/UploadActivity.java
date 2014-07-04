@@ -31,7 +31,6 @@ import com.google.android.gms.location.LocationClient;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.maps.model.LatLng;
 import com.squareup.picasso.Picasso;
-import com.squareup.picasso.RequestCreator;
 
 import net.sitecore.android.mediauploader.R;
 import net.sitecore.android.mediauploader.UploaderApp;
@@ -46,6 +45,7 @@ import net.sitecore.android.mediauploader.ui.settings.SettingsActivity;
 import net.sitecore.android.mediauploader.ui.upload.SelectMediaDialogHelper.SelectMediaListener;
 import net.sitecore.android.mediauploader.model.ImageResizer;
 import net.sitecore.android.mediauploader.util.Prefs;
+import net.sitecore.android.mediauploader.util.ScUtils;
 import net.sitecore.android.mediauploader.util.Utils;
 import net.sitecore.android.mediauploader.widget.NotifyingLayoutFinishedImageView;
 import net.sitecore.android.sdk.api.ScApiSession;
@@ -302,7 +302,9 @@ public class UploadActivity extends Activity {
                     ? "Image_" + Utils.getCurrentDate()
                     : "Video_" + Utils.getCurrentDate();
         }
-        return itemName;
+
+        // ItemsWebAPI doesn't understand non-alphanumeric chars
+        return ScUtils.cleanupMediaItemName(itemName);
     }
 
     private boolean isPlayServicesConnected() {
