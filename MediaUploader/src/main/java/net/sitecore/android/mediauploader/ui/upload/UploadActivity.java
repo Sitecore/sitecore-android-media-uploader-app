@@ -143,7 +143,7 @@ public class UploadActivity extends Activity {
         mEditName.setText(generateMediaItemName());
 
         mAddress = null; // don't assign location to videos
-        mPreview.setImageResource(R.drawable.ic_video_preview);
+        mPreview.setImageResource(R.drawable.ic_template_video);
     }
 
     private final ConnectionCallbacks mConnectionCallbacks = new ConnectionCallbacks() {
