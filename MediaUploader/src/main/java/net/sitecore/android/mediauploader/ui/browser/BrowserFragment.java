@@ -76,6 +76,8 @@ public class BrowserFragment extends ItemsGridBrowserFragment {
             startActivity(intent);
         } else if (ScUtils.isFileTemplate(item.getTemplate())) {
             // Do nothing
+        } else if (ScUtils.isVideoTemplate(item.getTemplate())) {
+            // Do nothing
         } else {
             super.onScItemClick(item);
         }

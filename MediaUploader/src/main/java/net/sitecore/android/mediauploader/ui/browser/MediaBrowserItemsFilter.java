@@ -6,6 +6,7 @@ import net.sitecore.android.sdk.api.model.ScItemsLoaderFilter;
 import static net.sitecore.android.mediauploader.util.ScUtils.TEMPLATE_MEDIA_FOLDER;
 import static net.sitecore.android.mediauploader.util.ScUtils.isFileTemplate;
 import static net.sitecore.android.mediauploader.util.ScUtils.isImageTemplate;
+import static net.sitecore.android.mediauploader.util.ScUtils.isVideoTemplate;
 
 public class MediaBrowserItemsFilter implements ScItemsLoaderFilter {
 
@@ -13,6 +14,8 @@ public class MediaBrowserItemsFilter implements ScItemsLoaderFilter {
     public boolean shouldShow(ScItem item) {
         final String template = item.getTemplate();
 
-        return isImageTemplate(template)|| isFileTemplate(template) || template.equals(TEMPLATE_MEDIA_FOLDER);
+        return isImageTemplate(template) || isFileTemplate(template)
+                || isVideoTemplate(template)
+                || template.equals(TEMPLATE_MEDIA_FOLDER);
     }
 }

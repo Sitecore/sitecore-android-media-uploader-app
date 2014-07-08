@@ -21,6 +21,7 @@ import butterknife.InjectView;
 
 import static net.sitecore.android.mediauploader.util.ScUtils.isFileTemplate;
 import static net.sitecore.android.mediauploader.util.ScUtils.isImageTemplate;
+import static net.sitecore.android.mediauploader.util.ScUtils.isVideoTemplate;
 
 public class BrowserItemViewBinder implements ItemViewBinder {
 
@@ -48,7 +49,9 @@ public class BrowserItemViewBinder implements ItemViewBinder {
                     .error(R.drawable.ic_action_cancel)
                     .into(holder.icon);
         } else if (isFileTemplate(item.getTemplate())) {
-            holder.icon.setImageResource(R.drawable.ic_browser_file);
+            holder.icon.setImageResource(R.drawable.ic_template_file);
+        } else if (isVideoTemplate(item.getTemplate())) {
+            holder.icon.setImageResource(R.drawable.ic_template_video);
         } else {
             holder.icon.setImageResource(R.drawable.ic_browser_folder);
         }

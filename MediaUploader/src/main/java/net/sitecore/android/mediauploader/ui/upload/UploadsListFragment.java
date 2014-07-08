@@ -143,7 +143,7 @@ public class UploadsListFragment extends ListFragment implements LoaderCallbacks
             if (isImage) {
                 loadImageThumbnail(holder);
             } else {
-                holder.preview.setImageResource(R.drawable.ic_video_preview);
+                holder.preview.setImageResource(R.drawable.ic_template_video);
             }
 
             holder.name.setText(holder.itemName);

@@ -22,6 +22,9 @@ public class ScUtils {
     public static final String TEMPLATE_VERSIONED_JPEG = "System/Media/Versioned/Jpeg";
     public static final String TEMPLATE_UNVERSIONED_IMAGE = "System/Media/Unversioned/Image";
 
+    public static final String TEMPLATE_UNVERSIONED_MOVIE = "System/Media/Unversioned/Movie";
+    public static final String TEMPLATE_VERSIONED_MOVIE = "System/Media/Versioned/Movie";
+
     public static final String TEMPLATE_UNVERSIONED_FILE = "System/Media/Unversioned/File";
 
     public static final String TEMPLATE_MEDIA_FOLDER = "System/Media/Media folder";
@@ -30,6 +33,13 @@ public class ScUtils {
         if (template.equals(TEMPLATE_UNVERSIONED_JPEG)) return true;
         if (template.equals(TEMPLATE_VERSIONED_JPEG)) return true;
         if (template.equals(TEMPLATE_UNVERSIONED_IMAGE)) return true;
+
+        return false;
+    }
+
+    public static boolean isVideoTemplate(@NonNull String template) {
+        if (template.equals(TEMPLATE_UNVERSIONED_MOVIE)) return true;
+        if (template.equals(TEMPLATE_VERSIONED_MOVIE)) return true;
 
         return false;
     }
