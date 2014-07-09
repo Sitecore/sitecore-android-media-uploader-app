@@ -62,7 +62,7 @@ public class MediaUploaderService extends UploadMediaService {
 
         // Show notification
         final Notification n = NotificationUtils.showInProgressNotification(getApplicationContext(), itemName, mediaFolder);
-        startForeground(itemName.hashCode(), n);
+        startForeground(NotificationUtils.NOTIFICATION_IN_PROGRESS, n);
 
         LOGD("Updated media options: " + options);
     }

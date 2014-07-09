@@ -12,6 +12,8 @@ import net.sitecore.android.mediauploader.ui.upload.UploadsListActivity;
 
 public class NotificationUtils {
 
+    public static final int NOTIFICATION_IN_PROGRESS = 100;
+
     public static Notification showInProgressNotification(Context context, String title, String contentText) {
         final Notification n = buildDefaultNotification(context, title, contentText, false, R.drawable.stat_sys_upload)
                 .setProgress(0, 0, true)
@@ -19,7 +21,7 @@ public class NotificationUtils {
         NotificationManager mNotificationManager =
                 (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
 
-        mNotificationManager.notify(title.hashCode(), n);
+        mNotificationManager.notify(NOTIFICATION_IN_PROGRESS, n);
         return n;
     }
 
@@ -29,7 +31,7 @@ public class NotificationUtils {
         NotificationManager mNotificationManager =
                 (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
 
-        mNotificationManager.notify(title.hashCode(), n);
+        mNotificationManager.notify(contentText.hashCode(), n);
         return n;
     }
 

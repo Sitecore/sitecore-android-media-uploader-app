@@ -26,6 +26,8 @@ import net.sitecore.android.sdk.api.ScRequestQueue;
 import net.sitecore.android.sdk.api.model.ItemsResponse;
 import net.sitecore.android.sdk.api.model.ScItem;
 
+import static net.sitecore.android.sdk.api.internal.LogUtils.LOGD;
+
 public class MediaUploadResponseHandler implements Listener<ItemsResponse>, ErrorListener {
 
     private final Context mContext;
@@ -73,6 +75,7 @@ public class MediaUploadResponseHandler implements Listener<ItemsResponse>, Erro
         final Listener<ItemsResponse> updateListener = itemsResponse -> onUploadFinished();
         final ErrorListener errorListener = error -> onUploadFinished();
 
+        LOGD("Updating media location: " + mAddress);
         mScRequestQueue.add(mSession.editItemFields(item, fields, updateListener, errorListener));
     }
 
@@ -87,7 +90,7 @@ public class MediaUploadResponseHandler implements Listener<ItemsResponse>, Erro
         values.put(Uploads.STATUS, UploadStatus.DONE.name());
         //TODO: change to AsyncQueryHandler when sdk UploadMediaIntentBuilder will be fixed (wrong thread)
         mContext.getContentResolver().update(mUploadUri, values, null, null);
-        NotificationUtils.showFinishedNotification(mContext, mItemName, mFolder);
+        NotificationUtils.showFinishedNotification(mContext, "Media uploaded successfully", mItemName);
     }
 
     public void onUploadFailed(String errorMessage) {
