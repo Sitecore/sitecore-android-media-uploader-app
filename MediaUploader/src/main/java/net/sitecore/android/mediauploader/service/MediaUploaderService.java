@@ -5,6 +5,7 @@ import android.content.ContentValues;
 import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
+import android.text.TextUtils;
 import android.webkit.MimeTypeMap;
 
 import java.io.IOException;
@@ -23,68 +24,62 @@ import static net.sitecore.android.sdk.api.internal.LogUtils.LOGE;
 
 public class MediaUploaderService extends UploadMediaService {
 
-    public static final String EXTRA_UPLOAD_OPTIONS = "net.sitecore.android.sdk.api.EXTRA_UPLOAD_OPTIONS";
     public static final String EXTRA_UPLOAD_URI = "upload_uri";
     public static final String EXTRA_MEDIA_FOLDER = "media_folder";
+    public static final String EXTRA_IS_IMAGE_SELECTED = "is_image_selected";
 
-    @Override protected void onHandleIntent(Intent intent) {
-        LOGD("MediaUploaderService.onHandleIntent");
-
-        UploadMediaRequestOptions options = intent.getParcelableExtra(EXTRA_UPLOAD_OPTIONS);
-        Uri uploadItemUri = intent.getParcelableExtra(EXTRA_UPLOAD_URI);
-        String mediaFolder = intent.getStringExtra(EXTRA_MEDIA_FOLDER);
+    @Override protected void onMediaUploadStarted(Intent intent, UploadMediaRequestOptions options) {
+        LOGD("MediaUploaderService.onMediaUploadStarted");
+        final Uri uploadItemUri = intent.getParcelableExtra(EXTRA_UPLOAD_URI);
+        final String mediaFolder = intent.getStringExtra(EXTRA_MEDIA_FOLDER);
+        final String itemName = options.getItemName();
 
         LOGD("Original media options: " + options);
-        String mediaFilePath = resizeIfNeeded(uploadItemUri, options.getMediaFilePath());
 
+        // resize media
+        String mediaFilePath = resizeIfNeeded(uploadItemUri, options.getMediaFilePath());
         options.setMediaFilePath(mediaFilePath);
 
-        String itemName = options.getItemName();
-
-        String fileExtension = getFileExtension(mediaFilePath);
-        if (fileExtension != null) {
-            if (itemName.contains(".")) {
-                options.setFileName(itemName);
+        // fix extension
+        if (itemName.contains(".")) {
+            options.setFileName(itemName);
+        } else {
+            final String mimeType = getContentResolver().getType(Uri.parse(mediaFilePath));
+            final String mimeExt = MimeTypeMap.getSingleton().getExtensionFromMimeType(mimeType);
+            if (!TextUtils.isEmpty(mimeExt)) {
+                options.setFileName(itemName + "." + mimeExt);
+            } else if (mediaFilePath.contains(".")) {
+                final String fileExt = mediaFilePath.substring(mediaFilePath.lastIndexOf(".") + 1);
+                options.setFileName(itemName + "." + fileExt);
             } else {
-                options.setFileName(itemName + "." + fileExtension);
+                final boolean isImage = intent.getBooleanExtra(EXTRA_IS_IMAGE_SELECTED, true);
+                final String defaultExt = isImage ? "png" : "mp4";
+                options.setFileName(itemName + "." + defaultExt);
             }
         }
 
-        changeUploadStatus(uploadItemUri);
-        Notification n = NotificationUtils.showInProgressNotification(getApplicationContext(), itemName, mediaFolder);
+        setUploadInProgressStatus(uploadItemUri);
+
+        // Show notification
+        final Notification n = NotificationUtils.showInProgressNotification(getApplicationContext(), itemName, mediaFolder);
         startForeground(itemName.hashCode(), n);
 
         LOGD("Updated media options: " + options);
-        super.onHandleIntent(intent);
     }
 
-    private void changeUploadStatus(Uri uploadUri) {
+    private void setUploadInProgressStatus(Uri uploadUri) {
         final ContentValues values = new ContentValues();
         values.put(Uploads.STATUS, UploadStatus.IN_PROGRESS.name());
         getContentResolver().update(uploadUri, values, null, null);
     }
 
-    private String getFileExtension(String filePath) {
-        MimeTypeMap mime = MimeTypeMap.getSingleton();
-        String extension = mime.getExtensionFromMimeType(getContentResolver().getType(Uri.parse(filePath)));
-
-        if (extension == null) {
-            extension = filePath.substring(filePath.lastIndexOf(".") + 1);
-        }
-        return extension;
-    }
-
     private String resizeIfNeeded(Uri uploadItemUri, String mediaFilePath) {
         String newMediaFilePath = mediaFilePath;
 
-        ImageSize imageSize = ImageSize.ACTUAL;
-        Cursor cursor = getContentResolver().query(uploadItemUri, Query.PROJECTION, null, null, null);
-        if (cursor.moveToFirst()) {
-            imageSize = ImageSize.valueOf(cursor.getString(Query.IMAGE_SIZE));
+        ImageSize imageSize = getImageSize(uploadItemUri);
+        if (imageSize == ImageSize.ACTUAL) {
+            return newMediaFilePath;
         }
-        cursor.close();
-
-        if (imageSize == ImageSize.ACTUAL) return newMediaFilePath;
 
         ImageResizer imageResizer = new ImageResizer(this);
         boolean isResizeNeeded = imageResizer.isResizeNeeded(mediaFilePath, imageSize);
@@ -96,6 +91,20 @@ public class MediaUploaderService extends UploadMediaService {
             }
         }
         return newMediaFilePath;
+    }
+
+    private ImageSize getImageSize(Uri uploadItemUri) {
+        ImageSize imageSize = ImageSize.ACTUAL;
+
+        Cursor cursor = getContentResolver().query(uploadItemUri, Query.PROJECTION, null, null, null);
+        try {
+            if (cursor.moveToFirst()) {
+                imageSize = ImageSize.valueOf(cursor.getString(Query.IMAGE_SIZE));
+            }
+        } finally {
+            cursor.close();
+        }
+        return imageSize;
     }
 
     @Override

@@ -251,7 +251,8 @@ public class UploadActivity extends Activity {
 
         new InstancesAsyncHandler(getContentResolver()) {
             @Override protected void onInsertComplete(int token, Object cookie, Uri uri) {
-                mUploadHelper.startUploadService(mApiSession, uri, mInstance, itemName, mMediaUri.toString(), mAddress);
+                mUploadHelper.startUploadService(mApiSession, uri, mInstance, itemName, mMediaUri.toString(),
+                        mAddress, mIsImageSelected);
             }
         }.insertDelayedImageUpload(itemName, mMediaUri, mInstance, imageSize, mAddress, mIsImageSelected);
         finish();

@@ -23,7 +23,8 @@ public class UploadHelper {
             final Instance instance,
             final String name,
             final String fileUri,
-            final Address address) {
+            final Address address,
+            final boolean isImageSelected) {
         session.setMediaLibraryPath("/");
 
         MediaUploadResponseHandler responseListener = new MediaUploadResponseHandler(mContext,

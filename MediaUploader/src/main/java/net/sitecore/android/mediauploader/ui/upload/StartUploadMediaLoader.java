@@ -29,6 +29,7 @@ import java.security.spec.InvalidKeySpecException;
 import static net.sitecore.android.mediauploader.provider.UploadMediaContract.Uploads;
 import static net.sitecore.android.mediauploader.provider.UploadMediaContract.Uploads.UploadWithInstanceQuery;
 import static net.sitecore.android.mediauploader.provider.UploaderMediaDatabase.Tables;
+import static net.sitecore.android.sdk.api.internal.LogUtils.LOGE;
 
 public class StartUploadMediaLoader implements LoaderManager.LoaderCallbacks<Cursor> {
 
@@ -61,6 +62,7 @@ public class StartUploadMediaLoader implements LoaderManager.LoaderCallbacks<Cur
                 final Uri fileUri = Uri.parse(data.getString(UploadWithInstanceQuery.FILE_URI));
                 final Address imageAddress = getAddressFromCursor(data);
                 final Instance instance = Instance.fromUploadsJoinInstanceCursor(data);
+                final boolean isImage = data.getInt(UploadWithInstanceQuery.IS_IMAGE) == 1;
 
                 final ScPublicKey key = new ScPublicKey(instance.getPublicKey());
                 final ScApiSession session = ScApiSessionFactory.newSession(instance.getUrl(), key,
@@ -70,7 +72,7 @@ public class StartUploadMediaLoader implements LoaderManager.LoaderCallbacks<Cur
                 if (!TextUtils.isEmpty(instance.getSite())) session.setDefaultSite(instance.getSite());
 
                 helper.startUploadService(session, uploadUri, instance, itemName,
-                        fileUri.toString(), imageAddress);
+                        fileUri.toString(), imageAddress, isImage);
             } else {
                 // instance deleted -> set error
                 ContentValues values = new ContentValues();
@@ -80,6 +82,7 @@ public class StartUploadMediaLoader implements LoaderManager.LoaderCallbacks<Cur
             }
         } catch (NoSuchAlgorithmException | InvalidKeySpecException e) {
             //TODO: handle bad public key
+            LOGE(e);
         } finally {
             data.close();
         }
