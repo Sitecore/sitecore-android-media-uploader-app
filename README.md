@@ -13,3 +13,5 @@ Features include:
 - Add description and details to the media file
 - Queue media files for uploading at a later date
 - Browse through Sitecore CMS Media Library tree.
+
+![Screenshots](https://github.com/Sitecore/sitecore-android-media-uploader-app/blob/master/resources-readme/Android_Screen_Flow.png)
